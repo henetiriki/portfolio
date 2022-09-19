@@ -13,10 +13,10 @@
     "moduleResolution": "node",
     "paths": {
       "@components/*": ["components/*"],
-      "@containers/*": ["containers/*"],
-      "@pages/*": ["pages/*"],
       "@fixtures": ["fixtures"],
-      "@hooks": ["hooks"],
+      "@hooks/*": ["hooks/*"],
+      "@pages/*": ["pages/*"],
+      "@styles": ["styles"],
       "@utils": ["utils"]
     },
     "resolveJsonModule": true,
