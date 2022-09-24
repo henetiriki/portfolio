@@ -9,7 +9,7 @@ const Education: NextPage = () => (
       <title key='pageTitle'>{fullTitle('Education')}</title>
     </Head>
     <div>
-      {schools.map(({ institution: { name }, content }, idx) => (
+      {schools.map(({ content, institution: { name } }, idx) => (
         <div key={idx}>
           <h1>{name}</h1>
           {content}

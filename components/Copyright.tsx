@@ -3,6 +3,7 @@ import { useState } from 'react';
 
 const Copyright = () => {
   const [date] = useState<Date>(new Date());
+
   return (
     <span>
       © 2014 - {format(date, 'yyyy')}{' '}

@@ -8,7 +8,7 @@ const Experience: NextPage = () => (
     <Head>
       <title key='pageTitle'>{fullTitle('Experience')}</title>
     </Head>
-    {jobs.map(({ institution: { name }, content }, idx) => (
+    {jobs.map(({ content, institution: { name } }, idx) => (
       <div key={idx}>
         <h1>{name}</h1>
         {content}
