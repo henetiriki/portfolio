@@ -7,7 +7,7 @@ const Home: NextPage = (): JSX.Element => (
     css={{
       alignItems: 'center',
       display: 'flex',
-      height: '80vh',
+      height: '85vh',
       zIndex: 1,
     }}>
     <Container css={{ textAlign: 'center' }}>

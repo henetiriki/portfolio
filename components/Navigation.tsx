@@ -1,4 +1,4 @@
-import { Link, Navbar } from '@nextui-org/react';
+import { Container, Link, Navbar } from '@nextui-org/react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState } from 'react';
@@ -47,35 +47,44 @@ export const Navigation: FC = (): JSX.Element => {
       onScrollPositionChange={setScrollPosition}
       variant='sticky'>
       <Navbar.Toggle
-        isSelected={navExpanded}
         // @ts-ignore
         onChange={setNavExpanded}
         showIn='xs'
       />
-      <Navbar.Brand
+      <Container
         css={{
           '@xs': {
-            w: '12%',
+            justifyContent: 'space-between',
           },
+          alignItems: 'center',
+          display: 'flex',
+          justifyContent: 'flex-end',
         }}>
-        <Logo />
-      </Navbar.Brand>
-      <Navbar.Content css={navTypography} hideIn='xs'>
-        {menuItems.map(({ href, text }, idx) => {
-          const isActive = href === pathname;
+        <Navbar.Brand
+          css={{
+            '@xs': {
+              w: '12%',
+            },
+          }}>
+          <Logo />
+        </Navbar.Brand>
+        <Navbar.Content css={navTypography} hideIn='xs'>
+          {menuItems.map(({ href, text }, idx) => {
+            const isActive = href === pathname;
 
-          return (
-            <NextLink href={href} key={idx} passHref>
-              <Navbar.Link
-                className={isActive ? 'active' : ''}
-                css={navLinkMd}
-                isActive>
-                {text}
-              </Navbar.Link>
-            </NextLink>
-          );
-        })}
-      </Navbar.Content>
+            return (
+              <NextLink href={href} key={idx} passHref>
+                <Navbar.Link
+                  className={isActive ? 'active' : ''}
+                  css={navLinkMd}
+                  isActive>
+                  {text}
+                </Navbar.Link>
+              </NextLink>
+            );
+          })}
+        </Navbar.Content>
+      </Container>
       <Navbar.Collapse isOpen={navExpanded}>
         {menuItems.map(({ href, text }, idx) => {
           const isActive = href === pathname;
@@ -83,11 +92,7 @@ export const Navigation: FC = (): JSX.Element => {
           return (
             <Navbar.CollapseItem css={navTypography} isActive key={idx}>
               <NextLink href={href} passHref>
-                <Link
-                  className={isActive ? 'active' : ''}
-                  css={navLinkSm}
-                  // TODO tidy this up
-                  onClick={() => setNavExpanded(false)}>
+                <Link className={isActive ? 'active' : ''} css={navLinkSm}>
                   {text}
                 </Link>
               </NextLink>

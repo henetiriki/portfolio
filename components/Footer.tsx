@@ -1,94 +1,65 @@
-import { Container, Link } from '@nextui-org/react';
+import { Container, Link, styled } from '@nextui-org/react';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
 import { Copyright, Logo } from '@components';
 import { menuItems } from '@fixtures';
 import { useMediaQuery } from '@hooks';
+import {
+  footerBackground,
+  footerMenuItems,
+  footerSmBgPositionHeight,
+  footerSmBgRepeatSize,
+  footerWaveLower,
+  footerWaveUpper,
+} from '@styles';
 
 export const Footer: FC = (): JSX.Element => {
   const isSm = useMediaQuery(960);
   const { pathname } = useRouter();
 
+  const UpperWave = styled('div', {
+    ...footerWaveUpper,
+    ...(isSm && footerSmBgRepeatSize),
+  });
+
+  const LowerWave = styled('div', {
+    ...footerWaveLower,
+    ...(isSm && footerSmBgRepeatSize),
+    ...(isSm && footerSmBgPositionHeight),
+  });
+
+  const Content = styled('div', footerBackground);
+
   return (
-    <Container as='footer' css={{ minWidth: '100vw', position: 'relative' }}>
-      <Container
-        as='div'
-        css={{
-          backgroundImage: 'url(/images/footer/wave-upper.png)',
-          backgroundPosition: 'bottom center',
-          backgroundRepeat: isSm ? 'no-repeat' : 'repeat',
-          backgroundSize: isSm ? 'cover' : 'contain',
-          height: '65px',
-          left: 0,
-          minWidth: '100vw',
-          position: 'absolute',
-          right: 0,
-          top: '-65px',
-          zIndex: 1,
-        }}
-      />
-      <Container
-        as='div'
-        css={{
-          backgroundImage: 'url(/images/footer/wave-lower.png)',
-          backgroundPosition: isSm ? 'top left' : 'top center',
-          backgroundRepeat: isSm ? 'no-repeat' : 'repeat',
-          backgroundSize: isSm ? 'cover' : 'contain',
-          height: isSm ? '100px' : '65px',
-          left: 0,
-          minWidth: '100vw',
-          position: 'absolute',
-          right: 0,
-          top: 0,
-          zIndex: 1,
-        }}
-      />
-      <Container
-        as='div'
-        css={{
-          backgroundColor: '$black-russian',
-          bottom: 0,
-          height: 'fit-content',
-          left: 0,
-          minWidth: '100vw',
-          position: 'absolute',
-          right: 0,
-          top: 0,
-          zIndex: 0,
-        }}>
+    <footer>
+      <UpperWave />
+      <LowerWave />
+      <Content>
         <Container
           as='div'
-          css={{ paddingTop: 'calc(3 * $xl)', textAlign: 'center' }}>
+          css={{ paddingTop: 'calc(3 * $md)', textAlign: 'center' }}>
           <Container>
             <Logo />
           </Container>
-          <Container
-            css={{
-              alignItems: 'center',
-              columnGap: '$md',
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              padding: '$lg 0',
-              rowGap: '$md',
-            }}>
+          <Container css={footerMenuItems}>
             {menuItems.map(({ href, text }, idx) => (
-              <Link
-                css={{
-                  color: '$white',
-                  fontWeight: pathname === href ? 'bold' : 'normal',
-                }}
-                href={href}
-                key={idx}>
-                {text}
-              </Link>
+              <NextLink href={href} key={idx} passHref>
+                <Link
+                  css={{
+                    color: '$white',
+                    fontWeight: pathname === href ? 'bold' : 'normal',
+                  }}>
+                  {text}
+                </Link>
+              </NextLink>
             ))}
           </Container>
           <Container css={{ padding: '$lg 0' }}>
             <Copyright />
           </Container>
         </Container>
-      </Container>
-    </Container>
+      </Content>
+    </footer>
   );
 };

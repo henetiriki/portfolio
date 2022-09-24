@@ -1,52 +1,36 @@
-import { Container, Grid, NextUIProvider } from '@nextui-org/react';
+import { NextUIProvider } from '@nextui-org/react';
+import { NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
-import { Footer, Navigation } from '@components';
+import { FsBackground, Navigation } from '@components';
+import { Layout } from '@containers';
 import { theme } from '@styles';
 import { fullTitle } from '@utils';
 import type { AppProps } from 'next/app';
 
-const Portfolio = ({ Component, pageProps }: AppProps): JSX.Element => (
-  <>
-    <Head>
-      <title key='pageTitle'>{fullTitle('Portfolio')}</title>
-      <meta content='width=device-width, initial-scale=1' name='viewport' />
-      <meta
-        content='On-line Portfolio and CV for Louw Swart - Front-end Developer based in Wellington, New Zealand'
-        key='pageDescription'
-        name='description'
-      />
-    </Head>
-    <NextUIProvider theme={theme}>
-      <Container
-        css={{
-          minHeight: '100vh',
-          minWidth: '100vw',
-          overflow: 'hidden',
-          position: 'fixed',
-          zIndex: -1,
-        }}>
-        <Image
-          alt=''
-          layout='fill'
-          objectFit='cover'
-          quality={100}
-          src='/images/temp-insta.jpg'
+const Portfolio: NextPage<AppProps> = ({
+  Component,
+  pageProps,
+}): JSX.Element => {
+  return (
+    <>
+      <Head>
+        <title key='pageTitle'>{fullTitle('Portfolio')}</title>
+        <meta content='width=device-width, initial-scale=1' name='viewport' />
+        <meta
+          content='On-line Portfolio and CV for Louw Swart - Front-end Developer based in Wellington, New Zealand'
+          key='pageDescription'
+          name='description'
         />
-      </Container>
-      <Navigation />
-      <Grid.Container css={{ minHeight: '100vh' }}>
-        <Grid
-          css={{ minHeight: '80vh', paddingBottom: 'calc(3 * $xl)' }}
-          xs={12}>
+      </Head>
+      <NextUIProvider theme={theme}>
+        <FsBackground />
+        <Navigation />
+        <Layout>
           <Component {...pageProps} />
-        </Grid>
-        <Grid xs={12}>
-          <Footer />
-        </Grid>
-      </Grid.Container>
-    </NextUIProvider>
-  </>
-);
+        </Layout>
+      </NextUIProvider>
+    </>
+  );
+};
 
 export default Portfolio;

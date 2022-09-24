@@ -1,35 +1,47 @@
 import { CSS } from '@nextui-org/react';
 
-const footerBefore: CSS = {
-  backgroundPosition: 'top center',
-  backgroundSize: 'contain',
-  content: '',
-  height: '65px',
-  left: 0,
-  position: 'absolute',
-  right: 0,
-  top: 0,
-};
-
 const footerCommon: CSS = {
+  backgroundRepeat: 'repeat',
+  backgroundSize: 'contain',
   height: '65px',
   minWidth: '100vw',
-  position: 'relative',
+  zIndex: 1,
+};
+
+export const footerBackground: CSS = {
+  backgroundColor: '$black-russian',
 };
 
 export const footerWaveUpper: CSS = {
-  '&:before': {
-    ...footerBefore,
-    backgroundImage: 'url(/images/footer/wave-upper.png)',
-  },
+  backgroundImage: 'url(/images/footer/wave-upper.png)',
+  backgroundPosition: 'bottom center',
   ...footerCommon,
 };
 
 export const footerWaveLower: CSS = {
-  '&:before': {
-    ...footerBefore,
-    backgroundImage: 'url(/images/footer/wave-lower.png)',
-  },
+  backgroundImage: 'url(/images/footer/wave-lower.png)',
+  backgroundPosition: 'top center',
+  height: '65px',
+  ...footerBackground,
   ...footerCommon,
-  backgroundColor: '$black-russian',
+};
+
+export const footerSmBgRepeatSize: CSS = {
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
+};
+
+export const footerSmBgPositionHeight: CSS = {
+  backgroundPosition: 'top left',
+  height: '100px',
+};
+
+export const footerMenuItems: CSS = {
+  alignItems: 'center',
+  columnGap: '$md',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center',
+  padding: '$lg 0',
+  rowGap: '$md',
 };

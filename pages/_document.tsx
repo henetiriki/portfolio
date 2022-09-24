@@ -20,7 +20,7 @@ class Document extends _Document {
   render() {
     return (
       <Html lang='en'>
-        <Head>
+        <Head style={{ border: 0, height: '100%' }}>
           <meta charSet='utf-8' />
           <meta content='IE=edge' httpEquiv='X-UA-Compatible' />
           <meta content='Louw Swart' name='author' />
@@ -76,8 +76,8 @@ class Document extends _Document {
         <body
           style={{
             backgroundColor: 'rgba(12, 14, 39, 0.80)',
-            height: 'fit-content',
-            minHeight: '100vh',
+            border: 0,
+            height: '100%',
           }}>
           <Main />
           <NextScript />

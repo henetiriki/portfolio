@@ -6,6 +6,7 @@ export const theme = createTheme({
       /* eslint-disable sort-keys/sort-keys-fix */
       white: '#fff',
       primary: '#fff',
+      whisper: '#eee',
       gray: '#888',
       dimGray: '#666',
       matterhorn: '#4f4f4f',
@@ -14,7 +15,7 @@ export const theme = createTheme({
       'midnight-express': '#121833',
       'black-russian-light': '#101227',
       'black-russian': '#080a20',
-      'black-russian-alpha': 'rgba(12, 14, 39, 0.80)',
+      'black-russian-alpha': 'rgba(#080a20, 0.80)',
       shamrock: '#27e278',
       /* eslint-enable sort-keys/sort-keys-fix */
     },
