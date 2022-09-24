@@ -385,9 +385,9 @@ export const jobs: Job[] = [
     content: (
       <p>
         <br />
-        <i className='icon-globe icon-2x'></i>
-        <i className='icon-plus'></i>
-        <i className='icon-flight icon-2x'></i>
+        <i className='icon-globe icon-2x' />
+        <i className='icon-plus' />
+        <i className='icon-flight icon-2x' />
       </p>
     ),
     institution: {

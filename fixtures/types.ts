@@ -18,8 +18,8 @@ export type Job = {
 };
 
 export type LinkItem = {
-  text: string;
   href: string;
+  text: string;
 };
 
 export type School = {

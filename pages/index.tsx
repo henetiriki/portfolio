@@ -1,13 +1,21 @@
+import { Container, Text } from '@nextui-org/react';
 import { TypeAnimation } from 'react-type-animation';
 import type { NextPage } from 'next';
 
-const Home: NextPage = () => {
-  return (
-    <div>
-      <h1>Louw Swart</h1>
-      <h4>
+const Home: NextPage = (): JSX.Element => (
+  <Container
+    css={{
+      alignItems: 'center',
+      display: 'flex',
+      height: '80vh',
+      zIndex: 1,
+    }}>
+    <Container css={{ textAlign: 'center' }}>
+      <Text h1>Louw Swart</Text>
+      <Text css={{ span: { color: '$shamrock' } }} h4>
         I’m a{' '}
         <TypeAnimation
+          repeat={Infinity}
           sequence={[
             'front-end engineer',
             1000,
@@ -22,12 +30,11 @@ const Home: NextPage = () => {
           ]}
           speed={20}
           wrapper='span'
-          repeat={Infinity}
         />
-      </h4>
-      <p>ex-flight attendant turned programmer</p>
-    </div>
-  );
-};
+      </Text>
+      <Text>ex-flight attendant turned programmer</Text>{' '}
+    </Container>
+  </Container>
+);
 
 export default Home;

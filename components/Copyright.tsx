@@ -1,17 +1,26 @@
+import { Container, Link, Text } from '@nextui-org/react';
 import { format } from 'date-fns';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 
-const Copyright = () => {
+export const Copyright: FC = (): JSX.Element => {
   const [date] = useState<Date>(new Date());
 
   return (
-    <span>
-      © 2014 - {format(date, 'yyyy')}{' '}
-      <a href='https://github.com/henetiriki' target='_blank' rel='noreferrer'>
-        @henetiriki
-      </a>
-    </span>
+    <Container
+      css={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+      <Text>
+        © 2014 - {format(date, 'yyyy')}{' '}
+        <Link
+          css={{
+            color: '$shamrock',
+          }}
+          href='https://github.com/henetiriki'
+          isExternal
+          rel='noopener noreferrer'
+          target='_blank'>
+          @henetiriki
+        </Link>
+      </Text>
+    </Container>
   );
 };
-
-export default Copyright;

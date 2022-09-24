@@ -1,19 +1,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import { FC } from 'react';
 
-const Logo = () => (
+export const Logo: FC = (): JSX.Element => (
   <Link href={'/'}>
     <a>
       <Image
+        alt='Ouwl'
+        height={40}
         priority
         src='/images/ouwl.png'
         width={40}
-        height={40}
-        alt='Ouwl'
       />
     </a>
   </Link>
 );
-
-export default Logo;

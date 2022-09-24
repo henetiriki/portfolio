@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { fullTitle } from '@utils';
 import type { NextPage } from 'next';
 
-const FourOhFour: NextPage = () => (
+const FourOhFour: NextPage = (): JSX.Element => (
   <>
     <Head>
       <title key='pageTitle'>{fullTitle('Page not found')}</title>

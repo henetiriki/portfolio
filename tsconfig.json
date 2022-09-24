@@ -12,9 +12,9 @@
     "module": "esnext",
     "moduleResolution": "node",
     "paths": {
-      "@components/*": ["components/*"],
+      "@components": ["components"],
       "@fixtures": ["fixtures"],
-      "@hooks/*": ["hooks/*"],
+      "@hooks": ["hooks"],
       "@pages/*": ["pages/*"],
       "@styles": ["styles"],
       "@utils": ["utils"]
