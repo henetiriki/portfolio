@@ -1,19 +1,24 @@
 import { Container } from '@nextui-org/react';
 import Image from 'next/image';
-import { FC } from 'react';
+import { useRouter } from 'next/router';
+import { FC, useEffect } from 'react';
 import { useInstaImgId, useWindowSize } from '@hooks';
 import { blurDataURL } from '@utils';
 
 export const FsBackground: FC = () => {
+  const { events } = useRouter();
   const { height, width } = useWindowSize();
-  const instaImgIds = useInstaImgId();
+  const [instaImgIds, nextImg] = useInstaImgId();
+
+  useEffect(() => {
+    events.on('routeChangeComplete', () => {
+      nextImg();
+    });
+  }, []);
 
   return (
     <Container
       css={{
-        '&img': {
-          transition: '2s ease-in-out',
-        },
         minHeight: '100vh',
         minWidth: '100vw',
         overflow: 'hidden',
