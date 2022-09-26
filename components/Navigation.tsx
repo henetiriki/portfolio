@@ -53,12 +53,14 @@ export const Navigation: FC = (): JSX.Element => {
       />
       <Container
         css={{
-          '@xs': {
-            justifyContent: 'space-between',
-          },
           alignItems: 'center',
           display: 'flex',
           justifyContent: 'flex-end',
+          /* eslint-disable sort-keys/sort-keys-fix */
+          '@xs': {
+            justifyContent: 'space-between',
+          },
+          /* eslint-enable sort-keys/sort-keys-fix */
         }}>
         <Navbar.Brand
           css={{

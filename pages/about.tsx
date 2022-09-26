@@ -1,6 +1,6 @@
 import { Container, Image, Link, Text } from '@nextui-org/react';
 import Head from 'next/head';
-import { Header } from '@components';
+import { Content, Header } from '@components';
 import { openSourceContrs } from '@fixtures';
 import { fullTitle } from '@utils';
 import type { NextPage } from 'next';
@@ -12,27 +12,19 @@ const About: NextPage = (): JSX.Element => (
     </Head>
     <>
       <Header>
-        ABOUT ME<span>a small introduction</span>
+        About me<span>a small introduction</span>
       </Header>
-      <Container
-        as='div'
-        css={{
-          '@xs': {
-            borderRadius: '$xl',
-            padding: '8rem 4rem',
-          },
-          backgroundColor: '$valhalla',
-          marginBottom: '8rem',
-          padding: '4rem 0',
-        }}>
+      <Content>
         <Container
           css={{
-            '@xs': {
-              flexDirection: 'row',
-            },
             display: 'flex',
             flexDirection: 'column',
             flexWrap: 'nowrap',
+            /* eslint-disable sort-keys/sort-keys-fix */
+            '@xs': {
+              flexDirection: 'row',
+            },
+            /* eslint-enable sort-keys/sort-keys-fix */
           }}>
           <Container as='div' css={{ maxWidth: '400px' }}>
             <Image
@@ -95,7 +87,7 @@ const About: NextPage = (): JSX.Element => (
             </Text>
           </Container>
         </Container>
-      </Container>
+      </Content>
     </>
   </>
 );

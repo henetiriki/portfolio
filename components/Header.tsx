@@ -12,8 +12,14 @@ export const Header: FC<PropsWithChildren> = ({ children }): JSX.Element => (
     <Text
       as='h1'
       css={{
-        span: { display: 'block', fontSize: '2rem', fontWeight: '$normal' },
+        span: {
+          display: 'block',
+          fontSize: '1.75rem',
+          fontWeight: '$normal',
+          textTransform: 'none',
+        },
         textAlign: 'center',
+        textTransform: 'uppercase',
       }}>
       {children}
     </Text>
