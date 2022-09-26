@@ -1,9 +1,11 @@
 import { Container, Text } from '@nextui-org/react';
+import { ReactElement } from 'react';
 import { TypeAnimation } from 'react-type-animation';
-import type { NextPage } from 'next';
+import { HomeLayout, NextPageWithLayout } from '@containers';
 
-const Home: NextPage = (): JSX.Element => (
+const Home: NextPageWithLayout = (): JSX.Element => (
   <Container
+    as='section'
     css={{
       alignItems: 'center',
       display: 'flex',
@@ -35,6 +37,10 @@ const Home: NextPage = (): JSX.Element => (
       <Text>ex-flight attendant turned programmer</Text>{' '}
     </Container>
   </Container>
+);
+
+Home.getLayout = (page: ReactElement): JSX.Element => (
+  <HomeLayout>{page}</HomeLayout>
 );
 
 export default Home;

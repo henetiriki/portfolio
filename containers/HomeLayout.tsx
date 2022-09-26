@@ -1,8 +1,9 @@
-import { Container } from '@nextui-org/react';
 import { FC, PropsWithChildren } from 'react';
 import { Footer } from '@components';
 
-export const Layout: FC<PropsWithChildren> = ({ children }): JSX.Element => {
+export const HomeLayout: FC<PropsWithChildren> = ({
+  children,
+}): JSX.Element => {
   return (
     <div
       style={{
@@ -10,14 +11,13 @@ export const Layout: FC<PropsWithChildren> = ({ children }): JSX.Element => {
         flexDirection: 'column',
         height: '100%',
       }}>
-      <Container
-        as='main'
-        css={{
+      <main
+        style={{
           flex: 1,
           overflow: 'auto',
         }}>
         {children}
-      </Container>
+      </main>
       <Footer />
     </div>
   );

@@ -2,15 +2,17 @@ import { NextUIProvider } from '@nextui-org/react';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import { FsBackground, Navigation } from '@components';
-import { Layout } from '@containers';
+import { AppPropsWithLayout, DefaultLayout } from '@containers';
 import { theme } from '@styles';
 import { fullTitle } from '@utils';
-import type { AppProps } from 'next/app';
 
-const Portfolio: NextPage<AppProps> = ({
+const Portfolio: NextPage<AppPropsWithLayout> = ({
   Component,
   pageProps,
 }): JSX.Element => {
+  const getLayout =
+    Component.getLayout ?? (page => <DefaultLayout>{page}</DefaultLayout>);
+
   return (
     <>
       <Head>
@@ -25,9 +27,7 @@ const Portfolio: NextPage<AppProps> = ({
       <NextUIProvider theme={theme}>
         <FsBackground />
         <Navigation />
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        {getLayout(<Component {...pageProps} />)}
       </NextUIProvider>
     </>
   );
