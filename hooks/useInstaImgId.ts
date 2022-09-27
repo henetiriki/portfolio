@@ -1,9 +1,12 @@
+import getConfig from 'next/config';
 import { useMemo, useState } from 'react';
 import { randomItem } from '@utils';
 
+const { publicRuntimeConfig } = getConfig();
+
 export const useInstaImgId = (): [string[], () => void] => {
   const imageIds = useMemo<string[]>(
-    () => process.env.NEXT_PUBLIC_ISTAGRAM_IMAGE_IDS?.split(',') || [],
+    () => publicRuntimeConfig.instaImgIds?.split(',') || [],
     []
   );
 

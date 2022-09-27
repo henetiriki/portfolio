@@ -14,6 +14,11 @@ const nextConfig = {
       },
     ],
   },
+  publicRuntimeConfig: {
+    // Will be available on both server and client
+    host: process.env.NEXT_PUBLIC_HOST,
+    instaImgIds: process.env.NEXT_PUBLIC_ISTAGRAM_IMAGE_IDS,
+  },
   reactStrictMode: true,
   swcMinify: true,
 };
