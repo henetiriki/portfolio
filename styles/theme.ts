@@ -7,6 +7,7 @@ export const theme = createTheme({
       white: '#fff',
       primary: '#fff',
       whisper: '#eee',
+      silver: '#c1c1c1',
       gray: '#888',
       dimGray: '#666',
       matterhorn: '#4f4f4f',

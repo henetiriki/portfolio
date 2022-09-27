@@ -1,10 +1,11 @@
+import { Text } from '@nextui-org/react';
 import { School } from './types';
 
 export const schools: School[] = [
   {
     content: (
       <>
-        <p>
+        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
           Java SE/EE;
           <br />
           Linux Red Hat;
@@ -20,7 +21,7 @@ export const schools: School[] = [
           SQL Server 2000;
           <br />
           Linux Administration;
-        </p>
+        </Text>
       </>
     ),
     institution: {

@@ -1,10 +1,19 @@
 import { NextUIProvider } from '@nextui-org/react';
 import { NextPage } from 'next';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { FsBackground, Navigation } from '@components';
+import { Suspense } from 'react';
+import { Navigation } from '@components';
 import { AppPropsWithLayout, DefaultLayout } from '@containers';
 import { theme } from '@styles';
 import { fullTitle } from '@utils';
+
+const FsBackground = dynamic(
+  () => import('@components').then(mod => mod.FsBackground),
+  {
+    ssr: false,
+  }
+);
 
 const Portfolio: NextPage<AppPropsWithLayout> = ({
   Component,
@@ -25,7 +34,9 @@ const Portfolio: NextPage<AppPropsWithLayout> = ({
         />
       </Head>
       <NextUIProvider theme={theme}>
-        <FsBackground />
+        <Suspense>
+          <FsBackground />
+        </Suspense>
         <Navigation />
         {getLayout(<Component {...pageProps} />)}
       </NextUIProvider>

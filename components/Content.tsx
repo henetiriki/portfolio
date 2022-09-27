@@ -4,7 +4,6 @@ import { contentWrapper, waveImg, waveWrapper } from '@styles';
 
 const WaveWrapper = styled('div', waveWrapper);
 const WaveImg = styled('img', waveImg);
-
 const ContentWrapper = styled('div', contentWrapper);
 
 export const Content: FC<PropsWithChildren> = ({ children }): JSX.Element => (
