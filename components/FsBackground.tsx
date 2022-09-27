@@ -14,7 +14,7 @@ export const FsBackground: FC = () => {
     events.on('routeChangeComplete', () => {
       nextImg();
     });
-  }, []);
+  }, [events, nextImg]);
 
   return (
     <Container

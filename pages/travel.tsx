@@ -1,6 +1,6 @@
 import { Container } from '@nextui-org/react';
 import Head from 'next/head';
-import { Header } from '@components';
+import { Content, Header } from '@components';
 import { fullTitle } from '@utils';
 import type { NextPage } from 'next';
 
@@ -17,15 +17,17 @@ const Travel: NextPage = (): JSX.Element => (
           steer yourself any direction you choose.” - dr. seuss
         </span>
       </Header>
-      <Container>
-        <section>
-          <article>
-            <div>
-              <h1>Travel content</h1>
-            </div>
-          </article>
-        </section>
-      </Container>
+      <Content>
+        <Container>
+          <section>
+            <article>
+              <div>
+                <h1>Travel content</h1>
+              </div>
+            </article>
+          </section>
+        </Container>
+      </Content>
     </>
   </>
 );

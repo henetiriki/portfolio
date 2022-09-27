@@ -4,37 +4,28 @@ import { useRouter } from 'next/router';
 import { FC } from 'react';
 import { Copyright, Logo } from '@components';
 import { menuItems } from '@fixtures';
-import { useMediaQuery } from '@hooks';
 import {
   footerBackground,
   footerMenuItems,
-  footerSmBgPositionHeight,
-  footerSmBgRepeatSize,
-  footerWaveLower,
-  footerWaveUpper,
+  waveImg,
+  waveWrapper,
 } from '@styles';
 
+const Content = styled('div', footerBackground);
+const WaveWrapper = styled('div', waveWrapper);
+const WaveImg = styled('img', waveImg);
+
 export const Footer: FC = (): JSX.Element => {
-  const isSm = useMediaQuery(960);
   const { pathname } = useRouter();
-
-  const UpperWave = styled('div', {
-    ...footerWaveUpper,
-    ...(isSm && footerSmBgRepeatSize),
-  });
-
-  const LowerWave = styled('div', {
-    ...footerWaveLower,
-    ...(isSm && footerSmBgRepeatSize),
-    ...(isSm && footerSmBgPositionHeight),
-  });
-
-  const Content = styled('div', footerBackground);
 
   return (
     <footer>
-      <UpperWave />
-      <LowerWave />
+      <WaveWrapper>
+        <WaveImg alt='' src='/images/waves/footer-top-haikei.svg' />
+      </WaveWrapper>
+      <WaveWrapper>
+        <WaveImg alt='' src='/images/waves/footer-bottom-haikei.svg' />
+      </WaveWrapper>
       <Content>
         <Container
           as='div'

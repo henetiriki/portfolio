@@ -34,7 +34,7 @@ const Home: NextPageWithLayout = (): JSX.Element => (
           wrapper='span'
         />
       </Text>
-      <Text>ex-flight attendant turned programmer</Text>{' '}
+      <Text>ex-flight attendant turned programmer</Text>
     </Container>
   </Container>
 );
