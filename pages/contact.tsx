@@ -23,7 +23,7 @@ const Contact: NextPage = (): JSX.Element => (
             </article>
           </section>
         </Container>
-      </Content>{' '}
+      </Content>
     </>
   </>
 );

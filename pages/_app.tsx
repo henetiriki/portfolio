@@ -3,6 +3,7 @@ import { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Suspense } from 'react';
+import ErrorBoundary from '../components/ErrorBoundary';
 import { Navigation } from '@components';
 import { AppPropsWithLayout, DefaultLayout } from '@containers';
 import { theme } from '@styles';
@@ -33,13 +34,15 @@ const Portfolio: NextPage<AppPropsWithLayout> = ({
           name='description'
         />
       </Head>
-      <NextUIProvider theme={theme}>
-        <Suspense>
-          <FsBackground />
-        </Suspense>
-        <Navigation />
-        {getLayout(<Component {...pageProps} />)}
-      </NextUIProvider>
+      <ErrorBoundary>
+        <NextUIProvider theme={theme}>
+          <Suspense>
+            <FsBackground />
+          </Suspense>
+          <Navigation />
+          {getLayout(<Component {...pageProps} />)}
+        </NextUIProvider>
+      </ErrorBoundary>
     </>
   );
 };
