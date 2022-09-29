@@ -1,17 +1,14 @@
 import { Container } from '@nextui-org/react';
-import getConfig from 'next/config';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { FC, useEffect } from 'react';
-import { useInstaImgId, useWindowSize } from '@hooks';
+import { useIgImgId, useWindowSize } from '@hooks';
 import { blurDataURL } from '@utils';
-
-const { publicRuntimeConfig } = getConfig();
 
 export const FsBackground: FC = () => {
   const { events } = useRouter();
   const { height, width } = useWindowSize();
-  const [instaImgIds, nextImg] = useInstaImgId();
+  const { igImageIds, nextImg } = useIgImgId();
 
   useEffect(() => {
     events.on('routeChangeComplete', () => {
@@ -28,17 +25,17 @@ export const FsBackground: FC = () => {
         position: 'fixed',
         zIndex: -1,
       }}>
-      {instaImgIds.map(instaImgId => (
+      {igImageIds.map(igImgId => (
         <Image
           alt=''
           blurDataURL={blurDataURL(width, height)}
-          key={instaImgId}
+          key={igImgId}
           layout='fill'
           objectFit='cover'
           placeholder='blur'
           priority={true}
           quality={100}
-          src={`${publicRuntimeConfig.host}/insta/${instaImgId}.jpg`}
+          src={`/api/ig/${igImgId}.jpg`}
         />
       ))}
     </Container>
