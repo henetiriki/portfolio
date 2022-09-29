@@ -3,29 +3,30 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 const { serverRuntimeConfig } = getConfig();
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const imageRequest = async (req: NextApiRequest, res: NextApiResponse) => {
   const { image } = req.query;
 
-  const response = await fetch(`${serverRuntimeConfig.imageHost}/${image}`, {
-    headers: {
-      referer: `${serverRuntimeConfig.host}/ouq77.kiwi`,
-    },
-  });
+  const imageResponse: Response = await fetch(
+    `${serverRuntimeConfig.imageHost}/${image}`,
+    {
+      headers: {
+        referer: `${serverRuntimeConfig.host}/ouq77.kiwi`,
+      },
+    }
+  );
 
-  if (response.ok) {
-    const imageBlob = await response.blob();
+  const { ok, status } = imageResponse;
+
+  if (ok) {
+    const imageBlob = await imageResponse.blob();
     const imageBuffer = await imageBlob.arrayBuffer();
 
     res.setHeader('Content-Type', imageBlob.type);
 
-    res.send(Buffer.from(imageBuffer));
-
-    return;
+    res.status(status).send(Buffer.from(imageBuffer));
   } else {
-    const whatIsIt = await response.text();
-
-    console.log({ whatIsIt });
+    res.status(status).send(await imageResponse.text());
   }
-
-  res.status(404).send('Image not found');
 };
+
+export default imageRequest;

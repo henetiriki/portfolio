@@ -3,43 +3,30 @@ import { Component, ErrorInfo, PropsWithChildren } from 'react';
 class ErrorBoundary extends Component {
   constructor(props: PropsWithChildren) {
     super(props);
-
-    // Define a state variable to track whether is an error or not
     this.state = { hasError: false };
   }
 
   static getDerivedStateFromError() {
-    // Update state so the next render will show the fallback UI
-
     return { hasError: true };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // You can use your own error logging service here
-    console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', {
+    console.log({
       error,
       errorInfo,
     });
   }
 
   render() {
-    // Check if the error is thrown
     // @ts-ignore
     if (this.state.hasError) {
-      // You can render any custom fallback UI
       return (
         <div>
-          <h2>Oops, there is an error!</h2>
-          <button
-            onClick={() => this.setState({ hasError: false })}
-            type='button'>
-            Try again?
-          </button>
+          <h2>Oops, something went wrong!</h2>
         </div>
       );
     }
 
-    // Return children components in case of no error
     // @ts-ignore
     return this.props.children;
   }

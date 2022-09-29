@@ -1,8 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        hostname: process.env.HOSTNAME,
+        pathname: '/api/ig/*',
+        ...(process.env.PORT && { port: process.env.PORT }),
+        protocol: process.env.PROTOCOL,
+      },
+    ],
+  },
   publicRuntimeConfig: {
     // Will be available on both server and client
-    igImgIds: process.env.NEXT_PUBLIC_ISTAGRAM_IMAGE_IDS,
+    igImgIds: process.env.ISTAGRAM_IMAGE_IDS,
   },
   reactStrictMode: true,
   serverRuntimeConfig: {
