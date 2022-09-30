@@ -10,7 +10,6 @@ export const Header: FC<PropsWithChildren> = ({ children }): JSX.Element => (
       justifyContent: 'center',
     }}>
     <Text
-      as='h1'
       css={{
         span: {
           display: 'block',
@@ -21,7 +20,8 @@ export const Header: FC<PropsWithChildren> = ({ children }): JSX.Element => (
         },
         textAlign: 'center',
         textTransform: 'uppercase',
-      }}>
+      }}
+      h1>
       {children}
     </Text>
   </Container>

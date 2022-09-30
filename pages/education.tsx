@@ -42,7 +42,7 @@ const Education: NextPage = (): JSX.Element => (
                 <TimelineBox key={idx}>
                   <TimelineContent>
                     <Text>
-                      <Text as='span' css={{ fontStyle: 'italic' }}>
+                      <Text css={{ fontStyle: 'italic' }} span>
                         {from} - {to}
                       </Text>{' '}
                       <Link
@@ -56,7 +56,7 @@ const Education: NextPage = (): JSX.Element => (
                         {name}, {location}
                       </Link>
                     </Text>
-                    <Text as='h3'>{qualification}</Text>
+                    <Text h3>{qualification}</Text>
                     {content}
                   </TimelineContent>
                 </TimelineBox>

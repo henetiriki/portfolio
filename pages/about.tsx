@@ -44,8 +44,8 @@ const About: NextPage = (): JSX.Element => (
             />
           </Container>
           <Container as='div' css={{ justifyContent: 'left' }}>
-            <Text as='h2'>Louw Swart</Text>
-            <Text as='h4'>Front-end Developer, Wellington</Text>
+            <Text h2>Louw Swart</Text>
+            <Text h4>Front-end Developer, Wellington</Text>
             <Text>
               I have been in <b>Software Development</b> since 2008, with most
               of that time spent in <b>Agile environments</b>, designing,
@@ -80,7 +80,7 @@ const About: NextPage = (): JSX.Element => (
                 </li>
               ))}
             </ul>
-            <Text as='h4'>Hobbies and Interests</Text>
+            <Text h4>Hobbies and Interests</Text>
             <Text>
               Photography, Android, travel and plane spotting - not necessarily
               in that order.

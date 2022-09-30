@@ -2,7 +2,6 @@ import { NextUIProvider } from '@nextui-org/react';
 import { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { Suspense } from 'react';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { Navigation } from '@components';
 import { AppPropsWithLayout, DefaultLayout } from '@containers';
@@ -36,9 +35,7 @@ const Portfolio: NextPage<AppPropsWithLayout> = ({
       </Head>
       <ErrorBoundary>
         <NextUIProvider theme={theme}>
-          <Suspense>
-            <FsBackground />
-          </Suspense>
+          <FsBackground />
           <Navigation />
           {getLayout(<Component {...pageProps} />)}
         </NextUIProvider>

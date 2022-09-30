@@ -1,6 +1,6 @@
 import { Container, Text } from '@nextui-org/react';
 import dynamic from 'next/dynamic';
-import { ReactElement, Suspense } from 'react';
+import { ReactElement } from 'react';
 import { HomeLayout, NextPageWithLayout } from '@containers';
 
 const TypeAnimation = dynamic(
@@ -21,25 +21,23 @@ const Home: NextPageWithLayout = (): JSX.Element => (
       <Text h1>Louw Swart</Text>
       <Text css={{ span: { color: '$shamrock' } }} h4>
         I’m a{' '}
-        <Suspense>
-          <TypeAnimation
-            repeat={Infinity}
-            sequence={[
-              'front-end engineer',
-              1000,
-              'photographer',
-              1000,
-              'cat parent',
-              1000,
-              'plane spotter',
-              1000,
-              'traveller',
-              1000,
-            ]}
-            speed={20}
-            wrapper='span'
-          />
-        </Suspense>
+        <TypeAnimation
+          repeat={Infinity}
+          sequence={[
+            'front-end engineer',
+            1000,
+            'photographer',
+            1000,
+            'cat parent',
+            1000,
+            'plane spotter',
+            1000,
+            'traveller',
+            1000,
+          ]}
+          speed={20}
+          wrapper='span'
+        />
       </Text>
       <Text>ex-flight attendant turned programmer</Text>
     </Container>

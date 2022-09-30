@@ -43,7 +43,7 @@ const Experience: NextPage = (): JSX.Element => (
                 <TimelineBox key={idx}>
                   <TimelineContent>
                     <Text>
-                      <Text as='span' css={{ fontStyle: 'italic' }}>
+                      <Text css={{ fontStyle: 'italic' }} span>
                         {from} - {to}
                       </Text>{' '}
                       <Link
@@ -56,15 +56,15 @@ const Experience: NextPage = (): JSX.Element => (
                         target='_blank'>
                         {name}
                       </Link>
-                      <Text size='$xs'>{location}</Text>
                     </Text>
-                    <Text as='h3'>{title}</Text>
+                    <Text size='$xs'>{location}</Text>
+                    <Text h3>{title}</Text>
                     {content}
                     {accomplishments && (
                       <>
                         <Spacer y={2} />
-                        <Text as='h5'>Accomplishments</Text>
-                        <Text css={{ ff: '$sansAlt' }}>{accomplishments}</Text>
+                        <Text h5>Accomplishments</Text>
+                        {accomplishments}
                       </>
                     )}
                   </TimelineContent>
