@@ -1,4 +1,4 @@
-import { Container, Link, styled } from '@nextui-org/react';
+import { Container, Link, Row, styled } from '@nextui-org/react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
@@ -11,8 +11,6 @@ import {
   waveWrapper,
 } from '@styles';
 
-const Content = styled('div', footerBackground);
-const WaveWrapper = styled('div', waveWrapper);
 const WaveImg = styled('img', waveImg);
 
 export const Footer: FC = (): JSX.Element => {
@@ -20,13 +18,13 @@ export const Footer: FC = (): JSX.Element => {
 
   return (
     <footer>
-      <WaveWrapper>
+      <Row css={waveWrapper}>
         <WaveImg alt='' src='/images/waves/footer-top-haikei.svg' />
-      </WaveWrapper>
-      <WaveWrapper>
+      </Row>
+      <Row css={waveWrapper}>
         <WaveImg alt='' src='/images/waves/footer-bottom-haikei.svg' />
-      </WaveWrapper>
-      <Content>
+      </Row>
+      <Row css={footerBackground}>
         <Container as='div' css={{ p: 'calc(3 * $md)', ta: 'center' }}>
           <Container>
             <Logo />
@@ -48,7 +46,7 @@ export const Footer: FC = (): JSX.Element => {
             <Copyright />
           </Container>
         </Container>
-      </Content>
+      </Row>
     </footer>
   );
 };

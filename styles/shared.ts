@@ -33,7 +33,7 @@ export const timelineBox: CSS = {
     left: '-11px',
     opacity: 0.4,
     position: 'absolute',
-    top: '40px',
+    top: '70px',
     w: '20px',
   },
   '&:before': {
@@ -43,12 +43,12 @@ export const timelineBox: CSS = {
     h: '10px',
     left: '-6px',
     position: 'absolute',
-    top: '45px',
+    top: '75px',
     w: '10px',
   },
   pl: '40px',
   position: 'relative',
-  pt: '20px',
+  pt: '50px',
 };
 
 export const timelineContent: CSS = {
@@ -64,6 +64,7 @@ export const timelineContent: CSS = {
     w: 0,
   },
   bgColor: 'rgba(255, 255, 255, 0.1)',
+  br: '$xs',
   p: '20px',
   position: 'relative',
 };

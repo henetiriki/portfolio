@@ -1,4 +1,5 @@
-import { styled } from '@nextui-org/react';
+import { Row, styled } from '@nextui-org/react';
+import { FC, PropsWithChildren } from 'react';
 import {
   timeline,
   timelineBox,
@@ -6,7 +7,9 @@ import {
   timelineIndicator,
 } from '@styles';
 
-export const TimelineIndicator = styled('div', timelineIndicator);
+export const TimelineIndicator: FC<PropsWithChildren> = ({
+  children,
+}): JSX.Element => <Row css={timelineIndicator}>{children}</Row>;
 
 export const Timeline = styled('div', timeline);
 

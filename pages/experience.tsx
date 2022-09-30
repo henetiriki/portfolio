@@ -26,7 +26,7 @@ const Experience: NextPage = (): JSX.Element => (
       <Content>
         <Container>
           <TimelineIndicator>
-            <FontAwesomeIcon height={25} icon={faBriefcase} width={25} />
+            <FontAwesomeIcon height={20} icon={faBriefcase} width={20} />
           </TimelineIndicator>
           <Timeline>
             {jobs.map(
@@ -58,6 +58,7 @@ const Experience: NextPage = (): JSX.Element => (
                       </Link>
                     </Text>
                     <Text size='$xs'>{location}</Text>
+                    <Spacer y={1} />
                     <Text h3>{title}</Text>
                     {content}
                     {accomplishments && (

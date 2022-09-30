@@ -1,4 +1,10 @@
-import { Spacer, Text } from '@nextui-org/react';
+import {
+  faGlobeAfrica,
+  faPlaneDeparture,
+  faPlus,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Row, Spacer, Text } from '@nextui-org/react';
 import { Job } from './types';
 
 export const jobs: Job[] = [
@@ -357,6 +363,7 @@ export const jobs: Job[] = [
           <b>MVC WebWork</b> framework and <b>Freemarker Template</b> engine,
           backed by <b>Spring</b>, <b>MySQL</b> and <b>Hibernate</b>.
         </Text>
+        <Spacer y={1} />
         <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
           Other duties included maintenance and support of existing
           applications, interfacing with clients regularly for presentations and
@@ -401,12 +408,32 @@ export const jobs: Job[] = [
   },
   {
     content: (
-      <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
-        <br />
-        <i className='icon-globe icon-2x' />
-        <i className='icon-plus' />
-        <i className='icon-flight icon-2x' />
-      </Text>
+      <>
+        <Spacer y={1} />
+        <Row css={{ ai: 'center', d: 'flex' }}>
+          <FontAwesomeIcon
+            height={25}
+            icon={faPlaneDeparture}
+            size='2xs'
+            width={25}
+          />
+          <Spacer x={1} />
+          <FontAwesomeIcon
+            alignmentBaseline='middle'
+            height={15}
+            icon={faPlus}
+            size='2xs'
+            width={15}
+          />
+          <Spacer x={1} />
+          <FontAwesomeIcon
+            height={25}
+            icon={faGlobeAfrica}
+            size='2xs'
+            width={25}
+          />
+        </Row>
+      </>
     ),
     institution: {
       location: 'Cape Town & Johannesburg, South Africa',

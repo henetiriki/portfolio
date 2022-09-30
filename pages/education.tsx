@@ -1,6 +1,6 @@
 import { faGraduationCap } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Container, Link, Text } from '@nextui-org/react';
+import { Container, Link, Spacer, Text } from '@nextui-org/react';
 import Head from 'next/head';
 import {
   Content,
@@ -26,7 +26,7 @@ const Education: NextPage = (): JSX.Element => (
       <Content>
         <Container>
           <TimelineIndicator>
-            <FontAwesomeIcon height={25} icon={faGraduationCap} width={25} />
+            <FontAwesomeIcon height={20} icon={faGraduationCap} width={20} />
           </TimelineIndicator>
           <Timeline>
             {schools.map(
@@ -53,9 +53,11 @@ const Education: NextPage = (): JSX.Element => (
                         isExternal
                         rel='noopener noreferrer'
                         target='_blank'>
-                        {name}, {location}
+                        {name}
                       </Link>
                     </Text>
+                    <Text size='$xs'>{location}</Text>
+                    <Spacer y={1} />
                     <Text h3>{qualification}</Text>
                     {content}
                   </TimelineContent>
