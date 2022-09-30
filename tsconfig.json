@@ -12,11 +12,12 @@
     "module": "esnext",
     "moduleResolution": "node",
     "paths": {
-      "@components/*": ["components/*"],
-      "@containers/*": ["containers/*"],
-      "@pages/*": ["pages/*"],
+      "@components": ["components"],
+      "@containers": ["containers"],
       "@fixtures": ["fixtures"],
       "@hooks": ["hooks"],
+      "@pages/*": ["pages/*"],
+      "@styles": ["styles"],
       "@utils": ["utils"]
     },
     "resolveJsonModule": true,

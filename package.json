@@ -5,38 +5,54 @@
   "scripts": {
     "build": "next build",
     "clean": "rm -rf .next",
-    "dev": "NODE_OPTIONS='--inspect' next dev",
-    "lint": "next lint",
+    "dev": "NODE_OPTIONS='--inspect --trace-warnings' next dev",
+    "lint:check": "next lint",
+    "lint:write": "next lint --fix",
     "prepare": "husky install",
     "prettier:check": "prettier . --check --ignore-path .prettierignore",
     "prettier:write": "prettier . --write --ignore-path .prettierignore",
     "start": "next start"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.2.0",
+    "@fortawesome/free-solid-svg-icons": "^6.2.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
+    "@nextui-org/react": "^1.0.0-beta.10",
     "date-fns": "^2.29.3",
-    "next": "^12.3.0",
+    "next": "^12.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sharp": "^0.31.0"
   },
   "devDependencies": {
-    "@types/node": "^18.7.18",
-    "@types/react": "^18.0.20",
+    "@types/node": "^18.7.19",
+    "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
-    "@typescript-eslint/eslint-plugin": "^5.37.0",
-    "@typescript-eslint/parser": "^5.37.0",
-    "eslint": "^8.23.1",
-    "eslint-config-next": "^12.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.38.0",
+    "@typescript-eslint/parser": "^5.38.0",
+    "eslint": "^8.24.0",
+    "eslint-config-next": "^12.3.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-security": "^1.5.0",
+    "eslint-plugin-sort-destructure-keys": "^1.4.0",
+    "eslint-plugin-sort-keys": "^2.3.5",
+    "eslint-plugin-typescript-sort-keys": "^2.1.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "react-type-animation": "^2.1.1",
-    "sass": "^1.54.9",
+    "sass": "^1.55.0",
     "typescript": "^4.8.3"
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix"
+    ],
+    "**/*.{ts,tsx,js,jsx,json,html,scss,md}": [
+      "prettier --ignore-path .prettierignore --write"
+    ]
   }
 }
