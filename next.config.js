@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    domains: ['s3.ap-southeast-2.amazonaws.com'],
     minimumCacheTTL: 31536000,
     remotePatterns: [
       {
@@ -8,6 +9,11 @@ const nextConfig = {
         pathname: '/api/ig/*',
         ...(process.env.PORT && { port: process.env.PORT }),
         protocol: process.env.PROTOCOL,
+      },
+      {
+        hostname: 's3.ap-southeast-2.amazonaws.com',
+        pathname: '/ouq77.kiwi/static/insta/*',
+        protocol: 'https',
       },
     ],
   },

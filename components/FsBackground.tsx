@@ -35,7 +35,7 @@ export const FsBackground: FC = () => {
           placeholder='blur'
           priority={true}
           quality={100}
-          src={`/api/ig/${igImgId}.jpg`}
+          src={`https://s3.ap-southeast-2.amazonaws.com/ouq77.kiwi/static/insta/large/${igImgId}.jpg`}
         />
       ))}
     </Container>
