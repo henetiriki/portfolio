@@ -22,6 +22,7 @@ const imageRequest = async (req: NextApiRequest, res: NextApiResponse) => {
     const imageBuffer = await imageBlob.arrayBuffer();
 
     res.setHeader('Content-Type', imageBlob.type);
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
 
     res.status(status).send(Buffer.from(imageBuffer));
   } else {
