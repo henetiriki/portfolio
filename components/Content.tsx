@@ -12,7 +12,7 @@ export const Content: FC<PropsWithChildren> = ({ children }): JSX.Element => (
       <WaveImg alt='' src='/images/waves/content-top-haikei.svg' />
     </WaveWrapper>
     <ContentWrapper>{children}</ContentWrapper>
-    <WaveWrapper css={{ marginBottom: '8rem' }}>
+    <WaveWrapper css={{ mb: '8rem' }}>
       <WaveImg alt='' src='/images/waves/content-bottom-haikei.svg' />
     </WaveWrapper>
   </>

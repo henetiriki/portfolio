@@ -3,27 +3,27 @@ import { CSS } from '@nextui-org/react';
 const navActive: CSS = {
   '&.active': {
     '&:before': {
-      width: '30px',
+      w: '30px',
     },
   },
 };
 
 const navUnderlineBefore = {
-  backgroundColor: '$white',
+  bgColor: '$white',
   bottom: '-10px',
   content: '',
-  height: '2px',
+  h: '2px',
   left: 0,
   position: 'absolute',
   transition: 'all 0.2s',
-  width: 0,
+  w: 0,
 };
 
 const navUnderline: CSS = {
   '&:before': navUnderlineBefore,
   '&:hover': {
     '&:before': {
-      width: '30px',
+      w: '30px',
     },
     color: '$white',
   },
@@ -37,7 +37,7 @@ export const navLinkSm: CSS = {
     ...navUnderlineBefore,
     bottom: '8px',
   },
-  marginTop: '$md',
+  my: '$md',
 };
 
 export const navLinkMd: CSS = {
@@ -47,6 +47,6 @@ export const navLinkMd: CSS = {
 
 export const navTypography: CSS = {
   fontFamily: '$sansAlt',
-  fontSize: '$sm',
-  textTransform: 'uppercase',
+  fs: '$sm',
+  tt: 'uppercase',
 };

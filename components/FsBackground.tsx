@@ -21,7 +21,7 @@ export const FsBackground: FC = () => {
       css={{
         minHeight: '100vh',
         minWidth: '100vw',
-        overflow: 'hidden',
+        ov: 'hidden',
         position: 'fixed',
         zIndex: -1,
       }}>

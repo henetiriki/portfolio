@@ -6,8 +6,7 @@ export const Copyright: FC = (): JSX.Element => {
   const [date] = useState<Date>(new Date());
 
   return (
-    <Container
-      css={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+    <Container css={{ d: 'flex', fd: 'row', jc: 'center' }}>
       <Text>
         © 2014 - {format(date, 'yyyy')}{' '}
         <Link

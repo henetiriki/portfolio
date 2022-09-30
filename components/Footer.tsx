@@ -27,9 +27,7 @@ export const Footer: FC = (): JSX.Element => {
         <WaveImg alt='' src='/images/waves/footer-bottom-haikei.svg' />
       </WaveWrapper>
       <Content>
-        <Container
-          as='div'
-          css={{ paddingTop: 'calc(3 * $md)', textAlign: 'center' }}>
+        <Container as='div' css={{ p: 'calc(3 * $md)', ta: 'center' }}>
           <Container>
             <Logo />
           </Container>
@@ -46,7 +44,7 @@ export const Footer: FC = (): JSX.Element => {
               </NextLink>
             ))}
           </Container>
-          <Container css={{ padding: '$lg 0' }}>
+          <Container css={{ p: '$lg 0' }}>
             <Copyright />
           </Container>
         </Container>

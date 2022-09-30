@@ -17,12 +17,12 @@ const About: NextPage = (): JSX.Element => (
       <Content>
         <Container
           css={{
-            display: 'flex',
-            flexDirection: 'column',
-            flexWrap: 'nowrap',
+            d: 'flex',
+            fd: 'column',
+            fw: 'nowrap',
             /* eslint-disable sort-keys/sort-keys-fix */
             '@xs': {
-              flexDirection: 'row',
+              fd: 'row',
             },
             /* eslint-enable sort-keys/sort-keys-fix */
           }}>
@@ -32,10 +32,10 @@ const About: NextPage = (): JSX.Element => (
               autoResize
               css={{
                 borderColor: '$whisper',
-                borderRadius: '$xs',
                 borderStyle: 'solid',
-                borderWidth: '$xl',
-                height: 'auto',
+                br: '$xs',
+                bw: '$xl',
+                h: 'auto',
               }}
               height='350px'
               showSkeleton
@@ -43,7 +43,7 @@ const About: NextPage = (): JSX.Element => (
               width='350px'
             />
           </Container>
-          <Container as='div' css={{ justifyContent: 'left' }}>
+          <Container as='div' css={{ jc: 'left' }}>
             <Text h2>Louw Swart</Text>
             <Text h4>Front-end Developer, Wellington</Text>
             <Text>

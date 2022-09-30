@@ -4,22 +4,20 @@ import { FC, PropsWithChildren } from 'react';
 export const Header: FC<PropsWithChildren> = ({ children }): JSX.Element => (
   <Container
     css={{
-      alignItems: 'center',
-      display: 'flex',
-      height: '50vh',
-      justifyContent: 'center',
+      dflex: 'center',
+      h: '50vh',
     }}>
     <Text
       css={{
         span: {
-          display: 'block',
-          fontSize: '1.25rem',
+          d: 'block',
           fontWeight: '$normal',
+          fs: '1.25rem',
           letterSpacing: '$normal',
-          textTransform: 'none',
+          tt: 'none',
         },
-        textAlign: 'center',
-        textTransform: 'uppercase',
+        ta: 'center',
+        tt: 'uppercase',
       }}
       h1>
       {children}

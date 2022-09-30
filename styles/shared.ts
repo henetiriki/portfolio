@@ -1,71 +1,69 @@
 import { CSS } from '@nextui-org/react';
 
 export const waveWrapper: CSS = {
-  lineHeight: 0,
-  overflow: 'hidden',
-  width: '100%',
+  lh: 0,
+  ov: 'hidden',
+  w: '100%',
 };
 
 export const waveImg: CSS = {
-  width: '100%',
+  w: '100%',
 };
 
 export const timelineIndicator: CSS = {
-  alignItems: 'center',
-  backgroundColor: '$shamrock',
-  borderRadius: '100%',
-  display: 'flex',
-  height: '2.5rem',
-  justifyContent: 'center',
-  width: '2.5rem',
+  bgColor: '$shamrock',
+  br: '100%',
+  dflex: 'center',
+  h: '2.5rem',
+  w: '2.5rem',
 };
 
 export const timeline: CSS = {
   borderLeft: '1px solid $silver',
-  marginBottom: '30px',
-  marginLeft: '20px',
+  mb: '30px',
+  ml: '20px',
 };
 
 export const timelineBox: CSS = {
   '&:after': {
-    backgroundColor: '$shamrock',
-    borderRadius: '100%',
+    bgColor: '$shamrock',
+    br: '100%',
     content: '',
-    height: '20px',
+    h: '20px',
     left: '-11px',
     opacity: 0.4,
     position: 'absolute',
     top: '40px',
-    width: '20px',
+    w: '20px',
   },
   '&:before': {
-    backgroundColor: '$shamrock',
-    borderRadius: '100%',
+    bgColor: '$shamrock',
+    br: '100%',
     content: '',
-    height: '10px',
+    h: '10px',
     left: '-6px',
     position: 'absolute',
     top: '45px',
-    width: '10px',
+    w: '10px',
   },
-  paddingLeft: '40px',
-  paddingTop: '20px',
+  pl: '40px',
   position: 'relative',
+  pt: '20px',
 };
 
 export const timelineContent: CSS = {
   '&:before': {
     borderColor: 'transparent rgba(255, 255, 255, 0.1) transparent transparent',
     borderStyle: 'solid',
-    borderWidth: '15px 20px 15px 0',
+    bw: '15px 20px 15px 0',
     content: '',
-    height: 0,
+    h: 0,
     position: 'absolute',
     right: '100%',
     top: '15px',
-    width: 0,
+    w: 0,
   },
-  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  padding: '20px',
+  bgColor: 'rgba(255, 255, 255, 0.1)',
+  p: '20px',
   position: 'relative',
 };

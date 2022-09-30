@@ -41,7 +41,7 @@ export const Navigation: FC = (): JSX.Element => {
 
   return (
     <Navbar
-      containerCss={{ backgroundColor: navContainerBgColor, minWidth: '100vw' }}
+      containerCss={{ bgColor: navContainerBgColor, minWidth: '100vw' }}
       disableBlur
       disableShadow
       onScrollPositionChange={setScrollPosition}
@@ -53,12 +53,12 @@ export const Navigation: FC = (): JSX.Element => {
       />
       <Container
         css={{
-          alignItems: 'center',
-          display: 'flex',
-          justifyContent: 'flex-end',
+          ai: 'center',
+          d: 'flex',
+          jc: 'flex-end',
           /* eslint-disable sort-keys/sort-keys-fix */
           '@xs': {
-            justifyContent: 'space-between',
+            jc: 'space-between',
           },
           /* eslint-enable sort-keys/sort-keys-fix */
         }}>
