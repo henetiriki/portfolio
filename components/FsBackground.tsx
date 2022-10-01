@@ -1,9 +1,12 @@
 import { Container } from '@nextui-org/react';
+import getConfig from 'next/config';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { FC, useEffect } from 'react';
 import { useIgImgId, useWindowSize } from '@hooks';
 import { blurDataURL } from '@utils';
+
+const { publicRuntimeConfig } = getConfig();
 
 export const FsBackground: FC = () => {
   const { events } = useRouter();
@@ -35,7 +38,7 @@ export const FsBackground: FC = () => {
           placeholder='blur'
           priority={true}
           quality={100}
-          src={`/api/ig/${igImgId}.jpg`}
+          src={`${publicRuntimeConfig.imgHost}/${igImgId}.jpg`}
         />
       ))}
     </Container>
