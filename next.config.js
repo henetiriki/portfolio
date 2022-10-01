@@ -4,9 +4,9 @@ const nextConfig = {
     minimumCacheTTL: 31536000,
     remotePatterns: [
       {
-        hostname: process.env.IMAGE_HOSTNAME,
-        pathname: `/${process.env.IMAGE_PATHNAME}/*`,
-        protocol: process.env.IMAGE_PROTOCOL,
+        hostname: process.env.IMAGE_HOST_NAME,
+        pathname: `/${process.env.IMAGE_HOST_PATH}/*`,
+        protocol: process.env.IMAGE_HOST_PROTOCOL,
       },
     ],
   },
