@@ -17,6 +17,7 @@ export const Footer: FC = (): JSX.Element => {
           alt=''
           layout='fill'
           objectFit='cover'
+          priority
           src='/images/waves/footer-top-haikei.svg'
         />
       </Row>
@@ -25,6 +26,7 @@ export const Footer: FC = (): JSX.Element => {
           alt=''
           layout='fill'
           objectFit='cover'
+          priority
           src='/images/waves/footer-bottom-haikei.svg'
         />
       </Row>
