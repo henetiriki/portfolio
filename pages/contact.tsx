@@ -1,4 +1,4 @@
-import { Container } from '@nextui-org/react';
+import { Container, Text } from '@nextui-org/react';
 import Head from 'next/head';
 import { Content, Header } from '@components';
 import { fullTitle } from '@utils';
@@ -15,13 +15,9 @@ const Contact: NextPage = (): JSX.Element => (
       </Header>
       <Content>
         <Container>
-          <section>
-            <article>
-              <div>
-                <h1>Contact content</h1>
-              </div>
-            </article>
-          </section>
+          <Text css={{ fontFamily: '$sansHeading' }} h1>
+            Contact content
+          </Text>
         </Container>
       </Content>
     </>

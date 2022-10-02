@@ -1,6 +1,6 @@
 import { faGraduationCap } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Container, Link, Spacer, Text } from '@nextui-org/react';
+import { Container, Link, Text } from '@nextui-org/react';
 import Head from 'next/head';
 import {
   Content,
@@ -57,8 +57,9 @@ const Education: NextPage = (): JSX.Element => (
                       </Link>
                     </Text>
                     <Text size='$xs'>{location}</Text>
-                    <Spacer y={1} />
-                    <Text h3>{qualification}</Text>
+                    <Text css={{ fontFamily: '$sansHeading' }} h3>
+                      {qualification}
+                    </Text>
                     {content}
                   </TimelineContent>
                 </TimelineBox>

@@ -10,6 +10,7 @@ export const Content: FC<PropsWithChildren> = ({ children }): JSX.Element => (
         alt=''
         layout='fill'
         objectFit='cover'
+        priority
         src='/images/waves/content-top-haikei.svg'
       />
     </Row>
@@ -19,6 +20,7 @@ export const Content: FC<PropsWithChildren> = ({ children }): JSX.Element => (
         alt=''
         layout='fill'
         objectFit='cover'
+        priority
         src='/images/waves/content-bottom-haikei.svg'
       />
     </Row>

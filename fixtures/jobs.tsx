@@ -11,28 +11,25 @@ export const jobs: Job[] = [
   {
     content: (
       <>
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I work as part of a <b>distributed team</b> across multiple timezones
           within the <b>Customer Tribe</b> at Pet Circle. Our main focus is the
           conversion of occasional shoppers into returning customers via an{' '}
           <b>Auto Delivery</b> service.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           The <b>E-commerce platform</b> uses a variety of technologies,
           including <b>Preact</b>. CI/CD consists of a combination of{' '}
           <b>Jenkins</b> and <b>GitHub Actions</b>. The stack runs on{' '}
           <b>Google Cloud Platform</b>.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           <b>SEO</b> and <b>conversion metrics</b> are very important. Google{' '}
           <b>Optimize</b> and <b>Tag Manager</b> are used to great effect to
           perform <b>A/B experiments</b> and pick the best outcomes for the
           business.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           One of my own objectives has been <b>mentoring</b> team members on
           good <b>SDLC</b> practices and continuous improvement - breaking
           stories down into small, releasable chunks, writing testable code and
@@ -53,7 +50,7 @@ export const jobs: Job[] = [
   },
   {
     accomplishments: (
-      <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+      <Text>
         My team delivered a front-end React application hosted as an{' '}
         <b>Amazon S3 static site</b>. This single page application formed part
         of a larger project required to meet the obligations of new lending and
@@ -64,19 +61,18 @@ export const jobs: Job[] = [
     ),
     content: (
       <>
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I worked as a Senior Front-end Developer in an <b>agile team</b> at
           BNZ Digital, where I started on contract and then switched to
           permanent employment.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+
+        <Text>
           The technology stack included, amongst others, <b>React</b>,{' '}
           <b>Cypress</b>, <b>OpenShift</b> and <b>AWS</b>. The CI/CD tool was{' '}
           <b>Jenkins</b>.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           My team was involved in the development and maintenance of a bespoke
           React/Redux/RxJS form rendering library used across multiple projects
           at BNZ. This library, along with a supporting API, enabled Marketing
@@ -100,14 +96,13 @@ export const jobs: Job[] = [
   {
     content: (
       <>
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I worked at the Department of Internal Affairs, on behalf of
           Accenture, where the tech stack included <b>Angular (7)</b>,{' '}
           <b>Java Spring Boot</b>, <b>Node.js</b> and <b>MongoDB</b> running in{' '}
           <b>Azure</b>.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           As part of a <b>digital delivery</b> team, I was involved in several
           core services provided to the NZ public. These included online{' '}
           <b>marriage licence</b> applications, <b>certificate ordering</b>,
@@ -131,13 +126,12 @@ export const jobs: Job[] = [
   {
     content: (
       <>
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I joined Stuff (Fairfax Media) as a <b>Full-Stack Engineer</b> in
           September 2017 and worked in a team focused on building a new curation
           tool to satisfy several specific editorial tasks.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           The application was written in <b>Typescript</b> using <b>Angular</b>{' '}
           and the <b>Angular Material Framework</b> (including <b>Jasmine</b>{' '}
           Unit tests and <b>Protractor</b> E2E tests), served via a{' '}
@@ -146,8 +140,7 @@ export const jobs: Job[] = [
           infrastructure. <b>CI/CD</b> and deployment happened as part of a{' '}
           <b>Concourse</b> pipeline.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I also worked on an integration with <b>IBM Watson NLU</b> to enable
           content categorisation via keywords/entities, which was then ingested
           into an <b>Elasticsearch</b> database and used in a “Related Content”
@@ -169,20 +162,18 @@ export const jobs: Job[] = [
   {
     content: (
       <>
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I completed a contract assignment with Fairfax Media as a{' '}
           <b>JavaScript Developer</b> in one of the Wellington-based development
           teams.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I was closely involved in the implementation of a new <b>React</b>
           -based front-end for the <i>Stuff.co.nz</i> news site article pages.
           The application, including the back-end interfaces like <b>GraphQL</b>
           , was served via <b>Express</b> in a <b>Node.js</b> runtime.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           Other projects included the implementation of an implicit flow
           client-side <b>OpenID Connect</b> login, as well as integrating the{' '}
           <b>Nativform</b> (FFX Native platform) advertising SDK.
@@ -203,7 +194,7 @@ export const jobs: Job[] = [
   {
     content: (
       <>
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I worked as a <b>UI Developer</b> at Westpac NZ, where I was involved
           in various projects, including{' '}
           <b>
@@ -219,16 +210,14 @@ export const jobs: Job[] = [
           </b>
           .
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           The server-side development environment was <b>Java</b>, while the
           client-side was built using a variety of{' '}
           <b>JavaScript technologies</b> and <b>frameworks</b>, most notably{' '}
           <b>Backbone</b>, Marionette, <b>Underscore</b>, <b>RequireJS</b>,{' '}
           <b>AngularJS</b>, SCSS, and, during development, <b>Node.js</b>.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           Build and Testing tools included <b>Grunt</b>, Maven, Jenkins, JUnit,
           Cucumber, <b>Jasmine</b> and <b>Karma</b>.
         </Text>
@@ -247,7 +236,7 @@ export const jobs: Job[] = [
   },
   {
     accomplishments: (
-      <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+      <Text>
         I worked alongside members of the hardware team on the implementation of
         a <b>RESTful JSON</b> communication protocol over HTTP for the 2nd
         Generation Onboard Units.
@@ -255,7 +244,7 @@ export const jobs: Job[] = [
     ),
     content: (
       <>
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I was employed as a Java Developer at EROAD, New Zealand’s leading
           transport technology and services company. I worked in an{' '}
           <b>Agile environment</b> developing and unit testing enhancements,
@@ -263,15 +252,13 @@ export const jobs: Job[] = [
           <b>back-end integrations</b> for EROAD’s{' '}
           <b>cloud-based SaaS application</b>.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           The development environment was <b>Java</b>, and frameworks and
           technologies included <b>Spring MVC</b>, <b>JSP</b>,<b>JQuery</b>,{' '}
           <b>RESTful</b> web services over <b>HTTP</b>, <b>JAX-WS/JAXB</b> web
           services over <b>SOAP</b>,<b>Hibernate</b> and <b>PostgreSQL</b>.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I mainly functioned within the Tax and Localisation team, which
           included the <b>GIS</b> and mapping layer.
         </Text>
@@ -291,7 +278,7 @@ export const jobs: Job[] = [
   {
     accomplishments: (
       <>
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I was involved in a major overhaul of the UI for the PPM System,
           which, amongst other tasks, included the implementation of a{' '}
           <b>WYSIWYG editor</b> inside GWT. I worked with my team in New Zealand
@@ -302,7 +289,7 @@ export const jobs: Job[] = [
     ),
     content: (
       <>
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I worked as a Software Developer at the New Zealand campus of Rockwell
           Automation. I functioned within an <b>agile team</b> developing{' '}
           <b>user interface elements</b> as well as <b>web services</b> and{' '}
@@ -312,8 +299,7 @@ export const jobs: Job[] = [
           <b>Tomcat</b> &amp; <b>JBoss</b>), on the{' '}
           <b>Java EE technology stack</b>.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           The development environment was <b>Java</b>, utilising third-party
           technologies such as <b>GWT</b>, to deliver a rich user experience.
         </Text>
@@ -333,14 +319,13 @@ export const jobs: Job[] = [
   {
     accomplishments: (
       <>
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I integrated an open-source <b>mobile framework</b> (WURFL) into the
           Quirk software stack which enabled the development of mobile client
           solutions. I converted <b>Google’s server-side JSP tracking</b> code
           to fit into the Quirk stack and WebWork framework.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I developed a <b>live tracking solution</b> of a colleague’s mountain
           bike race via <b>GPS</b>, Vodacom API and <b>Google Maps API</b>.
         </Text>
@@ -348,7 +333,7 @@ export const jobs: Job[] = [
     ),
     content: (
       <>
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           I worked as a Software Engineer at the Cape Town office of Quirk
           developing <b>Java</b> (<b>Java EE</b>) <b>web-based applications</b>{' '}
           to client specifications within specified deadlines. Projects included{' '}
@@ -357,14 +342,12 @@ export const jobs: Job[] = [
           integrations with <b>Twitter</b> and other <b>3rd party APIs</b>,{' '}
           <b>RSS Feeds</b> (both generating and parsing).
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           The development environment was <b>Java</b>, utilising the{' '}
           <b>MVC WebWork</b> framework and <b>Freemarker Template</b> engine,
           backed by <b>Spring</b>, <b>MySQL</b> and <b>Hibernate</b>.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text>
           Other duties included maintenance and support of existing
           applications, interfacing with clients regularly for presentations and
           training, the compilation of client-facing documentation where
@@ -389,7 +372,7 @@ export const jobs: Job[] = [
   },
   {
     content: (
-      <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+      <Text>
         I worked as part of a team that developed <b>Java ME</b> applications
         for <b>embedded systems</b>. I was also involved with the server-side
         software and mobile sites supporting the download and installation
@@ -409,7 +392,6 @@ export const jobs: Job[] = [
   {
     content: (
       <>
-        <Spacer y={1} />
         <Row css={{ ai: 'center', d: 'flex' }}>
           <FontAwesomeIcon
             height={25}

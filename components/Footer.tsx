@@ -17,6 +17,7 @@ export const Footer: FC = (): JSX.Element => {
           alt=''
           layout='fill'
           objectFit='cover'
+          priority
           src='/images/waves/footer-top-haikei.svg'
         />
       </Row>
@@ -25,11 +26,18 @@ export const Footer: FC = (): JSX.Element => {
           alt=''
           layout='fill'
           objectFit='cover'
+          priority
           src='/images/waves/footer-bottom-haikei.svg'
         />
       </Row>
       <Row css={footerBackground}>
-        <Container as='div' css={{ p: 'calc(3 * $md)', ta: 'center' }}>
+        <Container
+          as='div'
+          css={{
+            fontFamily: '$sansHeading',
+            p: 'calc(3 * $md)',
+            ta: 'center',
+          }}>
           <Container>
             <Logo />
           </Container>

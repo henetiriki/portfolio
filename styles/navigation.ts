@@ -46,7 +46,6 @@ export const navLinkMd: CSS = {
 };
 
 export const navTypography: CSS = {
-  fontFamily: '$sansAlt',
   fs: '$sm',
   tt: 'uppercase',
 };
