@@ -11,28 +11,25 @@ export const jobs: Job[] = [
   {
     content: (
       <>
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text css={{ fontFamily: '$sansAlt' }}>
           I work as part of a <b>distributed team</b> across multiple timezones
           within the <b>Customer Tribe</b> at Pet Circle. Our main focus is the
           conversion of occasional shoppers into returning customers via an{' '}
           <b>Auto Delivery</b> service.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text css={{ fontFamily: '$sansAlt' }}>
           The <b>E-commerce platform</b> uses a variety of technologies,
           including <b>Preact</b>. CI/CD consists of a combination of{' '}
           <b>Jenkins</b> and <b>GitHub Actions</b>. The stack runs on{' '}
           <b>Google Cloud Platform</b>.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text css={{ fontFamily: '$sansAlt' }}>
           <b>SEO</b> and <b>conversion metrics</b> are very important. Google{' '}
           <b>Optimize</b> and <b>Tag Manager</b> are used to great effect to
           perform <b>A/B experiments</b> and pick the best outcomes for the
           business.
         </Text>
-        <Spacer y={1} />
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text css={{ fontFamily: '$sansAlt' }}>
           One of my own objectives has been <b>mentoring</b> team members on
           good <b>SDLC</b> practices and continuous improvement - breaking
           stories down into small, releasable chunks, writing testable code and
