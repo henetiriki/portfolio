@@ -1,9 +1,7 @@
 import { FC, PropsWithChildren } from 'react';
 import { Footer } from '@components';
 
-export const DefaultLayout: FC<PropsWithChildren> = ({
-  children,
-}): JSX.Element => (
+export const Layout: FC<PropsWithChildren> = ({ children }): JSX.Element => (
   <div
     style={{
       display: 'flex',

@@ -1,11 +1,12 @@
 import { NextUIProvider } from '@nextui-org/react';
 import { NextPage } from 'next';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { Navigation } from '@components';
-import { AppPropsWithLayout, DefaultLayout } from '@containers';
+import { Layout } from '@containers';
 import { globalStyles, theme } from '@styles';
 import { fullTitle } from '@utils';
 
@@ -16,13 +17,11 @@ const FsBackground = dynamic(
   }
 );
 
-const Portfolio: NextPage<AppPropsWithLayout> = ({
+const Portfolio: NextPage<AppProps> = ({
   Component,
   pageProps,
 }): JSX.Element => {
   globalStyles();
-  const getLayout =
-    Component.getLayout ?? (page => <DefaultLayout>{page}</DefaultLayout>);
 
   return (
     <>
@@ -45,7 +44,9 @@ const Portfolio: NextPage<AppPropsWithLayout> = ({
           <NextUIProvider theme={theme}>
             <FsBackground />
             <Navigation />
-            {getLayout(<Component {...pageProps} />)}
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </NextUIProvider>
         </NextThemesProvider>
       </ErrorBoundary>

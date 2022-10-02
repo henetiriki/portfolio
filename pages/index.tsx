@@ -1,14 +1,13 @@
 import { Container, Text } from '@nextui-org/react';
+import { NextPage } from 'next';
 import dynamic from 'next/dynamic';
-import { ReactElement } from 'react';
-import { HomeLayout, NextPageWithLayout } from '@containers';
 
 const TypeAnimation = dynamic(
   () => import('react-type-animation').then(mod => mod.TypeAnimation),
   { ssr: false }
 );
 
-const Home: NextPageWithLayout = (): JSX.Element => (
+const Home: NextPage = (): JSX.Element => (
   <Container
     as='section'
     css={{
@@ -41,10 +40,6 @@ const Home: NextPageWithLayout = (): JSX.Element => (
       <Text>ex-flight attendant turned programmer</Text>
     </Container>
   </Container>
-);
-
-Home.getLayout = (page: ReactElement): JSX.Element => (
-  <HomeLayout>{page}</HomeLayout>
 );
 
 export default Home;

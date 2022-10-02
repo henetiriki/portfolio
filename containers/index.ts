@@ -1,3 +1,1 @@
-export * from './DefaultLayout';
-export * from './HomeLayout';
-export * from './types';
+export * from './Layout';
