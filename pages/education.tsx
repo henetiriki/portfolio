@@ -58,7 +58,9 @@ const Education: NextPage = (): JSX.Element => (
                     </Text>
                     <Text size='$xs'>{location}</Text>
                     <Spacer y={1} />
-                    <Text h3>{qualification}</Text>
+                    <Text css={{ fontFamily: '$sansHeading' }} h3>
+                      {qualification}
+                    </Text>
                     {content}
                   </TimelineContent>
                 </TimelineBox>

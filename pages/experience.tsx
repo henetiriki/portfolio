@@ -59,12 +59,16 @@ const Experience: NextPage = (): JSX.Element => (
                     </Text>
                     <Text size='$xs'>{location}</Text>
                     <Spacer y={1} />
-                    <Text h3>{title}</Text>
+                    <Text css={{ fontFamily: '$sansHeading' }} h3>
+                      {title}
+                    </Text>
                     {content}
                     {accomplishments && (
                       <>
                         <Spacer y={2} />
-                        <Text h5>Accomplishments</Text>
+                        <Text css={{ fontFamily: '$sansHeading' }} h5>
+                          Accomplishments
+                        </Text>
                         {accomplishments}
                       </>
                     )}

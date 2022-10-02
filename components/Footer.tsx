@@ -29,7 +29,13 @@ export const Footer: FC = (): JSX.Element => {
         />
       </Row>
       <Row css={footerBackground}>
-        <Container as='div' css={{ p: 'calc(3 * $md)', ta: 'center' }}>
+        <Container
+          as='div'
+          css={{
+            fontFamily: '$sansHeading',
+            p: 'calc(3 * $md)',
+            ta: 'center',
+          }}>
           <Container>
             <Logo />
           </Container>

@@ -5,7 +5,7 @@ export const schools: School[] = [
   {
     content: (
       <>
-        <Text css={{ fontFamily: '$sansAlt', letterSpacing: 'normal' }}>
+        <Text css={{ letterSpacing: 'normal' }}>
           Java SE/EE;
           <br />
           Linux Red Hat;
