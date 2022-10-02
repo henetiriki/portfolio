@@ -76,7 +76,12 @@ class Document extends _Document {
           />
           {CssBaseline.flush()}
         </Head>
-        <body>
+        <body
+          style={{
+            backgroundColor: 'rgba(12, 14, 39, 0.80)',
+            border: 0,
+            height: '100%',
+          }}>
           <Main />
           <NextScript />
         </body>
