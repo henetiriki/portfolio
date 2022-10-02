@@ -9,7 +9,6 @@ export const Header: FC<PropsWithChildren> = ({ children }): JSX.Element => (
     }}>
     <Text
       css={{
-        fontFamily: '$sansHeading',
         span: {
           d: 'block',
           fontWeight: '$normal',

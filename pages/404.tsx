@@ -15,9 +15,7 @@ const FourOhFour: NextPage = (): JSX.Element => (
       </Header>
       <Content>
         <Container>
-          <Text css={{ fontFamily: '$sansHeading' }} h1>
-            404 Content
-          </Text>
+          <Text h1>404 Content</Text>
         </Container>
       </Content>
     </>

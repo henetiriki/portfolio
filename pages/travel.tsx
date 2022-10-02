@@ -19,9 +19,7 @@ const Travel: NextPage = (): JSX.Element => (
       </Header>
       <Content>
         <Container>
-          <Text css={{ fontFamily: '$sansHeading' }} h1>
-            Travel content
-          </Text>
+          <Text h1>Travel content</Text>
         </Container>
       </Content>
     </>
