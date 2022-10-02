@@ -6,6 +6,7 @@ import _Document, {
   Main,
   NextScript,
 } from 'next/document';
+import { Children } from 'react';
 
 class Document extends _Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -13,7 +14,7 @@ class Document extends _Document {
 
     return {
       ...initialProps,
-      styles: <>{initialProps.styles}</>,
+      styles: Children.toArray([initialProps.styles]),
     };
   }
 
