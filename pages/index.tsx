@@ -16,7 +16,7 @@ const Home: NextPageWithLayout = (): JSX.Element => (
       h: '85vh',
       zIndex: 1,
     }}>
-    <Container css={{ fontFamily: '$sansHeading', ta: 'center' }}>
+    <Container css={{ ta: 'center' }}>
       <Text h1>Louw Swart</Text>
       <Text css={{ span: { color: '$shamrock' } }} h4>
         I’m a{' '}

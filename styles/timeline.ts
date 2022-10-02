@@ -1,10 +1,8 @@
 import { CSS } from '@nextui-org/react';
 
-export const waveWrapper: CSS = {
-  h: '10rem',
-  lh: 0,
-  ov: 'hidden',
-  w: '100%',
+export const timelineHeading: CSS = {
+  ai: 'baseline',
+  d: 'flex',
 };
 
 export const timelineIndicator: CSS = {
@@ -12,6 +10,7 @@ export const timelineIndicator: CSS = {
   br: '100%',
   dflex: 'center',
   h: '2.5rem',
+  mr: '1.25rem',
   w: '2.5rem',
 };
 

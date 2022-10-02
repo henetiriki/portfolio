@@ -28,12 +28,8 @@ const About: NextPage = (): JSX.Element => (
             /* eslint-enable sort-keys/sort-keys-fix */
           }}>
           <Container as='div' css={{ jc: 'left' }}>
-            <Text css={{ fontFamily: '$sansHeading' }} h2>
-              Louw Swart
-            </Text>
-            <Text css={{ fontFamily: '$sansHeading' }} h4>
-              Front-end Developer, Wellington
-            </Text>
+            <Text h2>Louw Swart</Text>
+            <Text h4>Front-end Developer, Wellington</Text>
             <Text>
               I have been in <b>Software Development</b> since 2008, with most
               of that time spent in <b>Agile environments</b>, designing,
@@ -53,9 +49,7 @@ const About: NextPage = (): JSX.Element => (
               <b>Front-end</b> or <b>back-end</b>, I’m equally comfortable
               performing either or both.
             </Text>
-            <Text css={{ fontFamily: '$sansHeading' }} h4>
-              Open Source Contributions
-            </Text>
+            <Text h4>Open Source Contributions</Text>
             <ul>
               {openSourceContrs.map(({ href, text }, idx) => (
                 <li key={idx}>
@@ -73,9 +67,7 @@ const About: NextPage = (): JSX.Element => (
                 </li>
               ))}
             </ul>
-            <Text css={{ fontFamily: '$sansHeading' }} h4>
-              Hobbies and Interests
-            </Text>
+            <Text h4>Hobbies and Interests</Text>
             <Text css={{ letterSpacing: 'normal' }}>
               Photography, Android, travel and plane spotting - not necessarily
               in that order.

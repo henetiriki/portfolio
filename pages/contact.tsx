@@ -15,9 +15,7 @@ const Contact: NextPage = (): JSX.Element => (
       </Header>
       <Content>
         <Container>
-          <Text css={{ fontFamily: '$sansHeading' }} h1>
-            Contact content
-          </Text>
+          <Text h1>Contact content</Text>
         </Container>
       </Content>
     </>
