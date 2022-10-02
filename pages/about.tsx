@@ -1,4 +1,4 @@
-import { Container, Link, Spacer, Text } from '@nextui-org/react';
+import { Container, Link, Text } from '@nextui-org/react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { Content, Header } from '@components';
@@ -34,13 +34,12 @@ const About: NextPage = (): JSX.Element => (
             <Text css={{ fontFamily: '$sansHeading' }} h4>
               Front-end Developer, Wellington
             </Text>
-            <Text css={{ letterSpacing: 'normal' }}>
+            <Text>
               I have been in <b>Software Development</b> since 2008, with most
               of that time spent in <b>Agile environments</b>, designing,
               coding, testing and supporting applications across a{' '}
               <b>variety of technologies</b> and <b>platforms</b>.
             </Text>
-            <Spacer y={1} />
             <Text css={{ letterSpacing: 'normal' }}>
               While my background is <b>Java</b>, I have been focusing my
               attention on <b>JavaScript development</b> since June 2014,
@@ -48,14 +47,12 @@ const About: NextPage = (): JSX.Element => (
               <b>GraphQL</b>. My passion is developing for the <b>Node.js</b>{' '}
               runtime.
             </Text>
-            <Spacer y={1} />
             <Text css={{ letterSpacing: 'normal' }}>
               I am a <b>pragmatic</b> individual with a strong{' '}
               <b>sense of responsibility</b> - I like to <b>get things done</b>.{' '}
               <b>Front-end</b> or <b>back-end</b>, I’m equally comfortable
               performing either or both.
             </Text>
-            <Spacer y={1} />
             <Text css={{ fontFamily: '$sansHeading' }} h4>
               Open Source Contributions
             </Text>
@@ -76,7 +73,6 @@ const About: NextPage = (): JSX.Element => (
                 </li>
               ))}
             </ul>
-            <Spacer y={1} />
             <Text css={{ fontFamily: '$sansHeading' }} h4>
               Hobbies and Interests
             </Text>

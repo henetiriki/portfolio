@@ -6,7 +6,7 @@ import Head from 'next/head';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { Navigation } from '@components';
 import { AppPropsWithLayout, DefaultLayout } from '@containers';
-import { theme } from '@styles';
+import { globalStyles, theme } from '@styles';
 import { fullTitle } from '@utils';
 
 const FsBackground = dynamic(
@@ -20,6 +20,7 @@ const Portfolio: NextPage<AppPropsWithLayout> = ({
   Component,
   pageProps,
 }): JSX.Element => {
+  globalStyles();
   const getLayout =
     Component.getLayout ?? (page => <DefaultLayout>{page}</DefaultLayout>);
 
