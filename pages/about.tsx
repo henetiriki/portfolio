@@ -1,4 +1,4 @@
-import { Container, Link, Text } from '@nextui-org/react';
+import { Container, Link, Spacer, Text } from '@nextui-org/react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { Content, Header } from '@components';
@@ -29,6 +29,7 @@ const About: NextPage = (): JSX.Element => (
           }}>
           <Container as='div' css={{ jc: 'left' }}>
             <Text h2>Louw Swart</Text>
+            <Spacer y={1} />
             <Text h4>Front-end Developer, Wellington</Text>
             <Text>
               I have been in <b>Software Development</b> since 2008, with most
@@ -49,6 +50,7 @@ const About: NextPage = (): JSX.Element => (
               <b>Front-end</b> or <b>back-end</b>, I’m equally comfortable
               performing either or both.
             </Text>
+            <Spacer y={1.5} />
             <Text h4>Open Source Contributions</Text>
             <ul>
               {openSourceContrs.map(({ href, text }, idx) => (
@@ -67,6 +69,7 @@ const About: NextPage = (): JSX.Element => (
                 </li>
               ))}
             </ul>
+            <Spacer y={1.5} />
             <Text h4>Hobbies and Interests</Text>
             <Text css={{ letterSpacing: 'normal' }}>
               Photography, Android, travel and plane spotting - not necessarily
