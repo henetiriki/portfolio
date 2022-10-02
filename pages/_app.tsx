@@ -1,5 +1,6 @@
 import { NextUIProvider } from '@nextui-org/react';
 import { NextPage } from 'next';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import ErrorBoundary from '../components/ErrorBoundary';
@@ -34,11 +35,18 @@ const Portfolio: NextPage<AppPropsWithLayout> = ({
         />
       </Head>
       <ErrorBoundary>
-        <NextUIProvider theme={theme}>
-          <FsBackground />
-          <Navigation />
-          {getLayout(<Component {...pageProps} />)}
-        </NextUIProvider>
+        <NextThemesProvider
+          attribute='class'
+          defaultTheme='dark'
+          value={{
+            dark: theme.className,
+          }}>
+          <NextUIProvider theme={theme}>
+            <FsBackground />
+            <Navigation />
+            {getLayout(<Component {...pageProps} />)}
+          </NextUIProvider>
+        </NextThemesProvider>
       </ErrorBoundary>
     </>
   );
