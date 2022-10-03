@@ -61,6 +61,7 @@ export const ContactForm: FC = () => {
                 status={
                   touched[field] && Boolean(errors[field]) ? 'error' : 'default'
                 }
+                type={field === 'email' ? 'email' : 'text'}
                 value={values[field]}
                 {...sharedProps}
               />
