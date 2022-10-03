@@ -17,7 +17,6 @@ export const formContainer: CSS = {
 export const topRow: CSS = {
   d: 'flex',
   fd: 'column',
-  mt: '$2xl',
   /* eslint-disable sort-keys/sort-keys-fix */
   '@sm': {
     fd: 'row',

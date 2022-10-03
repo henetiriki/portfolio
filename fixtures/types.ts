@@ -35,3 +35,8 @@ export type School = {
     to: number;
   };
 };
+
+export type ErrorMessage = {
+  code: string;
+  message: JSX.Element;
+};

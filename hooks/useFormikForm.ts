@@ -2,9 +2,15 @@ import { useFormik } from 'formik';
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { FormValues } from './types';
+import { errorFromCode } from '@utils';
 
-export const useFormikForm = (): { formik: any; submitted: boolean } => {
+export const useFormikForm = (): {
+  apiErrors: JSX.Element[];
+  formik: any;
+  submitted: boolean;
+} => {
   const [submitted, setSubmitted] = useState(false);
+  const [apiErrors, setApiErrors] = useState<JSX.Element[]>([]);
 
   const formik = useFormik<FormValues>({
     initialValues: {
@@ -13,6 +19,8 @@ export const useFormikForm = (): { formik: any; submitted: boolean } => {
       name: '',
     },
     onSubmit: async (values: FormValues) => {
+      setApiErrors([]);
+
       const response = await fetch('/api/contact', {
         body: JSON.stringify(values),
         headers: { 'Content-Type': 'application/json' },
@@ -24,8 +32,13 @@ export const useFormikForm = (): { formik: any; submitted: boolean } => {
 
         return;
       }
+      const { data } = await response.json();
 
-      console.log(await response.text());
+      const errors: JSX.Element[] = [];
+
+      data.forEach((code: string) => errors.push(errorFromCode(code)));
+
+      setApiErrors(errors);
     },
     validationSchema: Yup.object().shape({
       email: Yup.string()
@@ -36,5 +49,5 @@ export const useFormikForm = (): { formik: any; submitted: boolean } => {
     }),
   });
 
-  return { formik, submitted };
+  return { apiErrors, formik, submitted };
 };

@@ -14,7 +14,7 @@ const EMAIL_REGEX = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
 /* eslint-enable no-useless-escape */
 
 const SUBJECT = `Message from {0} | ${CUSTOM_APP_DOMAIN}`;
-const SUBJECT_COPY = 'Thanks for getting in touch';
+const SUBJECT_COPY = `Thanks for your message | ${CUSTOM_APP_DOMAIN}`;
 const CONTENT: Buffer = readFileSync(
   './server/contact/templates/email-template.html'
 );

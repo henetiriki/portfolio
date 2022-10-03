@@ -1,11 +1,13 @@
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faExclamation } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
+  Card,
   Container,
   Input,
   Loading,
   Row,
+  Spacer,
   Text,
   Textarea,
 } from '@nextui-org/react';
@@ -22,6 +24,7 @@ import { upperFirst } from '@utils';
 
 export const ContactForm: FC = () => {
   const {
+    apiErrors,
     formik: {
       errors,
       handleBlur,
@@ -46,6 +49,7 @@ export const ContactForm: FC = () => {
   return (
     <Container css={formContainer}>
       <Text h2>Send a message</Text>
+      <Spacer y={2} />
       <form onSubmit={handleSubmit}>
         <Row css={topRow}>
           {(['name', 'email'] as FormValueKey[]).map(
@@ -114,6 +118,37 @@ export const ContactForm: FC = () => {
             {!submitted && !isSubmitting && <>Send message</>}
             {submitted && <>Message sent</>}
           </Button>
+        </Row>
+        <Row css={{ mt: '$2xl' }}>
+          {submitted && (
+            <Card
+              css={{ bc: '$salem', borderColor: '$shamrock' }}
+              variant='bordered'>
+              <Card.Body>
+                <Text css={{ mb: 0 }}>Thanks, your message has been sent</Text>
+              </Card.Body>
+            </Card>
+          )}
+          {apiErrors.length > 0 && (
+            <Card
+              css={{ bc: '$flame-red', borderColor: '$alizarin' }}
+              variant='bordered'>
+              <Card.Body>
+                <ul>
+                  {apiErrors.map((message: JSX.Element, idx: number) => (
+                    <li key={idx}>
+                      <FontAwesomeIcon
+                        height={15}
+                        icon={faExclamation}
+                        width={15}
+                      />{' '}
+                      {message}
+                    </li>
+                  ))}
+                </ul>
+              </Card.Body>
+            </Card>
+          )}
         </Row>
       </form>
     </Container>
