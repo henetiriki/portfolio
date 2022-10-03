@@ -17,6 +17,7 @@
       "@fixtures": ["fixtures"],
       "@hooks": ["hooks"],
       "@pages/*": ["pages/*"],
+      "@server/*": ["server/*"],
       "@styles": ["styles"],
       "@utils": ["utils"]
     },

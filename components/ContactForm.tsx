@@ -25,10 +25,20 @@ export const ContactForm: FC = () => {
       message: '',
       name: '',
     },
-    onSubmit: (values: FormValues) => {
-      setTimeout(() => {
-        console.log(JSON.stringify(values, null, 2));
-      }, 1500);
+    onSubmit: async (values: FormValues) => {
+      const response = await fetch('/api/contact', {
+        body: JSON.stringify(values),
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        console.log(await response.json());
+
+        return;
+      }
+
+      console.log(await response.text());
     },
     validationSchema: Yup.object().shape({
       email: Yup.string()
@@ -60,7 +70,6 @@ export const ContactForm: FC = () => {
             /* eslint-enable sort-keys/sort-keys-fix */
           }}>
           <Input
-            aria-label='Your name'
             bordered
             css={{
               mb: '$2xl',
@@ -92,7 +101,6 @@ export const ContactForm: FC = () => {
             value={formik.values.name}
           />
           <Input
-            aria-label='Your email'
             bordered
             css={{
               mb: '$2xl',
@@ -126,7 +134,6 @@ export const ContactForm: FC = () => {
         </Row>
         <Row>
           <Textarea
-            aria-label='Your message'
             bordered
             css={{ mb: '$2xl', mt: '$md', width: '100%' }}
             helperColor='error'
