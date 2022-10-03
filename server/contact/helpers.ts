@@ -1,4 +1,5 @@
 import { readFileSync } from 'fs';
+import path from 'path';
 import Mail from 'nodemailer/lib/mailer';
 import { Submission } from '@pages/api/types';
 import { ErrorType } from '@server/contact';
@@ -16,10 +17,22 @@ const EMAIL_REGEX = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
 const SUBJECT = `Message from {0} | ${CUSTOM_APP_DOMAIN}`;
 const SUBJECT_COPY = `Thanks for your message | ${CUSTOM_APP_DOMAIN}`;
 const CONTENT: Buffer = readFileSync(
-  './server/contact/templates/email-template.html'
+  path.join(
+    process.cwd(),
+    'server',
+    'contact',
+    'templates',
+    'email-template.html'
+  )
 );
 const CONTENT_COPY: Buffer = readFileSync(
-  './server/contact/templates/email-copy-template.html'
+  path.join(
+    process.cwd(),
+    'server',
+    'contact',
+    'templates',
+    'email-copy-template.html'
+  )
 );
 
 const formatValue = (value: string, args: string[]) =>
