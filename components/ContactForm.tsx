@@ -1,3 +1,5 @@
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
   Container,
@@ -20,13 +22,16 @@ import { upperFirst } from '@utils';
 
 export const ContactForm: FC = () => {
   const {
-    errors,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-    isSubmitting,
-    touched,
-    values,
+    formik: {
+      errors,
+      handleBlur,
+      handleChange,
+      handleSubmit,
+      isSubmitting,
+      touched,
+      values,
+    },
+    submitted,
   } = useFormikForm();
 
   const sharedProps: PropsWithoutRef<any> = {
@@ -34,6 +39,7 @@ export const ContactForm: FC = () => {
     helperColor: 'error',
     onBlur: handleBlur,
     onChange: handleChange,
+    readOnly: submitted,
     size: 'lg',
   };
 
@@ -69,6 +75,7 @@ export const ContactForm: FC = () => {
             }
             labelPlaceholder='Message'
             name='message'
+            readOnly={submitted}
             status={
               touched.message && Boolean(errors.message) ? 'error' : 'default'
             }
@@ -87,12 +94,24 @@ export const ContactForm: FC = () => {
             bordered
             color='success'
             css={submitButton}
+            disabled={submitted}
+            icon={
+              submitted ? (
+                <FontAwesomeIcon
+                  color='$white'
+                  height={20}
+                  icon={faCheck}
+                  width={20}
+                />
+              ) : undefined
+            }
             size='lg'
             type='submit'>
-            {isSubmitting && (
+            {!submitted && isSubmitting && (
               <Loading color='currentColor' size='sm' type='points' />
             )}
-            {!isSubmitting && <>Send message</>}
+            {!submitted && !isSubmitting && <>Send message</>}
+            {submitted && <>Message sent</>}
           </Button>
         </Row>
       </form>

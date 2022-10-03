@@ -1,9 +1,12 @@
 import { useFormik } from 'formik';
+import { useState } from 'react';
 import * as Yup from 'yup';
 import { FormValues } from './types';
 
-export const useFormikForm = () =>
-  useFormik<FormValues>({
+export const useFormikForm = (): { formik: any; submitted: boolean } => {
+  const [submitted, setSubmitted] = useState(false);
+
+  const formik = useFormik<FormValues>({
     initialValues: {
       email: '',
       message: '',
@@ -17,7 +20,7 @@ export const useFormikForm = () =>
       });
 
       if (response.ok) {
-        console.log(await response.json());
+        setSubmitted(true);
 
         return;
       }
@@ -32,3 +35,6 @@ export const useFormikForm = () =>
       name: Yup.string().required('Please enter your name'),
     }),
   });
+
+  return { formik, submitted };
+};
