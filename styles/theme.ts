@@ -9,7 +9,7 @@ export const theme = createTheme({
       whisper: '#eee',
       silver: '#c1c1c1',
       gray: '#888',
-      dimGray: '#666',
+      'dim-gray': '#666',
       matterhorn: '#4f4f4f',
       cinder: '#292b2c',
       valhalla: '#252740',
@@ -17,7 +17,10 @@ export const theme = createTheme({
       'black-russian-light': '#101227',
       'black-russian': '#080a20',
       'black-russian-alpha': 'rgba(#080a20, 0.80)',
+      salem: '#19914D',
       shamrock: '#27e278',
+      'flame-red': '#911922',
+      alizarin: '#E22734',
       /* eslint-enable sort-keys/sort-keys-fix */
     },
     fonts: {
