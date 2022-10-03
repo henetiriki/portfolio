@@ -79,6 +79,7 @@ export const ContactForm: FC = () => {
               touched.message && errors.message ? errors.message : undefined
             }
             labelPlaceholder='Message'
+            minRows={5}
             name='message'
             readOnly={submitted}
             status={
