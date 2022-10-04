@@ -4,7 +4,7 @@ import { FC } from 'react';
 export const MapLoader: FC = () => (
   <Container
     css={{
-      ai: 'start',
+      ai: 'flex-start',
       d: 'flex',
       h: '65vh',
       jc: 'center',
