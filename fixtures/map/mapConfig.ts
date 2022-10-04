@@ -11,69 +11,117 @@ export const mapOptions: google.maps.MapOptions = {
       featureType: 'water',
       stylers: [
         {
-          color: '#121833',
+          color: '#3b3d53',
         },
       ],
     },
     {
       elementType: 'geometry',
-      featureType: 'landscape.man_made',
+      featureType: 'landscape',
       stylers: [
         {
-          color: '#f7f1df',
+          color: '#2ecc71',
         },
       ],
     },
     {
-      elementType: 'geometry',
-      featureType: 'landscape.natural',
-      stylers: [
-        {
-          color: '#19914D',
-        },
-      ],
-    },
-    {
-      elementType: 'geometry',
-      featureType: 'landscape.natural.terrain',
-      stylers: [
-        {
-          visibility: 'off',
-        },
-      ],
-    },
-    {
-      elementType: 'geometry',
-      featureType: 'poi.park',
-      stylers: [
-        {
-          color: '#27e278',
-        },
-      ],
-    },
-    {
-      elementType: 'labels',
       featureType: 'poi',
       stylers: [
         {
+          color: '#2ecc71',
+        },
+        {
+          lightness: -7,
+        },
+      ],
+    },
+    {
+      elementType: 'geometry',
+      featureType: 'road.highway',
+      stylers: [
+        {
+          color: '#2ecc71',
+        },
+        {
+          lightness: -28,
+        },
+      ],
+    },
+    {
+      elementType: 'geometry',
+      featureType: 'road.arterial',
+      stylers: [
+        {
+          color: '#2ecc71',
+        },
+        {
+          visibility: 'on',
+        },
+        {
+          lightness: -15,
+        },
+      ],
+    },
+    {
+      elementType: 'geometry',
+      featureType: 'road.local',
+      stylers: [
+        {
+          color: '#2ecc71',
+        },
+        {
+          lightness: -18,
+        },
+      ],
+    },
+    {
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#ffffff',
+        },
+      ],
+    },
+    {
+      elementType: 'labels.text.stroke',
+      stylers: [
+        {
           visibility: 'off',
         },
       ],
     },
     {
       elementType: 'geometry',
-      featureType: 'poi.medical',
+      featureType: 'transit',
       stylers: [
         {
-          color: '#fbd3da',
+          color: '#2ecc71',
+        },
+        {
+          lightness: -34,
         },
       ],
     },
     {
-      featureType: 'poi.business',
+      elementType: 'geometry',
+      featureType: 'administrative',
       stylers: [
         {
-          visibility: 'off',
+          visibility: 'on',
+        },
+        {
+          color: '#333739',
+        },
+        {
+          weight: 0.8,
+        },
+      ],
+    },
+    {
+      featureType: 'poi.park',
+      stylers: [
+        {
+          color: '#2ecc71',
         },
       ],
     },
@@ -82,97 +130,13 @@ export const mapOptions: google.maps.MapOptions = {
       featureType: 'road',
       stylers: [
         {
-          visibility: 'off',
-        },
-      ],
-    },
-    {
-      elementType: 'labels',
-      featureType: 'road',
-      stylers: [
-        {
-          visibility: 'off',
-        },
-      ],
-    },
-    {
-      elementType: 'geometry.fill',
-      featureType: 'road.highway',
-      stylers: [
-        {
-          color: '#f5534b',
+          color: '#333739',
         },
         {
-          weight: 0.5,
-        },
-      ],
-    },
-    {
-      elementType: 'geometry.stroke',
-      featureType: 'road.highway',
-      stylers: [
-        {
-          color: '#f5534b',
+          weight: 0.3,
         },
         {
-          weight: 0.5,
-        },
-      ],
-    },
-    {
-      elementType: 'geometry.fill',
-      featureType: 'road.arterial',
-      stylers: [
-        {
-          color: '#ff675f',
-        },
-        {
-          weight: 0.5,
-        },
-      ],
-    },
-    {
-      elementType: 'geometry.fill',
-      featureType: 'road.local',
-      stylers: [
-        {
-          color: 'black',
-        },
-        {
-          weight: 0.5,
-        },
-      ],
-    },
-    {
-      elementType: 'geometry.fill',
-      featureType: 'transit.station.airport',
-      stylers: [
-        {
-          color: '#cfb2db',
-        },
-      ],
-    },
-    {
-      elementType: 'geometry.fill',
-      featureType: 'transit.line',
-      stylers: [
-        {
-          color: '#474d5d',
-        },
-        {
-          weight: 0.5,
-        },
-      ],
-    },
-    {
-      elementType: 'geometry.stroke',
-      featureType: 'transit.line',
-      stylers: [
-        {
-          color: '#474d5d',
-        },
-        {
-          weight: 0.5,
+          lightness: 10,
         },
       ],
     },
