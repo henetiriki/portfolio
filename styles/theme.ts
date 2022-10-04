@@ -20,7 +20,7 @@ export const theme = createTheme({
       salem: '#19914D',
       shamrock: '#27e278',
       'flame-red': '#911922',
-      alizarin: '#E22734',
+      alizarin: '#e22734',
       /* eslint-enable sort-keys/sort-keys-fix */
     },
     fonts: {

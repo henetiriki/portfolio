@@ -18,7 +18,7 @@ export const useFormikForm = (): {
       message: '',
       name: '',
     },
-    onSubmit: async (values: FormValues) => {
+    onSubmit: async (values: FormValues, { resetForm }) => {
       setApiErrors([]);
 
       const response = await fetch('/api/contact', {
@@ -29,6 +29,7 @@ export const useFormikForm = (): {
 
       if (response.ok) {
         setSubmitted(true);
+        resetForm({});
 
         return;
       }
