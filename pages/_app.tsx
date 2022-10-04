@@ -9,6 +9,7 @@ import { Navigation } from '@components';
 import { Layout } from '@containers';
 import { globalStyles, theme } from '@styles';
 import { fullTitle } from '@utils';
+import '../styles/Toastify.css';
 
 const FsBackground = dynamic(
   () => import('@components').then(mod => mod.FsBackground),
