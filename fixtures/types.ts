@@ -2,11 +2,11 @@ export type Job = {
   accomplishments?: JSX.Element;
   content: JSX.Element | null;
   institution: {
-    location: string;
-    name: string;
+    location: JSX.Element | string;
+    name: JSX.Element | string;
     url?: string;
   };
-  title: string;
+  title: JSX.Element | string;
   video?: {
     videoTitle: string;
     videoUrl: string;
