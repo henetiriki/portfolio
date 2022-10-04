@@ -60,23 +60,50 @@ const Experience: NextPage = (): JSX.Element => (
               ) => (
                 <TimelineBox key={idx}>
                   <TimelineContent>
-                    <Text css={{ mb: '0.375rem' }}>
-                      <Text css={{ fontStyle: 'italic' }} span>
-                        {from} - {to}
-                      </Text>{' '}
-                      <Link
-                        css={{
-                          color: '$shamrock',
-                        }}
-                        href={url}
-                        isExternal
-                        rel='noopener noreferrer'
-                        target='_blank'>
-                        {name}
-                      </Link>
+                    <Text
+                      css={{ color: '$silver', fontStyle: 'italic', mb: 0 }}
+                      span>
+                      {from} - {to}
+                    </Text>{' '}
+                    {url && (
+                      <Text css={{ fs: '$lg', mb: 0 }}>
+                        <Link
+                          css={{
+                            color: '$shamrock',
+                            span: {
+                              fontStyle: 'italic',
+                              fs: '$sm',
+                              pl: '$2',
+                            },
+                          }}
+                          href={url}
+                          isExternal
+                          rel='noopener noreferrer'
+                          target='_blank'>
+                          {name}
+                        </Link>
+                      </Text>
+                    )}
+                    {!url && <Text css={{ fs: '$lg', mb: 0 }}>{name}</Text>}
+                    <Text
+                      css={{
+                        color: '$silver',
+                        span: {
+                          fontStyle: 'italic',
+                        },
+                      }}
+                      size='$xs'>
+                      {location}
                     </Text>
-                    <Text size='$xs'>{location}</Text>
-                    <Text h3>{title}</Text>
+                    <Text
+                      css={{
+                        span: {
+                          fs: '$lg',
+                        },
+                      }}
+                      h3>
+                      {title}
+                    </Text>
                     {content}
                     {accomplishments && (
                       <>
@@ -112,10 +139,12 @@ const Experience: NextPage = (): JSX.Element => (
               ) => (
                 <TimelineBox key={idx}>
                   <TimelineContent>
-                    <Text>
-                      <Text css={{ fontStyle: 'italic' }} span>
-                        {from} - {to}
-                      </Text>{' '}
+                    <Text
+                      css={{ color: '$silver', fontStyle: 'italic', mb: 0 }}
+                      span>
+                      {from} - {to}
+                    </Text>{' '}
+                    <Text css={{ fs: '$lg', mb: 0 }}>
                       <Link
                         css={{
                           color: '$shamrock',
@@ -127,7 +156,9 @@ const Experience: NextPage = (): JSX.Element => (
                         {name}
                       </Link>
                     </Text>
-                    <Text size='$xs'>{location}</Text>
+                    <Text css={{ color: '$silver' }} size='$xs'>
+                      {location}
+                    </Text>
                     <Text h3>{qualification}</Text>
                     {content}
                   </TimelineContent>

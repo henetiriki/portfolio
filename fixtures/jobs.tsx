@@ -38,7 +38,11 @@ export const jobs: Job[] = [
       </>
     ),
     institution: {
-      location: 'Sydney, Australia (remote)',
+      location: (
+        <>
+          Sydney, Australia <span>(remote)</span>
+        </>
+      ),
       name: 'Pet Circle',
       url: 'https://www.petcircle.com.au',
     },
@@ -87,9 +91,13 @@ export const jobs: Job[] = [
       name: 'BNZ',
       url: 'https://www.bnz.co.nz',
     },
-    title: 'Senior Front-end Developer (Contract/Permanent)',
+    title: (
+      <>
+        Senior Front-end Developer <span>(contract/permanent)</span>
+      </>
+    ),
     year: {
-      from: 'Jun 2019',
+      from: 'June 2019',
       to: 'April 2022',
     },
   },
@@ -117,10 +125,14 @@ export const jobs: Job[] = [
       name: 'Accenture',
       url: 'https://www.accenture.com/nz-en',
     },
-    title: 'Full-stack Developer (Contract)',
+    title: (
+      <>
+        Full-stack Developer <span>(contract)</span>
+      </>
+    ),
     year: {
-      from: 'Jul 2018',
-      to: 'Jun 2019',
+      from: 'July 2018',
+      to: 'June 2019',
     },
   },
   {
@@ -155,8 +167,8 @@ export const jobs: Job[] = [
     },
     title: 'Full-stack Engineer',
     year: {
-      from: 'Sep 2017',
-      to: 'Jul 2018',
+      from: 'September 2017',
+      to: 'July 2018',
     },
   },
   {
@@ -182,13 +194,21 @@ export const jobs: Job[] = [
     ),
     institution: {
       location: 'Wellington, New Zealand',
-      name: 'Fairfax Media (now Stuff)',
+      name: (
+        <>
+          Fairfax Media <span>(now Stuff)</span>
+        </>
+      ),
       url: 'https://www.stuff.co.nz',
     },
-    title: 'JavaScript Developer (Contract)',
+    title: (
+      <>
+        JavaScript Developer <span>(contract)</span>
+      </>
+    ),
     year: {
-      from: 'Apr 2016',
-      to: 'Jun 2017',
+      from: 'April 2016',
+      to: 'June 2017',
     },
   },
   {
@@ -230,8 +250,8 @@ export const jobs: Job[] = [
     },
     title: 'Front-end Developer',
     year: {
-      from: 'Jun 2014',
-      to: 'Mar 2016',
+      from: 'June 2014',
+      to: 'March 2016',
     },
   },
   {
@@ -271,8 +291,8 @@ export const jobs: Job[] = [
     },
     title: 'Senior Java Developer',
     year: {
-      from: 'Jan 2013',
-      to: 'Apr 2014',
+      from: 'January 2013',
+      to: 'April 2014',
     },
   },
   {
@@ -312,8 +332,8 @@ export const jobs: Job[] = [
     },
     title: 'Software Developer',
     year: {
-      from: 'Jul 2011',
-      to: 'Dec 2012',
+      from: 'July 2011',
+      to: 'December 2012',
     },
   },
   {
@@ -357,7 +377,11 @@ export const jobs: Job[] = [
     ),
     institution: {
       location: 'Cape Town, South Africa',
-      name: 'Quirk (now Wunderman Thompson)',
+      name: (
+        <>
+          Quirk <span>(now Wunderman Thompson)</span>
+        </>
+      ),
       url: 'https://www.wundermanthompson.com/south-africa',
     },
     title: 'Software Engineer',
@@ -366,8 +390,8 @@ export const jobs: Job[] = [
       videoUrl: 'https://www.youtube.com/embed/34Tb79-2ekc?rel=0',
     },
     year: {
-      from: 'Nov 2008',
-      to: 'Apr 2011',
+      from: 'November 2008',
+      to: 'April 2011',
     },
   },
   {
@@ -385,8 +409,8 @@ export const jobs: Job[] = [
     },
     title: 'Java Developer',
     year: {
-      from: 'Feb 2008',
-      to: 'Oct 2008',
+      from: 'February 2008',
+      to: 'October 2008',
     },
   },
   {
@@ -423,8 +447,8 @@ export const jobs: Job[] = [
     },
     title: 'Flight Attendant',
     year: {
-      from: 'Dec 1997',
-      to: 'Jan 2006',
+      from: 'December 1997',
+      to: 'January 2006',
     },
   },
 ];
