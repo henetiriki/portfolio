@@ -1,25 +1,28 @@
 interface Location {
-  city: string;
-  country: string;
   loc: google.maps.LatLngLiteral;
   name: string;
+}
+
+interface LocationCityCountry extends Location {
+  city: string;
+  country: string;
 }
 
 export interface City extends Location {
   current?: boolean;
   description: string;
-  icon: google.maps.Icon;
+  icon: google.maps.Symbol;
 }
 
-export interface Airport extends Location {
+export interface Airport extends LocationCityCountry {
   iataCode: string;
 }
 
-export interface Port extends Location {
+export interface Port extends LocationCityCountry {
   portCode: string;
 }
 
-export interface Station extends Location {
+export interface Station extends LocationCityCountry {
   stationCode: string;
 }
 
@@ -29,11 +32,16 @@ export interface RailTrip {
 }
 
 export interface RailTrips {
-  railTrips: Array<RailTrip>;
-  upcomingRailTrips: Array<RailTrip>;
+  railTrips: RailTrip[];
+  upcomingRailTrips: RailTrip[];
 }
 
 export interface PolylineIconSequence {
   linesIcons: google.maps.IconSequence[];
   polyline: google.maps.Polyline;
+}
+
+export interface Size {
+  height: number;
+  width: number;
 }
