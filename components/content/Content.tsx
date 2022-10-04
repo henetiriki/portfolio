@@ -4,7 +4,9 @@ import { FC, PropsWithChildren } from 'react';
 import { contentWrapper } from '@styles/content';
 import { waveWrapper } from '@styles/shared';
 
-export const Content: FC<PropsWithChildren> = ({ children }): JSX.Element => (
+export const Content: FC<
+  PropsWithChildren<{ wrapperPadding?: { [key: string]: string } }>
+> = ({ children, wrapperPadding = {} }): JSX.Element => (
   <>
     <Row css={waveWrapper}>
       <Image
@@ -15,7 +17,7 @@ export const Content: FC<PropsWithChildren> = ({ children }): JSX.Element => (
         src='/images/waves/content-top-haikei.svg'
       />
     </Row>
-    <Row css={contentWrapper}>{children}</Row>
+    <Row css={{ ...contentWrapper, ...wrapperPadding }}>{children}</Row>
     <Row css={{ ...waveWrapper, mb: '8rem' }}>
       <Image
         alt=''

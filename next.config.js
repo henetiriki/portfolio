@@ -20,6 +20,7 @@ const nextConfig = withBundleAnalyzer({
     ],
   },
   publicRuntimeConfig: {
+    googleApiKey: process.env.GOOGLE_MAPS_API_KEY,
     imgHost: process.env.IMAGE_HOST,
   },
   reactStrictMode: true,
