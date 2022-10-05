@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import ErrorBoundary from '../components/shared/ErrorBoundary';
 import { Navigation } from '@components/nav';
-import { Layout } from '@containers';
+import { Layout } from '@containers/layout';
 import { globalStyles, theme } from '@styles';
 import { fullTitle } from '@utils/head';
 import '../styles/Toastify.css';
