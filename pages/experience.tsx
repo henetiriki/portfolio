@@ -5,7 +5,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Container, Link, Spacer, Text, styled } from '@nextui-org/react';
 import Head from 'next/head';
-import { Content, Header } from '@components';
+import { Content, Header } from '@components/content';
 import { jobs, schools } from '@fixtures/experience';
 import {
   timeline,

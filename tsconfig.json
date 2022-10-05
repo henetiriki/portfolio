@@ -12,7 +12,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "paths": {
-      "@components": ["components"],
+      "@components/*": ["components/*"],
       "@containers": ["containers"],
       "@fixtures/*": ["fixtures/*"],
       "@hooks": ["hooks"],

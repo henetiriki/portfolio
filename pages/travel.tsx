@@ -1,6 +1,6 @@
 import { Container, Text } from '@nextui-org/react';
 import Head from 'next/head';
-import { Content, Header } from '@components';
+import { Content, Header } from '@components/content';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 
