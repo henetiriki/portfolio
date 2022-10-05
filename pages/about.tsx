@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { Content, Header } from '@components';
 import { openSourceContrs } from '@fixtures';
-import { fullTitle } from '@utils/common';
+import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 
 const About: NextPage = (): JSX.Element => (
