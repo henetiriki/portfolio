@@ -1,6 +1,6 @@
 import getConfig from 'next/config';
 import { useMemo, useState } from 'react';
-import { randomItem } from '@utils';
+import { randomItem } from '@utils/common';
 
 const { publicRuntimeConfig } = getConfig();
 

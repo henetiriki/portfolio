@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { FC, useEffect } from 'react';
 import { useIgImgId, useWindowSize } from '@hooks';
-import { blurDataURL } from '@utils';
+import { blurDataURL } from '@utils/common';
 
 const { publicRuntimeConfig } = getConfig();
 

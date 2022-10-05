@@ -1,7 +1,7 @@
 import { Container, Text } from '@nextui-org/react';
 import Head from 'next/head';
 import { Content, Header } from '@components';
-import { fullTitle } from '@utils';
+import { fullTitle } from '@utils/common';
 import type { NextPage } from 'next';
 
 const FourOhFour: NextPage = (): JSX.Element => (

@@ -20,7 +20,7 @@ import {
   submitButton,
   topRow,
 } from '@styles';
-import { upperFirst } from '@utils';
+import { upperFirst } from '@utils/common';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const ContactForm: FC = () => {

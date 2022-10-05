@@ -14,7 +14,7 @@ import {
   timelineHeading,
   timelineIndicator,
 } from '@styles';
-import { fullTitle } from '@utils';
+import { fullTitle } from '@utils/common';
 import type { NextPage } from 'next';
 
 const TimelineHeading = styled('div', timelineHeading);

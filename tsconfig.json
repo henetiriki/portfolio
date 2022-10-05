@@ -19,7 +19,7 @@
       "@pages/*": ["pages/*"],
       "@server/*": ["server/*"],
       "@styles": ["styles"],
-      "@utils": ["utils"]
+      "@utils/*": ["utils/*"]
     },
     "resolveJsonModule": true,
     "isolatedModules": true,

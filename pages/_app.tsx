@@ -8,7 +8,7 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import { Navigation } from '@components';
 import { Layout } from '@containers';
 import { globalStyles, theme } from '@styles';
-import { fullTitle } from '@utils';
+import { fullTitle } from '@utils/common';
 import '../styles/Toastify.css';
 
 const FsBackground = dynamic(
