@@ -13,7 +13,7 @@ import {
   timelineContent,
   timelineHeading,
   timelineIndicator,
-} from '@styles';
+} from '@styles/experience';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 

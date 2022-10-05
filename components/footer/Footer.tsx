@@ -6,7 +6,8 @@ import { FC } from 'react';
 import { Copyright } from '@components/footer';
 import { Logo } from '@components/shared';
 import { menuItems } from '@fixtures/nav';
-import { footerBackground, footerMenuItems, waveWrapper } from '@styles';
+import { footerBackground, footerMenuItems } from '@styles/footer';
+import { waveWrapper } from '@styles/shared';
 
 export const Footer: FC = (): JSX.Element => {
   const { pathname } = useRouter();

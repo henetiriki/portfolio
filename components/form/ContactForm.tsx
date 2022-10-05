@@ -19,7 +19,7 @@ import {
   formTextArea,
   submitButton,
   topRow,
-} from '@styles';
+} from '@styles/form';
 import { upperFirst } from '@utils/common';
 import 'react-toastify/dist/ReactToastify.css';
 

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { FC, useEffect, useState } from 'react';
 import { Logo } from '@components/shared';
 import { menuItems } from '@fixtures/nav';
-import { navLinkMd, navLinkSm, navTypography } from '@styles';
+import { navLinkMd, navLinkSm, navTypography } from '@styles/nav';
 
 export const Navigation: FC = (): JSX.Element => {
   const { pathname } = useRouter();
