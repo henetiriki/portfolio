@@ -1,4 +1,4 @@
-import { LinkItem } from './types';
+import { LinkItem } from '../types';
 
 export const openSourceContrs: LinkItem[] = [
   {

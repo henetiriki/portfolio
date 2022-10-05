@@ -14,7 +14,7 @@
     "paths": {
       "@components": ["components"],
       "@containers": ["containers"],
-      "@fixtures": ["fixtures"],
+      "@fixtures/*": ["fixtures/*"],
       "@hooks": ["hooks"],
       "@pages/*": ["pages/*"],
       "@server/*": ["server/*"],

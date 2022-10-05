@@ -1,4 +1,4 @@
-import { LinkItem } from './types';
+import { LinkItem } from '../types';
 
 export const menuItems: LinkItem[] = [
   { href: '/', text: 'Home' },

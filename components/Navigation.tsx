@@ -3,7 +3,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState } from 'react';
 import { Logo } from '@components';
-import { menuItems } from '@fixtures';
+import { menuItems } from '@fixtures/nav';
 import { navLinkMd, navLinkSm, navTypography } from '@styles';
 
 export const Navigation: FC = (): JSX.Element => {

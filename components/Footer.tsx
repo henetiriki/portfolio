@@ -4,7 +4,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
 import { Copyright, Logo } from '@components';
-import { menuItems } from '@fixtures';
+import { menuItems } from '@fixtures/nav';
 import { footerBackground, footerMenuItems, waveWrapper } from '@styles';
 
 export const Footer: FC = (): JSX.Element => {
