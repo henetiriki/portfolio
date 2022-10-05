@@ -1,9 +1,9 @@
 import { Container, Link, Spacer, Text } from '@nextui-org/react';
 import Head from 'next/head';
 import Image from 'next/image';
-import { Content, Header } from '@components';
-import { openSourceContrs } from '@fixtures';
-import { fullTitle } from '@utils';
+import { Content, Header } from '@components/content';
+import { openSourceContrs } from '@fixtures/about';
+import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 
 const About: NextPage = (): JSX.Element => (

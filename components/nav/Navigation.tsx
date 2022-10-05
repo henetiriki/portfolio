@@ -2,9 +2,9 @@ import { Container, Link, Navbar } from '@nextui-org/react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState } from 'react';
-import { Logo } from '@components';
-import { menuItems } from '@fixtures';
-import { navLinkMd, navLinkSm, navTypography } from '@styles';
+import { Logo } from '@components/shared';
+import { menuItems } from '@fixtures/nav';
+import { navLinkMd, navLinkSm, navTypography } from '@styles/nav';
 
 export const Navigation: FC = (): JSX.Element => {
   const { pathname } = useRouter();

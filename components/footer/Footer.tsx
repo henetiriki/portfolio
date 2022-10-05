@@ -3,9 +3,11 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
-import { Copyright, Logo } from '@components';
-import { menuItems } from '@fixtures';
-import { footerBackground, footerMenuItems, waveWrapper } from '@styles';
+import { Copyright } from '@components/footer';
+import { Logo } from '@components/shared';
+import { menuItems } from '@fixtures/nav';
+import { footerBackground, footerMenuItems } from '@styles/footer';
+import { waveWrapper } from '@styles/shared';
 
 export const Footer: FC = (): JSX.Element => {
   const { pathname } = useRouter();

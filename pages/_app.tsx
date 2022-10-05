@@ -4,15 +4,15 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import ErrorBoundary from '../components/ErrorBoundary';
-import { Navigation } from '@components';
-import { Layout } from '@containers';
-import { globalStyles, theme } from '@styles';
-import { fullTitle } from '@utils';
-import '../styles/Toastify.css';
+import ErrorBoundary from '../components/shared/ErrorBoundary';
+import { Navigation } from '@components/nav';
+import { Layout } from '@containers/layout';
+import { globalStyles, theme } from '@styles/shared';
+import { fullTitle } from '@utils/head';
+import '@styles/shared/Toastify.css';
 
 const FsBackground = dynamic(
-  () => import('@components').then(mod => mod.FsBackground),
+  () => import('@components/content').then(mod => mod.FsBackground),
   {
     ssr: false,
   }

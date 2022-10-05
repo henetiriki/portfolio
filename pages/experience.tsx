@@ -5,16 +5,16 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Container, Link, Spacer, Text, styled } from '@nextui-org/react';
 import Head from 'next/head';
-import { Content, Header } from '@components';
-import { jobs, schools } from '@fixtures';
+import { Content, Header } from '@components/content';
+import { jobs, schools } from '@fixtures/experience';
 import {
   timeline,
   timelineBox,
   timelineContent,
   timelineHeading,
   timelineIndicator,
-} from '@styles';
-import { fullTitle } from '@utils';
+} from '@styles/experience';
+import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 
 const TimelineHeading = styled('div', timelineHeading);

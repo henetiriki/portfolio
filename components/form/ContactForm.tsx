@@ -19,8 +19,8 @@ import {
   formTextArea,
   submitButton,
   topRow,
-} from '@styles';
-import { upperFirst } from '@utils';
+} from '@styles/form';
+import { upperFirst } from '@utils/common';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const ContactForm: FC = () => {

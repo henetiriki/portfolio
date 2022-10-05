@@ -1,7 +1,8 @@
 import { Container } from '@nextui-org/react';
 import Head from 'next/head';
-import { ContactForm, Content, Header } from '@components';
-import { fullTitle } from '@utils';
+import { Content, Header } from '@components/content';
+import { ContactForm } from '@components/form';
+import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 
 const Contact: NextPage = (): JSX.Element => (

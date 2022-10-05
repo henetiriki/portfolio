@@ -12,14 +12,14 @@
     "module": "esnext",
     "moduleResolution": "node",
     "paths": {
-      "@components": ["components"],
-      "@containers": ["containers"],
-      "@fixtures": ["fixtures"],
+      "@components/*": ["components/*"],
+      "@containers/*": ["containers/*"],
+      "@fixtures/*": ["fixtures/*"],
       "@hooks": ["hooks"],
       "@pages/*": ["pages/*"],
       "@server/*": ["server/*"],
-      "@styles": ["styles"],
-      "@utils": ["utils"]
+      "@styles/*": ["styles/*"],
+      "@utils/*": ["utils/*"]
     },
     "resolveJsonModule": true,
     "isolatedModules": true,

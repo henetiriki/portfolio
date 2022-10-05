@@ -1,7 +1,7 @@
 import { Container, Text } from '@nextui-org/react';
 import Head from 'next/head';
-import { Content, Header } from '@components';
-import { fullTitle } from '@utils';
+import { Content, Header } from '@components/content';
+import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 
 const Travel: NextPage = (): JSX.Element => (
