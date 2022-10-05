@@ -11,7 +11,7 @@ const { publicRuntimeConfig } = getConfig();
 export const FsBackground: FC = () => {
   const router = useRouter();
   const igImgId = useIgImgId(router);
-  const { height, width } = useWindowSize();
+  const { height = 1920, width = 1080 } = useWindowSize();
 
   return (
     <Container

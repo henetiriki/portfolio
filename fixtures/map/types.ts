@@ -40,8 +40,3 @@ export interface PolylineIconSequence {
   linesIcons: google.maps.IconSequence[];
   polyline: google.maps.Polyline;
 }
-
-export interface Size {
-  height: number;
-  width: number;
-}

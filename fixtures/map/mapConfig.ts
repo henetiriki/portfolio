@@ -1,9 +1,10 @@
 import { START_POINT } from './points';
 
-export const mapOptions: google.maps.MapOptions = {
+export const MAP_MAX_MOBILE_ZOOM_ZERO = 768;
+
+export const MAP_OPTIONS: google.maps.MapOptions = {
   center: START_POINT,
   mapTypeId: 'roadmap',
-  minZoom: 2,
   scrollwheel: false,
   styles: [
     {
@@ -141,5 +142,4 @@ export const mapOptions: google.maps.MapOptions = {
       ],
     },
   ],
-  zoom: 2,
 };
