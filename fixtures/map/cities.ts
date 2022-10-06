@@ -18,65 +18,65 @@ const lived = "I've lived here...";
 const HARTSWATER: City = {
   description: 'I was born here...',
   icon: PREVIOUS_CITY_ICON,
-  loc: HARTSWATER_POINT,
-  name: `Hartswater, ${SOUTH_AFRICA}`,
+  position: HARTSWATER_POINT,
+  title: `Hartswater, ${SOUTH_AFRICA}`,
 };
 
 const HEIDELBERG: City = {
   description: 'I grew up here...',
   icon: PREVIOUS_CITY_ICON,
-  loc: HEIDELBERG_POINT,
-  name: `Heidelberg, ${SOUTH_AFRICA}`,
+  position: HEIDELBERG_POINT,
+  title: `Heidelberg, ${SOUTH_AFRICA}`,
 };
 
 const VRYBURG: City = {
   description: 'I went to High School here...',
   icon: PREVIOUS_CITY_ICON,
-  loc: VRYBURG_POINT,
-  name: `Vryburg, ${SOUTH_AFRICA}`,
+  position: VRYBURG_POINT,
+  title: `Vryburg, ${SOUTH_AFRICA}`,
 };
 
 const LONDON: City = {
   description: lived,
   icon: PREVIOUS_CITY_ICON,
-  loc: LONDON_POINT,
-  name: `London, ${UK}`,
+  position: LONDON_POINT,
+  title: `London, ${UK}`,
 };
 
 const JOHANNESBURG: City = {
   description: lived,
   icon: PREVIOUS_CITY_ICON,
-  loc: BENONI_POINT,
-  name: `Johannesburg, ${SOUTH_AFRICA}`,
+  position: BENONI_POINT,
+  title: `Johannesburg, ${SOUTH_AFRICA}`,
 };
 
 const CAPE_TOWN: City = {
   description: 'I moved to NZ from here...',
   icon: PREVIOUS_CITY_ICON,
-  loc: CAPE_TOWN_POINT,
-  name: `Cape Town, ${SOUTH_AFRICA}`,
+  position: CAPE_TOWN_POINT,
+  title: `Cape Town, ${SOUTH_AFRICA}`,
 };
 
 const HAMILTON: City = {
   description: lived,
   icon: PREVIOUS_CITY_ICON,
-  loc: HAMILTON_POINT,
-  name: `Hamilton, ${NEW_ZEALAND}`,
+  position: HAMILTON_POINT,
+  title: `Hamilton, ${NEW_ZEALAND}`,
 };
 
 const AUCKLAND: City = {
   description: lived,
   icon: PREVIOUS_CITY_ICON,
-  loc: AUCKLAND_POINT,
-  name: `Auckland, ${NEW_ZEALAND}`,
+  position: AUCKLAND_POINT,
+  title: `Auckland, ${NEW_ZEALAND}`,
 };
 
 const SILVERSTREAM: City = {
   current: true,
   description: 'I currently live in this area...',
   icon: CURRENT_CITY_ICON,
-  loc: SILVERSTREAM_POINT,
-  name: `Silverstream, Wellington, ${NEW_ZEALAND}`,
+  position: SILVERSTREAM_POINT,
+  title: `Silverstream, Wellington, ${NEW_ZEALAND}`,
 };
 
 export const CITIES: City[] = [

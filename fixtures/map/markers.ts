@@ -1,7 +1,7 @@
 import { AIRPORT_ICON, PORT_ICON, STATION_ICON } from './icons';
 
 const SHARED_MARKER_OPTIONS: google.maps.MarkerOptions = {
-  animation: google.maps.Animation.DROP,
+  // animation: window.google.maps.Animation.DROP,
   draggable: false,
   optimized: false,
   zIndex: 100,

@@ -1,11 +1,11 @@
 import { START_POINT } from './points';
 
-export const MAP_MAX_MOBILE_ZOOM_ZERO = 768;
+export const MAP_MAX_MOBILE = 768;
 
 export const MAP_OPTIONS: google.maps.MapOptions = {
   center: START_POINT,
   mapTypeId: 'roadmap',
-  scrollwheel: false,
+  scrollwheel: true,
   styles: [
     {
       elementType: 'geometry',

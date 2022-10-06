@@ -1,6 +1,6 @@
 interface Location {
-  loc: google.maps.LatLngLiteral;
-  name: string;
+  position: google.maps.LatLngLiteral;
+  title: string;
 }
 
 interface LocationCityCountry extends Location {

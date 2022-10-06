@@ -11,137 +11,137 @@ import { Port } from './types';
 export const GBDVR: Port = {
   city: 'Dover',
   country: UK,
-  loc: { lat: 51.12477, lng: 1.33287 },
-  name: 'Port of Dover',
   portCode: 'GBDVR',
+  position: { lat: 51.12477, lng: 1.33287 },
+  title: 'Port of Dover',
 };
 
 export const FRCQF: Port = {
   city: 'Calais',
   country: 'France',
-  loc: { lat: 50.96664, lng: 1.86851 },
-  name: 'Port of Calais',
   portCode: 'FRCQF',
+  position: { lat: 50.96664, lng: 1.86851 },
+  title: 'Port of Calais',
 };
 
 export const BCTSA: Port = {
   city: 'Vancouver',
   country: CANADA,
-  loc: { lat: 49.00727, lng: -123.12976 },
-  name: 'Tsawwassen Ferry Terminal',
   portCode: 'BCTSA',
+  position: { lat: 49.00727, lng: -123.12976 },
+  title: 'Tsawwassen Ferry Terminal',
 };
 
 export const BCSWA: Port = {
   city: 'Swartz Bay',
   country: CANADA,
-  loc: { lat: 48.68817, lng: -123.41186 },
-  name: 'Swartz Bay ferry terminal',
   portCode: 'BCSWA',
+  position: { lat: 48.68817, lng: -123.41186 },
+  title: 'Swartz Bay ferry terminal',
 };
 
 export const GBPME: Port = {
   city: 'Portsmouth',
   country: UK,
-  loc: { lat: 50.79703, lng: -1.10926 },
-  name: 'Port of Portsmouth',
   portCode: 'GBPME',
+  position: { lat: 50.79703, lng: -1.10926 },
+  title: 'Port of Portsmouth',
 };
 
 export const GBRYD: Port = {
   city: 'Ryde',
   country: UK,
-  loc: { lat: 50.73935, lng: -1.16003 },
-  name: 'Ryde Pier Head',
   portCode: 'GBRYD',
+  position: { lat: 50.73935, lng: -1.16003 },
+  title: 'Ryde Pier Head',
 };
 
 export const NZWLG: Port = {
   city: 'Wellington',
   country: NEW_ZEALAND,
-  loc: { lat: -41.27993, lng: 174.78171 },
-  name: 'Port of Wellington',
   portCode: 'NZPCN',
+  position: { lat: -41.27993, lng: 174.78171 },
+  title: 'Port of Wellington',
 };
 
 export const NZPCN: Port = {
   city: 'Picton',
   country: NEW_ZEALAND,
-  loc: { lat: -41.2857, lng: 174.00511 },
-  name: 'Port of Picton',
   portCode: 'NZPCN',
+  position: { lat: -41.2857, lng: 174.00511 },
+  title: 'Port of Picton',
 };
 
 export const DKCPH: Port = {
   city: 'København',
   country: DENMARK,
-  loc: { lat: 55.702022, lng: 12.59593 },
-  name: 'Port of Copenhagen',
   portCode: 'DKCPH',
+  position: { lat: 55.702022, lng: 12.59593 },
+  title: 'Port of Copenhagen',
 };
 
 export const NOOSL: Port = {
   city: 'Oslo',
   country: NORWAY,
-  loc: { lat: 59.902835, lng: 10.744473 },
-  name: 'Port of Oslo',
   portCode: 'NOOSL',
+  position: { lat: 59.902835, lng: 10.744473 },
+  title: 'Port of Oslo',
 };
 
 export const NOSVJ: Port = {
   city: 'Svolvær',
   country: NORWAY,
-  loc: { lat: 68.23079, lng: 14.566888 },
-  name: 'Port of Svolvær',
   portCode: 'NOSVJ',
+  position: { lat: 68.23079, lng: 14.566888 },
+  title: 'Port of Svolvær',
 };
 
 export const NOTOS: Port = {
   city: 'Tromsø',
   country: NORWAY,
-  loc: { lat: 69.648689, lng: 18.963214 },
-  name: 'Port of Tromsø',
   portCode: 'NOTOS',
+  position: { lat: 69.648689, lng: 18.963214 },
+  title: 'Port of Tromsø',
 };
 
 export const NZAKL: Port = {
   city: 'Auckland',
   country: NEW_ZEALAND,
-  loc: { lat: -36.840985, lng: 174.765767 },
-  name: 'Port of Auckland',
   portCode: 'NZAKL',
+  position: { lat: -36.840985, lng: 174.765767 },
+  title: 'Port of Auckland',
 };
 
 export const NCNOU: Port = {
   city: 'Nouméa',
   country: NEW_CALEDONIA,
-  loc: { lat: -22.271686, lng: 166.436775 },
-  name: 'Port of Nouméa',
   portCode: 'NCNOU',
+  position: { lat: -22.271686, lng: 166.436775 },
+  title: 'Port of Nouméa',
 };
 
 export const LIFOU: Port = {
   city: 'Lifou',
   country: NEW_CALEDONIA,
-  loc: { lat: -20.909169, lng: 167.277028 },
-  name: 'Lifou Marina',
   portCode: 'LIFOU',
+  position: { lat: -20.909169, lng: 167.277028 },
+  title: 'Lifou Marina',
 };
 
 export const VUVLI: Port = {
   city: 'Port Vila',
   country: 'Vanuatu',
-  loc: { lat: -17.756154, lng: 168.29983 },
-  name: 'Port of Port Vila',
   portCode: 'VUVLI',
+  position: { lat: -17.756154, lng: 168.29983 },
+  title: 'Port of Port Vila',
 };
 
 export const NCMEE: Port = {
   city: 'Mare',
   country: NEW_CALEDONIA,
-  loc: { lat: -21.549376, lng: 167.862849 },
-  name: 'Mare Anchor Point',
   portCode: 'NCMEE',
+  position: { lat: -21.549376, lng: 167.862849 },
+  title: 'Mare Anchor Point',
 };
 
 export const PORTS: Port[] = [

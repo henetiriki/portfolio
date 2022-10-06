@@ -1,6 +1,15 @@
 import { styled } from '@nextui-org/react';
-import { FC, MutableRefObject, useEffect, useRef, useState } from 'react';
-import { MAP_MAX_MOBILE_ZOOM_ZERO, MAP_OPTIONS } from '@fixtures/map';
+import {
+  Children,
+  FC,
+  PropsWithChildren,
+  cloneElement,
+  isValidElement,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { MAP_MAX_MOBILE, MAP_OPTIONS } from '@fixtures/map';
 import { useWindowSize } from '@hooks';
 
 const MapContainer = styled('div', {
@@ -8,36 +17,44 @@ const MapContainer = styled('div', {
   w: '100vw',
 });
 
-export const Map: FC = () => {
-  const mapRef = useRef() as MutableRefObject<HTMLDivElement>;
+export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
+  children,
+  ...options
+}) => {
+  const mapRef = useRef<HTMLDivElement>(null);
   const { width } = useWindowSize();
-  const [map, setMap] = useState<google.maps.Map | undefined>();
-  const [mapDrawn, setMapDrawn] = useState(false);
+  const [map, setMap] = useState<google.maps.Map>();
 
   useEffect(() => {
-    if (width) {
-      const zoom = width < MAP_MAX_MOBILE_ZOOM_ZERO ? 1 : 2;
-
-      if (!map) {
-        setMap(
-          new window.google.maps.Map(mapRef.current, {
-            ...MAP_OPTIONS,
-            minZoom: zoom,
-            zoom,
-          })
-        );
-      }
-
-      if (map) {
-        map.setZoom(zoom);
-      }
+    if (mapRef.current && !map) {
+      setMap(new window.google.maps.Map(mapRef.current, {}));
     }
-  }, [map, width]);
+  }, [mapRef, map]);
 
   useEffect(() => {
-    if (map && !mapDrawn) {
-    }
-  }, [map, mapDrawn]);
+    if (map && width) {
+      const mapMaxMobile = width < MAP_MAX_MOBILE;
+      const zoom = mapMaxMobile ? 1 : 2;
 
-  return <MapContainer id='map' ref={mapRef} />;
+      map.setOptions({
+        ...MAP_OPTIONS,
+        minZoom: zoom,
+        scrollwheel: !mapMaxMobile,
+        zoom,
+      });
+    }
+  }, [map, options, width]);
+
+  return (
+    <>
+      <MapContainer id='map' ref={mapRef} />
+      {Children.map(children, child => {
+        if (map && isValidElement(child)) {
+          // set the map prop on the child component
+          // @ts-ignore
+          return cloneElement(child, { map });
+        }
+      })}
+    </>
+  );
 };
