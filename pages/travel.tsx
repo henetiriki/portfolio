@@ -36,15 +36,18 @@ const Travel: NextPage = (): JSX.Element => {
         <Content wrapperPadding={{ padding: '4rem 0' }}>
           <Wrapper apiKey={publicRuntimeConfig.googleApiKey} render={render}>
             <Map>
-              {CITIES.map(({ icon, position, title }: City, idx: number) => (
-                <Marker
-                  icon={icon}
-                  idx={idx}
-                  key={idx}
-                  position={position}
-                  title={title}
-                />
-              ))}
+              {CITIES.map(
+                ({ description, icon, position, title }: City, idx: number) => (
+                  <Marker
+                    description={description}
+                    icon={icon}
+                    idx={idx}
+                    key={title}
+                    position={position}
+                    title={title}
+                  />
+                )
+              )}
             </Map>
           </Wrapper>
         </Content>

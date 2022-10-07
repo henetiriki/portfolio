@@ -24,12 +24,14 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
   const mapRef = useRef<HTMLDivElement>(null);
   const { width } = useWindowSize();
   const [map, setMap] = useState<google.maps.Map>();
+  const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>();
 
   useEffect(() => {
-    if (mapRef.current && !map) {
-      setMap(new window.google.maps.Map(mapRef.current, {}));
+    if (mapRef.current && !map && !infoWindow) {
+      setMap(new google.maps.Map(mapRef.current, {}));
+      setInfoWindow(new google.maps.InfoWindow());
     }
-  }, [mapRef, map]);
+  }, [mapRef, map, infoWindow]);
 
   useEffect(() => {
     if (map && width) {
@@ -49,10 +51,10 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
     <>
       <MapContainer id='map' ref={mapRef} />
       {Children.map(children, child => {
-        if (map && isValidElement(child)) {
+        if (map && infoWindow && isValidElement(child)) {
           // set the map prop on the child component
           // @ts-ignore
-          return cloneElement(child, { map });
+          return cloneElement(child, { infoWindow, map });
         }
       })}
     </>

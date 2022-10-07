@@ -3,9 +3,17 @@ import { useDeepCompareEffectForMaps } from '@hooks';
 import { cancelableDelay } from '@utils/common';
 
 export const Marker: FC<
-  PropsWithRef<google.maps.MarkerOptions & { idx: number }>
+  PropsWithRef<
+    google.maps.MarkerOptions & {
+      description: string;
+      idx: number;
+      infoWindow?: google.maps.InfoWindow;
+    }
+  >
 > = options => {
   const [marker, setMarker] = useState<google.maps.Marker>();
+  const [eventListener, setEventListener] =
+    useState<google.maps.MapsEventListener>();
 
   useEffect(() => {
     if (!marker) {
@@ -20,9 +28,9 @@ export const Marker: FC<
   }, [marker]);
 
   useDeepCompareEffectForMaps(() => {
-    if (marker) {
-      const { icon, idx } = options;
+    const { icon, idx, infoWindow } = options;
 
+    if (marker) {
       cancelableDelay(idx * 250, () => {
         marker.setOptions({
           ...options,
@@ -33,8 +41,39 @@ export const Marker: FC<
           },
         });
       });
+
+      if (!eventListener) {
+        setEventListener(
+          google.maps.event.addListener(marker, 'click', () => {
+            showInfoWindow();
+          })
+        );
+      }
     }
-  }, [marker, options]);
+
+    return () => {
+      if (eventListener) {
+        google.maps.event.removeListener(eventListener);
+      }
+      infoWindow?.close();
+    };
+  }, [marker, options, eventListener]);
+
+  const showInfoWindow = (): void => {
+    const { description, infoWindow, map, title } = options;
+
+    marker?.setAnimation(google.maps.Animation.BOUNCE);
+    cancelableDelay(2000, () => {
+      marker?.setAnimation(null);
+    });
+    infoWindow?.setContent(
+      `<div>
+          <h4 style="color:#27e278;font-size:1rem">${title}</h4>
+          <p style="color:#292b2c;font-size:0.85rem">${description}</p>
+      </div>`
+    );
+    infoWindow?.open(map, marker);
+  };
 
   return null;
 };
