@@ -6,30 +6,30 @@ const SHARE_ICON_PROPS: google.maps.Symbol = {
 
 export const PREVIOUS_CITY_ICON: google.maps.Symbol = {
   ...SHARE_ICON_PROPS,
-  fillColor: '#e22734',
+  fillColor: '#911922',
   scale: 1,
 };
 
 export const CURRENT_CITY_ICON: google.maps.Symbol = {
   ...SHARE_ICON_PROPS,
-  fillColor: '#e25a00',
+  fillColor: '#19914D',
   scale: 1.5,
 };
 
 export const AIRPORT_ICON: google.maps.Symbol = {
   ...SHARE_ICON_PROPS,
-  fillColor: '#f25fee',
-  scale: 1.5,
+  fillColor: '#0C468F',
+  scale: 0.85,
 };
 
 export const PORT_ICON: google.maps.Symbol = {
   ...SHARE_ICON_PROPS,
   fillColor: '#101227',
-  scale: 1.5,
+  scale: 0.85,
 };
 
 export const STATION_ICON: google.maps.Symbol = {
   ...SHARE_ICON_PROPS,
   fillColor: '#4f4f4f',
-  scale: 1.5,
+  scale: 0.85,
 };
