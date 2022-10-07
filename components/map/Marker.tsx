@@ -8,7 +8,7 @@ export const Marker: FC<
       description: string;
       idx: number;
       infoWindow?: google.maps.InfoWindow;
-      order: number;
+      order?: number;
     }
   >
 > = options => {
@@ -29,7 +29,7 @@ export const Marker: FC<
   }, [marker]);
 
   useDeepCompareEffectForMaps(() => {
-    const { icon, idx, infoWindow, order } = options;
+    const { icon, idx, infoWindow, order = 1 } = options;
 
     if (marker) {
       cancelableDelay(idx * order * 100, () => {

@@ -14,7 +14,7 @@ import { useWindowSize } from '@hooks';
 
 const MapContainer = styled('div', {
   h: '65vh',
-  w: '100vw',
+  w: '100%',
 });
 
 export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
