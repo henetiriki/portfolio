@@ -41,7 +41,6 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
       map.setOptions({
         ...MAP_OPTIONS,
         minZoom: zoom,
-        scrollwheel: !mapMaxMobile,
         zoom,
       });
     }

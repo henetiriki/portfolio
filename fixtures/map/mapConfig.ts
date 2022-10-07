@@ -5,7 +5,6 @@ export const MAP_MAX_MOBILE = 768;
 export const MAP_OPTIONS: google.maps.MapOptions = {
   center: START_POINT,
   mapTypeId: 'roadmap',
-  scrollwheel: true,
   styles: [
     {
       elementType: 'geometry',
