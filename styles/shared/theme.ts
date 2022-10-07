@@ -16,7 +16,6 @@ export const theme = createTheme({
       'midnight-express': '#121833',
       'black-russian-light': '#101227',
       'black-russian': '#080a20',
-      'black-russian-alpha': 'rgba(#080a20, 0.80)',
       salem: '#19914D',
       shamrock: '#27e278',
       'flame-red': '#911922',
