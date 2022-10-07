@@ -1,6 +1,6 @@
 export const START_POINT: google.maps.LatLngLiteral = {
-  lat: 22.4988409,
-  lng: 78.471251,
+  lat: 0,
+  lng: 95,
 };
 
 export const LONDON_POINT: google.maps.LatLngLiteral = {
