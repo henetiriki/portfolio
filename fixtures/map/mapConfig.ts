@@ -2,9 +2,16 @@ import { START_POINT } from './points';
 
 export const MAP_MAX_MOBILE = 768;
 
-export const MAP_OPTIONS: google.maps.MapOptions = {
+export const mapOptions = (): google.maps.MapOptions => ({
   center: START_POINT,
   mapTypeId: 'roadmap',
+  restriction: {
+    latLngBounds: new google.maps.LatLngBounds(
+      new google.maps.LatLng(-85, -180),
+      new google.maps.LatLng(85, 180)
+    ),
+    strictBounds: true,
+  },
   styles: [
     {
       elementType: 'geometry',
@@ -141,4 +148,4 @@ export const MAP_OPTIONS: google.maps.MapOptions = {
       ],
     },
   ],
-};
+});

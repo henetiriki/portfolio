@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { MAP_MAX_MOBILE, MAP_OPTIONS } from '@fixtures/map';
+import { MAP_MAX_MOBILE, mapOptions } from '@fixtures/map';
 import { useWindowSize } from '@hooks';
 
 const MapContainer = styled('div', {
@@ -39,7 +39,7 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
       const zoom = mapMaxMobile ? 1 : 2;
 
       map.setOptions({
-        ...MAP_OPTIONS,
+        ...mapOptions(),
         minZoom: zoom,
         zoom,
       });
