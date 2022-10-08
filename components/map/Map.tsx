@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react';
 import { MAP_MAX_MOBILE, mapOptions } from '@fixtures/map';
-import { useWindowSize } from '@hooks';
+import { useDeepCompareEffectForMaps, useWindowSize } from '@hooks';
 
 const MapContainer = styled('div', {
   h: '65vh',
@@ -33,13 +33,14 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
     }
   }, [mapRef, map, infoWindow]);
 
-  useEffect(() => {
+  useDeepCompareEffectForMaps(() => {
     if (map && width) {
       const mapMaxMobile = width < MAP_MAX_MOBILE;
       const zoom = mapMaxMobile ? 1 : 2;
 
       map.setOptions({
         ...mapOptions(),
+        ...options,
         minZoom: zoom,
         zoom,
       });
