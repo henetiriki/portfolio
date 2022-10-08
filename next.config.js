@@ -20,10 +20,12 @@ const nextConfig = withBundleAnalyzer({
     ],
   },
   publicRuntimeConfig: {
-    igImgIds: process.env.ISTAGRAM_IMAGE_IDS,
     imgHost: process.env.IMAGE_HOST,
   },
   reactStrictMode: true,
+  serverRuntimeConfig: {
+    igImgIds: process.env.ISTAGRAM_IMAGE_IDS,
+  },
   swcMinify: true,
 });
 
