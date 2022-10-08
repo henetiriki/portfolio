@@ -1,7 +1,7 @@
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import { FC, useEffect, useState } from 'react';
-import { Map, Marker, Polyline } from '@components/map';
+import { Map, Marker, Polyline } from '@components/travel';
 import {
   City,
   Location,
@@ -10,7 +10,7 @@ import {
   cities,
   markerLocations,
   tripPolylines,
-} from '@fixtures/map';
+} from '@fixtures/travel';
 import { useIntersectionObserver, useMap } from '@hooks';
 
 const { publicRuntimeConfig } = getConfig();
@@ -24,10 +24,10 @@ const Wrapper = dynamic(
 
 export const MapWrapper: FC = () => {
   const { render } = useMap();
-  const [dropMarkers, setDropMarkers] = useState(false);
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.8,
   });
+  const [dropMarkers, setDropMarkers] = useState(false);
 
   useEffect(() => {
     if (!dropMarkers && isVisible) {

@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
-import { MapWrapper } from '@components/map';
+import { MapWrapper } from '@components/travel';
 
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';

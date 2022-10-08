@@ -1,16 +1,7 @@
 import { NextRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { ImageId } from './types';
-
-const fetcher = async (url: string): Promise<ImageId> => {
-  const response = await fetch(url);
-
-  if (response.ok) {
-    return response.json();
-  }
-
-  return Promise.reject(response.text());
-};
+import { fetcher } from '@utils/common';
 
 export const useIgImgId = (router: NextRouter): string | undefined => {
   const routeRef = useRef<string>();
@@ -29,7 +20,7 @@ export const useIgImgId = (router: NextRouter): string | undefined => {
   };
 
   const fetchImageId = async () => {
-    const { id } = await fetcher('/api/img-id');
+    const { id } = await fetcher<ImageId>('/api/img-id');
 
     if (id) {
       setIgImgId(id);

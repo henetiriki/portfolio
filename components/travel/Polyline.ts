@@ -1,5 +1,5 @@
 import { FC, PropsWithRef, useEffect, useState } from 'react';
-import { sharedPolylineOpts } from '@fixtures/map';
+import { sharedPolylineOpts } from '@fixtures/travel';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { cancelableDelay } from '@utils/common';
 import LatLngLiteral = google.maps.LatLngLiteral;

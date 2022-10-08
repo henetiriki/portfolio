@@ -1,6 +1,6 @@
-import { cruises, upcomingCruises } from '@fixtures/map/cruises';
-import { flights, upcomingFlights } from '@fixtures/map/flights';
-import { TripPolylines } from '@fixtures/map/types';
+import { cruises, upcomingCruises } from '@fixtures/travel/cruises';
+import { flights, upcomingFlights } from '@fixtures/travel/flights';
+import { TripPolylines } from '@fixtures/travel/types';
 import { corn, darkCyan } from '@styles/shared';
 
 export const sharedPolylineOpts: google.maps.PolylineOptions = {
