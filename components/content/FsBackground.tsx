@@ -2,22 +2,16 @@ import { Container } from '@nextui-org/react';
 import getConfig from 'next/config';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useIgImgId, useWindowSize } from '@hooks';
 import { blurDataURL } from '@utils/common';
 
 const { publicRuntimeConfig } = getConfig();
 
 export const FsBackground: FC = () => {
-  const { events } = useRouter();
+  const router = useRouter();
+  const igImgId = useIgImgId(router);
   const { height, width } = useWindowSize();
-  const { igImageIds, nextImg } = useIgImgId();
-
-  useEffect(() => {
-    events.on('routeChangeComplete', () => {
-      nextImg();
-    });
-  }, [events, nextImg]);
 
   return (
     <Container
@@ -28,11 +22,10 @@ export const FsBackground: FC = () => {
         position: 'fixed',
         zIndex: -1,
       }}>
-      {igImageIds.map(igImgId => (
+      {igImgId && (
         <Image
           alt=''
           blurDataURL={blurDataURL(width, height)}
-          key={igImgId}
           layout='fill'
           objectFit='cover'
           placeholder='blur'
@@ -40,7 +33,7 @@ export const FsBackground: FC = () => {
           quality={100}
           src={`${publicRuntimeConfig.imgHost}/${igImgId}.jpg`}
         />
-      ))}
+      )}
     </Container>
   );
 };
