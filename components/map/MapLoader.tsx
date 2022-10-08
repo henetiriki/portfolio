@@ -10,6 +10,6 @@ export const MapLoader: FC = () => (
       jc: 'center',
       w: '100vw',
     }}>
-    <Loading type='points' />
+    <Loading css={{ pt: 'calc(2 * $xl)' }} type='points' />
   </Container>
 );

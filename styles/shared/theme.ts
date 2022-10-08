@@ -6,6 +6,7 @@ export const gunmetal = '#333739';
 export const pumpkin = '#ff7917';
 export const corn = '#f5eb67';
 export const pineGreen = '#00786d';
+export const darkCyan = '#009688';
 export const mediumSeaGreen = '#2ecc71';
 export const flameRed = '#911922';
 export const alizarin = '#e22734';
