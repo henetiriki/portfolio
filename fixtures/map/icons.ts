@@ -1,9 +1,9 @@
 import {
   alizarin,
-  blueViolet,
-  deepMagenta,
   flameRed,
-  tahitiGold,
+  pineGreen,
+  pumpkin,
+  torchRed,
 } from '@styles/shared';
 
 const sharedIconOpts: google.maps.Symbol = {
@@ -14,19 +14,19 @@ const sharedIconOpts: google.maps.Symbol = {
 
 export const previousCityIcon: google.maps.Symbol = {
   ...sharedIconOpts,
-  fillColor: deepMagenta,
+  fillColor: pumpkin,
   scale: 1,
 };
 
 export const currentCityIcon: google.maps.Symbol = {
   ...sharedIconOpts,
-  fillColor: blueViolet,
+  fillColor: torchRed,
   scale: 1.5,
 };
 
 export const airportIcon: google.maps.Symbol = {
   ...sharedIconOpts,
-  fillColor: tahitiGold,
+  fillColor: pineGreen,
   scale: 0.85,
 };
 

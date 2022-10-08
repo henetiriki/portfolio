@@ -3,13 +3,13 @@ import { createTheme } from '@nextui-org/react';
 export const white = '#ffffff';
 export const paynesGrey = '#3b3d53';
 export const gunmetal = '#333739';
-export const deepMagenta = '#d627e2';
-export const deepCerise = '#e22778';
-export const blueViolet = '#7827e2';
+export const pumpkin = '#ff7917';
+export const corn = '#f5eb67';
+export const pineGreen = '#00786d';
 export const mediumSeaGreen = '#2ecc71';
-export const tahitiGold = '#e27827';
 export const flameRed = '#911922';
 export const alizarin = '#e22734';
+export const torchRed = '#fa233E';
 
 export const theme = createTheme({
   theme: {

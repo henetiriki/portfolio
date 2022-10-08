@@ -11,7 +11,7 @@ import {
   markerLocations,
 } from '@fixtures/map';
 import { useIntersectionObserver, useMap } from '@hooks';
-import { deepCerise } from '@styles/shared';
+import { corn } from '@styles/shared';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -71,7 +71,7 @@ export const MapWrapper: FC = () => {
                   idx={idx + 1}
                   journeys={journeys}
                   order={idx + 1}
-                  strokeColor={deepCerise}
+                  strokeColor={corn}
                 />
               )
             )}
