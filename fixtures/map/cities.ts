@@ -1,92 +1,108 @@
-import { NEW_ZEALAND, SOUTH_AFRICA, UK } from './countries';
-import { CURRENT_CITY_ICON, PREVIOUS_CITY_ICON } from './icons';
-import {
-  AUCKLAND_POINT,
-  BENONI_POINT,
-  CAPE_TOWN_POINT,
-  HAMILTON_POINT,
-  HARTSWATER_POINT,
-  HEIDELBERG_POINT,
-  LONDON_POINT,
-  SILVERSTREAM_POINT,
-  VRYBURG_POINT,
-} from './points';
+import { newZealand, southAfrica, unitedKingdom } from './countries';
+import { currentCityIcon, previousCityIcon } from './icons';
 import { City } from './types';
 
 const lived = "I've lived here...";
 
-const HARTSWATER: City = {
+const hartswater: City = {
   description: 'I was born here...',
-  icon: PREVIOUS_CITY_ICON,
-  position: HARTSWATER_POINT,
-  title: `Hartswater, ${SOUTH_AFRICA}`,
+  icon: previousCityIcon,
+  position: {
+    lat: -27.746947,
+    lng: 24.760681,
+  },
+  title: `Hartswater, ${southAfrica}`,
 };
 
-const HEIDELBERG: City = {
+const heidelberg: City = {
   description: 'I grew up here...',
-  icon: PREVIOUS_CITY_ICON,
-  position: HEIDELBERG_POINT,
-  title: `Heidelberg, ${SOUTH_AFRICA}`,
+  icon: previousCityIcon,
+  position: {
+    lat: -34.025956,
+    lng: 20.937695,
+  },
+  title: `Heidelberg, ${southAfrica}`,
 };
 
-const VRYBURG: City = {
+const vryburg: City = {
   description: 'I went to High School here...',
-  icon: PREVIOUS_CITY_ICON,
-  position: VRYBURG_POINT,
-  title: `Vryburg, ${SOUTH_AFRICA}`,
+  icon: previousCityIcon,
+  position: {
+    lat: -26.952586,
+    lng: 24.716451,
+  },
+  title: `Vryburg, ${southAfrica}`,
 };
 
-const LONDON: City = {
+const london: City = {
   description: lived,
-  icon: PREVIOUS_CITY_ICON,
-  position: LONDON_POINT,
-  title: `London, ${UK}`,
+  icon: previousCityIcon,
+  position: {
+    lat: 51.451005,
+    lng: -0.14797,
+  },
+  title: `London, ${unitedKingdom}`,
 };
 
-const JOHANNESBURG: City = {
+const johannesburg: City = {
   description: lived,
-  icon: PREVIOUS_CITY_ICON,
-  position: BENONI_POINT,
-  title: `Johannesburg, ${SOUTH_AFRICA}`,
+  icon: previousCityIcon,
+  position: {
+    lat: -26.172906,
+    lng: 28.310071,
+  },
+  title: `Johannesburg, ${southAfrica}`,
 };
 
-const CAPE_TOWN: City = {
+const capeTown: City = {
   description: 'I moved to NZ from here...',
-  icon: PREVIOUS_CITY_ICON,
-  position: CAPE_TOWN_POINT,
-  title: `Cape Town, ${SOUTH_AFRICA}`,
+  icon: previousCityIcon,
+  position: {
+    lat: -33.93462,
+    lng: 18.406203,
+  },
+  title: `Cape Town, ${southAfrica}`,
 };
 
-const HAMILTON: City = {
+const hamilton: City = {
   description: lived,
-  icon: PREVIOUS_CITY_ICON,
-  position: HAMILTON_POINT,
-  title: `Hamilton, ${NEW_ZEALAND}`,
+  icon: previousCityIcon,
+  position: {
+    lat: -37.779755,
+    lng: 175.277283,
+  },
+  title: `Hamilton, ${newZealand}`,
 };
 
-const AUCKLAND: City = {
+const auckland: City = {
   description: lived,
-  icon: PREVIOUS_CITY_ICON,
-  position: AUCKLAND_POINT,
-  title: `Auckland, ${NEW_ZEALAND}`,
+  icon: previousCityIcon,
+  position: {
+    lat: -36.847639,
+    lng: 174.762473,
+  },
+  title: `Auckland, ${newZealand}`,
 };
 
-const SILVERSTREAM: City = {
+const silverstream: City = {
   current: true,
   description: 'I currently live in this area...',
-  icon: CURRENT_CITY_ICON,
-  position: SILVERSTREAM_POINT,
-  title: `Silverstream, Wellington, ${NEW_ZEALAND}`,
+  icon: currentCityIcon,
+  position: {
+    lat: -41.1497301,
+    lng: 175.005017,
+  },
+  title: `Silverstream, Wellington, ${newZealand}`,
 };
 
-export const CITIES: City[] = [
-  HARTSWATER,
-  HEIDELBERG,
-  VRYBURG,
-  LONDON,
-  JOHANNESBURG,
-  CAPE_TOWN,
-  HAMILTON,
-  AUCKLAND,
-  SILVERSTREAM,
+export const cities: City[] = [
+  hartswater,
+  heidelberg,
+  vryburg,
+  london,
+  johannesburg,
+  capeTown,
+  hamilton,
+  auckland,
+  silverstream,
 ];

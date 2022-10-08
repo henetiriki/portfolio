@@ -1,10 +1,12 @@
-import { START_POINT } from './points';
 import { gunmetal, mediumSeaGreen, paynesGrey, white } from '@styles/shared';
 
 export const MAP_MAX_MOBILE = 768;
 
 export const mapOptions = (): google.maps.MapOptions => ({
-  center: START_POINT,
+  center: {
+    lat: 0.0,
+    lng: 95.0,
+  },
   mapTypeId: 'roadmap',
   restriction: {
     latLngBounds: new google.maps.LatLngBounds(

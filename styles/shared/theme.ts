@@ -1,6 +1,6 @@
 import { createTheme } from '@nextui-org/react';
 
-export const white = '#fff';
+export const white = '#ffffff';
 export const paynesGrey = '#3b3d53';
 export const gunmetal = '#333739';
 export const deepMagenta = '#d627e2';

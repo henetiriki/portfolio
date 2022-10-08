@@ -5,18 +5,12 @@ import { useEffect, useState } from 'react';
 import { Content, Header } from '@components/content';
 import { Map, Marker } from '@components/map';
 import {
-  AIRPORT_ICON,
-  Airport,
-  CITIES,
   City,
-  PORT_ICON,
-  Port,
-  STATION_ICON,
-  Station,
+  Location,
+  MarkerLocations,
+  cities,
+  markerLocations,
 } from '@fixtures/map';
-import { AIRPORTS } from '@fixtures/map/airports';
-import { PORTS } from '@fixtures/map/ports';
-import { STATIONS } from '@fixtures/map/stations';
 import { useIntersectionObserver, useMap } from '@hooks';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
@@ -59,7 +53,7 @@ const Travel: NextPage = (): JSX.Element => {
         <Content wrapperPadding={{ padding: '4rem 0' }}>
           <Wrapper apiKey={publicRuntimeConfig.googleApiKey} render={render}>
             <Map>
-              {CITIES.map(
+              {cities.map(
                 ({ description, icon, position, title }: City, idx: number) => (
                   <Marker
                     description={description}
@@ -72,55 +66,17 @@ const Travel: NextPage = (): JSX.Element => {
                 )
               )}
               {dropMarkers &&
-                AIRPORTS.map(
-                  (
-                    { city, country, iataCode, position, title }: Airport,
-                    idx: number
-                  ) => (
-                    <Marker
-                      description={`${city}, ${country}`}
-                      icon={AIRPORT_ICON}
-                      idx={idx}
-                      key={title}
-                      order={1}
-                      position={position}
-                      title={`${iataCode} // ${title}`}
-                    />
-                  )
-                )}
-              {dropMarkers &&
-                STATIONS.map(
-                  (
-                    { city, country, position, stationCode, title }: Station,
-                    idx: number
-                  ) => (
-                    <Marker
-                      description={`${city}, ${country}`}
-                      icon={STATION_ICON}
-                      idx={idx}
-                      key={title}
-                      order={2}
-                      position={position}
-                      title={`${stationCode} // ${title}`}
-                    />
-                  )
-                )}
-              {dropMarkers &&
-                PORTS.map(
-                  (
-                    { city, country, portCode, position, title }: Port,
-                    idx: number
-                  ) => (
-                    <Marker
-                      description={`${city}, ${country}`}
-                      icon={PORT_ICON}
-                      idx={idx}
-                      key={title}
-                      order={3}
-                      position={position}
-                      title={`${portCode} // ${title}`}
-                    />
-                  )
+                markerLocations.map(
+                  ({ icon, locations }: MarkerLocations, order: number) =>
+                    locations.map((location: Location, idx: number) => (
+                      <Marker
+                        {...location}
+                        icon={icon}
+                        idx={idx}
+                        key={`${order}${idx}`}
+                        order={order + 1}
+                      />
+                    ))
                 )}
             </Map>
           </Wrapper>

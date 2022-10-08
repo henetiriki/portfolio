@@ -1,150 +1,116 @@
 import {
-  CANADA,
-  DENMARK,
-  NEW_CALEDONIA,
-  NEW_ZEALAND,
-  NORWAY,
-  UK,
+  canada,
+  denmark,
+  newCaledonia,
+  newZealand,
+  norway,
+  unitedKingdom,
 } from './countries';
-import { Port } from './types';
+import { Location } from './types';
 
-export const GBDVR: Port = {
-  city: 'Dover',
-  country: UK,
-  portCode: 'GBDVR',
+export const GBDVR: Location = {
+  description: `Dover, ${unitedKingdom}`,
   position: { lat: 51.12477, lng: 1.33287 },
-  title: 'Port of Dover',
+  title: 'GBDVR // Port of Dover',
 };
 
-export const FRCQF: Port = {
-  city: 'Calais',
-  country: 'France',
-  portCode: 'FRCQF',
+export const FRCQF: Location = {
+  description: 'Calais, France',
   position: { lat: 50.96664, lng: 1.86851 },
-  title: 'Port of Calais',
+  title: 'FRCQF // Port of Calais',
 };
 
-export const BCTSA: Port = {
-  city: 'Vancouver',
-  country: CANADA,
-  portCode: 'BCTSA',
+export const BCTSA: Location = {
+  description: `Vancouver, ${canada}`,
   position: { lat: 49.00727, lng: -123.12976 },
-  title: 'Tsawwassen Ferry Terminal',
+  title: 'BCTSA // Tsawwassen Ferry Terminal',
 };
 
-export const BCSWA: Port = {
-  city: 'Swartz Bay',
-  country: CANADA,
-  portCode: 'BCSWA',
+export const BCSWA: Location = {
+  description: `Swartz Bay, ${canada}`,
   position: { lat: 48.68817, lng: -123.41186 },
-  title: 'Swartz Bay ferry terminal',
+  title: 'BCSWA // Swartz Bay ferry terminal',
 };
 
-export const GBPME: Port = {
-  city: 'Portsmouth',
-  country: UK,
-  portCode: 'GBPME',
+export const GBPME: Location = {
+  description: `Portsmouth, ${unitedKingdom}`,
   position: { lat: 50.79703, lng: -1.10926 },
-  title: 'Port of Portsmouth',
+  title: 'GBPME // Port of Portsmouth',
 };
 
-export const GBRYD: Port = {
-  city: 'Ryde',
-  country: UK,
-  portCode: 'GBRYD',
+export const GBRYD: Location = {
+  description: `Ryde, ${unitedKingdom}`,
   position: { lat: 50.73935, lng: -1.16003 },
-  title: 'Ryde Pier Head',
+  title: 'GBRYD // Ryde Pier Head',
 };
 
-export const NZWLG: Port = {
-  city: 'Wellington',
-  country: NEW_ZEALAND,
-  portCode: 'NZPCN',
+export const NZWLG: Location = {
+  description: `Wellington, ${newZealand}`,
   position: { lat: -41.27993, lng: 174.78171 },
-  title: 'Port of Wellington',
+  title: 'NZPCN // Port of Wellington',
 };
 
-export const NZPCN: Port = {
-  city: 'Picton',
-  country: NEW_ZEALAND,
-  portCode: 'NZPCN',
+export const NZPCN: Location = {
+  description: `Picton, ${newZealand}`,
   position: { lat: -41.2857, lng: 174.00511 },
-  title: 'Port of Picton',
+  title: 'NZPCN // Port of Picton',
 };
 
-export const DKCPH: Port = {
-  city: 'København',
-  country: DENMARK,
-  portCode: 'DKCPH',
+export const DKCPH: Location = {
+  description: `København, ${denmark}`,
   position: { lat: 55.702022, lng: 12.59593 },
-  title: 'Port of Copenhagen',
+  title: 'DKCPH // Port of Copenhagen',
 };
 
-export const NOOSL: Port = {
-  city: 'Oslo',
-  country: NORWAY,
-  portCode: 'NOOSL',
+export const NOOSL: Location = {
+  description: `Oslo, ${norway}`,
   position: { lat: 59.902835, lng: 10.744473 },
-  title: 'Port of Oslo',
+  title: 'NOOSL // Port of Oslo',
 };
 
-export const NOSVJ: Port = {
-  city: 'Svolvær',
-  country: NORWAY,
-  portCode: 'NOSVJ',
+export const NOSVJ: Location = {
+  description: `Svolvær, ${norway}`,
   position: { lat: 68.23079, lng: 14.566888 },
-  title: 'Port of Svolvær',
+  title: 'NOSVJ // Port of Svolvær',
 };
 
-export const NOTOS: Port = {
-  city: 'Tromsø',
-  country: NORWAY,
-  portCode: 'NOTOS',
+export const NOTOS: Location = {
+  description: `Tromsø, ${norway}`,
   position: { lat: 69.648689, lng: 18.963214 },
-  title: 'Port of Tromsø',
+  title: 'NOTOS // Port of Tromsø',
 };
 
-export const NZAKL: Port = {
-  city: 'Auckland',
-  country: NEW_ZEALAND,
-  portCode: 'NZAKL',
+export const NZAKL: Location = {
+  description: `Auckland, ${newZealand}`,
   position: { lat: -36.840985, lng: 174.765767 },
-  title: 'Port of Auckland',
+  title: 'NZAKL // Port of Auckland',
 };
 
-export const NCNOU: Port = {
-  city: 'Nouméa',
-  country: NEW_CALEDONIA,
-  portCode: 'NCNOU',
+export const NCNOU: Location = {
+  description: `Nouméa, ${newCaledonia}`,
   position: { lat: -22.271686, lng: 166.436775 },
-  title: 'Port of Nouméa',
+  title: 'NCNOU // Port of Nouméa',
 };
 
-export const LIFOU: Port = {
-  city: 'Lifou',
-  country: NEW_CALEDONIA,
-  portCode: 'LIFOU',
+export const LIFOU: Location = {
+  description: `Lifou, ${newCaledonia}`,
   position: { lat: -20.909169, lng: 167.277028 },
-  title: 'Lifou Marina',
+  title: 'LIFOU // Lifou Marina',
 };
 
-export const VUVLI: Port = {
-  city: 'Port Vila',
-  country: 'Vanuatu',
-  portCode: 'VUVLI',
+export const VUVLI: Location = {
+  description: 'Port Vila, Vanuatu',
   position: { lat: -17.756154, lng: 168.29983 },
-  title: 'Port of Port Vila',
+  title: 'VUVLI // Port of Port Vila',
 };
 
-export const NCMEE: Port = {
-  city: 'Mare',
-  country: NEW_CALEDONIA,
-  portCode: 'NCMEE',
+export const NCMEE: Location = {
+  description: `Mare, ${newCaledonia}`,
   position: { lat: -21.549376, lng: 167.862849 },
-  title: 'Mare Anchor Point',
+  title: 'NCMEE // Mare Anchor Point',
 };
 
-export const PORTS: Port[] = [
+export const ports: Location[] = [
   BCTSA,
   BCSWA,
   DKCPH,

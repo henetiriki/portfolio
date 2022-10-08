@@ -1,34 +1,22 @@
-interface Location {
+export interface Location {
+  description: string;
   position: google.maps.LatLngLiteral;
   title: string;
 }
 
-interface LocationCityCountry extends Location {
-  city: string;
-  country: string;
-}
-
 export interface City extends Location {
   current?: boolean;
-  description: string;
   icon: google.maps.Symbol;
-}
-
-export interface Airport extends LocationCityCountry {
-  iataCode: string;
-}
-
-export interface Port extends LocationCityCountry {
-  portCode: string;
-}
-
-export interface Station extends LocationCityCountry {
-  stationCode: string;
 }
 
 export interface RailTrip {
   path: string;
   trip: string;
+}
+
+export interface MarkerLocations {
+  icon: google.maps.Symbol;
+  locations: Location[];
 }
 
 export interface RailTrips {

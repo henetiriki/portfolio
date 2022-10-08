@@ -87,7 +87,7 @@ import {
   ZRH,
 } from './airports';
 
-export const FLIGHTS: google.maps.LatLngLiteral[][] = [
+export const flights: google.maps.LatLngLiteral[][] = [
   [KIM.position, PLZ.position, ELS.position],
   [KIM.position, JNB.position],
   [JNB.position, AMS.position, LHR.position],
@@ -182,4 +182,4 @@ export const FLIGHTS: google.maps.LatLngLiteral[][] = [
   [SYD.position, BNE.position],
 ];
 
-export const UPCOMING_FLIGHTS: google.maps.LatLngLiteral[][] = [];
+export const upcomingFlights: google.maps.LatLngLiteral[][] = [];

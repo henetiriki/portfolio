@@ -1,263 +1,201 @@
 import {
-  DENMARK,
-  NEW_ZEALAND,
-  NORWAY,
-  SCOTLAND,
-  SWEDEN,
-  SWITZERLAND,
-  UK,
+  denmark,
+  newZealand,
+  norway,
+  scotland,
+  sweden,
+  switzerland,
+  unitedKingdom,
 } from './countries';
-import { Station } from './types';
+import { Location } from './types';
 
-export const MYB: Station = {
-  city: 'London',
-  country: UK,
+export const MYB: Location = {
+  description: `London, ${unitedKingdom}`,
   position: { lat: 51.522617, lng: -0.162974 },
-  stationCode: 'MYB',
-  title: 'London Marylebone',
+  title: 'MYB // London Marylebone',
 };
 
-export const AYS: Station = {
-  city: 'Aylesbury',
-  country: UK,
+export const AYS: Location = {
+  description: `Aylesbury, ${unitedKingdom}`,
   position: { lat: 51.813675, lng: -0.814787 },
-  stationCode: 'AYS',
-  title: 'Aylesbury Station',
+  title: 'AYS // Aylesbury Station',
 };
 
-export const KGX: Station = {
-  city: 'London',
-  country: UK,
+export const KGX: Location = {
+  description: `London, ${unitedKingdom}`,
   position: { lat: 51.531433, lng: -0.12424 },
-  stationCode: 'KGX',
-  title: `London King's Cross`,
+  title: `KGX // London King's Cross`,
 };
 
-export const EDB: Station = {
-  city: 'Edinburgh',
-  country: SCOTLAND,
+export const EDB: Location = {
+  description: `Edinburgh, ${scotland}`,
   position: { lat: 55.951842, lng: -3.190356 },
-  stationCode: 'EDB',
-  title: 'Edinburgh Waverley',
+  title: 'EDB // Edinburgh Waverley',
 };
 
-export const VIC: Station = {
-  city: 'London',
-  country: UK,
+export const VIC: Location = {
+  description: `London, ${unitedKingdom}`,
   position: { lat: 51.4952111, lng: -0.1440114 },
-  stationCode: 'VIC',
-  title: 'London Victoria',
+  title: 'VIC // London Victoria',
 };
 
-export const BTN: Station = {
-  city: 'Brighton',
-  country: UK,
+export const BTN: Location = {
+  description: `Brighton, ${unitedKingdom}`,
   position: { lat: 50.829485, lng: -0.141036 },
-  stationCode: 'BTN',
-  title: 'Brighton Station',
+  title: 'BTN // Brighton Station',
 };
 
-export const EBN: Station = {
-  city: 'Eastbourne',
-  country: UK,
+export const EBN: Location = {
+  description: `Eastbourne, ${unitedKingdom}`,
   position: { lat: 50.769411, lng: 0.281219 },
-  stationCode: 'EBN',
-  title: 'Eastbourne Station',
+  title: 'EBN // Eastbourne Station',
 };
 
-export const HGS: Station = {
-  city: 'Hastings',
-  country: UK,
+export const HGS: Location = {
+  description: `Hastings, ${unitedKingdom}`,
   position: { lat: 50.858226, lng: 0.577018 },
-  stationCode: 'HGS',
-  title: 'Hastings Station',
+  title: 'HGS // Hastings Station',
 };
 
-export const CST: Station = {
-  city: 'London',
-  country: UK,
+export const CST: Location = {
+  description: `London, ${unitedKingdom}`,
   position: { lat: 51.511275, lng: -0.090282 },
-  stationCode: 'CST',
-  title: 'London Cannon Street',
+  title: 'CST // London Cannon Street',
 };
 
-export const BAN: Station = {
-  city: 'Banbury',
-  country: UK,
+export const BAN: Location = {
+  description: `Banbury, ${unitedKingdom}`,
   position: { lat: 52.060644, lng: -1.327897 },
-  stationCode: 'BAN',
-  title: 'Banbury Station',
+  title: 'BAN // Banbury Station',
 };
 
-export const WAT: Station = {
-  city: 'London',
-  country: UK,
+export const WAT: Location = {
+  description: `London, ${unitedKingdom}`,
   position: { lat: 51.503106, lng: -0.11239 },
-  stationCode: 'WAT',
-  title: 'London Waterloo',
+  title: 'WAT // London Waterloo',
 };
 
-export const GLD: Station = {
-  city: 'Guildford',
-  country: UK,
+export const GLD: Location = {
+  description: `Guildford, ${unitedKingdom}`,
   position: { lat: 51.236765, lng: -0.580707 },
-  stationCode: 'GLD',
-  title: 'Guildford Station',
+  title: 'GLD // Guildford Station',
 };
 
-export const PAD: Station = {
-  city: 'London',
-  country: UK,
+export const PAD: Location = {
+  description: `London, ${unitedKingdom}`,
   position: { lat: 51.516609, lng: -0.176839 },
-  stationCode: 'PAD',
-  title: 'London Paddington',
+  title: 'PAD // London Paddington',
 };
 
-export const WNR: Station = {
-  city: 'Windsor',
-  country: UK,
+export const WNR: Location = {
+  description: `Windsor, ${unitedKingdom}`,
   position: { lat: 51.485719, lng: -0.606355 },
-  stationCode: 'WNR',
-  title: 'Windsor and Eton Riverside Station',
+  title: 'WNR // Windsor and Eton Riverside Station',
 };
 
-export const RDG: Station = {
-  city: 'Reading',
-  country: UK,
+export const RDG: Location = {
+  description: `Reading, ${unitedKingdom}`,
   position: { lat: 51.459205, lng: -0.972766 },
-  stationCode: 'RDG',
-  title: 'Reading Station',
+  title: 'RDG // Reading Station',
 };
 
-export const BCE: Station = {
-  city: 'Bracknell',
-  country: UK,
+export const BCE: Location = {
+  description: `Bracknell, ${unitedKingdom}`,
   position: { lat: 51.413027, lng: -0.752136 },
-  stationCode: 'BCE',
-  title: 'Bracknell Station',
+  title: 'BCE // Bracknell Station',
 };
 
-export const PME: Station = {
-  city: 'Portsmouth',
-  country: UK,
+export const PME: Location = {
+  description: `Portsmouth, ${unitedKingdom}`,
   position: { lat: 50.796958, lng: -1.107896 },
-  stationCode: 'PME',
-  title: 'Portsmouth Harbour Station Pier',
+  title: 'PME // Portsmouth Harbour Station Pier',
 };
 
-export const ZHB: Station = {
-  city: 'Zürich',
-  country: SWITZERLAND,
+export const ZHB: Location = {
+  description: `Zürich, ${switzerland}`,
   position: { lat: 47.378375, lng: 8.538908 },
-  stationCode: 'ZHB',
-  title: 'Zürich Hauptbahnhof',
+  title: 'ZHB // Zürich Hauptbahnhof',
 };
 
-export const BHB: Station = {
-  city: 'Bern',
-  country: SWITZERLAND,
+export const BHB: Location = {
+  description: `Bern, ${switzerland}`,
   position: { lat: 46.948348, lng: 7.436341 },
-  stationCode: 'BHB',
-  title: 'Bahnhof Bern',
+  title: 'BHB // Bahnhof Bern',
 };
 
-export const GDB: Station = {
-  city: 'Grindelwald',
-  country: SWITZERLAND,
+export const GDB: Location = {
+  description: `Grindelwald, ${switzerland}`,
   position: { lat: 46.624451, lng: 8.033323 },
-  stationCode: 'GDB',
-  title: 'Bahnhof Grindelwald',
+  title: 'GDB // Bahnhof Grindelwald',
 };
 
-export const CHB: Station = {
-  city: 'Chiasso',
-  country: SWITZERLAND,
+export const CHB: Location = {
+  description: `Chiasso, ${switzerland}`,
   position: { lat: 45.83183, lng: 9.031275 },
-  stationCode: 'CHB',
-  title: 'Stazione di Chiasso',
+  title: 'CHB // Stazione di Chiasso',
 };
 
-export const WEL: Station = {
-  city: 'Wellington',
-  country: NEW_ZEALAND,
+export const WEL: Location = {
+  description: `Wellington, ${newZealand}`,
   position: { lat: -41.279217, lng: 174.780331 },
-  stationCode: 'WELL',
-  title: 'Wellington Station',
+  title: 'WELL // Wellington Station',
 };
 
-export const HAM: Station = {
-  city: 'Hamilton',
-  country: NEW_ZEALAND,
+export const HAM: Location = {
+  description: `Hamilton, ${newZealand}`,
   position: { lat: -37.790919, lng: 175.26501 },
-  stationCode: 'HAM',
-  title: 'Hamilton Station',
+  title: 'HAM // Hamilton Station',
 };
 
-export const CHC: Station = {
-  city: 'Christchurch',
-  country: NEW_ZEALAND,
+export const CHC: Location = {
+  description: `Christchurch, ${newZealand}`,
   position: { lat: -43.539931, lng: 172.607988 },
-  stationCode: 'CHCH',
-  title: 'Christchurch Station',
+  title: 'CHCH // Christchurch Station',
 };
 
-export const PIC: Station = {
-  city: 'Picton',
-  country: NEW_ZEALAND,
+export const PIC: Location = {
+  description: `Picton, ${newZealand}`,
   position: { lat: -41.288347, lng: 174.004794 },
-  stationCode: 'PICT',
-  title: 'Picton Station',
+  title: 'PICT // Picton Station',
 };
 
-export const XEV: Station = {
-  city: 'Stockholm',
-  country: SWEDEN,
+export const XEV: Location = {
+  description: `Stockholm, ${sweden}`,
   position: { lat: 59.330616, lng: 18.056583 },
-  stationCode: 'XEV',
-  title: 'Stockholm Central Station',
+  title: 'XEV // Stockholm Central Station',
 };
 
-export const ZGH: Station = {
-  city: 'Copenhagen',
-  country: DENMARK,
+export const ZGH: Location = {
+  description: `Copenhagen, ${denmark}`,
   position: { lat: 55.672667, lng: 12.564894 },
-  stationCode: 'ZGH',
-  title: 'Copenhagen Central Station',
+  title: 'ZGH / Copenhagen Central Station',
 };
 
-export const XZO: Station = {
-  city: 'Oslo',
-  country: NORWAY,
+export const XZO: Location = {
+  description: `Oslo, ${norway}`,
   position: { lat: 59.910146, lng: 10.755197 },
-  stationCode: 'XZO',
-  title: 'Oslo Central Station',
+  title: 'XZO // Oslo Central Station',
 };
 
-export const QFV: Station = {
-  city: 'Bergen',
-  country: NORWAY,
+export const QFV: Location = {
+  description: `Bergen, ${norway}`,
   position: { lat: 60.390254, lng: 5.333838 },
-  stationCode: 'QFV',
-  title: 'Bergen Railway Station',
+  title: 'QFV // Bergen Railway Station',
 };
 
-export const XZT: Station = {
-  city: 'Trondheim',
-  country: NORWAY,
+export const XZT: Location = {
+  description: `Trondheim, ${norway}`,
   position: { lat: 63.436651, lng: 10.398618 },
-  stationCode: 'XZT',
-  title: 'Trondheim Central Station',
+  title: 'XZT // Trondheim Central Station',
 };
 
-export const BOO: Station = {
-  city: 'Bodø',
-  country: NORWAY,
+export const BOO: Location = {
+  description: `Bodø, ${norway}`,
   position: { lat: 67.286444, lng: 14.391597 },
-  stationCode: 'BOO',
-  title: 'Bodø Station',
+  title: 'BOO // Bodø Station',
 };
 
-export const STATIONS: Station[] = [
+export const stations: Location[] = [
   MYB,
   AYS,
   KGX,
