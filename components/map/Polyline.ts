@@ -8,14 +8,14 @@ export const Polyline: FC<
   PropsWithRef<
     google.maps.PolylineOptions & {
       idx: number;
-      journeys: google.maps.LatLngLiteral[];
+      legs: google.maps.LatLngLiteral[];
       order?: number;
     }
   >
 > = options => {
   const [polyline, setPolyline] = useState<google.maps.Polyline>();
   const [polylineReady, setPolylineReady] = useState(true);
-  const { idx, journeys, order = 1, ...polylineOpts } = options;
+  const { idx, legs, order = 1, ...polylineOpts } = options;
 
   useEffect(() => {
     if (!polyline) {
@@ -41,13 +41,13 @@ export const Polyline: FC<
 
   useEffect(() => {
     if (polyline && polylineReady) {
-      journeys.forEach((point: LatLngLiteral) => {
+      legs.forEach((point: LatLngLiteral) => {
         cancelableDelay(idx * order, () => {
           polyline.getPath().push(new google.maps.LatLng(point));
         });
       });
     }
-  }, [polylineReady, polyline, journeys, idx, order]);
+  }, [polylineReady, polyline, legs, idx, order]);
 
   return null;
 };

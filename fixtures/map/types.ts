@@ -19,12 +19,12 @@ export interface MarkerLocations {
   locations: Location[];
 }
 
+export interface TripPolylines {
+  polylineOpts: google.maps.PolylineOptions;
+  trips: google.maps.LatLngLiteral[][];
+}
+
 export interface RailTrips {
   railTrips: RailTrip[];
   upcomingRailTrips: RailTrip[];
-}
-
-export interface PolylineIconSequence {
-  linesIcons: google.maps.IconSequence[];
-  polyline: google.maps.Polyline;
 }

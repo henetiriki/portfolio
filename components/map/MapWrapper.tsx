@@ -6,13 +6,12 @@ import {
   City,
   Location,
   MarkerLocations,
+  TripPolylines,
   cities,
-  cruises,
-  flights,
   markerLocations,
+  tripPolylines,
 } from '@fixtures/map';
 import { useIntersectionObserver, useMap } from '@hooks';
-import { corn, darkCyan } from '@styles/shared';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -66,28 +65,17 @@ export const MapWrapper: FC = () => {
                 ))
             )}
           {dropMarkers &&
-            flights.map(
-              (journeys: google.maps.LatLngLiteral[], idx: number) => (
-                <Polyline
-                  idx={idx + 1}
-                  journeys={journeys}
-                  key={`${idx}-flight`}
-                  order={idx + 1}
-                  strokeColor={corn}
-                />
-              )
-            )}
-          {dropMarkers &&
-            cruises.map(
-              (journeys: google.maps.LatLngLiteral[], idx: number) => (
-                <Polyline
-                  idx={idx + flights.length}
-                  journeys={journeys}
-                  key={`${idx}-cruise`}
-                  order={idx + 1}
-                  strokeColor={darkCyan}
-                />
-              )
+            tripPolylines.map(
+              ({ polylineOpts, trips }: TripPolylines, order: number) =>
+                trips.map((legs: google.maps.LatLngLiteral[], idx: number) => (
+                  <Polyline
+                    idx={idx + 1}
+                    legs={legs}
+                    {...polylineOpts}
+                    key={`${order}${idx}`}
+                    order={order + 1}
+                  />
+                ))
             )}
         </Map>
       </Wrapper>
