@@ -29,12 +29,12 @@ export const Marker: FC<
   }, [marker]);
 
   useDeepCompareEffectForMaps(() => {
-    const { icon, idx, infoWindow, order = 1 } = options;
+    const { icon, idx, infoWindow, order = 1, ...markerOpts } = options;
 
     if (marker) {
       cancelableDelay(idx * order * 100, () => {
         marker.setOptions({
-          ...options,
+          ...markerOpts,
           animation: google.maps.Animation.DROP,
           icon: {
             ...(icon as google.maps.Symbol),

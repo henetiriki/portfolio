@@ -4,6 +4,7 @@ export const white = '#ffffff';
 export const paynesGrey = '#3b3d53';
 export const gunmetal = '#333739';
 export const deepMagenta = '#d627e2';
+export const deepCerise = '#e22778';
 export const blueViolet = '#7827e2';
 export const mediumSeaGreen = '#2ecc71';
 export const tahitiGold = '#e27827';

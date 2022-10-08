@@ -1,16 +1,17 @@
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import { FC, useEffect, useState } from 'react';
-import { Map } from '@components/map/Map';
-import { Marker } from '@components/map/Marker';
+import { Map, Marker, Polyline } from '@components/map';
 import {
   City,
   Location,
   MarkerLocations,
   cities,
+  flights,
   markerLocations,
 } from '@fixtures/map';
 import { useIntersectionObserver, useMap } from '@hooks';
+import { deepCerise } from '@styles/shared';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -62,6 +63,17 @@ export const MapWrapper: FC = () => {
                     order={order + 1}
                   />
                 ))
+            )}
+          {dropMarkers &&
+            flights.map(
+              (journeys: google.maps.LatLngLiteral[], idx: number) => (
+                <Polyline
+                  idx={idx + 1}
+                  journeys={journeys}
+                  order={idx + 1}
+                  strokeColor={deepCerise}
+                />
+              )
             )}
         </Map>
       </Wrapper>
