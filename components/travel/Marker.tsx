@@ -32,7 +32,7 @@ export const Marker: FC<
     const { icon, idx, infoWindow, order = 1, ...markerOpts } = options;
 
     if (marker) {
-      cancelableDelay(idx * order * 100, () => {
+      cancelableDelay(idx * order * 25, () => {
         marker.setOptions({
           ...markerOpts,
           animation: google.maps.Animation.DROP,

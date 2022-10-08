@@ -1,11 +1,13 @@
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import { FC, useEffect, useState } from 'react';
+import { useRailTrips } from '../../hooks/useRailTrips';
 import { Map, Marker, Polyline } from '@components/travel';
 import {
   City,
   Location,
   MarkerLocations,
+  TripPaths,
   TripPolylines,
   cities,
   markerLocations,
@@ -27,6 +29,7 @@ export const MapWrapper: FC = () => {
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.8,
   });
+  const railTripPolylines = useRailTrips();
   const [dropMarkers, setDropMarkers] = useState(false);
 
   useEffect(() => {
@@ -37,7 +40,10 @@ export const MapWrapper: FC = () => {
 
   return (
     <>
-      <Wrapper apiKey={publicRuntimeConfig.googleApiKey} render={render}>
+      <Wrapper
+        apiKey={publicRuntimeConfig.googleApiKey}
+        libraries={['geometry']}
+        render={render}>
         <Map>
           {cities.map(
             ({ description, icon, position, title }: City, idx: number) => (
@@ -74,6 +80,19 @@ export const MapWrapper: FC = () => {
                     {...polylineOpts}
                     key={`${order}${idx}`}
                     order={order + 1}
+                  />
+                ))
+            )}
+          {dropMarkers &&
+            railTripPolylines.map(
+              ({ polylineOpts, tripPaths }: TripPaths, order: number) =>
+                tripPaths.map((paths: string[], idx: number) => (
+                  <Polyline
+                    idx={tripPolylines.length + idx + 1}
+                    paths={paths}
+                    {...polylineOpts}
+                    key={`${tripPolylines.length + order}${idx}`}
+                    order={tripPolylines.length + order + 1}
                   />
                 ))
             )}

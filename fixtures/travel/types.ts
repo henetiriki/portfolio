@@ -19,6 +19,11 @@ export interface TripPolylines {
   trips: google.maps.LatLngLiteral[][];
 }
 
+export interface TripPaths {
+  polylineOpts: google.maps.PolylineOptions;
+  tripPaths: string[][];
+}
+
 export type RailTripItem = {
   path: string;
   trip: string;
