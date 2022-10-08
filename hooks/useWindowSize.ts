@@ -3,8 +3,8 @@ import { WindowSize } from './types';
 
 export const useWindowSize = (): WindowSize => {
   const [windowSize, setWindowSize] = useState<WindowSize>({
-    height: 1920,
-    width: 1080,
+    height: undefined,
+    width: undefined,
   });
 
   const handleResize = () =>

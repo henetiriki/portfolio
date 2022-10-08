@@ -1,6 +1,7 @@
-import { Container, Text } from '@nextui-org/react';
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
+import { MapWrapper } from '@components/map';
+
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 
@@ -17,10 +18,8 @@ const Travel: NextPage = (): JSX.Element => (
           steer yourself any direction you choose.” - dr. seuss
         </span>
       </Header>
-      <Content>
-        <Container>
-          <Text h1>Travel content</Text>
-        </Container>
+      <Content wrapperPadding={{ padding: '4rem 0' }}>
+        <MapWrapper />
       </Content>
     </>
   </>

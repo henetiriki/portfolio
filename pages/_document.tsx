@@ -7,6 +7,7 @@ import _Document, {
   NextScript,
 } from 'next/document';
 import { Children } from 'react';
+import { white } from '@styles/shared';
 
 class Document extends _Document {
   static async getInitialProps(ctx: DocumentContext) {
@@ -30,7 +31,7 @@ class Document extends _Document {
             content='/images/manifesticons/browserconfig.xml'
             name='msapplication-config'
           />
-          <meta content='#ffffff' name='theme-color' />
+          <meta content={white} name='theme-color' />
           <link href='/favicon.ico' rel='icon' />
           <link
             href='/images/manifesticons/apple-touch-icon.png'

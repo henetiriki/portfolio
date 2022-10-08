@@ -1,6 +1,6 @@
 export type WindowSize = {
-  height: number;
-  width: number;
+  height: number | undefined;
+  width: number | undefined;
 };
 
 export type FormValueKey = 'email' | 'heuning' | 'message' | 'name';

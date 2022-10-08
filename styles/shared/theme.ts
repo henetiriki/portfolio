@@ -1,25 +1,28 @@
 import { createTheme } from '@nextui-org/react';
 
+export const white = '#ffffff';
+export const paynesGrey = '#3b3d53';
+export const gunmetal = '#333739';
+export const pumpkin = '#ff7917';
+export const corn = '#f5eb67';
+export const pineGreen = '#00786d';
+export const darkCyan = '#009688';
+export const mediumSeaGreen = '#2ecc71';
+export const flameRed = '#911922';
+export const alizarin = '#e22734';
+export const torchRed = '#fa233E';
+
 export const theme = createTheme({
   theme: {
     colors: {
       /* eslint-disable sort-keys/sort-keys-fix */
-      white: '#fff',
-      primary: '#fff',
+      white,
+      primary: white,
       whisper: '#eee',
       silver: '#c1c1c1',
-      gray: '#888',
-      'dim-gray': '#666',
-      matterhorn: '#4f4f4f',
-      cinder: '#292b2c',
       valhalla: '#252740',
-      'midnight-express': '#121833',
-      'black-russian-light': '#101227',
       'black-russian': '#080a20',
-      salem: '#19914D',
       shamrock: '#27e278',
-      'flame-red': '#911922',
-      alizarin: '#e22734',
       /* eslint-enable sort-keys/sort-keys-fix */
     },
     fonts: {
