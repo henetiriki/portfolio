@@ -71,6 +71,7 @@ export const MapWrapper: FC = () => {
                 <Polyline
                   idx={idx + 1}
                   journeys={journeys}
+                  key={`${idx}-flight`}
                   order={idx + 1}
                   strokeColor={corn}
                 />
@@ -82,6 +83,7 @@ export const MapWrapper: FC = () => {
                 <Polyline
                   idx={idx + flights.length}
                   journeys={journeys}
+                  key={`${idx}-cruise`}
                   order={idx + 1}
                   strokeColor={darkCyan}
                 />

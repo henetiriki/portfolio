@@ -37,7 +37,7 @@ export const Polyline: FC<
       });
       setPolylineReady(true);
     }
-  }, [polyline, options]);
+  }, [polyline, polylineOpts]);
 
   useEffect(() => {
     if (polyline && polylineReady) {
@@ -47,7 +47,7 @@ export const Polyline: FC<
         });
       });
     }
-  }, [polylineReady, polyline, journeys]);
+  }, [polylineReady, polyline, journeys, idx, order]);
 
   return null;
 };
