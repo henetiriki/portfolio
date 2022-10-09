@@ -4,6 +4,7 @@ import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import { MutableRefObject, useRef } from 'react';
 import ErrorBoundary from '../components/shared/ErrorBoundary';
 import { Navigation } from '@components/nav';
 import { Layout } from '@containers/layout';
@@ -23,6 +24,7 @@ const Portfolio: NextPage<AppProps> = ({
   pageProps,
 }): JSX.Element => {
   globalStyles();
+  const pageTopRef = useRef() as MutableRefObject<HTMLDivElement>;
 
   return (
     <>
@@ -43,8 +45,8 @@ const Portfolio: NextPage<AppProps> = ({
             dark: theme.className,
           }}>
           <NextUIProvider theme={theme}>
-            <FsBackground />
-            <Navigation />
+            <FsBackground pageTopRef={pageTopRef} />
+            <Navigation pageTopRef={pageTopRef} />
             <Layout>
               <Component {...pageProps} />
             </Layout>
