@@ -16,7 +16,7 @@ export const colors = {
   mediumSeaGreen: '#2ecc71',
   shamrock: '#27e278',
   viking: '#45a8c5',
-  flameRed: '#911922',
+  allPorts: '#2C6B7E',
   alizarin: '#e22734',
   torchRed: '#fa233E',
   /* eslint-enable sort-keys/sort-keys-fix */

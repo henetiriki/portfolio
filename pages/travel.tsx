@@ -12,7 +12,7 @@ import {
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 
-const { alizarin, flameRed, pineGreen, pumpkin, torchRed } = colors;
+const { alizarin, allPorts, pineGreen, pumpkin, torchRed } = colors;
 
 const LegendContainer = styled('div', legendContainer);
 
@@ -51,7 +51,7 @@ const Travel: NextPage = (): JSX.Element => (
             <MarkerLegend color={alizarin} icon={faLocationDot}>
               stations
             </MarkerLegend>
-            <MarkerLegend color={flameRed} icon={faLocationDot}>
+            <MarkerLegend color={allPorts} icon={faLocationDot}>
               ports
             </MarkerLegend>
             <PolylineLegend color='$corn' style='solid'>
