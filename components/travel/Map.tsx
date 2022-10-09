@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { MAP_MAX_MOBILE, mapOptions } from '@fixtures/map';
+import { MAP_MAX_MOBILE, mapOptions } from '@fixtures/travel';
 import { useDeepCompareEffectForMaps, useWindowSize } from '@hooks';
 
 const MapContainer = styled('div', {

@@ -1,4 +1,6 @@
-import { gunmetal, mediumSeaGreen, paynesGrey, white } from '@styles/shared';
+import { colors } from '@styles/shared';
+
+const { gunmetal, mediumSeaGreen, paynesGrey, white } = colors;
 
 export const MAP_MAX_MOBILE = 768;
 

@@ -1,10 +1,6 @@
-import {
-  alizarin,
-  flameRed,
-  pineGreen,
-  pumpkin,
-  torchRed,
-} from '@styles/shared';
+import { colors } from '@styles/shared';
+
+const { alizarin, allPorts, pineGreen, pumpkin, torchRed } = colors;
 
 const sharedIconOpts: google.maps.Symbol = {
   fillOpacity: 0.95,
@@ -32,7 +28,7 @@ export const airportIcon: google.maps.Symbol = {
 
 export const portIcon: google.maps.Symbol = {
   ...sharedIconOpts,
-  fillColor: flameRed,
+  fillColor: allPorts,
   scale: 0.85,
 };
 

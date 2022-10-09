@@ -1,34 +1,29 @@
+import { Wrapper } from '@googlemaps/react-wrapper';
 import getConfig from 'next/config';
-import dynamic from 'next/dynamic';
 import { FC, useEffect, useState } from 'react';
-import { Map, Marker, Polyline } from '@components/map';
+import { Map, Marker, Polyline } from '@components/travel';
 import {
   City,
   Location,
   MarkerLocations,
+  TripPaths,
+  TripPolylines,
   cities,
-  cruises,
-  flights,
   markerLocations,
-} from '@fixtures/map';
+  tripPolylines,
+} from '@fixtures/travel';
+import { useRailTrips } from '@hooks';
 import { useIntersectionObserver, useMap } from '@hooks';
-import { corn, darkCyan } from '@styles/shared';
 
 const { publicRuntimeConfig } = getConfig();
 
-const Wrapper = dynamic(
-  () => import('@googlemaps/react-wrapper').then(mod => mod.Wrapper),
-  {
-    ssr: false,
-  }
-);
-
 export const MapWrapper: FC = () => {
   const { render } = useMap();
-  const [dropMarkers, setDropMarkers] = useState(false);
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.8,
   });
+  const railTripPolylines = useRailTrips();
+  const [dropMarkers, setDropMarkers] = useState(false);
 
   useEffect(() => {
     if (!dropMarkers && isVisible) {
@@ -38,7 +33,10 @@ export const MapWrapper: FC = () => {
 
   return (
     <>
-      <Wrapper apiKey={publicRuntimeConfig.googleApiKey} render={render}>
+      <Wrapper
+        apiKey={publicRuntimeConfig.googleApiKey}
+        libraries={['geometry']}
+        render={render}>
         <Map>
           {cities.map(
             ({ description, icon, position, title }: City, idx: number) => (
@@ -66,28 +64,30 @@ export const MapWrapper: FC = () => {
                 ))
             )}
           {dropMarkers &&
-            flights.map(
-              (journeys: google.maps.LatLngLiteral[], idx: number) => (
-                <Polyline
-                  idx={idx + 1}
-                  journeys={journeys}
-                  key={`${idx}-flight`}
-                  order={idx + 1}
-                  strokeColor={corn}
-                />
-              )
+            tripPolylines.map(
+              ({ polylineOpts, trips }: TripPolylines, order: number) =>
+                trips.map((legs: google.maps.LatLngLiteral[], idx: number) => (
+                  <Polyline
+                    idx={idx + 1}
+                    legs={legs}
+                    {...polylineOpts}
+                    key={`${order}${idx}`}
+                    order={order + 1}
+                  />
+                ))
             )}
           {dropMarkers &&
-            cruises.map(
-              (journeys: google.maps.LatLngLiteral[], idx: number) => (
-                <Polyline
-                  idx={idx + flights.length}
-                  journeys={journeys}
-                  key={`${idx}-cruise`}
-                  order={idx + 1}
-                  strokeColor={darkCyan}
-                />
-              )
+            railTripPolylines.map(
+              ({ polylineOpts, tripPaths }: TripPaths, order: number) =>
+                tripPaths.map((paths: string[], idx: number) => (
+                  <Polyline
+                    idx={tripPolylines.length + idx + 1}
+                    paths={paths}
+                    {...polylineOpts}
+                    key={`${tripPolylines.length + order}${idx}`}
+                    order={tripPolylines.length + order + 1}
+                  />
+                ))
             )}
         </Map>
       </Wrapper>

@@ -13,8 +13,26 @@ export const Marker: FC<
   >
 > = options => {
   const [marker, setMarker] = useState<google.maps.Marker>();
+  const [markerReady, setMarkerReady] = useState(false);
   const [eventListener, setEventListener] =
     useState<google.maps.MapsEventListener>();
+  const { icon, idx, infoWindow, map, order = 1, ...markerOpts } = options;
+
+  const showInfoWindow = (): void => {
+    const { description, title } = options;
+
+    marker?.setAnimation(google.maps.Animation.BOUNCE);
+    cancelableDelay(2000, () => {
+      marker?.setAnimation(null);
+    });
+    infoWindow?.setContent(
+      `<div>
+          <h4 style="color:#27e278;font-size:1rem">${title}</h4>
+          <p style="color:#292b2c;font-size:0.85rem">${description}</p>
+      </div>`
+    );
+    infoWindow?.open(map, marker);
+  };
 
   useEffect(() => {
     if (!marker) {
@@ -29,18 +47,14 @@ export const Marker: FC<
   }, [marker]);
 
   useDeepCompareEffectForMaps(() => {
-    const { icon, idx, infoWindow, order = 1, ...markerOpts } = options;
-
     if (marker) {
-      cancelableDelay(idx * order * 100, () => {
-        marker.setOptions({
-          ...markerOpts,
-          animation: google.maps.Animation.DROP,
-          icon: {
-            ...(icon as google.maps.Symbol),
-            anchor: new google.maps.Point(10, 20),
-          },
-        });
+      marker.setOptions({
+        ...markerOpts,
+        animation: google.maps.Animation.DROP,
+        icon: {
+          ...(icon as google.maps.Symbol),
+          anchor: new google.maps.Point(10, 20),
+        },
       });
 
       if (!eventListener) {
@@ -50,6 +64,8 @@ export const Marker: FC<
           })
         );
       }
+
+      setMarkerReady(true);
     }
 
     return () => {
@@ -58,23 +74,15 @@ export const Marker: FC<
       }
       infoWindow?.close();
     };
-  }, [marker, options, eventListener]);
+  }, [marker, markerOpts, eventListener]);
 
-  const showInfoWindow = (): void => {
-    const { description, infoWindow, map, title } = options;
-
-    marker?.setAnimation(google.maps.Animation.BOUNCE);
-    cancelableDelay(2000, () => {
-      marker?.setAnimation(null);
-    });
-    infoWindow?.setContent(
-      `<div>
-          <h4 style="color:#27e278;font-size:1rem">${title}</h4>
-          <p style="color:#292b2c;font-size:0.85rem">${description}</p>
-      </div>`
-    );
-    infoWindow?.open(map, marker);
-  };
+  useEffect(() => {
+    if (map && marker && markerReady) {
+      cancelableDelay(idx * order * 100, () => {
+        marker.setMap(map);
+      });
+    }
+  }, [markerReady, marker, map, idx, order]);
 
   return null;
 };

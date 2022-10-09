@@ -5,4 +5,5 @@ export * from './useIgImgId';
 export * from './useIntersectionObserver';
 export * from './useMap';
 export * from './useMediaQuery';
+export * from './useRailTrips';
 export * from './useWindowSize';
