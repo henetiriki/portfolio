@@ -1,7 +1,6 @@
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import { FC, useEffect, useState } from 'react';
-import { useRailTrips } from '../../hooks/useRailTrips';
 import { Map, Marker, Polyline } from '@components/travel';
 import {
   City,
@@ -13,6 +12,7 @@ import {
   markerLocations,
   tripPolylines,
 } from '@fixtures/travel';
+import { useRailTrips } from '@hooks';
 import { useIntersectionObserver, useMap } from '@hooks';
 
 const { publicRuntimeConfig } = getConfig();

@@ -1,10 +1,6 @@
-import {
-  alizarin,
-  flameRed,
-  pineGreen,
-  pumpkin,
-  torchRed,
-} from '@styles/shared';
+import { colors } from '@styles/shared';
+
+const { alizarin, flameRed, pineGreen, pumpkin, torchRed } = colors;
 
 const sharedIconOpts: google.maps.Symbol = {
   fillOpacity: 0.95,

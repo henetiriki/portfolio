@@ -1,7 +1,9 @@
 import { cruises, upcomingCruises } from '@fixtures/travel/cruises';
 import { flights, upcomingFlights } from '@fixtures/travel/flights';
 import { TripPolylines } from '@fixtures/travel/types';
-import { corn, viking } from '@styles/shared';
+import { colors } from '@styles/shared';
+
+const { corn, viking } = colors;
 
 export const sharedPolylineOpts: google.maps.PolylineOptions = {
   geodesic: true,

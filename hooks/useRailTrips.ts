@@ -5,8 +5,10 @@ import {
   TripPaths,
   sharedPolylineOpts,
 } from '@fixtures/travel';
-import { torchRed } from '@styles/shared';
+import { colors } from '@styles/shared';
 import { fetcher } from '@utils/common';
+
+const { torchRed } = colors;
 
 export const useRailTrips = (): TripPaths[] => {
   const [railTripPolylines, setRailTripPolylines] = useState<TripPaths[]>([]);

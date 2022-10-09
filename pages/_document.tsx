@@ -7,7 +7,9 @@ import _Document, {
   NextScript,
 } from 'next/document';
 import { Children } from 'react';
-import { white } from '@styles/shared';
+import { colors } from '@styles/shared';
+
+const { white } = colors;
 
 class Document extends _Document {
   static async getInitialProps(ctx: DocumentContext) {

@@ -14,16 +14,16 @@ export const Navigation: FC = (): JSX.Element => {
 
   useEffect(() => {
     if (navExpanded) {
-      if (navContainerBgColor !== '$black-russian') {
-        setNavContainerBgColor('$black-russian');
+      if (navContainerBgColor !== '$blackRussian') {
+        setNavContainerBgColor('$blackRussian');
       }
 
       return;
     }
 
     if (scrollPosition > 10) {
-      if (navContainerBgColor !== '$black-russian') {
-        setNavContainerBgColor('$black-russian');
+      if (navContainerBgColor !== '$blackRussian') {
+        setNavContainerBgColor('$blackRussian');
       }
 
       return;
