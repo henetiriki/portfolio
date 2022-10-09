@@ -8,6 +8,7 @@ import { MutableRefObject, useRef } from 'react';
 import ErrorBoundary from '../components/shared/ErrorBoundary';
 import { Navigation } from '@components/nav';
 import { Layout } from '@containers/layout';
+import { PortfolioStateProvider } from '@state/context';
 import { globalStyles, theme } from '@styles/shared';
 import { fullTitle } from '@utils/head';
 import '@styles/shared/Toastify.css';
@@ -45,11 +46,13 @@ const Portfolio: NextPage<AppProps> = ({
             dark: theme.className,
           }}>
           <NextUIProvider theme={theme}>
-            <FsBackground pageTopRef={pageTopRef} />
-            <Navigation pageTopRef={pageTopRef} />
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            <PortfolioStateProvider>
+              <FsBackground pageTopRef={pageTopRef} />
+              <Navigation pageTopRef={pageTopRef} />
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </PortfolioStateProvider>
           </NextUIProvider>
         </NextThemesProvider>
       </ErrorBoundary>
