@@ -6,6 +6,7 @@ export const colors = {
   primary: '#ffffff',
   whisper: '#eee',
   silver: '#c1c1c1',
+  matterhorn: '#4f4f4f',
   gunmetal: '#333739',
   paynesGrey: '#3b3d53',
   valhalla: '#252740',

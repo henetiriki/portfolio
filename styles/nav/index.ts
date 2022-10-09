@@ -49,3 +49,37 @@ export const navTypography: CSS = {
   fs: '$sm',
   tt: 'uppercase',
 };
+
+export const navTopContainer: CSS = {
+  ai: 'center',
+  d: 'flex',
+  jc: 'flex-end',
+  /* eslint-disable sort-keys/sort-keys-fix */
+  '@xs': {
+    jc: 'space-between',
+  },
+  /* eslint-enable sort-keys/sort-keys-fix */
+};
+
+export const navBrand: CSS = {
+  '@xs': {
+    w: '12%',
+  },
+};
+
+export const scrollToTop: CSS = {
+  '&:hover': {
+    bc: '$shamrock',
+  },
+  bc: '$matterhorn',
+  bottom: '20px',
+  br: '40px',
+  color: '$white',
+  cursor: 'pointer',
+  outline: 'none',
+  p: '10px 8px 5px',
+  position: 'fixed',
+  right: '30px',
+  ta: 'center',
+  zIndex: 2,
+};
