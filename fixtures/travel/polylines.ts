@@ -1,7 +1,7 @@
 import { cruises, upcomingCruises } from '@fixtures/travel/cruises';
 import { flights, upcomingFlights } from '@fixtures/travel/flights';
 import { TripPolylines } from '@fixtures/travel/types';
-import { corn, darkCyan } from '@styles/shared';
+import { corn, viking } from '@styles/shared';
 
 export const sharedPolylineOpts: google.maps.PolylineOptions = {
   geodesic: true,
@@ -39,7 +39,7 @@ export const tripPolylines: TripPolylines[] = [
   {
     polylineOpts: {
       ...sharedPolylineOpts,
-      strokeColor: darkCyan,
+      strokeColor: viking,
     },
     trips: cruises,
   },
@@ -50,7 +50,7 @@ export const tripPolylines: TripPolylines[] = [
         {
           icon: {
             path: 'M 0, -1 0,1',
-            strokeColor: darkCyan,
+            strokeColor: viking,
             strokeOpacity: 0.9,
             strokeWeight: 1.5,
           },
