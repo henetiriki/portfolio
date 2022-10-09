@@ -4,7 +4,11 @@ import Head from 'next/head';
 import { Content, Header } from '@components/content';
 import { MapWrapper, MarkerLegend, PolylineLegend } from '@components/travel';
 import { colors } from '@styles/shared';
-import { legendContainer } from '@styles/travel';
+import {
+  legendContainer,
+  travelContainerBottom,
+  travelContainerTop,
+} from '@styles/travel';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 
@@ -25,12 +29,12 @@ const Travel: NextPage = (): JSX.Element => (
           steer yourself any direction you choose.” - dr. seuss
         </span>
       </Header>
-      <Content wrapperPadding={{ padding: '4rem 0' }}>
-        <Container css={{ pb: '$2xl', pt: '$2xl' }}>
+      <Content wrapperPadding={{ padding: '0' }}>
+        <Container css={travelContainerTop}>
           <Text h2>Travel history</Text>
         </Container>
         <MapWrapper />
-        <Container css={{ pt: '$2xl' }}>
+        <Container css={travelContainerBottom}>
           <Text css={{ pb: '$lg' }} h3>
             Legend
           </Text>
