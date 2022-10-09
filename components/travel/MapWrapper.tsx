@@ -1,5 +1,5 @@
+import { Wrapper } from '@googlemaps/react-wrapper';
 import getConfig from 'next/config';
-import dynamic from 'next/dynamic';
 import { FC, useEffect, useState } from 'react';
 import { Map, Marker, Polyline } from '@components/travel';
 import {
@@ -16,13 +16,6 @@ import { useRailTrips } from '@hooks';
 import { useIntersectionObserver, useMap } from '@hooks';
 
 const { publicRuntimeConfig } = getConfig();
-
-const Wrapper = dynamic(
-  () => import('@googlemaps/react-wrapper').then(mod => mod.Wrapper),
-  {
-    ssr: false,
-  }
-);
 
 export const MapWrapper: FC = () => {
   const { render } = useMap();
