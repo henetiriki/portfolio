@@ -3,6 +3,11 @@ import { sharedPolylineOpts } from '@fixtures/travel';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { cancelableDelay } from '@utils/common';
 
+type BuildPathProps = {
+  legs?: google.maps.LatLngLiteral[];
+  paths?: string[];
+};
+
 export const Polyline: FC<
   PropsWithRef<
     google.maps.PolylineOptions & {
@@ -14,8 +19,24 @@ export const Polyline: FC<
   >
 > = options => {
   const [polyline, setPolyline] = useState<google.maps.Polyline>();
-  const [polylineReady, setPolylineReady] = useState(true);
-  const { idx, legs = [], paths = [], order = 1, ...polylineOpts } = options;
+  const [polylineReady, setPolylineReady] = useState(false);
+  const { idx, legs, map, order = 1, paths, ...polylineOpts } = options;
+
+  const buildPath = ({ legs, paths }: BuildPathProps): google.maps.LatLng[] => {
+    if (legs) {
+      return legs.map(
+        (point: google.maps.LatLngLiteral) => new google.maps.LatLng(point)
+      );
+    }
+
+    if (paths) {
+      const [path] = paths;
+
+      return google.maps.geometry.encoding.decodePath(path);
+    }
+
+    return [];
+  };
 
   useEffect(() => {
     if (!polyline) {
@@ -34,30 +55,17 @@ export const Polyline: FC<
       polyline.setOptions({
         ...sharedPolylineOpts,
         ...polylineOpts,
+        path: buildPath({ legs, paths }),
       });
       setPolylineReady(true);
     }
-  }, [polyline, polylineOpts]);
+  }, [polyline, polylineOpts, legs, paths]);
 
   useEffect(() => {
-    if (polyline && polylineReady) {
-      legs.forEach((point: google.maps.LatLngLiteral) => {
-        cancelableDelay(idx * order * 50, () => {
-          polyline.getPath().push(new google.maps.LatLng(point));
-        });
-      });
-      paths.forEach((path: string) => {
-        const pathPoints: google.maps.LatLng[] =
-          google.maps.geometry.encoding.decodePath(path);
-
-        pathPoints.forEach(({ lat, lng }: google.maps.LatLng) => {
-          cancelableDelay(idx * order * 50, () => {
-            polyline.getPath().push(new google.maps.LatLng({ lat: lat(), lng: lng() }));
-          });
-        });
-      });
+    if (map && polyline && polylineReady) {
+      cancelableDelay(idx * order * 100, () => polyline.setMap(map));
     }
-  }, [polylineReady, polyline, legs, paths, idx, order]);
+  }, [polylineReady, polyline, map, idx, order]);
 
   return null;
 };
