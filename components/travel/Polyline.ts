@@ -2,7 +2,6 @@ import { FC, PropsWithRef, useEffect, useState } from 'react';
 import { sharedPolylineOpts } from '@fixtures/travel';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { cancelableDelay } from '@utils/common';
-import LatLngLiteral = google.maps.LatLngLiteral;
 
 export const Polyline: FC<
   PropsWithRef<
@@ -42,7 +41,7 @@ export const Polyline: FC<
 
   useEffect(() => {
     if (polyline && polylineReady) {
-      legs.forEach((point: LatLngLiteral) => {
+      legs.forEach((point: google.maps.LatLngLiteral) => {
         cancelableDelay(idx * order * 50, () => {
           polyline.getPath().push(new google.maps.LatLng(point));
         });
@@ -51,9 +50,9 @@ export const Polyline: FC<
         const pathPoints: google.maps.LatLng[] =
           google.maps.geometry.encoding.decodePath(path);
 
-        pathPoints.forEach(point => {
+        pathPoints.forEach(({ lat, lng }: google.maps.LatLng) => {
           cancelableDelay(idx * order * 50, () => {
-            polyline.getPath().push(point);
+            polyline.getPath().push(new google.maps.LatLng({ lat: lat(), lng: lng() }));
           });
         });
       });
