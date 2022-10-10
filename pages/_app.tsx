@@ -37,9 +37,14 @@ const Portfolio: NextPage<AppProps> = ({
         <title key='pageTitle'>{fullTitle('Portfolio')}</title>
         <meta content='width=device-width, initial-scale=1' name='viewport' />
         <meta
-          content='On-line Portfolio and CV for Louw Swart - Front-end Developer based in Wellington, New Zealand'
+          content='On-line Portfolio and CV for Louw Swart - Front-end Engineer based in Wellington, New Zealand'
           key='pageDescription'
           name='description'
+        />
+        <meta
+          content='louw swart portfolio cv javascript ui developer front-end engineer traveller photographer'
+          key='pageKeywords'
+          name='keywords'
         />
       </Head>
       <ErrorBoundary>

@@ -8,7 +8,7 @@ import { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { Content, Header } from '@components/content';
-import { jobs, schools } from '@fixtures/experience';
+import { Job, School, jobs, schools } from '@fixtures/experience';
 import { usePortfolioState } from '@state/context';
 import {
   timeline,
@@ -24,6 +24,10 @@ import {
   videoContainer,
 } from '@styles/experience';
 import { getServerSideProps } from '@utils/common';
+import {
+  getExperienceDescription,
+  getExperienceKeywords,
+} from '@utils/experience';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 
@@ -52,6 +56,16 @@ const Experience: NextPage = ({
     <>
       <Head>
         <title key='pageTitle'>{fullTitle('Experience')}</title>
+        <meta
+          content={`Companies & Roles: ${getExperienceDescription(jobs)}`}
+          key='pageDescription'
+          name='description'
+        />
+        <meta
+          content={getExperienceKeywords(jobs)}
+          key='pageKeywords'
+          name='keywords'
+        />
       </Head>
       <>
         <Header>
@@ -75,10 +89,10 @@ const Experience: NextPage = ({
                     content,
                     institution: { location, name, url },
                     title,
-                    video: { videoTitle, videoUrl } = {},
+                    video,
                     year: { from, to },
-                  },
-                  idx
+                  }: Job,
+                  idx: number
                 ) => (
                   <TimelineBox key={idx}>
                     <TimelineContent>
@@ -112,14 +126,14 @@ const Experience: NextPage = ({
                           {accomplishments}
                         </>
                       )}
-                      {videoUrl && (
+                      {video && (
                         <VideoContainer>
                           <iframe
                             allowFullScreen
                             className='youtube-frame'
                             height='720'
-                            src={videoUrl}
-                            title={videoTitle}
+                            src={video.videoUrl}
+                            title={video.videoTitle}
                             width='1280'
                           />
                         </VideoContainer>
@@ -150,8 +164,8 @@ const Experience: NextPage = ({
                     institution: { location, name, url },
                     qualification,
                     year: { from, to },
-                  },
-                  idx
+                  }: School,
+                  idx: number
                 ) => (
                   <TimelineBox key={idx}>
                     <TimelineContent>

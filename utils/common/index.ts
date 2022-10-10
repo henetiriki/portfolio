@@ -1,5 +1,6 @@
 export * from './blurDataURL';
 export * from './fetcher';
+export * from './getNodeText';
 export * from './getServerSideProps';
 export * from './delay';
 export * from './randomItem';

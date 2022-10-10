@@ -22,6 +22,16 @@ const Contact: NextPage = ({
     <>
       <Head>
         <title key='pageTitle'>{fullTitle('Contact')}</title>
+        <meta
+          content='Get in touch to have a chat'
+          key='pageDescription'
+          name='description'
+        />
+        <meta
+          content='contact chat message'
+          key='pageKeywords'
+          name='keywords'
+        />
       </Head>
       <>
         <Header>

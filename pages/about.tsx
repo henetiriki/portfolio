@@ -24,6 +24,16 @@ const About: NextPage = ({
     <>
       <Head>
         <title key='pageTitle'>{fullTitle('About')}</title>
+        <meta
+          content='I’m a Front-end Engineer using Javascript frameworks such as React, Next.js and Node.js'
+          key='pageDescription'
+          name='description'
+        />
+        <meta
+          content='agile javascript node.js next.js open source react'
+          key='pageKeywords'
+          name='keywords'
+        />
       </Head>
       <>
         <Header>
@@ -34,7 +44,7 @@ const About: NextPage = ({
             <Container as='div' css={{ jc: 'left' }}>
               <Text h2>Louw Swart</Text>
               <Spacer y={1} />
-              <Text h4>Front-end Developer, Wellington</Text>
+              <Text h4>Front-end Engineer, Wellington</Text>
               <Text>
                 I have been in <b>Software Development</b> since 2008, with most
                 of that time spent in <b>Agile environments</b>, designing,
