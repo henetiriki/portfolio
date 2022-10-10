@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
 import { sharedPolylineOpts } from '@fixtures/travel';
 import { RailTripItem, RailTrips, TripPaths } from '@fixtures/travel/types';
+import { usePortfolioState } from '@state/context';
 import { colors } from '@styles/shared';
 import { fetcher } from '@utils/common';
 
 const { torchRed } = colors;
 
 export const useRailTrips = (): TripPaths[] => {
-  const [railTripPolylines, setRailTripPolylines] = useState<TripPaths[]>([]);
+  const {
+    dispatch,
+    state: { railTripPolylines = [] },
+  } = usePortfolioState();
+  const [fetching, setFetching] = useState(false);
 
-  const fetchRailtrips = async () => {
+  const fetchRailtrips = async (): Promise<TripPaths[]> => {
     const { trips, upcomingTrips } = await fetcher<RailTrips>(
       '/api/rail-trips'
     );
@@ -24,7 +29,7 @@ export const useRailTrips = (): TripPaths[] => {
       upcomingRailTrips[idx] = [path];
     });
 
-    const polylines: TripPaths[] = [
+    return [
       {
         polylineOpts: {
           ...sharedPolylineOpts,
@@ -52,13 +57,20 @@ export const useRailTrips = (): TripPaths[] => {
         tripPaths: upcomingRailTrips,
       },
     ];
-
-    setRailTripPolylines(polylines);
   };
 
   useEffect(() => {
-    fetchRailtrips().then();
-  }, []);
+    if (!railTripPolylines.length && !fetching) {
+      setFetching(true);
+      fetchRailtrips().then((railTripPolylines: TripPaths[]) => {
+        setFetching(false);
+        dispatch({
+          payload: { railTripPolylines },
+          type: 'set-rail-trip-polylines',
+        });
+      });
+    }
+  }, [railTripPolylines]);
 
   return railTripPolylines;
 };

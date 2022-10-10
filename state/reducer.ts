@@ -11,5 +11,9 @@ export const reducer = (
       const { id } = payload;
 
       return { ...state, id };
+    case 'set-rail-trip-polylines':
+      const { railTripPolylines } = payload;
+
+      return { ...state, railTripPolylines };
   }
 };
