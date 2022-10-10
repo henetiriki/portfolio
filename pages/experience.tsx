@@ -14,8 +14,14 @@ import {
   timeline,
   timelineBox,
   timelineContent,
+  timelineFromTo,
   timelineHeading,
   timelineIndicator,
+  timelineLink,
+  timelineLinkText,
+  timelineLocation,
+  timelineTitle,
+  videoContainer,
 } from '@styles/experience';
 import { getServerSideProps } from '@utils/common';
 import { fullTitle } from '@utils/head';
@@ -30,6 +36,8 @@ const Timeline = styled('div', timeline);
 const TimelineBox = styled('div', timelineBox);
 
 const TimelineContent = styled('div', timelineContent);
+
+const VideoContainer = styled('div', videoContainer);
 
 const Experience: NextPage = ({
   data: { id },
@@ -67,28 +75,20 @@ const Experience: NextPage = ({
                     content,
                     institution: { location, name, url },
                     title,
+                    video: { videoTitle, videoUrl } = {},
                     year: { from, to },
                   },
                   idx
                 ) => (
                   <TimelineBox key={idx}>
                     <TimelineContent>
-                      <Text
-                        css={{ color: '$silver', fontStyle: 'italic', mb: 0 }}
-                        span>
+                      <Text css={timelineFromTo} span>
                         {from} - {to}
                       </Text>{' '}
                       {url && (
-                        <Text css={{ fs: '$lg', mb: 0 }}>
+                        <Text css={timelineLinkText}>
                           <Link
-                            css={{
-                              color: '$shamrock',
-                              span: {
-                                fontStyle: 'italic',
-                                fs: '$sm',
-                                pl: '$2',
-                              },
-                            }}
+                            css={timelineLink}
                             href={url}
                             isExternal
                             rel='noopener noreferrer'
@@ -97,24 +97,11 @@ const Experience: NextPage = ({
                           </Link>
                         </Text>
                       )}
-                      {!url && <Text css={{ fs: '$lg', mb: 0 }}>{name}</Text>}
-                      <Text
-                        css={{
-                          color: '$silver',
-                          span: {
-                            fontStyle: 'italic',
-                          },
-                        }}
-                        size='$xs'>
+                      {!url && <Text css={timelineLinkText}>{name}</Text>}
+                      <Text css={timelineLocation} size='$xs'>
                         {location}
                       </Text>
-                      <Text
-                        css={{
-                          span: {
-                            fs: '$lg',
-                          },
-                        }}
-                        h3>
+                      <Text css={timelineTitle} h3>
                         {title}
                       </Text>
                       {content}
@@ -124,6 +111,18 @@ const Experience: NextPage = ({
                           <Text h5>Accomplishments</Text>
                           {accomplishments}
                         </>
+                      )}
+                      {videoUrl && (
+                        <VideoContainer>
+                          <iframe
+                            allowFullScreen
+                            className='youtube-frame'
+                            height='720'
+                            src={videoUrl}
+                            title={videoTitle}
+                            width='1280'
+                          />
+                        </VideoContainer>
                       )}
                     </TimelineContent>
                   </TimelineBox>
@@ -156,16 +155,12 @@ const Experience: NextPage = ({
                 ) => (
                   <TimelineBox key={idx}>
                     <TimelineContent>
-                      <Text
-                        css={{ color: '$silver', fontStyle: 'italic', mb: 0 }}
-                        span>
+                      <Text css={timelineFromTo} span>
                         {from} - {to}
                       </Text>{' '}
-                      <Text css={{ fs: '$lg', mb: 0 }}>
+                      <Text css={timelineLinkText}>
                         <Link
-                          css={{
-                            color: '$shamrock',
-                          }}
+                          css={timelineLink}
                           href={url}
                           isExternal
                           rel='noopener noreferrer'
@@ -173,10 +168,12 @@ const Experience: NextPage = ({
                           {name}
                         </Link>
                       </Text>
-                      <Text css={{ color: '$silver' }} size='$xs'>
+                      <Text css={timelineLocation} size='$xs'>
                         {location}
                       </Text>
-                      <Text h3>{qualification}</Text>
+                      <Text css={timelineTitle} h3>
+                        {qualification}
+                      </Text>
                       {content}
                     </TimelineContent>
                   </TimelineBox>

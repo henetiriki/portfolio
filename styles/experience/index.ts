@@ -64,3 +64,57 @@ export const timelineContent: CSS = {
   p: '20px',
   position: 'relative',
 };
+
+export const timelineFromTo: CSS = {
+  color: '$silver',
+  fontStyle: 'italic',
+  mb: 0,
+};
+
+export const timelineLocation: CSS = {
+  color: '$silver',
+  span: {
+    fontStyle: 'italic',
+  },
+};
+
+export const timelineLinkText: CSS = {
+  fs: '$lg',
+  mb: 0,
+};
+
+export const timelineLink: CSS = {
+  color: '$shamrock',
+  span: {
+    fontStyle: 'italic',
+    fs: '$sm',
+    pl: '$2',
+  },
+};
+
+export const timelineTitle: CSS = {
+  span: {
+    fs: '$lg',
+  },
+};
+
+export const videoContainer: CSS = {
+  '.youtube-frame': {
+    border: '0',
+  },
+  h: '0',
+  'iframe, object, embed': {
+    border: 0,
+    h: '100%',
+    left: '0',
+    position: 'absolute',
+    top: '0',
+    w: '100%',
+  },
+  mb: '$lg',
+  mt: '$2xl',
+  ov: 'hidden',
+  pb: '30%',
+  position: 'relative',
+  pt: '26.3%',
+};

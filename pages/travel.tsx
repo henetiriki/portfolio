@@ -1,10 +1,9 @@
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { Container, Text, styled } from '@nextui-org/react';
 import { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { Content, Header } from '@components/content';
-import { MapWrapper, MarkerLegend, PolylineLegend } from '@components/travel';
+import { Legend, MapWrapper } from '@components/travel';
 import { usePortfolioState } from '@state/context';
 import { colors } from '@styles/shared';
 import {
@@ -48,44 +47,7 @@ const Travel: NextPage = ({
           </Container>
           <MapWrapper />
           <Container css={travelContainerBottom}>
-            <Text css={{ pb: '$lg' }} h3>
-              Legend
-            </Text>
-            <LegendContainer>
-              <MarkerLegend color={torchRed} icon={faLocationDot}>
-                current location
-              </MarkerLegend>
-              <MarkerLegend color={pumpkin} icon={faLocationDot}>
-                past locations
-              </MarkerLegend>
-              <MarkerLegend color={pineGreen} icon={faLocationDot}>
-                airports
-              </MarkerLegend>
-              <MarkerLegend color={alizarin} icon={faLocationDot}>
-                stations
-              </MarkerLegend>
-              <MarkerLegend color={allPorts} icon={faLocationDot}>
-                ports
-              </MarkerLegend>
-              <PolylineLegend color='$corn' style='solid'>
-                flights
-              </PolylineLegend>
-              <PolylineLegend color='$torchRed' style='solid'>
-                train rides
-              </PolylineLegend>
-              <PolylineLegend color='$viking' style='solid'>
-                sailings
-              </PolylineLegend>
-              <PolylineLegend color='$corn' style='dotted'>
-                upcoming flights
-              </PolylineLegend>
-              <PolylineLegend color='$torchRed' style='dotted'>
-                upcoming train rides
-              </PolylineLegend>
-              <PolylineLegend color='$viking' style='dotted'>
-                upcoming sailings
-              </PolylineLegend>
-            </LegendContainer>
+            <Legend />
           </Container>
         </Content>
       </>
