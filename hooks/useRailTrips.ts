@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
-import {
-  RailTripItem,
-  RailTrips,
-  TripPaths,
-  sharedPolylineOpts,
-} from '@fixtures/travel';
+import { sharedPolylineOpts } from '@fixtures/travel';
+import { RailTripItem, RailTrips, TripPaths } from '@fixtures/travel/types';
 import { colors } from '@styles/shared';
 import { fetcher } from '@utils/common';
 

@@ -1,4 +1,4 @@
-import { ErrorMessage } from './types';
+import { ErrorMessage } from '@fixtures/types';
 
 export const genericError: JSX.Element = (
   <>Something unexpected happened - please try again later...</>

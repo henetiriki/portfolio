@@ -1,4 +1,4 @@
-import { Job } from '@fixtures/experience';
+import { Job } from '@fixtures/types';
 import { getNodeText } from '@utils/common';
 
 const getUniqueValues = (jobs: Job[]): string[] => {
