@@ -1,7 +1,6 @@
 import { Container } from '@nextui-org/react';
 import getConfig from 'next/config';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { FC, RefObject } from 'react';
 import { useIgImgId, useWindowSize } from '@hooks';
 import { blurDataURL } from '@utils/common';
@@ -11,8 +10,7 @@ const { publicRuntimeConfig } = getConfig();
 export const FsBackground: FC<{
   pageTopRef: RefObject<HTMLDivElement> | undefined;
 }> = ({ pageTopRef }) => {
-  const router = useRouter();
-  const igImgId = useIgImgId(router);
+  const igImgId = useIgImgId();
   const { height = 1920, width = 1080 } = useWindowSize();
 
   return (
