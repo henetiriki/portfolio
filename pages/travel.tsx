@@ -1,23 +1,14 @@
-import { Container, Text, styled } from '@nextui-org/react';
+import { Container, Text } from '@nextui-org/react';
 import { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { Content, Header } from '@components/content';
 import { Legend, MapWrapper } from '@components/travel';
 import { usePortfolioState } from '@state/context';
-import { colors } from '@styles/shared';
-import {
-  legendContainer,
-  travelContainerBottom,
-  travelContainerTop,
-} from '@styles/travel';
+import { travelContainerBottom, travelContainerTop } from '@styles/travel';
 import { getServerSideProps } from '@utils/common';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
-
-const { alizarin, allPorts, pineGreen, pumpkin, torchRed } = colors;
-
-const LegendContainer = styled('div', legendContainer);
 
 const Travel: NextPage = ({
   data: { id },
@@ -32,6 +23,17 @@ const Travel: NextPage = ({
     <>
       <Head>
         <title key='pageTitle'>{fullTitle('Travel')}</title>
+        <meta
+          content='“You have brains in your head. You have feet in your shoes. You can
+            steer yourself any direction you choose.” - Dr. Seuss'
+          key='pageDescription'
+          name='description'
+        />
+        <meta
+          content='planes trains ferries cruise ships'
+          key='pageKeywords'
+          name='keywords'
+        />
       </Head>
       <>
         <Header>

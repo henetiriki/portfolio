@@ -1,1 +1,1 @@
-export * from './fullTitle';
+export const fullTitle = (title: string) => `${title?.trim()} // Louw Swart`;
