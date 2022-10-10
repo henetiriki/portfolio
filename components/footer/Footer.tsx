@@ -1,16 +1,19 @@
-import { Container, Link, Row } from '@nextui-org/react';
+import { Container, Link, Row, Text } from '@nextui-org/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
 import { Copyright } from '@components/footer';
 import { Logo } from '@components/shared';
+import buildTimeConfig from '@fixtures/generated/build-time-config.json';
 import { menuItems } from '@fixtures/nav';
 import { footerBackground, footerMenuItems } from '@styles/footer';
 import { waveWrapper } from '@styles/shared';
 
 export const Footer: FC = (): JSX.Element => {
   const { pathname } = useRouter();
+
+  const { lastModified } = buildTimeConfig;
 
   return (
     <footer>
@@ -59,6 +62,16 @@ export const Footer: FC = (): JSX.Element => {
           <Container css={{ p: '$lg 0' }}>
             <Copyright />
           </Container>
+          <Text
+            css={{
+              color: '$silver',
+              fs: '$xs',
+              left: '$lg',
+              opacity: 0.6,
+              position: 'absolute',
+            }}>
+            Updated: {lastModified}
+          </Text>
         </Container>
       </Row>
     </footer>
