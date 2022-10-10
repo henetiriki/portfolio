@@ -10,6 +10,11 @@ export const useIgImgId = (router: NextRouter): string | undefined => {
   const [igImgId, setIgImgId] = useState<string | undefined>();
 
   const track = (path: string) => {
+    if (path && !routeRef.current) {
+      // initial load - we don't want to reset the igImgId
+      routeRef.current = path;
+    }
+
     if (path === routeRef.current) {
       return;
     }
