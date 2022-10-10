@@ -1,26 +1,42 @@
 import { Container } from '@nextui-org/react';
+import { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
+import { useEffect } from 'react';
 import { Content, Header } from '@components/content';
 import { ContactForm } from '@components/form';
+import { usePortfolioState } from '@state/context';
+import { getServerSideProps } from '@utils/common';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 
-const Contact: NextPage = (): JSX.Element => (
-  <>
-    <Head>
-      <title key='pageTitle'>{fullTitle('Contact')}</title>
-    </Head>
+const Contact: NextPage = ({
+  data: { id },
+}: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element => {
+  const { dispatch } = usePortfolioState();
+
+  useEffect(() => {
+    dispatch({ payload: { id }, type: 'set-ig-img-id' });
+  }, [id, dispatch]);
+
+  return (
     <>
-      <Header>
-        Get in touch<span>contact me to have a chat</span>
-      </Header>
-      <Content>
-        <Container>
-          <ContactForm />
-        </Container>
-      </Content>
+      <Head>
+        <title key='pageTitle'>{fullTitle('Contact')}</title>
+      </Head>
+      <>
+        <Header>
+          Get in touch<span>contact me to have a chat</span>
+        </Header>
+        <Content>
+          <Container>
+            <ContactForm />
+          </Container>
+        </Content>
+      </>
     </>
-  </>
-);
+  );
+};
+
+export { getServerSideProps } from '@utils/common';
 
 export default Contact;

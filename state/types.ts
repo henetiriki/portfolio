@@ -1,9 +1,9 @@
-export type Action = { payload: { igImgId: string }; type: 'set-ig-img-id' };
+export type Action = { payload: { id: string }; type: 'set-ig-img-id' };
 
 export type Dispatch = (action: Action) => void;
 
 export type PortfolioState = {
-  igImgId?: string;
+  id?: string;
 };
 
 export type ContextValue = {

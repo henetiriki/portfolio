@@ -8,8 +8,8 @@ export const reducer = (
 ): PortfolioState => {
   switch (type) {
     case 'set-ig-img-id':
-      const { igImgId } = payload;
+      const { id } = payload;
 
-      return { ...state, igImgId };
+      return { ...state, id };
   }
 };
