@@ -1,13 +1,20 @@
 import { NextRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
-import { ImageId } from './types';
-import { fetcher } from '@utils/common';
+import { usePortfolioState } from '@state/context';
 
 export const useIgImgId = (router: NextRouter): string | undefined => {
   const routeRef = useRef<string>();
+  const {
+    state: { id },
+  } = usePortfolioState();
   const [igImgId, setIgImgId] = useState<string | undefined>();
 
   const track = (path: string) => {
+    if (path && !routeRef.current) {
+      // initial load - we don't want to reset the igImgId
+      routeRef.current = path;
+    }
+
     if (path === routeRef.current) {
       return;
     }
@@ -15,17 +22,12 @@ export const useIgImgId = (router: NextRouter): string | undefined => {
     // ensure the image will be cleared on route change
     // which triggers the shimmer on re-draw
     setIgImgId(undefined);
-    fetchImageId().then();
     routeRef.current = path;
   };
 
-  const fetchImageId = async () => {
-    const { id } = await fetcher<ImageId>('/api/img-id');
-
-    if (id) {
-      setIgImgId(id);
-    }
-  };
+  useEffect(() => {
+    setIgImgId(id);
+  }, [id]);
 
   useEffect(() => {
     const { asPath, isReady } = router;

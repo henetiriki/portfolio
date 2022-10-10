@@ -1,3 +1,5 @@
+import { cancelableDelay } from '@utils/common/delay';
+
 const fetchTimeout = 30000;
 
 const abortController = (): {
@@ -5,9 +7,9 @@ const abortController = (): {
   timerId: ReturnType<typeof setTimeout>;
 } => {
   const controller = new AbortController();
-  const timerId: ReturnType<typeof setTimeout> = setTimeout(
-    () => controller.abort(),
-    fetchTimeout
+  const timerId: ReturnType<typeof setTimeout> = cancelableDelay(
+    fetchTimeout,
+    () => controller.abort()
   );
 
   return { controller, timerId };
