@@ -6,8 +6,10 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { MutableRefObject, useRef } from 'react';
 import ErrorBoundary from '../components/shared/ErrorBoundary';
+import { Transition } from '@components/content';
 import { Navigation } from '@components/nav';
 import { Layout } from '@containers/layout';
+import { useLoading } from '@hooks';
 import { PortfolioStateProvider } from '@state/context';
 import { globalStyles, theme } from '@styles/shared';
 import { fullTitle } from '@utils/head';
@@ -24,8 +26,10 @@ const Portfolio: NextPage<AppProps> = ({
   Component,
   pageProps,
 }): JSX.Element => {
-  globalStyles();
   const pageTopRef = useRef() as MutableRefObject<HTMLDivElement>;
+  const isLoading = useLoading();
+
+  globalStyles();
 
   return (
     <>
@@ -47,6 +51,7 @@ const Portfolio: NextPage<AppProps> = ({
           }}>
           <NextUIProvider theme={theme}>
             <PortfolioStateProvider>
+              {isLoading && <Transition />}
               <FsBackground pageTopRef={pageTopRef} />
               <Navigation pageTopRef={pageTopRef} />
               <Layout>

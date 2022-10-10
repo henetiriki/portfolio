@@ -1,13 +1,18 @@
-import { NextRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 import { usePortfolioState } from '@state/context';
 
-export const useIgImgId = (router: NextRouter): string | undefined => {
+export const useIgImgId = (): string | undefined => {
+  const router = useRouter();
   const routeRef = useRef<string>();
   const {
     state: { id },
   } = usePortfolioState();
   const [igImgId, setIgImgId] = useState<string | undefined>();
+
+  const onRouteChangeComplete = (asPath: string) => {
+    track(asPath);
+  };
 
   const track = (path: string) => {
     if (path && !routeRef.current) {
@@ -38,10 +43,6 @@ export const useIgImgId = (router: NextRouter): string | undefined => {
   }, [router]);
 
   useEffect(() => {
-    const onRouteChangeComplete = (asPath: string) => {
-      track(asPath);
-    };
-
     router.events.on('routeChangeComplete', onRouteChangeComplete);
 
     return () => {

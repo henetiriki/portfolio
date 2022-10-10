@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import { Content, Header } from '@components/content';
 import { openSourceContrs } from '@fixtures/about';
 import { usePortfolioState } from '@state/context';
+import { aboutContainer, imageContainer } from '@styles/about';
 import { getServerSideProps } from '@utils/common';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
@@ -29,17 +30,7 @@ const About: NextPage = ({
           About me<span>a small introduction</span>
         </Header>
         <Content>
-          <Container
-            css={{
-              d: 'flex',
-              fd: 'column',
-              fw: 'nowrap',
-              /* eslint-disable sort-keys/sort-keys-fix */
-              '@xs': {
-                fd: 'row',
-              },
-              /* eslint-enable sort-keys/sort-keys-fix */
-            }}>
+          <Container css={aboutContainer}>
             <Container as='div' css={{ jc: 'left' }}>
               <Text h2>Louw Swart</Text>
               <Spacer y={1} />
@@ -89,23 +80,7 @@ const About: NextPage = ({
                 necessarily in that order.
               </Text>
             </Container>
-            <Container
-              as='div'
-              css={{
-                '& img': {
-                  borderColor: '$whisper !important',
-                  borderStyle: 'solid  !important',
-                  br: '$xs',
-                  bw: '$xl  !important',
-                },
-                mt: '$3xl',
-                mw: '400px',
-                /* eslint-disable sort-keys/sort-keys-fix */
-                '@xs': {
-                  mt: 0,
-                },
-                /* eslint-enable sort-keys/sort-keys-fix */
-              }}>
+            <Container as='div' css={imageContainer}>
               <Image
                 alt='Louw Swart'
                 height='350px'
