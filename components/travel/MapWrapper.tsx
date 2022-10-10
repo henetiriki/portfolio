@@ -2,16 +2,14 @@ import { Wrapper } from '@googlemaps/react-wrapper';
 import getConfig from 'next/config';
 import { FC, useEffect, useState } from 'react';
 import { Map, Marker, Polyline } from '@components/travel';
+import { cities, markerLocations, tripPolylines } from '@fixtures/travel';
 import {
   City,
   Location,
   MarkerLocations,
   TripPaths,
   TripPolylines,
-  cities,
-  markerLocations,
-  tripPolylines,
-} from '@fixtures/travel';
+} from '@fixtures/travel/types';
 import { useRailTrips } from '@hooks';
 import { useIntersectionObserver, useMap } from '@hooks';
 

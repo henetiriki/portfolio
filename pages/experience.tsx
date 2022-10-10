@@ -8,7 +8,8 @@ import { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { Content, Header } from '@components/content';
-import { Job, School, jobs, schools } from '@fixtures/experience';
+import { jobs, schools } from '@fixtures/experience';
+import { Job, School } from '@fixtures/types';
 import { usePortfolioState } from '@state/context';
 import {
   timeline,

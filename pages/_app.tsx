@@ -37,12 +37,12 @@ const Portfolio: NextPage<AppProps> = ({
         <title key='pageTitle'>{fullTitle('Portfolio')}</title>
         <meta content='width=device-width, initial-scale=1' name='viewport' />
         <meta
-          content='On-line Portfolio and CV for Louw Swart - Front-end Engineer based in Wellington, New Zealand'
+          content='On-line Portfolio and CV for Louw Swart - Front-end Engineer based in Wellington, New Zealand, using Javascript frameworks such as React, Next.js and Node.js'
           key='pageDescription'
           name='description'
         />
         <meta
-          content='louw swart portfolio cv javascript ui developer front-end engineer traveller photographer'
+          content='louw swart portfolio cv javascript ui developer front-end engineer traveller photographer agile javascript node.js next.js open source react'
           key='pageKeywords'
           name='keywords'
         />

@@ -5,7 +5,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Row, Spacer, Text } from '@nextui-org/react';
-import { Job } from './types';
+import { Job, School } from '@fixtures/types';
 
 export const jobs: Job[] = [
   {
@@ -449,6 +449,42 @@ export const jobs: Job[] = [
     year: {
       from: 'December 1997',
       to: 'January 2006',
+    },
+  },
+];
+
+export const schools: School[] = [
+  {
+    content: (
+      <>
+        <Text>
+          Java SE/EE;
+          <br />
+          Linux Red Hat;
+          <br />
+          Processing and Logic concepts;
+          <br />
+          Program Design;
+          <br />
+          Software Engineering;
+          <br />
+          Relational Database &amp; Modelling Design;
+          <br />
+          SQL Server 2000;
+          <br />
+          Linux Administration;
+        </Text>
+      </>
+    ),
+    institution: {
+      location: 'Cape Town, South Africa',
+      name: 'CTI',
+      url: 'https://en.wikipedia.org/wiki/CTI_Education_Group',
+    },
+    qualification: 'Comprehensive Programming',
+    year: {
+      from: 2006,
+      to: 2007,
     },
   },
 ];

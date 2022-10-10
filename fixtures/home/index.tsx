@@ -1,4 +1,4 @@
-import { LinkItem } from '../types';
+import { LinkItem } from '@fixtures/types';
 
 export const openSourceContrs: LinkItem[] = [
   {
