@@ -2,11 +2,9 @@ import { NextUIProvider } from '@nextui-org/react';
 import { NextPage } from 'next';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { AppProps } from 'next/app';
-import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { MutableRefObject, useRef } from 'react';
 import ErrorBoundary from '../components/shared/ErrorBoundary';
-import { Transition } from '@components/content';
+import { FixedBackground, Transition } from '@components/content';
 import { Navigation } from '@components/nav';
 import { Layout } from '@containers/layout';
 import { useLoading } from '@hooks';
@@ -15,18 +13,10 @@ import { globalStyles, theme } from '@styles/shared';
 import { fullTitle } from '@utils/head';
 import '@styles/shared/Toastify.css';
 
-const FsBackground = dynamic(
-  () => import('@components/content').then(mod => mod.FixedBackground),
-  {
-    ssr: false,
-  }
-);
-
 const Portfolio: NextPage<AppProps> = ({
   Component,
   pageProps,
 }): JSX.Element => {
-  const pageTopRef = useRef() as MutableRefObject<HTMLDivElement>;
   const isLoading = useLoading();
 
   globalStyles();
@@ -57,8 +47,8 @@ const Portfolio: NextPage<AppProps> = ({
           <NextUIProvider theme={theme}>
             <PortfolioStateProvider>
               {isLoading && <Transition />}
-              <FsBackground pageTopRef={pageTopRef} />
-              <Navigation pageTopRef={pageTopRef} />
+              <FixedBackground />
+              <Navigation />
               <Layout>
                 <Component {...pageProps} />
               </Layout>
