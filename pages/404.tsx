@@ -15,7 +15,7 @@ const FourOhFour: NextPage = (): JSX.Element => (
       </Header>
       <Content>
         <Container>
-          <Text h1>404 Content</Text>
+          <Text h1>That page doesn’t exist</Text>
         </Container>
       </Content>
     </>

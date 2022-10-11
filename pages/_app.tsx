@@ -2,9 +2,9 @@ import { NextUIProvider } from '@nextui-org/react';
 import { NextPage } from 'next';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { AppProps } from 'next/app';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import ErrorBoundary from '../components/shared/ErrorBoundary';
-import { FixedBackground, Transition } from '@components/content';
 import { Navigation } from '@components/nav';
 import { Layout } from '@containers/layout';
 import { useLoading } from '@hooks';
@@ -12,6 +12,20 @@ import { PortfolioStateProvider } from '@state/context';
 import { globalStyles, theme } from '@styles/shared';
 import { fullTitle } from '@utils/head';
 import '@styles/shared/Toastify.css';
+
+const DynamicFixedBackground = dynamic(
+  () => import('@components/content').then(mod => mod.FixedBackground),
+  {
+    ssr: false,
+  }
+);
+
+const DynamicTransition = dynamic(
+  () => import('@components/content').then(mod => mod.Transition),
+  {
+    ssr: false,
+  }
+);
 
 const Portfolio: NextPage<AppProps> = ({
   Component,
@@ -46,8 +60,8 @@ const Portfolio: NextPage<AppProps> = ({
           }}>
           <NextUIProvider theme={theme}>
             <PortfolioStateProvider>
-              {isLoading && <Transition />}
-              <FixedBackground />
+              {isLoading && <DynamicTransition />}
+              <DynamicFixedBackground />
               <Navigation />
               <Layout>
                 <Component {...pageProps} />

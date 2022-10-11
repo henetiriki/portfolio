@@ -1,14 +1,23 @@
 import { Container, Text } from '@nextui-org/react';
 import { InferGetServerSidePropsType } from 'next';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { Content, Header } from '@components/content';
-import { Legend, MapWrapper } from '@components/travel';
+import { Legend, MapLoader } from '@components/travel';
 import { usePortfolioState } from '@state/context';
 import { travelContainerBottom, travelContainerTop } from '@styles/travel';
 import { getServerSideProps } from '@utils/common';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
+
+const DynamicMapWrapper = dynamic(
+  () => import('@components/travel').then(mod => mod.MapWrapper),
+  {
+    loading: () => <MapLoader />,
+    ssr: false,
+  }
+);
 
 const Travel: NextPage = ({
   data: { imgId },
@@ -56,7 +65,7 @@ const Travel: NextPage = ({
           <Container css={travelContainerTop}>
             <Text h2>Travel history</Text>
           </Container>
-          <MapWrapper />
+          <DynamicMapWrapper />
           <Container css={travelContainerBottom}>
             <Legend />
           </Container>
