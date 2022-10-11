@@ -1,0 +1,52 @@
+{
+  "name": "Louw Swart // Portfolio",
+  "short_name": "Louw Swart",
+  "start_url": "/",
+  "shortcuts": [
+    {
+      "name": "Experience",
+      "url": "/experience",
+      "description": "What I’ve done so far"
+    },
+    {
+      "name": "Travel",
+      "url": "/travel",
+      "description": "Places I’ve been"
+    },
+    {
+      "name": "Contact",
+      "url": "/contact",
+      "description": "Get in touch"
+    }
+  ],
+  "description": "Online Portfolio and CV",
+  "theme_color": "#27e278",
+  "background_color": "#ffffff",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "/images/manifest-icons/manifest-icon-192.maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/manifest-icons/manifest-icon-192.maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/images/manifest-icons/manifest-icon-512.maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/manifest-icons/manifest-icon-512.maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
