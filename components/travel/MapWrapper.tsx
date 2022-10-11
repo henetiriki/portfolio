@@ -12,16 +12,10 @@ import {
 } from '@fixtures/travel/types';
 import { useRailTrips } from '@hooks';
 import { useIntersectionObserver, useMap } from '@hooks';
-import { usePortfolioState } from '@state/context';
 
 const { publicRuntimeConfig } = getConfig();
 
 export const MapWrapper: FC = () => {
-  const {
-    state: {
-      travel: { markersLoaded, railPolylinesLoaded, tripPolylinesLoaded },
-    },
-  } = usePortfolioState();
   const { render } = useMap();
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.8,
