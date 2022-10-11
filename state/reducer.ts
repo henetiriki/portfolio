@@ -9,9 +9,29 @@ export const reducer = (
   state: PortfolioState,
   { payload, type }: Action
 ): PortfolioState => {
-  const { travel } = state;
+  const { shared, travel } = state;
 
   switch (type) {
+    case 'set-markers-loaded':
+      const { markersLoaded } = payload;
+
+      return {
+        ...state,
+        travel: {
+          ...travel,
+          markersLoaded,
+        },
+      };
+    case 'set-page-top-ref':
+      const { pageTopRef } = payload;
+
+      return {
+        ...state,
+        shared: {
+          ...shared,
+          pageTopRef,
+        },
+      };
     case 'set-rail-polylines-loaded':
       const { railPolylinesLoaded } = payload;
 
@@ -30,16 +50,6 @@ export const reducer = (
         travel: {
           ...travel,
           railTripPolylines,
-        },
-      };
-    case 'set-markers-loaded':
-      const { markersLoaded } = payload;
-
-      return {
-        ...state,
-        travel: {
-          ...travel,
-          markersLoaded,
         },
       };
     case 'set-trip-polylines-loaded':
@@ -64,7 +74,6 @@ export const reducer = (
     }
     case 'set-ig-img-id':
       const { imgId } = payload;
-      const { shared } = state;
 
       return {
         ...state,

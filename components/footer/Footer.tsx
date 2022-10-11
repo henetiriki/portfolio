@@ -2,18 +2,22 @@ import { Container, Link, Row, Text } from '@nextui-org/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { FC, RefObject } from 'react';
+import { FC } from 'react';
 import { Copyright } from '@components/footer';
 import { Logo } from '@components/shared';
 import buildTimeConfig from '@fixtures/generated/build-time-config.json';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
+import { usePortfolioState } from '@state/context';
 import { footerBackground, footerMenuItems } from '@styles/footer';
 import { waveWrapper } from '@styles/shared';
 
-export const Footer: FC<{
-  pageTopRef: RefObject<HTMLDivElement> | undefined;
-}> = ({ pageTopRef }): JSX.Element => {
+export const Footer: FC = (): JSX.Element => {
+  const {
+    state: {
+      shared: { pageTopRef },
+    },
+  } = usePortfolioState();
   const { pathname } = useRouter();
   const { scrollToTop } = useScrollTo(pageTopRef);
   const { lastModified } = buildTimeConfig;

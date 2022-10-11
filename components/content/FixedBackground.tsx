@@ -1,17 +1,32 @@
 import { Container } from '@nextui-org/react';
 import getConfig from 'next/config';
 import Image from 'next/image';
-import { FC, RefObject } from 'react';
+import { FC, MutableRefObject, useEffect, useRef } from 'react';
 import { useIgImgId, useWindowSize } from '@hooks';
+import { usePortfolioState } from '@state/context';
 import { blurDataURL } from '@utils/common';
 
 const { publicRuntimeConfig } = getConfig();
 
-export const FixedBackground: FC<{
-  pageTopRef: RefObject<HTMLDivElement> | undefined;
-}> = ({ pageTopRef }) => {
+export const FixedBackground: FC = () => {
+  const {
+    dispatch,
+    state: {
+      shared: { pageTopRef },
+    },
+  } = usePortfolioState();
+  const ref = useRef() as MutableRefObject<HTMLDivElement>;
   const igImgId = useIgImgId();
   const { height = 1920, width = 1080 } = useWindowSize();
+
+  useEffect(() => {
+    if (!pageTopRef) {
+      dispatch({
+        payload: { pageTopRef: ref },
+        type: 'set-page-top-ref',
+      });
+    }
+  }, [pageTopRef, ref, dispatch]);
 
   return (
     <div ref={pageTopRef}>

@@ -1,9 +1,14 @@
+import { RefObject } from 'react';
 import { TripPaths } from '@fixtures/travel/types';
 
 export type Action =
   | {
       payload: { markersLoaded: boolean };
       type: 'set-markers-loaded';
+    }
+  | {
+      payload: { pageTopRef: RefObject<HTMLDivElement> };
+      type: 'set-page-top-ref';
     }
   | {
       payload: { railPolylinesLoaded: boolean };
@@ -28,6 +33,7 @@ export type Dispatch = (action: Action) => void;
 export type PortfolioState = {
   shared: {
     imgId?: string;
+    pageTopRef?: RefObject<HTMLDivElement> | undefined;
   };
   travel: {
     markersLoaded?: boolean;

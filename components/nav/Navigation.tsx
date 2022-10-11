@@ -7,7 +7,6 @@ import {
   FC,
   MouseEvent,
   MutableRefObject,
-  RefObject,
   useEffect,
   useRef,
   useState,
@@ -15,6 +14,7 @@ import {
 import { Logo } from '@components/shared';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
+import { usePortfolioState } from '@state/context';
 import {
   navBrand,
   navLinkMd,
@@ -26,9 +26,12 @@ import {
 
 const ScrollToTop = styled('a', scrollToTop);
 
-export const Navigation: FC<{
-  pageTopRef: RefObject<HTMLDivElement> | undefined;
-}> = ({ pageTopRef }): JSX.Element => {
+export const Navigation: FC = (): JSX.Element => {
+  const {
+    state: {
+      shared: { pageTopRef },
+    },
+  } = usePortfolioState();
   const { pathname } = useRouter();
   const { scrollToTop } = useScrollTo(pageTopRef);
   const navToggleRef = useRef() as MutableRefObject<any>;
