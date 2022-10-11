@@ -45,13 +45,18 @@ const TimelineContent = styled('div', timelineContent);
 const VideoContainer = styled('div', videoContainer);
 
 const Experience: NextPage = ({
-  data: { id },
+  data: { imgId },
 }: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element => {
   const { dispatch } = usePortfolioState();
 
   useEffect(() => {
-    dispatch({ payload: { id }, type: 'set-ig-img-id' });
-  }, [id, dispatch]);
+    dispatch({
+      payload: {
+        imgId,
+      },
+      type: 'set-ig-img-id',
+    });
+  }, [imgId, dispatch]);
 
   return (
     <>

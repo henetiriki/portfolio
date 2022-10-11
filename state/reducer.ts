@@ -1,6 +1,8 @@
 import { Action, PortfolioState } from '@state/types';
 
-export const initialState: PortfolioState = {};
+export const initialState: PortfolioState = {
+  shared: {},
+};
 
 export const reducer = (
   state: PortfolioState,
@@ -8,9 +10,16 @@ export const reducer = (
 ): PortfolioState => {
   switch (type) {
     case 'set-ig-img-id':
-      const { id } = payload;
+      const { imgId } = payload;
+      const { shared } = state;
 
-      return { ...state, id };
+      return {
+        ...state,
+        shared: {
+          ...shared,
+          imgId,
+        },
+      };
     case 'set-rail-trip-polylines':
       const { railTripPolylines } = payload;
 

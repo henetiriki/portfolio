@@ -7,7 +7,7 @@ import { blurDataURL } from '@utils/common';
 
 const { publicRuntimeConfig } = getConfig();
 
-export const FsBackground: FC<{
+export const FixedBackground: FC<{
   pageTopRef: RefObject<HTMLDivElement> | undefined;
 }> = ({ pageTopRef }) => {
   const igImgId = useIgImgId();

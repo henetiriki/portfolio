@@ -15,13 +15,18 @@ const TypeAnimation = dynamic(
 );
 
 const Home: NextPage = ({
-  data: { id },
+  data: { imgId },
 }: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element => {
   const { dispatch } = usePortfolioState();
 
   useEffect(() => {
-    dispatch({ payload: { id }, type: 'set-ig-img-id' });
-  }, [id, dispatch]);
+    dispatch({
+      payload: {
+        imgId,
+      },
+      type: 'set-ig-img-id',
+    });
+  }, [imgId, dispatch]);
 
   return (
     <>

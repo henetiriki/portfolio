@@ -6,7 +6,9 @@ export const useIgImgId = (): string | undefined => {
   const router = useRouter();
   const routeRef = useRef<string>();
   const {
-    state: { id },
+    state: {
+      shared: { imgId },
+    },
   } = usePortfolioState();
   const [igImgId, setIgImgId] = useState<string | undefined>();
 
@@ -31,8 +33,8 @@ export const useIgImgId = (): string | undefined => {
   };
 
   useEffect(() => {
-    setIgImgId(id);
-  }, [id]);
+    setIgImgId(imgId);
+  }, [imgId]);
 
   useEffect(() => {
     const { asPath, isReady } = router;

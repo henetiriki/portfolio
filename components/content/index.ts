@@ -1,4 +1,4 @@
 export * from './Content';
-export * from './FsBackground';
+export * from './FixedBackground';
 export * from './Header';
 export * from './Transition';

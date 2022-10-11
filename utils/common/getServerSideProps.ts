@@ -7,7 +7,7 @@ const { serverRuntimeConfig } = getConfig();
 const imageIds: string[] = serverRuntimeConfig.igImgIds?.split(',') || [];
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const data: ImageId = { id: randomItem(imageIds) };
+  const data: ImageId = { imgId: randomItem(imageIds) };
 
   return {
     props: {
