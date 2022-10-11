@@ -4,7 +4,7 @@
   "start_url": "https://portfolio.ouq77.kiwi",
   "description": "Online Portfolio and CV",
   "theme_color": "#27e278",
-  "background_color": "#4f4f4f",
+  "background_color": "#ffffff",
   "display": "standalone",
   "icons": [
     {

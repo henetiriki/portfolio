@@ -25,11 +25,11 @@ class Document extends _Document {
           <meta charSet='utf-8' />
           <meta content='IE=edge' httpEquiv='X-UA-Compatible' />
           <meta content='Louw Swart' name='author' />
-          <link href='/manifest.json' rel='manifest' />
           <meta content='Louw Swart // Portfolio' name='application-name' />
           <meta content='PWA App' name='Louw Swart' />
           <meta content='yes' name='mobile-web-app-capable' />
           <meta content='#27e278' name='theme-color' />
+          <link href='/manifest.json' rel='manifest' />
           <link
             href='/images/manifest-icons/favicon-16x16.png'
             rel='icon'
