@@ -2,7 +2,7 @@ import { useFormik } from 'formik';
 import { useState } from 'react';
 import * as Yup from 'yup';
 import { FormValues } from './types';
-import { errorFromCode } from '@utils/form';
+import { errorFromCode } from '@utils/contact';
 
 export const useFormikForm = (): {
   apiErrors: JSX.Element[];
