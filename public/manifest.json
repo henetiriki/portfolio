@@ -22,7 +22,7 @@
   "description": "Online Portfolio and CV",
   "theme_color": "#27e278",
   "background_color": "#ffffff",
-  "display": "standalone",
+  "display": "fullscreen",
   "icons": [
     {
       "src": "/images/manifest-icons/manifest-icon-192.maskable.png",
