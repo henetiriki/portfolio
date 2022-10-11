@@ -1,13 +1,20 @@
 import { Container } from '@nextui-org/react';
 import { InferGetServerSidePropsType } from 'next';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { Content, Header } from '@components/content';
-import { ContactForm } from '@components/form';
 import { usePortfolioState } from '@state/context';
 import { getServerSideProps } from '@utils/common';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
+
+const DynamicContactForm = dynamic(
+  () => import('@components/form').then(mod => mod.ContactForm),
+  {
+    ssr: false,
+  }
+);
 
 const Contact: NextPage = ({
   data: { imgId },
@@ -44,7 +51,7 @@ const Contact: NextPage = ({
         </Header>
         <Content>
           <Container>
-            <ContactForm />
+            <DynamicContactForm />
           </Container>
         </Content>
       </>

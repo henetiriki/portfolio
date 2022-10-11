@@ -3,9 +3,17 @@ import {
   faPlaneDeparture,
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Row, Spacer, Text } from '@nextui-org/react';
+import dynamic from 'next/dynamic';
 import { Job, School } from '@fixtures/types';
+
+const DynamicFontAwesomeIcon = dynamic(
+  () =>
+    import('@fortawesome/react-fontawesome').then(mod => mod.FontAwesomeIcon),
+  {
+    ssr: false,
+  }
+);
 
 export const jobs: Job[] = [
   {
@@ -417,14 +425,14 @@ export const jobs: Job[] = [
     content: (
       <>
         <Row css={{ ai: 'center', d: 'flex' }}>
-          <FontAwesomeIcon
+          <DynamicFontAwesomeIcon
             height={25}
             icon={faPlaneDeparture}
             size='2xs'
             width={25}
           />
           <Spacer x={1} />
-          <FontAwesomeIcon
+          <DynamicFontAwesomeIcon
             alignmentBaseline='middle'
             height={15}
             icon={faPlus}
@@ -432,7 +440,7 @@ export const jobs: Job[] = [
             width={15}
           />
           <Spacer x={1} />
-          <FontAwesomeIcon
+          <DynamicFontAwesomeIcon
             height={25}
             icon={faGlobeAfrica}
             size='2xs'

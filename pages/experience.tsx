@@ -2,9 +2,9 @@ import {
   faBriefcase,
   faGraduationCap,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Container, Link, Spacer, Text, styled } from '@nextui-org/react';
 import { InferGetServerSidePropsType } from 'next';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { Content, Header } from '@components/content';
@@ -31,6 +31,14 @@ import {
 } from '@utils/experience';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
+
+const DynamicFontAwesomeIcon = dynamic(
+  () =>
+    import('@fortawesome/react-fontawesome').then(mod => mod.FontAwesomeIcon),
+  {
+    ssr: false,
+  }
+);
 
 const TimelineHeading = styled('div', timelineHeading);
 
@@ -81,7 +89,11 @@ const Experience: NextPage = ({
           <Container>
             <TimelineHeading>
               <TimelineIndicator>
-                <FontAwesomeIcon height={20} icon={faBriefcase} width={20} />
+                <DynamicFontAwesomeIcon
+                  height={20}
+                  icon={faBriefcase}
+                  width={20}
+                />
               </TimelineIndicator>{' '}
               <Text css={{ lh: '1rem' }} h2>
                 Work History
@@ -152,7 +164,7 @@ const Experience: NextPage = ({
             <Spacer y={4} />
             <TimelineHeading>
               <TimelineIndicator>
-                <FontAwesomeIcon
+                <DynamicFontAwesomeIcon
                   height={20}
                   icon={faGraduationCap}
                   width={20}

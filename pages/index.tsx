@@ -9,7 +9,7 @@ import { usePortfolioState } from '@state/context';
 import { aboutContainer, imageContainer } from '@styles/home';
 import { blurDataURL, getServerSideProps } from '@utils/common';
 
-const TypeAnimation = dynamic(
+const DynamicTypeAnimation = dynamic(
   () => import('react-type-animation').then(mod => mod.TypeAnimation),
   { ssr: false }
 );
@@ -41,7 +41,7 @@ const Home: NextPage = ({
           <Text h1>Louw Swart</Text>
           <Text css={{ span: { color: '$shamrock' } }} h4>
             I’m a{' '}
-            <TypeAnimation
+            <DynamicTypeAnimation
               repeat={Infinity}
               sequence={[
                 'front-end engineer',
