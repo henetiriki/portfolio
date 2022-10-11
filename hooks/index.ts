@@ -7,4 +7,5 @@ export * from './useLoading';
 export * from './useMap';
 export * from './useMediaQuery';
 export * from './useRailTrips';
+export * from './useScrollTo';
 export * from './useWindowSize';

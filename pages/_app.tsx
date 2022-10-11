@@ -59,7 +59,7 @@ const Portfolio: NextPage<AppProps> = ({
               {isLoading && <Transition />}
               <FsBackground pageTopRef={pageTopRef} />
               <Navigation pageTopRef={pageTopRef} />
-              <Layout>
+              <Layout pageTopRef={pageTopRef}>
                 <Component {...pageProps} />
               </Layout>
             </PortfolioStateProvider>

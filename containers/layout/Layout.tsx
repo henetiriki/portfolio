@@ -1,7 +1,9 @@
-import { FC, PropsWithChildren } from 'react';
+import { FC, PropsWithChildren, RefObject } from 'react';
 import { Footer } from '@components/footer';
 
-export const Layout: FC<PropsWithChildren> = ({ children }): JSX.Element => (
+export const Layout: FC<
+  PropsWithChildren & { pageTopRef: RefObject<HTMLDivElement> | undefined }
+> = ({ children, pageTopRef }): JSX.Element => (
   <div
     style={{
       display: 'flex',
@@ -15,6 +17,6 @@ export const Layout: FC<PropsWithChildren> = ({ children }): JSX.Element => (
       }}>
       {children}
     </main>
-    <Footer />
+    <Footer pageTopRef={pageTopRef} />
   </div>
 );

@@ -2,17 +2,20 @@ import { Container, Link, Row, Text } from '@nextui-org/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { FC } from 'react';
+import { FC, RefObject } from 'react';
 import { Copyright } from '@components/footer';
 import { Logo } from '@components/shared';
 import buildTimeConfig from '@fixtures/generated/build-time-config.json';
 import { menuItems } from '@fixtures/nav';
+import { useScrollTo } from '@hooks';
 import { footerBackground, footerMenuItems } from '@styles/footer';
 import { waveWrapper } from '@styles/shared';
 
-export const Footer: FC = (): JSX.Element => {
+export const Footer: FC<{
+  pageTopRef: RefObject<HTMLDivElement> | undefined;
+}> = ({ pageTopRef }): JSX.Element => {
   const { pathname } = useRouter();
-
+  const { scrollToTop } = useScrollTo(pageTopRef);
   const { lastModified } = buildTimeConfig;
 
   return (
@@ -53,7 +56,8 @@ export const Footer: FC = (): JSX.Element => {
                   css={{
                     color: '$white',
                     fontWeight: pathname === href ? 'bold' : 'normal',
-                  }}>
+                  }}
+                  onClick={scrollToTop}>
                   {text}
                 </Link>
               </NextLink>
