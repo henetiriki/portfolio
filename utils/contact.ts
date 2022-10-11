@@ -1,4 +1,4 @@
-import { errorMessages, genericError } from '@fixtures/form';
+import { errorMessages, genericError } from '@fixtures/contact';
 import { ErrorMessage } from '@fixtures/types';
 
 export const errorFromCode = (code: string): JSX.Element =>
