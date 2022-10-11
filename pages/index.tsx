@@ -7,7 +7,7 @@ import { Content } from '@components/content';
 import { openSourceContrs } from '@fixtures/home';
 import { usePortfolioState } from '@state/context';
 import { aboutContainer, imageContainer } from '@styles/home';
-import { getServerSideProps } from '@utils/common';
+import { blurDataURL, getServerSideProps } from '@utils/common';
 
 const TypeAnimation = dynamic(
   () => import('react-type-animation').then(mod => mod.TypeAnimation),
@@ -118,7 +118,9 @@ const Home: NextPage = ({
           <Container as='div' css={imageContainer}>
             <Image
               alt='Louw Swart'
+              blurDataURL={blurDataURL(350, 350)}
               height='350px'
+              placeholder='blur'
               src='/images/about/louw.swart.jpg'
               width='350px'
             />
