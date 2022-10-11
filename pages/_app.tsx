@@ -16,7 +16,7 @@ import { fullTitle } from '@utils/head';
 import '@styles/shared/Toastify.css';
 
 const FsBackground = dynamic(
-  () => import('@components/content').then(mod => mod.FsBackground),
+  () => import('@components/content').then(mod => mod.FixedBackground),
   {
     ssr: false,
   }

@@ -9,8 +9,10 @@ import {
   useRef,
   useState,
 } from 'react';
-import { MAP_MAX_MOBILE, mapOptions } from '@fixtures/travel';
+import { MAP_MAX_MOBILE, aucklandPoint, mapOptions } from '@fixtures/travel';
 import { useDeepCompareEffectForMaps, useWindowSize } from '@hooks';
+import { usePortfolioState } from '@state/context';
+import { zoomMap } from '@utils/travel';
 
 const MapContainer = styled('div', {
   h: '65vh',
@@ -21,6 +23,11 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
   children,
   ...options
 }) => {
+  const {
+    state: {
+      travel: { markersLoaded, railPolylinesLoaded, tripPolylinesLoaded },
+    },
+  } = usePortfolioState();
   const mapRef = useRef<HTMLDivElement>(null);
   const { width } = useWindowSize();
   const [map, setMap] = useState<google.maps.Map>();
@@ -46,6 +53,13 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
       });
     }
   }, [map, options, width]);
+
+  useEffect(() => {
+    if (map && markersLoaded && railPolylinesLoaded && tripPolylinesLoaded) {
+      map.panTo(aucklandPoint);
+      zoomMap(map, map.getZoom()! + 1, 5);
+    }
+  }, [map, markersLoaded, railPolylinesLoaded, tripPolylinesLoaded]);
 
   return (
     <>

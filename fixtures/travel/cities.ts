@@ -4,6 +4,11 @@ import { City } from './types';
 
 const lived = "I've lived here...";
 
+export const aucklandPoint: google.maps.LatLngLiteral = {
+  lat: -36.847639,
+  lng: 174.762473,
+};
+
 const hartswater: City = {
   description: 'I was born here...',
   icon: previousCityIcon,
@@ -77,10 +82,7 @@ const hamilton: City = {
 const auckland: City = {
   description: lived,
   icon: previousCityIcon,
-  position: {
-    lat: -36.847639,
-    lng: 174.762473,
-  },
+  position: aucklandPoint,
   title: `Auckland, ${newZealand}`,
 };
 

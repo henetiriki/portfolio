@@ -1,3 +1,3 @@
 export type ImageId = {
-  id: string;
+  imgId: string;
 };

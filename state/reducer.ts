@@ -1,19 +1,77 @@
 import { Action, PortfolioState } from '@state/types';
 
-export const initialState: PortfolioState = {};
+export const initialState: PortfolioState = {
+  shared: {},
+  travel: {},
+};
 
 export const reducer = (
   state: PortfolioState,
   { payload, type }: Action
 ): PortfolioState => {
-  switch (type) {
-    case 'set-ig-img-id':
-      const { id } = payload;
+  const { travel } = state;
 
-      return { ...state, id };
+  switch (type) {
+    case 'set-rail-polylines-loaded':
+      const { railPolylinesLoaded } = payload;
+
+      return {
+        ...state,
+        travel: {
+          ...travel,
+          railPolylinesLoaded,
+        },
+      };
     case 'set-rail-trip-polylines':
       const { railTripPolylines } = payload;
 
-      return { ...state, railTripPolylines };
+      return {
+        ...state,
+        travel: {
+          ...travel,
+          railTripPolylines,
+        },
+      };
+    case 'set-markers-loaded':
+      const { markersLoaded } = payload;
+
+      return {
+        ...state,
+        travel: {
+          ...travel,
+          markersLoaded,
+        },
+      };
+    case 'set-trip-polylines-loaded':
+      const { tripPolylinesLoaded } = payload;
+
+      return {
+        ...state,
+        travel: {
+          ...travel,
+          tripPolylinesLoaded,
+        },
+      };
+    case 'reset-markers-polyline-loaded': {
+      const { railTripPolylines = [] } = travel;
+
+      return {
+        ...state,
+        travel: {
+          railTripPolylines: [...railTripPolylines],
+        },
+      };
+    }
+    case 'set-ig-img-id':
+      const { imgId } = payload;
+      const { shared } = state;
+
+      return {
+        ...state,
+        shared: {
+          ...shared,
+          imgId,
+        },
+      };
   }
 };

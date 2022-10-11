@@ -64,4 +64,4 @@ export const tripPolylines: TripPolylines[] = [
     },
     trips: upcomingCruises,
   },
-];
+].filter(({ trips }: TripPolylines) => trips.length);
