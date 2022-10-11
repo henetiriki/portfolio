@@ -69,5 +69,6 @@
     "**/*.{ts,tsx,js,jsx,json,html,scss,md}": [
       "prettier --ignore-path .prettierignore --write"
     ]
-  }
+  },
+  "sideEffects": false
 }
