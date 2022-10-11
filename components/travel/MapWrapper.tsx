@@ -12,10 +12,16 @@ import {
 } from '@fixtures/travel/types';
 import { useRailTrips } from '@hooks';
 import { useIntersectionObserver, useMap } from '@hooks';
+import { usePortfolioState } from '@state/context';
 
 const { publicRuntimeConfig } = getConfig();
 
 export const MapWrapper: FC = () => {
+  const {
+    state: {
+      travel: { markersLoaded, railPolylinesLoaded, tripPolylinesLoaded },
+    },
+  } = usePortfolioState();
   const { render } = useMap();
   const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.8,
@@ -54,6 +60,10 @@ export const MapWrapper: FC = () => {
                 locations.map((location: Location, idx: number) => (
                   <Marker
                     {...location}
+                    endMarker={
+                      order === markerLocations.length - 1 &&
+                      idx === locations.length - 1
+                    }
                     icon={icon}
                     idx={idx}
                     key={`${order}${idx}`}
@@ -66,6 +76,10 @@ export const MapWrapper: FC = () => {
               ({ polylineOpts, trips }: TripPolylines, order: number) =>
                 trips.map((legs: google.maps.LatLngLiteral[], idx: number) => (
                   <Polyline
+                    endTripPolyline={
+                      order === tripPolylines.length - 1 &&
+                      idx === trips.length - 1
+                    }
                     idx={idx + 1}
                     legs={legs}
                     {...polylineOpts}
@@ -79,11 +93,15 @@ export const MapWrapper: FC = () => {
               ({ polylineOpts, tripPaths }: TripPaths, order: number) =>
                 tripPaths.map((paths: string[], idx: number) => (
                   <Polyline
-                    idx={tripPolylines.length + idx + 1}
+                    endRailTripPolyline={
+                      order === railTripPolylines.length - 1 &&
+                      idx === tripPaths.length - 1
+                    }
+                    idx={railTripPolylines.length + idx + 1}
                     paths={paths}
                     {...polylineOpts}
-                    key={`${tripPolylines.length + order}${idx}`}
-                    order={tripPolylines.length + order + 1}
+                    key={`${railTripPolylines.length + order}${idx}`}
+                    order={railTripPolylines.length + order + 1}
                   />
                 ))
             )}

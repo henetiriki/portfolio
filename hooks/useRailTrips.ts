@@ -58,7 +58,7 @@ export const useRailTrips = (): TripPaths[] => {
         },
         tripPaths: upcomingRailTrips,
       },
-    ];
+    ].filter(({ tripPaths }: TripPaths) => tripPaths.length);
   };
 
   useEffect(() => {
