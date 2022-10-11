@@ -1,7 +1,24 @@
 {
   "name": "Louw Swart // Portfolio",
   "short_name": "Louw Swart",
-  "start_url": "https://portfolio.ouq77.kiwi",
+  "start_url": "/",
+  "shortcuts": [
+    {
+      "name": "Experience",
+      "url": "/experience",
+      "description": "What I’ve done so far"
+    },
+    {
+      "name": "Travel",
+      "url": "/travel",
+      "description": "Places I’ve been"
+    },
+    {
+      "name": "Contact",
+      "url": "/contact",
+      "description": "Get in touch"
+    }
+  ],
   "description": "Online Portfolio and CV",
   "theme_color": "#27e278",
   "background_color": "#ffffff",
