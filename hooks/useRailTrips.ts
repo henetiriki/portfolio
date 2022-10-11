@@ -10,7 +10,9 @@ const { torchRed } = colors;
 export const useRailTrips = (): TripPaths[] => {
   const {
     dispatch,
-    state: { railTripPolylines = [] },
+    state: {
+      travel: { railTripPolylines = [] },
+    },
   } = usePortfolioState();
   const [fetching, setFetching] = useState(false);
 

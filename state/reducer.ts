@@ -2,6 +2,7 @@ import { Action, PortfolioState } from '@state/types';
 
 export const initialState: PortfolioState = {
   shared: {},
+  travel: {},
 };
 
 export const reducer = (
@@ -22,7 +23,14 @@ export const reducer = (
       };
     case 'set-rail-trip-polylines':
       const { railTripPolylines } = payload;
+      const { travel } = state;
 
-      return { ...state, railTripPolylines };
+      return {
+        ...state,
+        travel: {
+          ...travel,
+          railTripPolylines,
+        },
+      };
   }
 };

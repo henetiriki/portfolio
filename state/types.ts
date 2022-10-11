@@ -10,9 +10,11 @@ export type Action =
 export type Dispatch = (action: Action) => void;
 
 export type PortfolioState = {
-  railTripPolylines?: TripPaths[];
   shared: {
     imgId?: string;
+  };
+  travel: {
+    railTripPolylines?: TripPaths[];
   };
 };
 
