@@ -17,6 +17,7 @@ export const mapOptions = (): google.maps.MapOptions => ({
     ),
     strictBounds: true,
   },
+  scrollwheel: false,
   styles: [
     {
       elementType: 'geometry',
