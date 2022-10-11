@@ -22,6 +22,10 @@ const Travel: NextPage = ({
       },
       type: 'set-ig-img-id',
     });
+    dispatch({
+      payload: {},
+      type: 'reset-markers-polyline-loaded',
+    });
   }, [imgId, dispatch]);
 
   return (

@@ -52,6 +52,16 @@ export const reducer = (
           tripPolylinesLoaded,
         },
       };
+    case 'reset-markers-polyline-loaded': {
+      const { railTripPolylines = [] } = travel;
+
+      return {
+        ...state,
+        travel: {
+          railTripPolylines: [...railTripPolylines],
+        },
+      };
+    }
     case 'set-ig-img-id':
       const { imgId } = payload;
       const { shared } = state;

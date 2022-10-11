@@ -12,6 +12,7 @@ import {
 import { MAP_MAX_MOBILE, aucklandPoint, mapOptions } from '@fixtures/travel';
 import { useDeepCompareEffectForMaps, useWindowSize } from '@hooks';
 import { usePortfolioState } from '@state/context';
+import { zoomMap } from '@utils/travel';
 
 const MapContainer = styled('div', {
   h: '65vh',
@@ -55,7 +56,8 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
 
   useEffect(() => {
     if (map && markersLoaded && railPolylinesLoaded && tripPolylinesLoaded) {
-      map?.panTo(aucklandPoint);
+      map.panTo(aucklandPoint);
+      zoomMap(map, map.getZoom()! + 1, 5);
     }
   }, [map, markersLoaded, railPolylinesLoaded, tripPolylinesLoaded]);
 
