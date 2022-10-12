@@ -50,6 +50,32 @@ const Portfolio: NextPage<AppProps> = ({
           key='pageKeywords'
           name='keywords'
         />
+        <meta content='summary' name='twitter:card' />
+        <meta content='https://portfolio.ouq77.kiwi' name='twitter:url' />
+        <meta content='Louw Swart // Portfolio' name='twitter:title' />
+        <meta
+          content='Online Portfolio and CV for Louw Swart'
+          key='twitterDescription'
+          name='twitter:description'
+        />
+        <meta
+          content='https://portfolio.ouq77.kiwi/images/og-images/portfolio.png'
+          name='twitter:image'
+        />
+        <meta content='@henetiriki' name='twitter:creator' />
+        <meta content='website' property='og:type' />
+        <meta content='Louw Swart // Portfolio' property='og:title' />
+        <meta
+          content='Online Portfolio and CV for Louw Swart'
+          key='ogDescription'
+          property='og:description'
+        />
+        <meta content='Louw Swart // Portfolio' property='og:site_name' />
+        <meta content='https://portfolio.ouq77.kiwi' property='og:url' />
+        <meta
+          content='https://portfolio.ouq77.kiwi/images/og-images/portfolio.png'
+          property='og:image'
+        />
       </Head>
       <ErrorBoundary>
         <NextThemesProvider
