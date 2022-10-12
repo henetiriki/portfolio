@@ -43,9 +43,9 @@ class Document extends _Document {
             type='image/png'
           />
           <link
-            href='/images/manifest-icons/favicon-194x194.png'
+            href='/images/manifest-icons/favicon-196x196.png'
             rel='icon'
-            sizes='194x194'
+            sizes='196x196'
             type='image/png'
           />
           <link href='/favicon.ico' rel='icon' />
