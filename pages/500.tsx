@@ -12,7 +12,7 @@ const FourOhFour: NextPage = (): JSX.Element => {
   useEffect(() => {
     dispatch({
       payload: {
-        imgId: 'B8S5LnGpGUn',
+        imgId: 'BBCcHOpxyJK',
       },
       type: 'set-ig-img-id',
     });
@@ -21,16 +21,16 @@ const FourOhFour: NextPage = (): JSX.Element => {
   return (
     <>
       <Head>
-        <title key='pageTitle'>{fullTitle('Page not found')}</title>
+        <title key='pageTitle'>{fullTitle('Server error')}</title>
         <meta content='noindex, nofollow' name='robots' />
       </Head>
       <>
         <Header>
-          four-o-four<span>wherefore art thou</span>
+          500<span>technical blunder</span>
         </Header>
         <ErrorContent
-          errorHeading='Looks like that doesn’t exist'
-          message='There should be a shamrock button somewhere nearby to get you out of here...'
+          errorHeading='That wasn’t meant to happen'
+          message='If the nearby shamrock button doesn’t get you out of here, please try again later.'
         />
       </>
     </>

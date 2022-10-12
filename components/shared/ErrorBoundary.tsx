@@ -1,3 +1,4 @@
+import { Container, Text } from '@nextui-org/react';
 import { Component, ErrorInfo, PropsWithChildren } from 'react';
 
 class ErrorBoundary extends Component {
@@ -21,9 +22,9 @@ class ErrorBoundary extends Component {
     // @ts-ignore
     if (this.state.hasError) {
       return (
-        <div>
-          <h2>Oops, something went wrong!</h2>
-        </div>
+        <Container>
+          <Text h4>Oops, something went wrong!</Text>
+        </Container>
       );
     }
 
