@@ -11,6 +11,7 @@ export const colors = {
   paynesGrey: '#3b3d53',
   valhalla: '#252740',
   blackRussian: '#080a20',
+  blackRussianDarker: '#050615',
   pumpkin: '#ff7917',
   corn: '#f5eb67',
   pineGreen: '#00786d',

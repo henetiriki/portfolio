@@ -1,4 +1,4 @@
-import { Container, Link, Row, Text } from '@nextui-org/react';
+import { Container, Link, Row, Text, styled } from '@nextui-org/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
@@ -9,8 +9,17 @@ import buildTimeConfig from '@fixtures/generated/build-time-config.json';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
-import { footerBackground, footerMenuItems } from '@styles/footer';
+import {
+  footerBackground,
+  footerContainer,
+  footerLastUpdated,
+  footerLines,
+  footerLowerBackground,
+  footerMenuItems,
+} from '@styles/footer';
 import { waveWrapper } from '@styles/shared';
+
+const FooterLines = styled('div', footerLines);
 
 export const Footer: FC = (): JSX.Element => {
   const {
@@ -43,16 +52,11 @@ export const Footer: FC = (): JSX.Element => {
         />
       </Row>
       <Row css={footerBackground}>
-        <Container
-          as='div'
-          css={{
-            fontFamily: '$sansHeading',
-            p: 'calc(3 * $md)',
-            ta: 'center',
-          }}>
+        <Container as='div' css={footerContainer}>
           <Container>
             <Logo />
           </Container>
+          <FooterLines css={{ mt: '$xl' }} />
           <Container css={footerMenuItems}>
             {menuItems.map(({ href, text }, idx) => (
               <NextLink href={href} key={idx} passHref>
@@ -67,19 +71,20 @@ export const Footer: FC = (): JSX.Element => {
               </NextLink>
             ))}
           </Container>
+          <FooterLines css={{ mb: '$lg' }} />
+        </Container>
+      </Row>
+      <Row css={footerLowerBackground}>
+        <Container
+          as='div'
+          css={{
+            ...footerContainer,
+            p: '$md',
+          }}>
           <Container css={{ p: '$lg 0' }}>
             <Copyright />
           </Container>
-          <Text
-            css={{
-              color: '$silver',
-              fs: '$xs',
-              left: '$lg',
-              opacity: 0.6,
-              position: 'absolute',
-            }}>
-            Updated: {lastModified}
-          </Text>
+          <Text css={footerLastUpdated}>Updated: {lastModified}</Text>
         </Container>
       </Row>
     </footer>
