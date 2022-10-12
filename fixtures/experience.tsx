@@ -15,6 +15,8 @@ const DynamicFontAwesomeIcon = dynamic(
   }
 );
 
+export const description = 'Work and education history';
+
 export const jobs: Job[] = [
   {
     content: (

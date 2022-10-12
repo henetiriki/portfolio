@@ -5,6 +5,7 @@ import Head from 'next/head';
 import { useEffect } from 'react';
 import { Content, Header } from '@components/content';
 import { Legend, MapLoader } from '@components/travel';
+import { description } from '@fixtures/travel';
 import { usePortfolioState } from '@state/context';
 import { travelContainerBottom, travelContainerTop } from '@styles/travel';
 import { getServerSideProps } from '@utils/common';
@@ -51,6 +52,16 @@ const Travel: NextPage = ({
           content='planes trains ferries cruise ships'
           key='pageKeywords'
           name='keywords'
+        />
+        <meta
+          content={description}
+          key='twitterDescription'
+          name='twitter:description'
+        />
+        <meta
+          content={description}
+          key='ogDescription'
+          property='og:description'
         />
       </Head>
       <>

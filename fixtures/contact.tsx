@@ -1,5 +1,7 @@
 import { ErrorMessage } from '@fixtures/types';
 
+export const description = 'Get in touch to have a chat';
+
 export const genericError: JSX.Element = (
   <>Something unexpected happened - please try again later...</>
 );

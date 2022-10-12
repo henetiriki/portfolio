@@ -8,7 +8,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { Content, Header } from '@components/content';
-import { jobs, schools } from '@fixtures/experience';
+import { description, jobs, schools } from '@fixtures/experience';
 import { Job, School } from '@fixtures/types';
 import { usePortfolioState } from '@state/context';
 import {
@@ -79,6 +79,16 @@ const Experience: NextPage = ({
           content={getExperienceKeywords(jobs)}
           key='pageKeywords'
           name='keywords'
+        />
+        <meta
+          content={description}
+          key='twitterDescription'
+          name='twitter:description'
+        />
+        <meta
+          content={description}
+          key='ogDescription'
+          property='og:description'
         />
       </Head>
       <>
