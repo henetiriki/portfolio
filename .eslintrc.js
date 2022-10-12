@@ -17,7 +17,7 @@ module.exports = {
   ],
   rules: {
     '@typescript-eslint/member-ordering': 'warn',
-    '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/sort-type-union-intersection-members': 'warn',
     'import/no-extraneous-dependencies': 'off',
     'import/order': [
@@ -81,7 +81,7 @@ module.exports = {
     'typescript-sort-keys/string-enum': 'warn',
     'unused-imports/no-unused-imports': 'error',
     'unused-imports/no-unused-vars': [
-      'warn',
+      'error',
       {
         args: 'after-used',
         argsIgnorePattern: '^_',

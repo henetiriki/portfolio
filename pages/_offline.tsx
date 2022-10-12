@@ -12,7 +12,7 @@ const FourOhFour: NextPage = (): JSX.Element => {
   useEffect(() => {
     dispatch({
       payload: {
-        imgId: 'B8S5LnGpGUn',
+        imgId: 'BmnVe_BAMqm',
       },
       type: 'set-ig-img-id',
     });
@@ -21,16 +21,16 @@ const FourOhFour: NextPage = (): JSX.Element => {
   return (
     <>
       <Head>
-        <title key='pageTitle'>{fullTitle('Page not found')}</title>
+        <title key='pageTitle'>{fullTitle('Offline?')}</title>
         <meta content='noindex, nofollow' name='robots' />
       </Head>
       <>
         <Header>
-          four-o-four<span>wherefore art thou</span>
+          Offline?<span>out of range?</span>
         </Header>
         <ErrorContent
-          errorHeading='Looks like that doesn’t exist'
-          message='There should be a shamrock button somewhere nearby to get you out of here...'
+          errorHeading='You might’ve lost connectivity'
+          message='There should be a shamrock button somewhere nearby to get you out of here once you’re online again...'
         />
       </>
     </>
