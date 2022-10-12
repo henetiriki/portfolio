@@ -28,7 +28,7 @@ class Document extends _Document {
           <meta content='Louw Swart // Portfolio' name='application-name' />
           <meta content='PWA App' name='Louw Swart' />
           <meta content='yes' name='mobile-web-app-capable' />
-          <meta content='#27e278' name='theme-color' />
+          <meta content='#080a20' name='theme-color' />
           <link href='/manifest.json' rel='manifest' />
           <link
             href='/images/manifest-icons/favicon-16x16.png'
