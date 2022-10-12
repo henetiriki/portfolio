@@ -1,21 +1,24 @@
 /** @type {import('next').NextConfig} */
 // @ts-check
-/* eslint-disable import/order */
 const runtimeCaching = require('next-pwa/cache');
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  runtimeCaching,
-});
-/* eslint-enable import/order */
 
+const withoutPWA = config => config;
 const withoutBundleAnalyzer = config => config;
 
 const withBundleAnalyzer =
-  process.env.NODE_ENV === 'development' || process.env.ANALYZE === 'true'
+  process.env.ANALYZE === 'true'
     ? require('@next/bundle-analyzer')({
         enabled: process.env.ANALYZE === 'true',
       })
     : withoutBundleAnalyzer;
+
+const withPWA =
+  process.env.WITH_PWA === 'true'
+    ? require('next-pwa')({
+        dest: 'public',
+        runtimeCaching,
+      })
+    : withoutPWA;
 
 const nextConfig = withBundleAnalyzer(
   withPWA({
