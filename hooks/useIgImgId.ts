@@ -7,7 +7,7 @@ export const useIgImgId = (): string | undefined => {
   const routeRef = useRef<string>();
   const {
     state: {
-      shared: { imgId },
+      shared: { fallbackImgId, imgId = fallbackImgId },
     },
   } = usePortfolioState();
   const [igImgId, setIgImgId] = useState<string | undefined>();

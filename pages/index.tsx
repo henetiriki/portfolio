@@ -1,5 +1,5 @@
 import { Container, Link, Spacer, Text } from '@nextui-org/react';
-import { InferGetServerSidePropsType, NextPage } from 'next';
+import { InferGetStaticPropsType, NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useEffect } from 'react';
@@ -7,7 +7,7 @@ import { Content } from '@components/content';
 import { openSourceContrs } from '@fixtures/home';
 import { usePortfolioState } from '@state/context';
 import { aboutContainer, imageContainer } from '@styles/home';
-import { blurDataURL, getServerSideProps } from '@utils/common';
+import { blurDataURL, getStaticProps } from '@utils/common';
 
 const DynamicTypeAnimation = dynamic(
   () => import('react-type-animation').then(mod => mod.TypeAnimation),
@@ -16,7 +16,7 @@ const DynamicTypeAnimation = dynamic(
 
 const Home: NextPage = ({
   data: { imgId },
-}: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element => {
+}: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element => {
   const { dispatch } = usePortfolioState();
 
   useEffect(() => {
@@ -131,6 +131,6 @@ const Home: NextPage = ({
   );
 };
 
-export { getServerSideProps } from '@utils/common';
+export { getStaticProps } from '@utils/common';
 
 export default Home;

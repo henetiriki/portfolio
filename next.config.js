@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
-const runtimeCaching = require('next-pwa/cache');
-
-const withoutPWA = config => config;
 const withoutBundleAnalyzer = config => config;
+const withoutPWA = config => config;
 
 const withBundleAnalyzer =
   process.env.ANALYZE === 'true'
@@ -15,7 +13,6 @@ const withPWA =
   process.env.WITH_PWA === 'true'
     ? require('next-pwa')({
         dest: 'public',
-        runtimeCaching,
       })
     : withoutPWA;
 
