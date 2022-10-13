@@ -33,12 +33,19 @@ export const footerLines: CSS = {
   opacity: 0.5,
 };
 
-export const footerMenuItems: CSS = {
+export const footerLinksContainer: CSS = {
   columnGap: '$md',
   dflex: 'center',
   fd: 'row',
   p: '$lg 0',
   rowGap: '$md',
+};
+
+export const footerLinks: CSS = {
+  '&:hover': {
+    color: '$shamrock',
+  },
+  color: '$white',
 };
 
 export const footerCopyright: CSS = {
