@@ -74,12 +74,14 @@ export const reducer = (
     }
     case 'set-ig-img-id':
       const { imgId } = payload;
+      const { fallbackImgId } = shared;
 
       return {
         ...state,
         shared: {
           ...shared,
           imgId,
+          ...(!fallbackImgId && { fallbackImgId: imgId }),
         },
       };
   }

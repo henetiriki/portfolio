@@ -32,6 +32,7 @@ export type Dispatch = (action: Action) => void;
 
 export type PortfolioState = {
   shared: {
+    fallbackImgId?: string;
     imgId?: string;
     pageTopRef?: RefObject<HTMLDivElement> | undefined;
   };
