@@ -106,7 +106,7 @@ export const Footer: FC = (): JSX.Element => {
             ...footerContainer,
             p: '$md',
           }}>
-          <Container css={{ p: '$lg 0' }}>
+          <Container css={{ pt: '$xs' }}>
             <Copyright />
           </Container>
           <Text css={footerLastUpdated}>Updated: {lastModified}</Text>

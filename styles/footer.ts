@@ -15,12 +15,12 @@ export const footerContainer: CSS = {
 };
 
 export const footerLastUpdated: CSS = {
-  bottom: 0,
   color: '$silver',
   fs: '$xs',
-  left: '$lg',
+  mb: 0,
+  ml: 'auto',
+  mr: 'auto',
   opacity: 0.6,
-  position: 'absolute',
 };
 
 export const footerLines: CSS = {

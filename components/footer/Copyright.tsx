@@ -8,7 +8,7 @@ export const Copyright: FC = (): JSX.Element => {
 
   return (
     <Container css={{ d: 'flex', fd: 'row', jc: 'center' }}>
-      <Text>
+      <Text css={{ mb: '$xs' }}>
         © 2014 - {format(date, 'yyyy')}{' '}
         <Link
           css={footerCopyright}
