@@ -1,5 +1,4 @@
 /** @type {import('next').NextConfig} */
-// @ts-check
 const runtimeCaching = require('next-pwa/cache');
 
 const withoutPWA = config => config;
