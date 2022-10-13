@@ -7,7 +7,7 @@ export const MAP_MAX_MOBILE = 768;
 export const mapOptions = (): google.maps.MapOptions => ({
   center: {
     lat: 0.0,
-    lng: 95.0,
+    lng: 32.0,
   },
   mapTypeId: 'roadmap',
   restriction: {
