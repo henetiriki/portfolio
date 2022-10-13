@@ -1,16 +1,37 @@
-import { Container, Link, Row, Text } from '@nextui-org/react';
+import { Container, Link, Row, Text, styled } from '@nextui-org/react';
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
 import { Copyright } from '@components/footer';
 import { Logo } from '@components/shared';
+import { socialLinks } from '@fixtures/footer';
 import buildTimeConfig from '@fixtures/generated/build-time-config.json';
 import { menuItems } from '@fixtures/nav';
+import { SocialLink } from '@fixtures/types';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
-import { footerBackground, footerMenuItems } from '@styles/footer';
+import {
+  footerBackground,
+  footerContainer,
+  footerLastUpdated,
+  footerLines,
+  footerLinks,
+  footerLinksContainer,
+  footerLowerBackground,
+} from '@styles/footer';
 import { waveWrapper } from '@styles/shared';
+
+const DynamicFontAwesomeIcon = dynamic(
+  () =>
+    import('@fortawesome/react-fontawesome').then(mod => mod.FontAwesomeIcon),
+  {
+    ssr: false,
+  }
+);
+
+const FooterLines = styled('div', footerLines);
 
 export const Footer: FC = (): JSX.Element => {
   const {
@@ -43,22 +64,17 @@ export const Footer: FC = (): JSX.Element => {
         />
       </Row>
       <Row css={footerBackground}>
-        <Container
-          as='div'
-          css={{
-            fontFamily: '$sansHeading',
-            p: 'calc(3 * $md)',
-            ta: 'center',
-          }}>
+        <Container as='div' css={footerContainer}>
           <Container>
             <Logo />
           </Container>
-          <Container css={footerMenuItems}>
+          <FooterLines css={{ mt: '$xl' }} />
+          <Container css={footerLinksContainer}>
             {menuItems.map(({ href, text }, idx) => (
               <NextLink href={href} key={idx} passHref>
                 <Link
                   css={{
-                    color: '$white',
+                    ...footerLinks,
                     fontWeight: pathname === href ? 'bold' : 'normal',
                   }}
                   onClick={scrollToTop}>
@@ -67,19 +83,33 @@ export const Footer: FC = (): JSX.Element => {
               </NextLink>
             ))}
           </Container>
-          <Container css={{ p: '$lg 0' }}>
+          <FooterLines css={{ mb: '$lg' }} />
+          <Container css={{ ...footerLinksContainer, pb: 0 }}>
+            {socialLinks.map(({ icon, title, url }: SocialLink) => (
+              <Link
+                css={footerLinks}
+                href={url}
+                key={url}
+                rel='noopener noreferrer'
+                target='_blank'
+                title={title}>
+                <DynamicFontAwesomeIcon height={20} icon={icon} width={20} />
+              </Link>
+            ))}
+          </Container>
+        </Container>
+      </Row>
+      <Row css={footerLowerBackground}>
+        <Container
+          as='div'
+          css={{
+            ...footerContainer,
+            p: '$md',
+          }}>
+          <Container css={{ pt: '$xs' }}>
             <Copyright />
           </Container>
-          <Text
-            css={{
-              color: '$silver',
-              fs: '$xs',
-              left: '$lg',
-              opacity: 0.6,
-              position: 'absolute',
-            }}>
-            Updated: {lastModified}
-          </Text>
+          <Text css={footerLastUpdated}>Updated: {lastModified}</Text>
         </Container>
       </Row>
     </footer>

@@ -1,3 +1,5 @@
+import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+
 export type ErrorMessage = {
   code: string;
   message: JSX.Element;
@@ -39,4 +41,10 @@ export type School = {
     from: number;
     to: number;
   };
+};
+
+export type SocialLink = {
+  icon: IconDefinition;
+  title: string;
+  url: string;
 };
