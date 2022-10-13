@@ -120,6 +120,7 @@ const Home: NextPage = ({
               alt='Louw Swart'
               blurDataURL={blurDataURL(350, 350)}
               height='350px'
+              lazyBoundary='0px'
               placeholder='blur'
               src='/images/about/louw.swart.jpg'
               width='350px'
