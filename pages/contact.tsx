@@ -1,12 +1,12 @@
 import { Container } from '@nextui-org/react';
-import { InferGetServerSidePropsType } from 'next';
+import { InferGetStaticPropsType } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { Content, Header } from '@components/content';
 import { description } from '@fixtures/contact';
 import { usePortfolioState } from '@state/context';
-import { getServerSideProps } from '@utils/common';
+import { getStaticProps } from '@utils/common';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 
@@ -19,7 +19,7 @@ const DynamicContactForm = dynamic(
 
 const Contact: NextPage = ({
   data: { imgId },
-}: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element => {
+}: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element => {
   const { dispatch } = usePortfolioState();
 
   useEffect(() => {
@@ -66,6 +66,6 @@ const Contact: NextPage = ({
   );
 };
 
-export { getServerSideProps } from '@utils/common';
+export { getStaticProps } from '@utils/common';
 
 export default Contact;

@@ -3,7 +3,7 @@ import {
   faGraduationCap,
 } from '@fortawesome/free-solid-svg-icons';
 import { Container, Link, Spacer, Text, styled } from '@nextui-org/react';
-import { InferGetServerSidePropsType } from 'next';
+import { InferGetStaticPropsType } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useEffect } from 'react';
@@ -24,7 +24,7 @@ import {
   timelineTitle,
   videoContainer,
 } from '@styles/experience';
-import { getServerSideProps } from '@utils/common';
+import { getStaticProps } from '@utils/common';
 import {
   getExperienceDescription,
   getExperienceKeywords,
@@ -54,7 +54,7 @@ const VideoContainer = styled('div', videoContainer);
 
 const Experience: NextPage = ({
   data: { imgId },
-}: InferGetServerSidePropsType<typeof getServerSideProps>): JSX.Element => {
+}: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element => {
   const { dispatch } = usePortfolioState();
 
   useEffect(() => {
@@ -229,6 +229,6 @@ const Experience: NextPage = ({
   );
 };
 
-export { getServerSideProps } from '@utils/common';
+export { getStaticProps } from '@utils/common';
 
 export default Experience;
