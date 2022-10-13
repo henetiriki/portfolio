@@ -12,10 +12,11 @@
 /.next/
 /out/
 
-# production
+# generated
 /build
-public/sw.js*
-public/workbox-*.js*
+/public/sw.js*
+/public/workbox-*.js*
+/public/sitemap.xml
 
 # misc
 .DS_Store

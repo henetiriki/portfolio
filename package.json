@@ -8,6 +8,7 @@
     "dev": "NODE_OPTIONS='--inspect --trace-warnings' next dev",
     "lint:check": "next lint",
     "lint:write": "next lint --fix",
+    "postbuild": "next-sitemap",
     "postinstall": "yarn write:last-modified",
     "prepare": "husky install",
     "prettier:check": "prettier . --check --ignore-path .prettierignore",
@@ -37,15 +38,17 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@babel/core": "^7",
     "@next/bundle-analyzer": "^12.3.1",
-    "@types/google.maps": "^3.50.2",
-    "@types/node": "^18.7.23",
+    "@next/env": "^12.3.1",
+    "@types/google.maps": "^3.50.4",
+    "@types/node": "^18.8.5",
     "@types/nodemailer": "^6.4.6",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
-    "@typescript-eslint/eslint-plugin": "^5.38.1",
-    "@typescript-eslint/parser": "^5.38.1",
-    "eslint": "^8.24.0",
+    "@typescript-eslint/eslint-plugin": "^5.40.0",
+    "@typescript-eslint/parser": "^5.40.0",
+    "eslint": "^8.25.0",
     "eslint-config-next": "^12.3.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jsx-a11y": "^6.6.1",
@@ -58,11 +61,13 @@
     "husky": "^8.0.1",
     "jsonfile": "^6.1.0",
     "lint-staged": "^13.0.3",
+    "next-sitemap": "^3.1.24",
     "prettier": "^2.7.1",
     "prop-types": "^15.8.1",
     "react-type-animation": "^2.1.1",
     "sass": "^1.55.0",
-    "typescript": "^4.8.4"
+    "typescript": "^4.8.4",
+    "webpack": "^5"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": [

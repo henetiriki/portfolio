@@ -1,12 +1,35 @@
+# Baiduspider
 User-agent: Baiduspider
+Disallow: /
+
+# baiduspider
 User-agent: baiduspider
+Disallow: /
+
+# Baiduspider+
 User-agent: Baiduspider+
+Disallow: /
+
+# Baiduspider-video
 User-agent: Baiduspider-video
+Disallow: /
+
+# Baiduspider-image
 User-agent: Baiduspider-image
 Disallow: /
 
+# *
 User-agent: *
-Disallow:
 Disallow: /docs/
 Disallow: /static/
 Disallow: /?_escaped_fragment_=/
+
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://portfolio.ouq77.kiwi
+
+# Sitemaps
+Sitemap: https://portfolio.ouq77.kiwi/sitemap.xml
