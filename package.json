@@ -6,6 +6,8 @@
     "build": "yarn write:last-modified && next build",
     "clean": "rm -rf .next",
     "dev": "NODE_OPTIONS='--inspect --trace-warnings' next dev",
+    "eslint:check": "eslint .",
+    "eslint:write": "eslint . --fix",
     "lint:check": "next lint",
     "lint:write": "next lint --fix",
     "postbuild": "next-sitemap",

@@ -17,7 +17,7 @@ export const previousCityIcon: google.maps.Symbol = {
 export const currentCityIcon: google.maps.Symbol = {
   ...sharedIconOpts,
   fillColor: torchRed,
-  scale: 1.5,
+  scale: 1.25,
 };
 
 export const airportIcon: google.maps.Symbol = {

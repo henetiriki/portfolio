@@ -2,6 +2,7 @@ import { FC, PropsWithRef, useEffect, useState } from 'react';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { cancelableDelay } from '@utils/common';
+import { getZoomMarkerWeightExponent } from '@utils/travel';
 
 export const Marker: FC<
   PropsWithRef<
@@ -17,7 +18,10 @@ export const Marker: FC<
   const { dispatch } = usePortfolioState();
   const [marker, setMarker] = useState<google.maps.Marker>();
   const [markerReady, setMarkerReady] = useState(false);
-  const [eventListener, setEventListener] =
+  const [markerScale, setMarkerScale] = useState<number>();
+  const [clickEventListener, setClickEventListener] =
+    useState<google.maps.MapsEventListener>();
+  const [zoomEventListener, setZoomEventListener] =
     useState<google.maps.MapsEventListener>();
   const {
     endMarker,
@@ -68,27 +72,28 @@ export const Marker: FC<
         },
       });
 
-      if (!eventListener) {
-        setEventListener(
+      if (!clickEventListener) {
+        setClickEventListener(
           google.maps.event.addListener(marker, 'click', () => {
             showInfoWindow();
           })
         );
       }
 
+      setMarkerScale((icon as google.maps.Symbol).scale!);
       setMarkerReady(true);
     }
 
     return () => {
-      if (eventListener) {
-        google.maps.event.removeListener(eventListener);
+      if (clickEventListener) {
+        google.maps.event.removeListener(clickEventListener);
       }
       infoWindow?.close();
     };
-  }, [marker, markerOpts, eventListener]);
+  }, [marker, markerOpts, clickEventListener]);
 
   useEffect(() => {
-    if (map && marker && markerReady) {
+    if (map && marker && markerReady && markerScale) {
       cancelableDelay(idx * order * 100, () => {
         marker.setMap(map);
         if (endMarker) {
@@ -97,9 +102,35 @@ export const Marker: FC<
             type: 'set-markers-loaded',
           });
         }
+
+        setZoomEventListener(
+          google.maps.event.addListener(map, 'zoom_changed', () => {
+            marker.setIcon({
+              ...(marker.getIcon() as google.maps.Symbol),
+              scale: markerScale * getZoomMarkerWeightExponent(map.getZoom()),
+            });
+          })
+        );
       });
     }
-  }, [markerReady, marker, map, idx, order, endMarker, dispatch]);
+
+    return () => {
+      if (zoomEventListener) {
+        google.maps.event.removeListener(zoomEventListener);
+      }
+    };
+  }, [
+    markerReady,
+    marker,
+    markerScale,
+    map,
+    idx,
+    order,
+    endMarker,
+    zoomEventListener,
+    dispatch,
+    setZoomEventListener,
+  ]);
 
   return null;
 };
