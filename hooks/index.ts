@@ -1,4 +1,5 @@
 export * from './types';
+export * from './useImgSetup';
 export * from './useDeepCompareEffectForMaps';
 export * from './useFormikForm';
 export * from './useIgImgId';
