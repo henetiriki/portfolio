@@ -1,8 +1,10 @@
 import { FC, PropsWithRef, useEffect, useState } from 'react';
-import { sharedPolylineOpts } from '@fixtures/travel';
+import { STROKE_WEIGHT_DEFAULT, sharedPolylineOpts } from '@fixtures/travel';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { cancelableDelay } from '@utils/common';
+import { getZoomPolylineWeightExponent } from '@utils/travel';
+import IconSequence = google.maps.IconSequence;
 
 type BuildPathProps = {
   legs?: google.maps.LatLngLiteral[];
@@ -24,6 +26,8 @@ export const Polyline: FC<
   const { dispatch } = usePortfolioState();
   const [polyline, setPolyline] = useState<google.maps.Polyline>();
   const [polylineReady, setPolylineReady] = useState(false);
+  const [zoomEventListener, setZoomEventListener] =
+    useState<google.maps.MapsEventListener>();
   const {
     endRailTripPolyline,
     endTripPolyline,
@@ -102,6 +106,41 @@ export const Polyline: FC<
     endTripPolyline,
     dispatch,
   ]);
+
+  useEffect(() => {
+    if (map && polyline && !zoomEventListener) {
+      setZoomEventListener(
+        google.maps.event.addListener(map, 'zoom_changed', () => {
+          const strokeWeight =
+            STROKE_WEIGHT_DEFAULT *
+            getZoomPolylineWeightExponent(map.getZoom());
+
+          if (polyline.get('icons')) {
+            const icons: google.maps.IconSequence[] = polyline.get('icons');
+
+            polyline.set(
+              'icons',
+              icons.map(({ icon, ...rest }: IconSequence) => ({
+                ...rest,
+                icon: {
+                  ...icon,
+                  strokeWeight,
+                },
+              }))
+            );
+          } else {
+            polyline.set('strokeWeight', strokeWeight);
+          }
+        })
+      );
+    }
+
+    return () => {
+      if (zoomEventListener) {
+        google.maps.event.removeListener(zoomEventListener);
+      }
+    };
+  }, [map, polyline, zoomEventListener, setZoomEventListener]);
 
   return null;
 };
