@@ -1,23 +1,23 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
+node_modules/
+.pnp/
 .pnp.js
 
 # testing
-/coverage
+coverage/
 
 # next.js
-/.next/
-/out/
+.next/
+out/
 
 # generated
-/build
-/public/fallback-*.js
-/public/sitemap.xml
-/public/sw.js*
-/public/workbox-*.js*
+build/
+public/fallback-*.js
+public/sitemap.xml
+public/sw.js*
+public/workbox-*.js*
 
 # misc
 .DS_Store
