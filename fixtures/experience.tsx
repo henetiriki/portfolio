@@ -284,7 +284,7 @@ export const jobs: Job[] = [
         </Text>
         <Text>
           The development environment was <b>Java</b>, and frameworks and
-          technologies included <b>Spring MVC</b>, <b>JSP</b>,<b>JQuery</b>,{' '}
+          technologies included <b>Spring MVC</b>, <b>JSP</b>, <b>JQuery</b>,{' '}
           <b>RESTful</b> web services over <b>HTTP</b>, <b>JAX-WS/JAXB</b> web
           services over <b>SOAP</b>,<b>Hibernate</b> and <b>PostgreSQL</b>.
         </Text>
