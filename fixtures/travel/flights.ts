@@ -166,7 +166,7 @@ export const flights: google.maps.LatLngLiteral[][] = [
   [WLG.position, TIU.position],
   [WLG.position, NSN.position],
   [WLG.position, NPL.position],
-  // [WLG.position, CBR.position, SIN.position, JNB.position],
+  [WLG.position, CBR.position, SIN.position, JNB.position],
   [WLG.position, ZQN.position],
   [BKKN.position, KBV.position],
   [HKT.position, SIN.position, MEL.position, WLG.position],
@@ -182,6 +182,4 @@ export const flights: google.maps.LatLngLiteral[][] = [
   [SYD.position, BNE.position],
 ];
 
-export const upcomingFlights: google.maps.LatLngLiteral[][] = [
-  [WLG.position, CBR.position, SIN.position, JNB.position],
-];
+export const upcomingFlights: google.maps.LatLngLiteral[][] = [];
