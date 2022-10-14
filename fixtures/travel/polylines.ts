@@ -1,6 +1,5 @@
 import { cruises, upcomingCruises } from '@fixtures/travel/cruises';
 import { flights, upcomingFlights } from '@fixtures/travel/flights';
-import { STROKE_WEIGHT_DEFAULT } from '@fixtures/travel/mapConfig';
 import { TripPolylines } from '@fixtures/travel/types';
 import { colors } from '@styles/shared';
 
@@ -9,7 +8,7 @@ const { corn, viking } = colors;
 export const sharedPolylineOpts: google.maps.PolylineOptions = {
   geodesic: true,
   strokeOpacity: 0.9,
-  strokeWeight: STROKE_WEIGHT_DEFAULT,
+  strokeWeight: 1.5,
 };
 
 export const tripPolylines: TripPolylines[] = [
@@ -29,7 +28,7 @@ export const tripPolylines: TripPolylines[] = [
             path: 'M 0, -1 0,1',
             strokeColor: corn,
             strokeOpacity: 0.9,
-            strokeWeight: STROKE_WEIGHT_DEFAULT,
+            strokeWeight: 1.5,
           },
           offset: '0',
           repeat: '12px',
@@ -55,7 +54,7 @@ export const tripPolylines: TripPolylines[] = [
             path: 'M 0, -1 0,1',
             strokeColor: viking,
             strokeOpacity: 0.9,
-            strokeWeight: STROKE_WEIGHT_DEFAULT,
+            strokeWeight: 1.5,
           },
           offset: '0',
           repeat: '12px',

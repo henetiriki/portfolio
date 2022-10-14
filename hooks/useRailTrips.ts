@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { STROKE_WEIGHT_DEFAULT, sharedPolylineOpts } from '@fixtures/travel';
+import { sharedPolylineOpts } from '@fixtures/travel';
 import { RailTripItem, RailTrips, TripPaths } from '@fixtures/travel/types';
 import { usePortfolioState } from '@state/context';
 import { colors } from '@styles/shared';
@@ -48,7 +48,7 @@ export const useRailTrips = (): TripPaths[] => {
                 path: 'M 0, -1 0,1',
                 strokeColor: torchRed,
                 strokeOpacity: 0.9,
-                strokeWeight: STROKE_WEIGHT_DEFAULT,
+                strokeWeight: 1.5,
               },
               offset: '0',
               repeat: '12px',

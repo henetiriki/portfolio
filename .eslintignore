@@ -1,6 +1,1 @@
 .yarn/
-.next/
-
-public/fallback-*.js
-public/sw.js
-public/workbox-*.js
