@@ -6,11 +6,10 @@ import { Container, Link, Spacer, Text, styled } from '@nextui-org/react';
 import { InferGetStaticPropsType } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useEffect } from 'react';
 import { Content, Header } from '@components/content';
 import { description, jobs, schools } from '@fixtures/experience';
 import { Job, School } from '@fixtures/types';
-import { usePortfolioState } from '@state/context';
+import { useImgSetup } from '@hooks';
 import {
   timeline,
   timelineBox,
@@ -53,18 +52,9 @@ const TimelineContent = styled('div', timelineContent);
 const VideoContainer = styled('div', videoContainer);
 
 const Experience: NextPage = ({
-  data: { imgId },
+  data,
 }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element => {
-  const { dispatch } = usePortfolioState();
-
-  useEffect(() => {
-    dispatch({
-      payload: {
-        imgId,
-      },
-      type: 'set-ig-img-id',
-    });
-  }, [imgId, dispatch]);
+  useImgSetup(data);
 
   return (
     <>

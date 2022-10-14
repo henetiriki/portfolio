@@ -2,10 +2,9 @@ import { Container, Link, Spacer, Text } from '@nextui-org/react';
 import { InferGetStaticPropsType, NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { useEffect } from 'react';
 import { Content } from '@components/content';
 import { openSourceContrs } from '@fixtures/home';
-import { usePortfolioState } from '@state/context';
+import { useImgSetup } from '@hooks';
 import { aboutContainer, imageContainer } from '@styles/home';
 import { blurDataURL, getStaticProps } from '@utils/common';
 
@@ -15,18 +14,9 @@ const DynamicTypeAnimation = dynamic(
 );
 
 const Home: NextPage = ({
-  data: { imgId },
+  data,
 }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element => {
-  const { dispatch } = usePortfolioState();
-
-  useEffect(() => {
-    dispatch({
-      payload: {
-        imgId,
-      },
-      type: 'set-ig-img-id',
-    });
-  }, [imgId, dispatch]);
+  useImgSetup(data);
 
   return (
     <>
