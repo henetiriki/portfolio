@@ -3,6 +3,7 @@ import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { colors } from '@styles/shared';
 import { cancelableDelay } from '@utils/common';
+import { getZoomMarkerWeightExponent } from '@utils/travel';
 
 const { cinder, shamrock } = colors;
 
@@ -20,6 +21,7 @@ export const Marker: FC<
   const { dispatch } = usePortfolioState();
   const [marker, setMarker] = useState<google.maps.Marker>();
   const [markerReady, setMarkerReady] = useState(false);
+  const [markerScale, setMarkerScale] = useState<number>();
   const {
     endMarker,
     icon,
@@ -54,6 +56,26 @@ export const Marker: FC<
     return undefined;
   }, [infoWindow, map, marker, options]);
 
+  const zoomEventListener = useCallback<
+    () => google.maps.MapsEventListener | undefined
+  >(() => {
+    if (map && marker && markerScale) {
+      return google.maps.event.addListener(map, 'zoom_changed', () => {
+        const scale = markerScale * getZoomMarkerWeightExponent(map.getZoom());
+        const icon: google.maps.Symbol = marker.getIcon() as google.maps.Symbol;
+
+        if (icon.scale !== scale) {
+          marker.setIcon({
+            ...icon,
+            scale,
+          });
+        }
+      });
+    }
+
+    return undefined;
+  }, [map, marker, markerScale]);
+
   useEffect(() => {
     if (!marker) {
       setMarker(new google.maps.Marker());
@@ -78,6 +100,7 @@ export const Marker: FC<
         },
       });
 
+      setMarkerScale((icon as google.maps.Symbol).scale!);
       setMarkerReady(true);
     }
 
@@ -85,9 +108,12 @@ export const Marker: FC<
       eventListener?.remove();
       infoWindow?.close();
     };
-  }, [marker, markerOpts, markerReady]);
+  }, [marker, markerOpts, markerReady, setMarkerScale]);
 
   useEffect(() => {
+    const eventListener: google.maps.MapsEventListener | undefined =
+      zoomEventListener();
+
     if (map && marker && markerReady) {
       cancelableDelay(idx * order * 100, () => {
         marker.setMap(map);
@@ -102,6 +128,7 @@ export const Marker: FC<
     }
 
     return () => {
+      eventListener?.remove();
       if (endMarker) {
         dispatch({
           payload: { markersLoaded: false },
@@ -109,7 +136,16 @@ export const Marker: FC<
         });
       }
     };
-  }, [endMarker, idx, map, marker, markerReady, order, dispatch]);
+  }, [
+    endMarker,
+    idx,
+    map,
+    marker,
+    markerReady,
+    order,
+    dispatch,
+    zoomEventListener,
+  ]);
 
   return null;
 };
