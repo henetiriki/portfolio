@@ -60,9 +60,7 @@ export const Marker: FC<
     }
 
     return () => {
-      if (marker) {
-        marker.setMap(null);
-      }
+      marker?.setMap(null);
     };
   }, [marker]);
 
@@ -84,9 +82,7 @@ export const Marker: FC<
     }
 
     return () => {
-      if (eventListener) {
-        google.maps.event.removeListener(eventListener);
-      }
+      eventListener?.remove();
       infoWindow?.close();
     };
   }, [marker, markerOpts, markerReady]);
@@ -95,6 +91,7 @@ export const Marker: FC<
     if (map && marker && markerReady) {
       cancelableDelay(idx * order * 100, () => {
         marker.setMap(map);
+
         if (endMarker) {
           dispatch({
             payload: { markersLoaded: true },
@@ -112,7 +109,7 @@ export const Marker: FC<
         });
       }
     };
-  }, [markerReady, marker, map, idx, order, endMarker, dispatch]);
+  }, [endMarker, idx, map, marker, markerReady, order, dispatch]);
 
   return null;
 };

@@ -1,8 +1,9 @@
 import { FC, PropsWithRef, useCallback, useEffect, useState } from 'react';
-import { sharedPolylineOpts } from '@fixtures/travel';
+import { STROKE_WEIGHT_DEFAULT, sharedPolylineOpts } from '@fixtures/travel';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { cancelableDelay } from '@utils/common';
+import { getZoomPolylineWeightExponent } from '@utils/travel';
 
 type BuildPathProps = {
   legs?: google.maps.LatLngLiteral[];
@@ -53,15 +54,30 @@ export const Polyline: FC<
     return [];
   }, []);
 
+  const zoomEventListener = useCallback<
+    () => google.maps.MapsEventListener | undefined
+  >(() => {
+    if (map && polyline) {
+      return google.maps.event.addListener(map, 'zoom_changed', () => {
+        const strokeWeight =
+          STROKE_WEIGHT_DEFAULT * getZoomPolylineWeightExponent(map.getZoom());
+
+        if (polyline.get('strokeWeight') !== strokeWeight) {
+          polyline.set('strokeWeight', strokeWeight);
+        }
+      });
+    }
+
+    return undefined;
+  }, [map, polyline]);
+
   useEffect(() => {
     if (!polyline) {
       setPolyline(new google.maps.Polyline());
     }
 
     return () => {
-      if (polyline) {
-        polyline.setMap(null);
-      }
+      polyline?.setMap(null);
     };
   }, [polyline]);
 
@@ -80,12 +96,15 @@ export const Polyline: FC<
         setPolylineReady(false);
       }
     };
-  }, [polyline, polylineOpts, polylineReady, legs, paths]);
+  }, [legs, paths, polyline, polylineOpts, polylineReady]);
 
   useEffect(() => {
+    let eventListener: google.maps.MapsEventListener | undefined = undefined;
+
     if (map && polyline && polylineReady) {
       cancelableDelay(idx * order * 100, () => {
         polyline.setMap(map);
+        eventListener = zoomEventListener();
 
         if (endRailTripPolyline) {
           dispatch({
@@ -103,6 +122,8 @@ export const Polyline: FC<
     }
 
     return () => {
+      eventListener?.remove();
+
       if (endRailTripPolyline) {
         dispatch({
           payload: { railPolylinesLoaded: false },
@@ -117,14 +138,15 @@ export const Polyline: FC<
       }
     };
   }, [
-    polylineReady,
-    polyline,
-    map,
-    idx,
-    order,
     endRailTripPolyline,
     endTripPolyline,
+    idx,
+    map,
+    order,
+    polyline,
+    polylineReady,
     dispatch,
+    zoomEventListener,
   ]);
 
   return null;

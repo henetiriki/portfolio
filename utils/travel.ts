@@ -16,15 +16,15 @@ export const getZoomPolylineWeightExponent = (zoom: number = 0): number => {
     case zoom <= 4:
       return 1;
     case zoom <= 8:
-      return 1.25;
+      return 1.5;
     case zoom <= 12:
-      return 1.75;
-    case zoom <= 16:
       return 2;
+    case zoom <= 16:
+      return 2.5;
     case zoom <= 20:
-      return 2.25;
+      return 3;
     case zoom <= 24:
-      return 2.75;
+      return 3.5;
     default:
       return 1;
   }
