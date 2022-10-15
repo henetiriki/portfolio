@@ -3,14 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Container, Link, Navbar, styled } from '@nextui-org/react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import {
-  FC,
-  MouseEvent,
-  MutableRefObject,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Logo } from '@components/shared';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
@@ -23,6 +16,7 @@ import {
   navTypography,
   scrollToTop,
 } from '@styles/nav';
+import type { FC, MouseEvent, MutableRefObject } from 'react';
 
 const ScrollToTop = styled('a', scrollToTop);
 

@@ -1,4 +1,4 @@
-import { CSS } from '@nextui-org/react';
+import type { CSS } from '@nextui-org/react';
 
 export const footerBackground: CSS = {
   bgColor: '$blackRussian',

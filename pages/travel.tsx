@@ -1,5 +1,4 @@
 import { Container, Text } from '@nextui-org/react';
-import { InferGetStaticPropsType } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
@@ -7,8 +6,9 @@ import { Legend, MapLoader } from '@components/travel';
 import { description } from '@fixtures/travel';
 import { useImgSetup } from '@hooks';
 import { travelContainerBottom, travelContainerTop } from '@styles/travel';
-import { getStaticProps } from '@utils/common';
 import { fullTitle } from '@utils/head';
+import type { getStaticProps } from '@utils/common';
+import type { InferGetStaticPropsType } from 'next';
 import type { NextPage } from 'next';
 
 const DynamicMapWrapper = dynamic(

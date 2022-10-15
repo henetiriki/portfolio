@@ -16,6 +16,7 @@ module.exports = {
     'unused-imports',
   ],
   rules: {
+    '@typescript-eslint/consistent-type-imports': 'error',
     '@typescript-eslint/member-ordering': 'warn',
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/sort-type-union-intersection-members': 'warn',

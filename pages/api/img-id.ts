@@ -1,6 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
 import getConfig from 'next/config';
-import { ImageId, randomItem } from '@utils/common';
+import { randomItem } from '@utils/common';
+import type { ImageId } from '@utils/common';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const { serverRuntimeConfig } = getConfig();
 const imageIds: string[] = serverRuntimeConfig.igImgIds?.split(',') || [];

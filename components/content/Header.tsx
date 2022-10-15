@@ -1,5 +1,5 @@
 import { Container, Text } from '@nextui-org/react';
-import { FC, PropsWithChildren } from 'react';
+import type { FC, PropsWithChildren } from 'react';
 
 export const Header: FC<PropsWithChildren> = ({ children }): JSX.Element => (
   <Container

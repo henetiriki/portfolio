@@ -1,7 +1,7 @@
 import { cruises, upcomingCruises } from '@fixtures/travel/cruises';
 import { flights, upcomingFlights } from '@fixtures/travel/flights';
-import { TripPolylines } from '@fixtures/travel/types';
 import { colors } from '@styles/shared';
+import type { TripPolylines } from '@fixtures/travel/types';
 
 const { corn, viking } = colors;
 

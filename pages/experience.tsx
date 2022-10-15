@@ -3,12 +3,10 @@ import {
   faGraduationCap,
 } from '@fortawesome/free-solid-svg-icons';
 import { Container, Link, Spacer, Text, styled } from '@nextui-org/react';
-import { InferGetStaticPropsType } from 'next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
 import { description, jobs, schools } from '@fixtures/experience';
-import { Job, School } from '@fixtures/types';
 import { useImgSetup } from '@hooks';
 import {
   timeline,
@@ -23,12 +21,14 @@ import {
   timelineTitle,
   videoContainer,
 } from '@styles/experience';
-import { getStaticProps } from '@utils/common';
 import {
   getExperienceDescription,
   getExperienceKeywords,
 } from '@utils/experience';
 import { fullTitle } from '@utils/head';
+import type { Job, School } from '@fixtures/types';
+import type { getStaticProps } from '@utils/common';
+import type { InferGetStaticPropsType } from 'next';
 import type { NextPage } from 'next';
 
 const DynamicFontAwesomeIcon = dynamic(

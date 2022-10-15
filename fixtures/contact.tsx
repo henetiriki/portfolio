@@ -1,4 +1,4 @@
-import { ErrorMessage } from '@fixtures/types';
+import type { ErrorMessage } from '@fixtures/types';
 
 export const description = 'Get in touch to have a chat';
 

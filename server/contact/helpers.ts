@@ -1,8 +1,8 @@
 import { readFileSync } from 'fs';
 import path from 'path';
-import Mail from 'nodemailer/lib/mailer';
-import { Submission } from '@pages/api/types';
-import { ErrorType } from '@server/contact';
+import type { Submission } from '@pages/api/types';
+import type { ErrorType } from '@server/contact';
+import type Mail from 'nodemailer/lib/mailer';
 
 const CUSTOM_APP_DOMAIN = process.env.CUSTOM_APP_DOMAIN;
 const GMAIL_SENDER_EMAIL = process.env.GMAIL_SENDER_EMAIL;

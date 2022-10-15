@@ -7,7 +7,7 @@ import {
   switzerland,
   unitedKingdom,
 } from './countries';
-import { Location } from './types';
+import type { Location } from './types';
 
 export const MYB: Location = {
   description: `London, ${unitedKingdom}`,

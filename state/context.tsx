@@ -1,13 +1,7 @@
-import {
-  FC,
-  PropsWithChildren,
-  createContext,
-  useContext,
-  useMemo,
-  useReducer,
-} from 'react';
+import { createContext, useContext, useMemo, useReducer } from 'react';
 import { initialState, reducer } from '@state/reducer';
-import { ContextValue } from '@state/types';
+import type { ContextValue } from '@state/types';
+import type { FC, PropsWithChildren } from 'react';
 
 const PortfolioStateContext = createContext<ContextValue | undefined>(
   undefined

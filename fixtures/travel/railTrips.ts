@@ -1,4 +1,4 @@
-import { RailTrips } from './types';
+import type { RailTrips } from './types';
 
 export const railTrips: RailTrips = {
   trips: [

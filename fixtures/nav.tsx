@@ -1,4 +1,4 @@
-import { LinkItem } from '@fixtures/types';
+import type { LinkItem } from '@fixtures/types';
 
 export const menuItems: LinkItem[] = [
   { href: '/', text: 'Home' },

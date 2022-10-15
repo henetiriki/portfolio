@@ -1,8 +1,8 @@
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Text, styled } from '@nextui-org/react';
-import { FC, PropsWithChildren } from 'react';
 import { markerText } from '@styles/travel';
+import type { IconProp } from '@fortawesome/fontawesome-svg-core';
+import type { FC, PropsWithChildren } from 'react';
 
 const MarkerText = styled(Text, markerText);
 

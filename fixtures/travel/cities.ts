@@ -1,6 +1,6 @@
 import { newZealand, southAfrica, unitedKingdom } from './countries';
 import { currentCityIcon, previousCityIcon } from './icons';
-import { City } from './types';
+import type { City } from './types';
 
 const lived = "I've lived here...";
 

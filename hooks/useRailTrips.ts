@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 import { sharedPolylineOpts } from '@fixtures/travel';
-import { RailTripItem, RailTrips, TripPaths } from '@fixtures/travel/types';
 import { usePortfolioState } from '@state/context';
 import { colors } from '@styles/shared';
 import { fetcher } from '@utils/common';
+import type {
+  RailTripItem,
+  RailTrips,
+  TripPaths,
+} from '@fixtures/travel/types';
 
 const { torchRed } = colors;
 

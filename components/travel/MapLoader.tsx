@@ -1,5 +1,5 @@
 import { Container, Loading } from '@nextui-org/react';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export const MapLoader: FC = () => (
   <Container

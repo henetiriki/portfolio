@@ -1,8 +1,6 @@
 import { styled } from '@nextui-org/react';
 import {
   Children,
-  FC,
-  PropsWithChildren,
   cloneElement,
   isValidElement,
   useCallback,
@@ -14,6 +12,7 @@ import { MAP_MAX_MOBILE, aucklandPoint, mapOptions } from '@fixtures/travel';
 import { useDeepCompareEffectForMaps, useWindowSize } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { delay } from '@utils/common';
+import type { FC, PropsWithChildren } from 'react';
 
 const MapContainer = styled('div', {
   h: '65vh',

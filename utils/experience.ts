@@ -1,5 +1,5 @@
-import { Job } from '@fixtures/types';
 import { getNodeText } from '@utils/common';
+import type { Job } from '@fixtures/types';
 
 const getUniqueValues = (jobs: Job[]): string[] => {
   const employers = new Set<string>();

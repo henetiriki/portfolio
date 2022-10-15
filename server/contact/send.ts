@@ -1,6 +1,7 @@
-import nodeMailer, { SentMessageInfo } from 'nodemailer';
-import Mail from 'nodemailer/lib/mailer';
-import { SendResponse } from '@server/contact';
+import nodeMailer from 'nodemailer';
+import type { SendResponse } from '@server/contact';
+import type { SentMessageInfo } from 'nodemailer';
+import type Mail from 'nodemailer/lib/mailer';
 
 const GMAIL_APP_EMAIL = process.env.GMAIL_APP_EMAIL;
 const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD;

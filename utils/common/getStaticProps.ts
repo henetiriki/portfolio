@@ -1,7 +1,7 @@
-import { GetStaticProps } from 'next';
 import getConfig from 'next/config';
-import { ImageId } from '@utils/common';
 import { randomItem } from '@utils/common/randomItem';
+import type { ImageId } from '@utils/common';
+import type { GetStaticProps } from 'next';
 
 const { serverRuntimeConfig } = getConfig();
 const imageIds: string[] = serverRuntimeConfig.igImgIds?.split(',') || [];

@@ -1,9 +1,10 @@
-import { FC, PropsWithRef, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { STROKE_WEIGHT_DEFAULT, sharedPolylineOpts } from '@fixtures/travel';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { cancelableDelay } from '@utils/common';
 import { getZoomPolylineWeightExponent } from '@utils/travel';
+import type { FC, PropsWithRef } from 'react';
 
 type BuildPathProps = {
   legs?: google.maps.LatLngLiteral[];

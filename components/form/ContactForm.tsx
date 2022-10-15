@@ -10,9 +10,9 @@ import {
   Text,
   Textarea,
 } from '@nextui-org/react';
-import { FC, PropsWithoutRef, useEffect } from 'react';
+import { useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-import { FormValueKey, useFormikForm } from '@hooks';
+import { useFormikForm } from '@hooks';
 import {
   formContainer,
   formInput,
@@ -21,6 +21,8 @@ import {
   topRow,
 } from '@styles/form';
 import { upperFirst } from '@utils/common';
+import type { FormValueKey } from '@hooks';
+import type { FC, PropsWithoutRef } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const ContactForm: FC = () => {
