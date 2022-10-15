@@ -5,6 +5,7 @@ import {
   PropsWithChildren,
   cloneElement,
   isValidElement,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -12,7 +13,7 @@ import {
 import { MAP_MAX_MOBILE, aucklandPoint, mapOptions } from '@fixtures/travel';
 import { useDeepCompareEffectForMaps, useWindowSize } from '@hooks';
 import { usePortfolioState } from '@state/context';
-import { zoomMap } from '@utils/travel';
+import { delay } from '@utils/common';
 
 const MapContainer = styled('div', {
   h: '65vh',
@@ -32,6 +33,29 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
   const { width } = useWindowSize();
   const [map, setMap] = useState<google.maps.Map>();
   const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>();
+
+  const zoomMap = useCallback<(nextZoom: number, maxZoom: number) => void>(
+    (nextZoom = 0, maxZoom = 0) => {
+      if (map) {
+        if (nextZoom < maxZoom) {
+          const tilesLoadedEventListener: google.maps.MapsEventListener =
+            google.maps.event.addListener(map, 'zoom_changed', () => {
+              google.maps.event.removeListener(tilesLoadedEventListener);
+              zoomMap(map.getZoom()! + 1, maxZoom);
+            });
+
+          delay(80).then(() => {
+            map.setZoom(nextZoom);
+          });
+
+          return;
+        }
+
+        map.setOptions({ scrollwheel: true });
+      }
+    },
+    [map]
+  );
 
   useEffect(() => {
     if (mapRef.current && !map && !infoWindow) {
@@ -57,9 +81,9 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
   useEffect(() => {
     if (map && markersLoaded && railPolylinesLoaded && tripPolylinesLoaded) {
       map.panTo(aucklandPoint);
-      zoomMap(map, map.getZoom()! + 1, 5);
+      zoomMap(map.getZoom()! + 1, 5);
     }
-  }, [map, markersLoaded, railPolylinesLoaded, tripPolylinesLoaded]);
+  }, [map, markersLoaded, railPolylinesLoaded, tripPolylinesLoaded, zoomMap]);
 
   return (
     <>

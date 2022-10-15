@@ -1,4 +1,4 @@
-import { FC, PropsWithRef, useEffect, useState } from 'react';
+import { FC, PropsWithRef, useCallback, useEffect, useState } from 'react';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { cancelableDelay } from '@utils/common';
@@ -29,7 +29,7 @@ export const Marker: FC<
     ...markerOpts
   } = options;
 
-  const showInfoWindow = (): void => {
+  const showInfoWindow = useCallback<() => void>(() => {
     const { description, title } = options;
 
     marker?.setAnimation(google.maps.Animation.BOUNCE);
@@ -43,7 +43,7 @@ export const Marker: FC<
       </div>`
     );
     infoWindow?.open(map, marker);
-  };
+  }, [map, marker, infoWindow, options]);
 
   useEffect(() => {
     if (!marker) {
@@ -99,6 +99,15 @@ export const Marker: FC<
         }
       });
     }
+
+    return () => {
+      if (endMarker) {
+        dispatch({
+          payload: { markersLoaded: false },
+          type: 'set-markers-loaded',
+        });
+      }
+    };
   }, [markerReady, marker, map, idx, order, endMarker, dispatch]);
 
   return null;

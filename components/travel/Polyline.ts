@@ -1,4 +1,4 @@
-import { FC, PropsWithRef, useEffect, useState } from 'react';
+import { FC, PropsWithRef, useCallback, useEffect, useState } from 'react';
 import { sharedPolylineOpts } from '@fixtures/travel';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
@@ -35,7 +35,9 @@ export const Polyline: FC<
     ...polylineOpts
   } = options;
 
-  const buildPath = ({ legs, paths }: BuildPathProps): google.maps.LatLng[] => {
+  const buildPath = useCallback<
+    (props: BuildPathProps) => google.maps.LatLng[]
+  >(({ legs, paths }) => {
     if (legs) {
       return legs.map(
         (point: google.maps.LatLngLiteral) => new google.maps.LatLng(point)
@@ -49,7 +51,7 @@ export const Polyline: FC<
     }
 
     return [];
-  };
+  }, []);
 
   useEffect(() => {
     if (!polyline) {
@@ -64,7 +66,7 @@ export const Polyline: FC<
   }, [polyline]);
 
   useDeepCompareEffectForMaps(() => {
-    if (polyline) {
+    if (polyline && !polylineReady) {
       polyline.setOptions({
         ...sharedPolylineOpts,
         ...polylineOpts,
@@ -72,26 +74,48 @@ export const Polyline: FC<
       });
       setPolylineReady(true);
     }
-  }, [polyline, polylineOpts, legs, paths]);
+
+    return () => {
+      if (polylineReady) {
+        setPolylineReady(false);
+      }
+    };
+  }, [polyline, polylineOpts, polylineReady, legs, paths]);
 
   useEffect(() => {
     if (map && polyline && polylineReady) {
       cancelableDelay(idx * order * 100, () => {
         polyline.setMap(map);
-        if (endTripPolyline) {
-          dispatch({
-            payload: { tripPolylinesLoaded: true },
-            type: 'set-trip-polylines-loaded',
-          });
-        }
+
         if (endRailTripPolyline) {
           dispatch({
             payload: { railPolylinesLoaded: true },
             type: 'set-rail-polylines-loaded',
           });
         }
+        if (endTripPolyline) {
+          dispatch({
+            payload: { tripPolylinesLoaded: true },
+            type: 'set-trip-polylines-loaded',
+          });
+        }
       });
     }
+
+    return () => {
+      if (endRailTripPolyline) {
+        dispatch({
+          payload: { railPolylinesLoaded: false },
+          type: 'set-rail-polylines-loaded',
+        });
+      }
+      if (endTripPolyline) {
+        dispatch({
+          payload: { tripPolylinesLoaded: false },
+          type: 'set-trip-polylines-loaded',
+        });
+      }
+    };
   }, [
     polylineReady,
     polyline,
