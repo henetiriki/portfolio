@@ -45,6 +45,12 @@ module.exports = {
     'newline-after-var': 'warn',
     'newline-before-return': 'warn',
     'no-multiple-empty-lines': 'warn',
+    'no-restricted-imports': [
+      'error',
+      {
+        patterns: ['../'],
+      },
+    ],
     'no-underscore-dangle': 'off',
     'no-unneeded-ternary': 'warn',
     'prefer-spread': 'warn',
