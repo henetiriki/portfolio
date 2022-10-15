@@ -1,7 +1,10 @@
 import { FC, PropsWithRef, useCallback, useEffect, useState } from 'react';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
+import { colors } from '@styles/shared';
 import { cancelableDelay } from '@utils/common';
+
+const { cinder, shamrock } = colors;
 
 export const Marker: FC<
   PropsWithRef<
@@ -17,8 +20,6 @@ export const Marker: FC<
   const { dispatch } = usePortfolioState();
   const [marker, setMarker] = useState<google.maps.Marker>();
   const [markerReady, setMarkerReady] = useState(false);
-  const [eventListener, setEventListener] =
-    useState<google.maps.MapsEventListener>();
   const {
     endMarker,
     icon,
@@ -29,21 +30,29 @@ export const Marker: FC<
     ...markerOpts
   } = options;
 
-  const showInfoWindow = useCallback<() => void>(() => {
-    const { description, title } = options;
+  const clickEventListener = useCallback<
+    () => google.maps.MapsEventListener | undefined
+  >(() => {
+    if (marker) {
+      return google.maps.event.addListener(marker, 'click', () => {
+        const { description, title } = options;
 
-    marker?.setAnimation(google.maps.Animation.BOUNCE);
-    cancelableDelay(2000, () => {
-      marker?.setAnimation(null);
-    });
-    infoWindow?.setContent(
-      `<div>
-          <h4 style="color:#27e278;font-size:1rem">${title}</h4>
-          <p style="color:#292b2c;font-size:0.85rem">${description}</p>
-      </div>`
-    );
-    infoWindow?.open(map, marker);
-  }, [map, marker, infoWindow, options]);
+        marker?.setAnimation(google.maps.Animation.BOUNCE);
+        cancelableDelay(2000, () => {
+          marker?.setAnimation(null);
+        });
+        infoWindow?.setContent(
+          `<div>
+            <h4 style="color:${shamrock};font-size:1rem">${title}</h4>
+            <p style="color:${cinder};font-size:0.85rem">${description}</p>
+          </div>`
+        );
+        infoWindow?.open(map, marker);
+      });
+    }
+
+    return undefined;
+  }, [infoWindow, map, marker, options]);
 
   useEffect(() => {
     if (!marker) {
@@ -58,7 +67,10 @@ export const Marker: FC<
   }, [marker]);
 
   useDeepCompareEffectForMaps(() => {
-    if (marker) {
+    const eventListener: google.maps.MapsEventListener | undefined =
+      clickEventListener();
+
+    if (marker && !markerReady) {
       marker.setOptions({
         ...markerOpts,
         animation: google.maps.Animation.DROP,
@@ -67,14 +79,6 @@ export const Marker: FC<
           anchor: new google.maps.Point(10, 20),
         },
       });
-
-      if (!eventListener) {
-        setEventListener(
-          google.maps.event.addListener(marker, 'click', () => {
-            showInfoWindow();
-          })
-        );
-      }
 
       setMarkerReady(true);
     }
@@ -85,7 +89,7 @@ export const Marker: FC<
       }
       infoWindow?.close();
     };
-  }, [marker, markerOpts, eventListener]);
+  }, [marker, markerOpts, markerReady]);
 
   useEffect(() => {
     if (map && marker && markerReady) {
