@@ -19,6 +19,7 @@ module.exports = {
     '@typescript-eslint/member-ordering': 'warn',
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/sort-type-union-intersection-members': 'warn',
+    'arrow-body-style': ['error', 'as-needed'],
     'import/no-extraneous-dependencies': 'off',
     'import/order': [
       'warn',
@@ -55,7 +56,7 @@ module.exports = {
     'react/jsx-sort-props': 'warn',
     'react/no-danger': 'warn',
     'react/no-unknown-property': 'warn',
-    'react/self-closing-comp': 'warn',
+    'react/self-closing-comp': ['error', { component: true, html: true }],
     'react/sort-prop-types': 'warn',
     'react-hooks/exhaustive-deps': 'warn',
     'react-hooks/rules-of-hooks': 'error',

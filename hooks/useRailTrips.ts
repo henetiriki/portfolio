@@ -72,7 +72,7 @@ export const useRailTrips = (): TripPaths[] => {
         });
       });
     }
-  }, [railTripPolylines]);
+  }, [railTripPolylines, fetching, dispatch]);
 
   return railTripPolylines;
 };
