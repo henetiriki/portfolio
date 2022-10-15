@@ -8,6 +8,7 @@ export const colors = {
   silver: '#c1c1c1',
   matterhorn: '#4f4f4f',
   gunmetal: '#333739',
+  cinder: '#292b2c',
   paynesGrey: '#3b3d53',
   valhalla: '#252740',
   blackRussian: '#080a20',

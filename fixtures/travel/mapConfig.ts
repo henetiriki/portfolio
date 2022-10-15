@@ -3,6 +3,7 @@ import { colors } from '@styles/shared';
 const { gunmetal, mediumSeaGreen, paynesGrey, white } = colors;
 
 export const MAP_MAX_MOBILE = 768;
+export const STROKE_WEIGHT_DEFAULT = 1.25;
 
 export const mapOptions = (): google.maps.MapOptions => ({
   center: {

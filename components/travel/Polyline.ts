@@ -1,8 +1,9 @@
-import { FC, PropsWithRef, useEffect, useState } from 'react';
-import { sharedPolylineOpts } from '@fixtures/travel';
+import { FC, PropsWithRef, useCallback, useEffect, useState } from 'react';
+import { STROKE_WEIGHT_DEFAULT, sharedPolylineOpts } from '@fixtures/travel';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { cancelableDelay } from '@utils/common';
+import { getZoomPolylineWeightExponent } from '@utils/travel';
 
 type BuildPathProps = {
   legs?: google.maps.LatLngLiteral[];
@@ -35,7 +36,9 @@ export const Polyline: FC<
     ...polylineOpts
   } = options;
 
-  const buildPath = ({ legs, paths }: BuildPathProps): google.maps.LatLng[] => {
+  const buildPath = useCallback<
+    (props: BuildPathProps) => google.maps.LatLng[]
+  >(({ legs, paths }) => {
     if (legs) {
       return legs.map(
         (point: google.maps.LatLngLiteral) => new google.maps.LatLng(point)
@@ -49,7 +52,24 @@ export const Polyline: FC<
     }
 
     return [];
-  };
+  }, []);
+
+  const zoomEventListener = useCallback<
+    () => google.maps.MapsEventListener | undefined
+  >(() => {
+    if (map && polyline) {
+      return google.maps.event.addListener(map, 'zoom_changed', () => {
+        const strokeWeight =
+          STROKE_WEIGHT_DEFAULT * getZoomPolylineWeightExponent(map.getZoom());
+
+        if (polyline.get('strokeWeight') !== strokeWeight) {
+          polyline.set('strokeWeight', strokeWeight);
+        }
+      });
+    }
+
+    return undefined;
+  }, [map, polyline]);
 
   useEffect(() => {
     if (!polyline) {
@@ -57,14 +77,12 @@ export const Polyline: FC<
     }
 
     return () => {
-      if (polyline) {
-        polyline.setMap(null);
-      }
+      polyline?.setMap(null);
     };
   }, [polyline]);
 
   useDeepCompareEffectForMaps(() => {
-    if (polyline) {
+    if (polyline && !polylineReady) {
       polyline.setOptions({
         ...sharedPolylineOpts,
         ...polylineOpts,
@@ -72,35 +90,63 @@ export const Polyline: FC<
       });
       setPolylineReady(true);
     }
-  }, [polyline, polylineOpts, legs, paths]);
+
+    return () => {
+      if (polylineReady) {
+        setPolylineReady(false);
+      }
+    };
+  }, [legs, paths, polyline, polylineOpts, polylineReady]);
 
   useEffect(() => {
+    let eventListener: google.maps.MapsEventListener | undefined = undefined;
+
     if (map && polyline && polylineReady) {
       cancelableDelay(idx * order * 100, () => {
         polyline.setMap(map);
-        if (endTripPolyline) {
-          dispatch({
-            payload: { tripPolylinesLoaded: true },
-            type: 'set-trip-polylines-loaded',
-          });
-        }
+        eventListener = zoomEventListener();
+
         if (endRailTripPolyline) {
           dispatch({
             payload: { railPolylinesLoaded: true },
             type: 'set-rail-polylines-loaded',
           });
         }
+        if (endTripPolyline) {
+          dispatch({
+            payload: { tripPolylinesLoaded: true },
+            type: 'set-trip-polylines-loaded',
+          });
+        }
       });
     }
+
+    return () => {
+      eventListener?.remove();
+
+      if (endRailTripPolyline) {
+        dispatch({
+          payload: { railPolylinesLoaded: false },
+          type: 'set-rail-polylines-loaded',
+        });
+      }
+      if (endTripPolyline) {
+        dispatch({
+          payload: { tripPolylinesLoaded: false },
+          type: 'set-trip-polylines-loaded',
+        });
+      }
+    };
   }, [
-    polylineReady,
-    polyline,
-    map,
-    idx,
-    order,
     endRailTripPolyline,
     endTripPolyline,
+    idx,
+    map,
+    order,
+    polyline,
+    polylineReady,
     dispatch,
+    zoomEventListener,
   ]);
 
   return null;
