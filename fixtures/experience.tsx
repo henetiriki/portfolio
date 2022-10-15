@@ -5,7 +5,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Row, Spacer, Text } from '@nextui-org/react';
 import dynamic from 'next/dynamic';
-import { Job, School } from '@fixtures/types';
+import type { Job, School } from '@fixtures/types';
 
 const DynamicFontAwesomeIcon = dynamic(
   () =>

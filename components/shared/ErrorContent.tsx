@@ -2,8 +2,8 @@ import { faHandPointRight } from '@fortawesome/free-solid-svg-icons';
 import { Button, Container, Spacer, Text } from '@nextui-org/react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { FC } from 'react';
 import { Content } from '@components/content';
+import type { FC } from 'react';
 
 const DynamicFontAwesomeIcon = dynamic(
   () =>

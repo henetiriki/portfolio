@@ -1,6 +1,7 @@
 import { Text, styled } from '@nextui-org/react';
-import { FC, PropsWithChildren } from 'react';
-import { DynamicPolylineText, dynamicPolylineText } from '@styles/travel';
+import { dynamicPolylineText } from '@styles/travel';
+import type { DynamicPolylineText } from '@styles/travel';
+import type { FC, PropsWithChildren } from 'react';
 
 export const PolylineLegend: FC<DynamicPolylineText & PropsWithChildren> = ({
   children,

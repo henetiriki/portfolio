@@ -1,9 +1,10 @@
-import { FC, PropsWithRef, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { colors } from '@styles/shared';
 import { cancelableDelay } from '@utils/common';
 import { getZoomMarkerWeightExponent } from '@utils/travel';
+import type { FC, PropsWithRef } from 'react';
 
 const { cinder, shamrock } = colors;
 

@@ -1,16 +1,16 @@
 import { NextUIProvider } from '@nextui-org/react';
-import { NextPage } from 'next';
-import { ThemeProvider as NextThemesProvider } from 'next-themes';
-import { AppProps } from 'next/app';
+import { ThemeProvider } from 'next-themes';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import ErrorBoundary from '../components/shared/ErrorBoundary';
 import { Navigation } from '@components/nav';
+import { ErrorBoundary } from '@components/shared';
 import { Layout } from '@containers/layout';
 import { useLoading } from '@hooks';
 import { PortfolioStateProvider } from '@state/context';
 import { globalStyles, theme } from '@styles/shared';
 import { fullTitle } from '@utils/head';
+import type { NextPage } from 'next';
+import type { AppProps } from 'next/app';
 import '@styles/shared/Toastify.css';
 
 const DynamicFixedBackground = dynamic(
@@ -78,7 +78,7 @@ const Portfolio: NextPage<AppProps> = ({
         />
       </Head>
       <ErrorBoundary>
-        <NextThemesProvider
+        <ThemeProvider
           attribute='class'
           defaultTheme='dark'
           value={{
@@ -94,7 +94,7 @@ const Portfolio: NextPage<AppProps> = ({
               </Layout>
             </PortfolioStateProvider>
           </NextUIProvider>
-        </NextThemesProvider>
+        </ThemeProvider>
       </ErrorBoundary>
     </>
   );

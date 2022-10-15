@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import useSWR from 'swr';
 import { usePortfolioState } from '@state/context';
-import { ImageId, fetcher } from '@utils/common';
+import { fetcher } from '@utils/common';
+import type { ImageId } from '@utils/common';
 
 export const useImgSetup = ({ imgId: fallbackImgId }: ImageId) => {
   const { dispatch } = usePortfolioState();

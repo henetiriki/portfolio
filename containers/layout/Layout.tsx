@@ -1,5 +1,5 @@
-import { FC, PropsWithChildren } from 'react';
 import { Footer } from '@components/footer';
+import type { FC, PropsWithChildren } from 'react';
 
 export const Layout: FC<PropsWithChildren> = ({ children }): JSX.Element => (
   <div

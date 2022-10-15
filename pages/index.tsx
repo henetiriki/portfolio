@@ -1,12 +1,13 @@
 import { Container, Link, Spacer, Text } from '@nextui-org/react';
-import { InferGetStaticPropsType, NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { Content } from '@components/content';
 import { openSourceContrs } from '@fixtures/home';
 import { useImgSetup } from '@hooks';
 import { aboutContainer, imageContainer } from '@styles/home';
-import { blurDataURL, getStaticProps } from '@utils/common';
+import { blurDataURL } from '@utils/common';
+import type { getStaticProps } from '@utils/common';
+import type { InferGetStaticPropsType, NextPage } from 'next';
 
 const DynamicTypeAnimation = dynamic(
   () => import('react-type-animation').then(mod => mod.TypeAnimation),

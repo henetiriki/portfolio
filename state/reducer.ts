@@ -1,4 +1,4 @@
-import { Action, PortfolioState } from '@state/types';
+import type { Action, PortfolioState } from '@state/types';
 
 export const initialState: PortfolioState = {
   shared: {},

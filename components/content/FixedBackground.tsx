@@ -1,10 +1,11 @@
 import { Container } from '@nextui-org/react';
 import getConfig from 'next/config';
 import Image from 'next/image';
-import { FC, MutableRefObject, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useIgImgId, useWindowSize } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { blurDataURL } from '@utils/common';
+import type { FC, MutableRefObject } from 'react';
 
 const { publicRuntimeConfig } = getConfig();
 

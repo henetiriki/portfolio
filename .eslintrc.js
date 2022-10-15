@@ -16,9 +16,11 @@ module.exports = {
     'unused-imports',
   ],
   rules: {
+    '@typescript-eslint/consistent-type-imports': 'error',
     '@typescript-eslint/member-ordering': 'warn',
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/sort-type-union-intersection-members': 'warn',
+    'arrow-body-style': ['error', 'as-needed'],
     'import/no-extraneous-dependencies': 'off',
     'import/order': [
       'warn',
@@ -40,11 +42,25 @@ module.exports = {
       },
     ],
     'import/prefer-default-export': 'off',
-    'newline-after-var': 'warn',
-    'newline-before-return': 'warn',
     'no-multiple-empty-lines': 'warn',
+    'no-restricted-imports': [
+      'error',
+      {
+        patterns: ['../'],
+      },
+    ],
     'no-underscore-dangle': 'off',
     'no-unneeded-ternary': 'warn',
+    'padding-line-between-statements': [
+      'error',
+      { blankLine: 'always', next: 'return', prev: '*' },
+      { blankLine: 'always', next: '*', prev: ['const', 'let', 'var'] },
+      {
+        blankLine: 'any',
+        next: ['const', 'let', 'var'],
+        prev: ['const', 'let', 'var'],
+      },
+    ],
     'prefer-spread': 'warn',
     'react/function-component-definition': 'off',
     'react/jsx-filename-extension': ['error', { extensions: ['.tsx'] }],
@@ -55,7 +71,7 @@ module.exports = {
     'react/jsx-sort-props': 'warn',
     'react/no-danger': 'warn',
     'react/no-unknown-property': 'warn',
-    'react/self-closing-comp': 'warn',
+    'react/self-closing-comp': ['error', { component: true, html: true }],
     'react/sort-prop-types': 'warn',
     'react-hooks/exhaustive-deps': 'warn',
     'react-hooks/rules-of-hooks': 'error',

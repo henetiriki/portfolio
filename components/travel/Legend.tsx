@@ -1,10 +1,10 @@
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { Text, styled } from '@nextui-org/react';
-import { FC } from 'react';
 import { MarkerLegend } from '@components/travel/MarkerLegend';
 import { PolylineLegend } from '@components/travel/PolylineLegend';
 import { colors } from '@styles/shared';
 import { legendContainer } from '@styles/travel';
+import type { FC } from 'react';
 
 const { alizarin, allPorts, pineGreen, pumpkin, torchRed } = colors;
 const LegendContainer = styled('div', legendContainer);

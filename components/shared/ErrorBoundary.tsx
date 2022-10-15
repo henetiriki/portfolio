@@ -1,5 +1,6 @@
 import { Container, Text } from '@nextui-org/react';
-import { Component, ErrorInfo, PropsWithChildren } from 'react';
+import { Component } from 'react';
+import type { ErrorInfo, PropsWithChildren } from 'react';
 
 class ErrorBoundary extends Component {
   constructor(props: PropsWithChildren) {

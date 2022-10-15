@@ -1,11 +1,11 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { Submission } from '@pages/api/types';
 import {
   buildMessage,
   buildMessageCopy,
   send,
   validate,
 } from '@server/contact';
+import type { Submission } from '@pages/api/types';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // Get data submitted in request's body.

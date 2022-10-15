@@ -15,7 +15,7 @@ import {
   zambia,
   zimbabwe,
 } from './countries';
-import { Location } from './types';
+import type { Location } from './types';
 
 export const JNB: Location = {
   description: `Johannesburg, ${southAfrica}`,

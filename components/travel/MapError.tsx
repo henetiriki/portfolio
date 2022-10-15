@@ -1,5 +1,5 @@
 import { Container, Spacer, Text } from '@nextui-org/react';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export const MapError: FC = () => (
   <Container

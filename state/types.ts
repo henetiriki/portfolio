@@ -1,5 +1,5 @@
-import { RefObject } from 'react';
-import { TripPaths } from '@fixtures/travel/types';
+import type { TripPaths } from '@fixtures/travel/types';
+import type { RefObject } from 'react';
 
 export type Action =
   | {

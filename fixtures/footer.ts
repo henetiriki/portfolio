@@ -3,7 +3,7 @@ import {
   faInstagram,
   faLinkedin,
 } from '@fortawesome/free-brands-svg-icons';
-import { SocialLink } from '@fixtures/types';
+import type { SocialLink } from '@fixtures/types';
 
 export const socialLinks: SocialLink[] = [
   {

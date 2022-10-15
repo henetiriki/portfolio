@@ -50,6 +50,7 @@ export const useIgImgId = (): string | undefined => {
     return () => {
       router.events.off('routeChangeComplete', onRouteChangeComplete);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return igImgId;

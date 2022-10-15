@@ -1,4 +1,4 @@
-import { CSS } from '@nextui-org/react';
+import type { CSS } from '@nextui-org/react';
 
 export const formContainer: CSS = {
   /* eslint-disable sort-keys/sort-keys-fix */

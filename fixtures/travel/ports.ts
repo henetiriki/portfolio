@@ -6,7 +6,7 @@ import {
   norway,
   unitedKingdom,
 } from './countries';
-import { Location } from './types';
+import type { Location } from './types';
 
 export const GBDVR: Location = {
   description: `Dover, ${unitedKingdom}`,
