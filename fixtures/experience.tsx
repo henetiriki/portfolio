@@ -426,6 +426,7 @@ export const jobs: Job[] = [
   {
     content: (
       <>
+        <Spacer y={2} />
         <Row css={{ ai: 'center', d: 'flex' }}>
           <DynamicFontAwesomeIcon
             height={25}
