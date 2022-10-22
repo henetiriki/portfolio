@@ -1,5 +1,12 @@
-import { Footer } from '@components/footer';
+import dynamic from 'next/dynamic';
 import type { FC, PropsWithChildren } from 'react';
+
+const DynamicFooter = dynamic(
+  () => import('@components/footer').then(mod => mod.Footer),
+  {
+    ssr: false,
+  }
+);
 
 export const Layout: FC<PropsWithChildren> = ({ children }): JSX.Element => (
   <div
@@ -15,6 +22,6 @@ export const Layout: FC<PropsWithChildren> = ({ children }): JSX.Element => (
       }}>
       {children}
     </main>
-    <Footer />
+    <DynamicFooter />
   </div>
 );
