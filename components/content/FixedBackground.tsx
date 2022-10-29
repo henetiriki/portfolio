@@ -7,7 +7,9 @@ import { usePortfolioState } from '@state/context';
 import { blurDataURL } from '@utils/common';
 import type { FC, MutableRefObject } from 'react';
 
-const { publicRuntimeConfig } = getConfig();
+const {
+  publicRuntimeConfig: { imgHost },
+} = getConfig();
 
 export const FixedBackground: FC = () => {
   const {
@@ -48,7 +50,7 @@ export const FixedBackground: FC = () => {
             placeholder='blur'
             priority={true}
             quality={100}
-            src={`${publicRuntimeConfig.imgHost}/${igImgId}.jpg`}
+            src={`${imgHost}/${igImgId}.jpg`}
           />
         )}
       </Container>

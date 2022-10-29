@@ -67,8 +67,33 @@ const nextConfig = withBundleAnalyzer(
     publicRuntimeConfig: {
       googleApiKey: process.env.GOOGLE_MAPS_API_KEY,
       imgHost: process.env.IMAGE_HOST,
+      siteUrl: process.env.HOST,
     },
     reactStrictMode: true,
+    async redirects() {
+      return [
+        {
+          destination: '/',
+          permanent: true,
+          source: '/docs/index.html',
+        },
+        {
+          destination: '/',
+          permanent: true,
+          source: '/static(/?.*)',
+        },
+        {
+          destination: '/images/manifest-icons/favicon-196x196.png',
+          permanent: true,
+          source: '/resources/images/icon.png',
+        },
+        {
+          destination: '/images/manifest-icons/favicon-196x196.png',
+          permanent: true,
+          source: '/assets/images/manifesticons/eightbitme-192.png',
+        },
+      ];
+    },
     serverRuntimeConfig: {
       igImgIds: process.env.ISTAGRAM_IMAGE_IDS,
     },

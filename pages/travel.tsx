@@ -1,4 +1,5 @@
 import { Container, Text } from '@nextui-org/react';
+import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
@@ -19,6 +20,10 @@ const DynamicMapWrapper = dynamic(
   }
 );
 
+const {
+  publicRuntimeConfig: { siteUrl },
+} = getConfig();
+
 const Travel: NextPage = ({
   data,
 }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element => {
@@ -28,6 +33,7 @@ const Travel: NextPage = ({
     <>
       <Head>
         <title key='pageTitle'>{fullTitle('Travel')}</title>
+        <link href={`${siteUrl}/travel`} key='canonical' rel='canonical' />
         <meta
           content='“You have brains in your head. You have feet in your shoes. You can
             steer yourself any direction you choose.” - Dr. Seuss'
