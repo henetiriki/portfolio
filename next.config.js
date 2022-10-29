@@ -67,6 +67,7 @@ const nextConfig = withBundleAnalyzer(
     publicRuntimeConfig: {
       googleApiKey: process.env.GOOGLE_MAPS_API_KEY,
       imgHost: process.env.IMAGE_HOST,
+      siteUrl: process.env.HOST,
     },
     reactStrictMode: true,
     async redirects() {

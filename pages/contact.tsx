@@ -1,4 +1,5 @@
 import { Container } from '@nextui-org/react';
+import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
@@ -16,6 +17,10 @@ const DynamicContactForm = dynamic(
   }
 );
 
+const {
+  publicRuntimeConfig: { siteUrl },
+} = getConfig();
+
 const Contact: NextPage = ({
   data,
 }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element => {
@@ -25,6 +30,7 @@ const Contact: NextPage = ({
     <>
       <Head>
         <title key='pageTitle'>{fullTitle('Contact')}</title>
+        <link href={`${siteUrl}/contact`} key='canonical' rel='canonical' />
         <meta content={description} key='pageDescription' name='description' />
         <meta
           content='contact chat message'

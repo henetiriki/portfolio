@@ -3,6 +3,7 @@ import {
   faGraduationCap,
 } from '@fortawesome/free-solid-svg-icons';
 import { Container, Link, Spacer, Text, styled } from '@nextui-org/react';
+import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
@@ -39,6 +40,10 @@ const DynamicFontAwesomeIcon = dynamic(
   }
 );
 
+const {
+  publicRuntimeConfig: { siteUrl },
+} = getConfig();
+
 const TimelineHeading = styled('div', timelineHeading);
 
 const TimelineIndicator = styled('div', timelineIndicator);
@@ -60,6 +65,7 @@ const Experience: NextPage = ({
     <>
       <Head>
         <title key='pageTitle'>{fullTitle('Experience')}</title>
+        <link href={`${siteUrl}/experience`} key='canonical' rel='canonical' />
         <meta
           content={`Companies & Roles: ${getExperienceDescription(jobs)}`}
           key='pageDescription'

@@ -1,5 +1,6 @@
 import { NextUIProvider } from '@nextui-org/react';
 import { ThemeProvider } from 'next-themes';
+import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Navigation } from '@components/nav';
@@ -27,6 +28,10 @@ const DynamicTransition = dynamic(
   }
 );
 
+const {
+  publicRuntimeConfig: { siteUrl },
+} = getConfig();
+
 const Portfolio: NextPage<AppProps> = ({
   Component,
   pageProps,
@@ -40,6 +45,7 @@ const Portfolio: NextPage<AppProps> = ({
       <Head>
         <title key='pageTitle'>{fullTitle('Portfolio')}</title>
         <meta content='width=device-width, initial-scale=1' name='viewport' />
+        <link href={siteUrl} key='canonical' rel='canonical' />
         <meta
           content='Online Portfolio and CV for Louw Swart - Front-end Engineer based in Wellington, New Zealand, using Javascript frameworks such as React, Next.js and Node.js'
           key='pageDescription'
