@@ -208,6 +208,11 @@ class Document extends _Document {
             rel='stylesheet'
           />
           {CssBaseline.flush()}
+          <script
+            async
+            src='/scripts/hash-redirect.js'
+            type='text/javascript'
+          />
         </Head>
         <body
           style={{
