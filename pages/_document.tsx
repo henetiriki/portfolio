@@ -26,6 +26,10 @@ class Document extends _Document {
           <meta content='#080a20' name='theme-color' />
           <link href='/manifest.json' rel='manifest' />
           <link
+            href='https://mastodon.nz/@henetiriki'
+            rel='me'
+          />
+          <link
             href='/images/manifest-icons/favicon-16x16.png'
             rel='icon'
             sizes='16x16'
