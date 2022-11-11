@@ -45,12 +45,13 @@ export const FixedBackground: FC = () => {
           <Image
             alt=''
             blurDataURL={blurDataURL(width, height)}
-            layout='fill'
-            objectFit='cover'
+            fill
             placeholder='blur'
             priority={true}
             quality={100}
+            sizes='100vw'
             src={`${imgHost}/${igImgId}.jpg`}
+            style={{ objectFit: 'cover' }}
           />
         )}
       </Container>

@@ -48,19 +48,21 @@ export const Footer: FC = (): JSX.Element => {
       <Row css={{ ...waveWrapper, h: '5rem' }}>
         <Image
           alt=''
-          layout='fill'
-          objectFit='cover'
+          fill
           priority
+          sizes='100vw'
           src='/images/waves/footer-top-haikei.svg'
+          style={{ objectFit: 'cover' }}
         />
       </Row>
       <Row css={waveWrapper}>
         <Image
           alt=''
-          layout='fill'
-          objectFit='cover'
+          fill
           priority
+          sizes='100vw'
           src='/images/waves/footer-bottom-haikei.svg'
+          style={{ objectFit: 'cover' }}
         />
       </Row>
       <Row css={footerBackground}>
@@ -71,7 +73,7 @@ export const Footer: FC = (): JSX.Element => {
           <FooterLines css={{ mt: '$xl' }} />
           <Container css={footerLinksContainer}>
             {menuItems.map(({ href, text }, idx) => (
-              <NextLink href={href} key={idx} passHref>
+              <NextLink href={href} key={idx} legacyBehavior passHref>
                 <Link
                   css={{
                     ...footerLinks,
