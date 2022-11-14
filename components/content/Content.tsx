@@ -11,22 +11,20 @@ export const Content: FC<
     <Row css={waveWrapper}>
       <Image
         alt=''
-        fill
+        layout='fill'
+        objectFit='cover'
         priority
-        sizes='100vw'
         src='/images/waves/content-top-haikei.svg'
-        style={{ objectFit: 'cover' }}
       />
     </Row>
     <Row css={{ ...contentWrapper, ...wrapperPadding }}>{children}</Row>
     <Row css={{ ...waveWrapper, mb: '8rem' }}>
       <Image
         alt=''
-        fill
+        layout='fill'
+        objectFit='cover'
         priority
-        sizes='100vw'
         src='/images/waves/content-bottom-haikei.svg'
-        style={{ objectFit: 'cover' }}
       />
     </Row>
   </>
