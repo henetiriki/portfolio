@@ -86,7 +86,7 @@ export const Navigation: FC = (): JSX.Element => {
               const isActive = href === pathname;
 
               return (
-                <NextLink href={href} key={idx} legacyBehavior passHref>
+                <NextLink href={href} key={idx} passHref>
                   <Navbar.Link
                     className={isActive ? 'active' : ''}
                     css={navLinkMd}
@@ -105,7 +105,7 @@ export const Navigation: FC = (): JSX.Element => {
 
             return (
               <Navbar.CollapseItem css={navTypography} isActive key={idx}>
-                <NextLink href={href} legacyBehavior passHref>
+                <NextLink href={href} passHref>
                   <Link
                     className={isActive ? 'active' : ''}
                     css={navLinkSm}

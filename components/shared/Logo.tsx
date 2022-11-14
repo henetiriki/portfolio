@@ -4,6 +4,14 @@ import type { FC } from 'react';
 
 export const Logo: FC = (): JSX.Element => (
   <Link href={'/'}>
-    <Image alt='Ouwl' height={40} priority src='/images/ouwl.png' width={40} />
+    <a>
+      <Image
+        alt='Ouwl'
+        height={40}
+        priority
+        src='/images/ouwl.png'
+        width={40}
+      />
+    </a>
   </Link>
 );
