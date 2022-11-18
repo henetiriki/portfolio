@@ -75,7 +75,7 @@ const nextConfig = withBundleAnalyzer(
         {
           destination: '/',
           permanent: true,
-          source: '/docs/index.html',
+          source: '/docs(/?.*)',
         },
         {
           destination: '/',
