@@ -26,10 +26,6 @@ module.exports = {
         userAgent: 'Baiduspider-image',
       },
       {
-        disallow: ['/docs/', '/static/', '/?_escaped_fragment_=/'],
-        userAgent: '*',
-      },
-      {
         allow: '/',
         userAgent: '*',
       },
