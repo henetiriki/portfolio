@@ -20,12 +20,6 @@ Disallow: /
 
 # *
 User-agent: *
-Disallow: /docs/
-Disallow: /static/
-Disallow: /?_escaped_fragment_=/
-
-# *
-User-agent: *
 Allow: /
 
 # Host
