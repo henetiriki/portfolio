@@ -15,7 +15,10 @@ const abortController = (): {
   return { controller, timerId };
 };
 
-export const fetcher = async <T>(url: string): Promise<T> => {
+export const fetcher = async <T>(
+  url: string,
+  retries: number = 2
+): Promise<T> => {
   const {
     controller: { signal },
     timerId,
@@ -24,9 +27,13 @@ export const fetcher = async <T>(url: string): Promise<T> => {
 
   clearTimeout(timerId);
 
-  if (response.ok) {
-    return response.json();
+  if (!response.ok) {
+    if (retries > 0) {
+      return fetcher(url, retries - 1);
+    }
+
+    return Promise.reject(response.text());
   }
 
-  return Promise.reject(response.text());
+  return response.json();
 };

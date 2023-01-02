@@ -62,6 +62,7 @@ import {
   NPL,
   NRT,
   NSN,
+  OOL,
   PEK,
   PER,
   PLZ,
@@ -180,6 +181,7 @@ export const flights: google.maps.LatLngLiteral[][] = [
   [AKL.position, BNE.position],
   [AKL.position, SIN.position],
   [SYD.position, BNE.position],
+  [OOL.position, SYD.position],
 ];
 
 export const upcomingFlights: google.maps.LatLngLiteral[][] = [];

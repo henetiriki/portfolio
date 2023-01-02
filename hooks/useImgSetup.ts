@@ -20,9 +20,7 @@ export const useImgSetup = ({ imgId: fallbackImgId }: ImageId) => {
         type: 'set-ig-img-id',
       });
     }
-  }, [dispatch, error, fallbackImgId]);
 
-  useEffect(() => {
     if (imgId) {
       dispatch({
         payload: {
@@ -31,5 +29,5 @@ export const useImgSetup = ({ imgId: fallbackImgId }: ImageId) => {
         type: 'set-ig-img-id',
       });
     }
-  }, [dispatch, imgId]);
+  }, [dispatch, error, fallbackImgId, imgId]);
 };

@@ -533,6 +533,12 @@ export const SFO: Location = {
   title: 'SFO // San Francisco International',
 };
 
+export const OOL: Location = {
+  description: `Gold Coast, ${australia}`,
+  position: { lat: -28.1662421, lng: 153.5064202 },
+  title: 'OOL // Gold Coast Airport',
+};
+
 export const airports: Location[] = [
   KIM,
   PLZ,
@@ -620,4 +626,5 @@ export const airports: Location[] = [
   LAX,
   YUL,
   SFO,
+  OOL,
 ];
