@@ -1,6 +1,6 @@
 import { Container, Link, Row, Text, styled } from '@nextui-org/react';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { Copyright } from '@components/footer';
