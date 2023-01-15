@@ -8,6 +8,7 @@ import { Logo } from '@components/shared';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
+import type { FC, MouseEvent, MutableRefObject } from 'react';
 import {
   navBrand,
   navLinkMd,
@@ -16,7 +17,6 @@ import {
   navTypography,
   scrollToTop,
 } from '@styles/nav';
-import type { FC, MouseEvent, MutableRefObject } from 'react';
 
 const ScrollToTop = styled('a', scrollToTop);
 

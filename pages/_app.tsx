@@ -1,17 +1,17 @@
 import { NextUIProvider } from '@nextui-org/react';
-import { ThemeProvider } from 'next-themes';
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import { ThemeProvider } from 'next-themes';
 import { Navigation } from '@components/nav';
 import { ErrorBoundary } from '@components/shared';
 import { Layout } from '@containers/layout';
 import { useLoading } from '@hooks';
+import type { NextPage } from 'next';
 import { PortfolioStateProvider } from '@state/context';
+import type { AppProps } from 'next/app';
 import { globalStyles, theme } from '@styles/shared';
 import { fullTitle } from '@utils/head';
-import type { NextPage } from 'next';
-import type { AppProps } from 'next/app';
 import '@styles/shared/Toastify.css';
 
 const DynamicFixedBackground = dynamic(
