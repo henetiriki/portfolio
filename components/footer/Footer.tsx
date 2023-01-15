@@ -73,6 +73,7 @@ export const Footer: FC = (): JSX.Element => {
             {menuItems.map(({ href, text }, idx) => (
               <NextLink href={href} key={idx} passHref>
                 <Link
+                  as='span'
                   css={{
                     ...footerLinks,
                     fontWeight: pathname === href ? 'bold' : 'normal',

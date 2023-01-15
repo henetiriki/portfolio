@@ -88,6 +88,7 @@ export const Navigation: FC = (): JSX.Element => {
               return (
                 <NextLink href={href} key={idx} passHref>
                   <Navbar.Link
+                    as='span'
                     className={isActive ? 'active' : ''}
                     css={navLinkMd}
                     isActive
@@ -107,6 +108,7 @@ export const Navigation: FC = (): JSX.Element => {
               <Navbar.CollapseItem css={navTypography} isActive key={idx}>
                 <NextLink href={href} passHref>
                   <Link
+                    as='span'
                     className={isActive ? 'active' : ''}
                     css={navLinkSm}
                     // work-around for mobile nav not closing on click
