@@ -3,8 +3,7 @@ import getConfig from 'next/config';
 import { useEffect, useState } from 'react';
 import { Map, Marker, Polyline } from '@components/travel';
 import { cities, markerLocations, tripPolylines } from '@fixtures/travel';
-import { useRailTrips } from '@hooks';
-import { useIntersectionObserver, useMap } from '@hooks';
+import { useIntersectionObserver, useMap, useRailTrips } from '@hooks';
 import type {
   City,
   Location,

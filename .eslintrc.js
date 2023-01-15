@@ -21,6 +21,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/sort-type-union-intersection-members': 'error',
     'arrow-body-style': ['error', 'as-needed'],
+    'import/no-duplicates': 'error',
     'import/no-extraneous-dependencies': 'off',
     'import/order': [
       'error',
@@ -32,12 +33,12 @@ module.exports = {
         groups: [
           'builtin',
           'external',
+          'internal',
           'parent',
           'sibling',
-          'internal',
+          'index',
           'object',
           'type',
-          'index',
         ],
       },
     ],
