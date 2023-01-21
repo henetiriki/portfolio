@@ -6,9 +6,9 @@ import { Content, Header } from '@components/content';
 import { Legend, MapLoader } from '@components/travel';
 import { description } from '@fixtures/travel';
 import { useImgSetup } from '@hooks';
-import type { getStaticProps } from '@utils/common';
 import { travelContainerBottom, travelContainerTop } from '@styles/travel';
 import { fullTitle } from '@utils/head';
+import type { getStaticProps } from '@utils/common';
 import type { InferGetStaticPropsType, NextPage } from 'next';
 
 const DynamicMapWrapper = dynamic(

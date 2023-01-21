@@ -1,5 +1,5 @@
 import { Row } from '@nextui-org/react';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { contentWrapper } from '@styles/content';
 import { waveWrapper } from '@styles/shared';
 import type { FC, PropsWithChildren } from 'react';

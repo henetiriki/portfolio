@@ -1,6 +1,6 @@
 import { Container, Link, Spacer, Text } from '@nextui-org/react';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { Content } from '@components/content';
 import { openSourceContrs } from '@fixtures/home';
 import { useImgSetup } from '@hooks';
@@ -110,11 +110,11 @@ const Home: NextPage = ({
             <Image
               alt='Louw Swart'
               blurDataURL={blurDataURL(350, 350)}
-              height='350px'
+              height={350}
               lazyBoundary='0px'
               placeholder='blur'
               src='/images/about/louw.swart.jpg'
-              width='350px'
+              width={350}
             />
           </Container>
         </Container>

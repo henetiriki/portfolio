@@ -42,6 +42,9 @@ export const footerLinksContainer: CSS = {
 };
 
 export const footerLinks: CSS = {
+  '& a': {
+    color: '$white',
+  },
   '&:hover': {
     color: '$shamrock',
   },

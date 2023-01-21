@@ -1,15 +1,13 @@
 import { Container, Link, Row, Text, styled } from '@nextui-org/react';
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { Copyright } from '@components/footer';
 import { Logo } from '@components/shared';
 import { socialLinks } from '@fixtures/footer';
 import buildTimeConfig from '@fixtures/generated/build-time-config.json';
-import type { SocialLink } from '@fixtures/types';
 import { menuItems } from '@fixtures/nav';
-import type { FC } from 'react';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import {
@@ -22,6 +20,8 @@ import {
   footerLowerBackground,
 } from '@styles/footer';
 import { waveWrapper } from '@styles/shared';
+import type { SocialLink } from '@fixtures/types';
+import type { FC } from 'react';
 
 const DynamicFontAwesomeIcon = dynamic(
   () =>
@@ -71,16 +71,16 @@ export const Footer: FC = (): JSX.Element => {
           <FooterLines css={{ mt: '$xl' }} />
           <Container css={footerLinksContainer}>
             {menuItems.map(({ href, text }, idx) => (
-              <NextLink href={href} key={idx} passHref>
-                <Link
-                  css={{
-                    ...footerLinks,
-                    fontWeight: pathname === href ? 'bold' : 'normal',
-                  }}
-                  onClick={scrollToTop}>
-                  {text}
-                </Link>
-              </NextLink>
+              <Link
+                as='span'
+                css={{
+                  ...footerLinks,
+                  fontWeight: pathname === href ? 'bold' : 'normal',
+                }}
+                key={idx}
+                onClick={scrollToTop}>
+                <NextLink href={href}>{text}</NextLink>
+              </Link>
             ))}
           </Container>
           <FooterLines css={{ mb: '$lg' }} />

@@ -8,9 +8,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
 import { description, jobs, schools } from '@fixtures/experience';
-import type { Job, School } from '@fixtures/types';
 import { useImgSetup } from '@hooks';
-import type { getStaticProps } from '@utils/common';
 import {
   timeline,
   timelineBox,
@@ -28,8 +26,10 @@ import {
   getExperienceDescription,
   getExperienceKeywords,
 } from '@utils/experience';
-import type { InferGetStaticPropsType, NextPage } from 'next';
 import { fullTitle } from '@utils/head';
+import type { Job, School } from '@fixtures/types';
+import type { getStaticProps } from '@utils/common';
+import type { InferGetStaticPropsType, NextPage } from 'next';
 
 const DynamicFontAwesomeIcon = dynamic(
   () =>

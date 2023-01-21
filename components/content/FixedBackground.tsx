@@ -1,6 +1,6 @@
 import { Container } from '@nextui-org/react';
 import getConfig from 'next/config';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { useEffect, useRef } from 'react';
 import { useIgImgId, useWindowSize } from '@hooks';
 import { usePortfolioState } from '@state/context';
