@@ -7,9 +7,7 @@ import { Copyright } from '@components/footer';
 import { Logo } from '@components/shared';
 import { socialLinks } from '@fixtures/footer';
 import buildTimeConfig from '@fixtures/generated/build-time-config.json';
-import type { SocialLink } from '@fixtures/types';
 import { menuItems } from '@fixtures/nav';
-import type { FC } from 'react';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import {
@@ -22,6 +20,8 @@ import {
   footerLowerBackground,
 } from '@styles/footer';
 import { waveWrapper } from '@styles/shared';
+import type { SocialLink } from '@fixtures/types';
+import type { FC } from 'react';
 
 const DynamicFontAwesomeIcon = dynamic(
   () =>
