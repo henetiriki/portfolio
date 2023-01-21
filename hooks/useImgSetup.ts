@@ -1,26 +1,11 @@
 import { useEffect } from 'react';
-import useSWR from 'swr';
 import { usePortfolioState } from '@state/context';
-import { fetcher } from '@utils/common';
 import type { ImageId } from '@utils/common';
 
-export const useImgSetup = ({ imgId: fallbackImgId }: ImageId) => {
+export const useImgSetup = ({ imgId }: ImageId) => {
   const { dispatch } = usePortfolioState();
-  const { data: { imgId } = {}, error } = useSWR<ImageId>(
-    '/api/img-id',
-    fetcher
-  );
 
   useEffect(() => {
-    if (error) {
-      dispatch({
-        payload: {
-          imgId: fallbackImgId,
-        },
-        type: 'set-ig-img-id',
-      });
-    }
-
     if (imgId) {
       dispatch({
         payload: {
@@ -29,5 +14,5 @@ export const useImgSetup = ({ imgId: fallbackImgId }: ImageId) => {
         type: 'set-ig-img-id',
       });
     }
-  }, [dispatch, error, fallbackImgId, imgId]);
+  }, [dispatch, imgId]);
 };
