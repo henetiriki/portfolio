@@ -71,17 +71,16 @@ export const Footer: FC = (): JSX.Element => {
           <FooterLines css={{ mt: '$xl' }} />
           <Container css={footerLinksContainer}>
             {menuItems.map(({ href, text }, idx) => (
-              <NextLink href={href} key={idx} passHref>
-                <Link
-                  as='span'
-                  css={{
-                    ...footerLinks,
-                    fontWeight: pathname === href ? 'bold' : 'normal',
-                  }}
-                  onClick={scrollToTop}>
-                  {text}
-                </Link>
-              </NextLink>
+              <Link
+                as='span'
+                css={{
+                  ...footerLinks,
+                  fontWeight: pathname === href ? 'bold' : 'normal',
+                }}
+                key={idx}
+                onClick={scrollToTop}>
+                <NextLink href={href}>{text}</NextLink>
+              </Link>
             ))}
           </Container>
           <FooterLines css={{ mb: '$lg' }} />

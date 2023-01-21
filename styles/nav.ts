@@ -31,6 +31,9 @@ const navUnderline: CSS = {
 };
 
 export const navLinkSm: CSS = {
+  '& a': {
+    color: '$white',
+  },
   ...navActive,
   ...navUnderline,
   '&:before': {
@@ -41,6 +44,9 @@ export const navLinkSm: CSS = {
 };
 
 export const navLinkMd: CSS = {
+  '& a': {
+    color: '$white',
+  },
   ...navActive,
   ...navUnderline,
 };

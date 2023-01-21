@@ -86,16 +86,15 @@ export const Navigation: FC = (): JSX.Element => {
               const isActive = href === pathname;
 
               return (
-                <NextLink href={href} key={idx} passHref>
-                  <Navbar.Link
-                    as='span'
-                    className={isActive ? 'active' : ''}
-                    css={navLinkMd}
-                    isActive
-                    onClick={scrollToTop}>
-                    {text}
-                  </Navbar.Link>
-                </NextLink>
+                <Navbar.Link
+                  as='span'
+                  className={isActive ? 'active' : ''}
+                  css={navLinkMd}
+                  isActive
+                  key={idx}
+                  onClick={scrollToTop}>
+                  <NextLink href={href}>{text}</NextLink>
+                </Navbar.Link>
               );
             })}
           </Navbar.Content>
@@ -106,19 +105,17 @@ export const Navigation: FC = (): JSX.Element => {
 
             return (
               <Navbar.CollapseItem css={navTypography} isActive key={idx}>
-                <NextLink href={href} passHref>
-                  <Link
-                    as='span'
-                    className={isActive ? 'active' : ''}
-                    css={navLinkSm}
-                    // work-around for mobile nav not closing on click
-                    onClick={() => {
-                      navToggleRef.current?.click();
-                      scrollToTop();
-                    }}>
-                    {text}
-                  </Link>
-                </NextLink>
+                <Link
+                  as='span'
+                  className={isActive ? 'active' : ''}
+                  css={navLinkSm}
+                  // work-around for mobile nav not closing on click
+                  onClick={() => {
+                    navToggleRef.current?.click();
+                    scrollToTop();
+                  }}>
+                  <NextLink href={href}>{text}</NextLink>
+                </Link>
               </Navbar.CollapseItem>
             );
           })}
