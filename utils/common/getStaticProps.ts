@@ -15,5 +15,6 @@ export const getStaticProps: GetStaticProps = async () => {
       data,
     },
     revalidate: 1,
+    useCdn: false,
   };
 };
