@@ -7,7 +7,8 @@ const { serverRuntimeConfig } = getConfig();
 const imageIds: string[] = serverRuntimeConfig.igImgIds?.split(',') || [];
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const data: ImageId = { imgId: randomItem(imageIds) };
+  const imgId = await randomItem(imageIds);
+  const data: ImageId = { imgId };
 
   res.status(200).json(data);
 };
