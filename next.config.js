@@ -45,9 +45,6 @@ const securityHeaders = [
 
 const nextConfig = withBundleAnalyzer(
   withPWA({
-    experimental: {
-      isrMemoryCacheSize: 0,
-    },
     async headers() {
       return [
         {
