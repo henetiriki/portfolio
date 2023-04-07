@@ -1,12 +1,9 @@
 import { Row } from '@nextui-org/react';
 import Image from 'next/legacy/image';
-import { contentWrapper } from '@styles/content';
 import { waveWrapper } from '@styles/shared';
 import type { FC, PropsWithChildren } from 'react';
 
-export const Content: FC<
-  PropsWithChildren<{ wrapperPadding?: { [key: string]: string } }>
-> = ({ children, wrapperPadding = {} }): JSX.Element => (
+export const Content: FC<PropsWithChildren> = ({ children }): JSX.Element => (
   <>
     <Row css={waveWrapper}>
       <Image
@@ -17,7 +14,7 @@ export const Content: FC<
         src='/images/waves/content-top-haikei.svg'
       />
     </Row>
-    <Row css={{ ...contentWrapper, ...wrapperPadding }}>{children}</Row>
+    {children}
     <Row css={{ ...waveWrapper, mb: '8rem' }}>
       <Image
         alt=''
