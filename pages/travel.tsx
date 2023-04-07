@@ -1,4 +1,4 @@
-import { Container, Text } from '@nextui-org/react';
+import { Container, Row, Text } from '@nextui-org/react';
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -6,7 +6,7 @@ import { Content, Header } from '@components/content';
 import { Legend, MapLoader } from '@components/travel';
 import { description } from '@fixtures/travel';
 import { useImgSetup } from '@hooks';
-import { travelContainerBottom, travelContainerTop } from '@styles/travel';
+import { contentWrapper } from '@styles/content';
 import { fullTitle } from '@utils/head';
 import type { getStaticProps } from '@utils/common';
 import type { InferGetStaticPropsType, NextPage } from 'next';
@@ -63,14 +63,20 @@ const Travel: NextPage = ({
             steer yourself any direction you choose.” - dr. seuss
           </span>
         </Header>
-        <Content wrapperPadding={{ padding: '0' }}>
-          <Container css={travelContainerTop}>
-            <Text h2>Travel history</Text>
-          </Container>
-          <DynamicMapWrapper />
-          <Container css={travelContainerBottom}>
-            <Legend />
-          </Container>
+        <Content>
+          <Row css={{ ...contentWrapper }}>
+            <Container>
+              <Text h2>Travel history</Text>
+            </Container>
+          </Row>
+          <Row css={{ ...contentWrapper, padding: 0 }}>
+            <DynamicMapWrapper />
+          </Row>
+          <Row css={{ ...contentWrapper }}>
+            <Container>
+              <Legend />
+            </Container>
+          </Row>
         </Content>
       </>
     </>
