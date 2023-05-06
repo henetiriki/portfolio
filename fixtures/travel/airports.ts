@@ -539,6 +539,12 @@ export const OOL: Location = {
   title: 'OOL // Gold Coast Airport',
 };
 
+export const HBA: Location = {
+  description: `Hobart, ${australia}`,
+  position: { lat: -42.836354, lng: 147.5048859 },
+  title: 'HBA // Hobart International',
+};
+
 export const airports: Location[] = [
   KIM,
   PLZ,
@@ -627,4 +633,5 @@ export const airports: Location[] = [
   YUL,
   SFO,
   OOL,
+  HBA,
 ];
