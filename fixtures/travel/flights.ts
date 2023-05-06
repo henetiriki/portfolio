@@ -35,6 +35,7 @@ import {
   GIS,
   GRJ,
   GRU,
+  HBA,
   HKG,
   HKGN,
   HKT,
@@ -184,4 +185,6 @@ export const flights: google.maps.LatLngLiteral[][] = [
   [OOL.position, SYD.position],
 ];
 
-export const upcomingFlights: google.maps.LatLngLiteral[][] = [];
+export const upcomingFlights: google.maps.LatLngLiteral[][] = [
+  [AKL.position, HBA.position],
+];
