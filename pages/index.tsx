@@ -26,7 +26,7 @@ const Home: NextPage = ({
         as='section'
         css={{
           dflex: 'center',
-          h: '85vh',
+          h: '75vh',
           zIndex: 1,
         }}>
         <Container css={{ ta: 'center' }}>
