@@ -21,7 +21,7 @@ import {
 } from '@styles/footer';
 import { waveWrapper } from '@styles/shared';
 import type { SocialLink } from '@fixtures/types';
-import type { FC } from 'react';
+import type { FC, JSX } from 'react';
 
 const DynamicFontAwesomeIcon = dynamic(
   () =>

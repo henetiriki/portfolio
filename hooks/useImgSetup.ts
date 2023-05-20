@@ -19,6 +19,8 @@ export const useImgSetup = ({ imgId: fallbackImgId }: ImageId) => {
         },
         type: 'set-ig-img-id',
       });
+
+      return;
     }
 
     if (imgId) {

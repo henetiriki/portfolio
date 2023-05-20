@@ -16,7 +16,7 @@ import {
   navTypography,
   scrollToTop,
 } from '@styles/nav';
-import type { FC, MouseEvent, MutableRefObject } from 'react';
+import type { FC, JSX, MouseEvent, MutableRefObject } from 'react';
 
 const ScrollToTop = styled('a', scrollToTop);
 

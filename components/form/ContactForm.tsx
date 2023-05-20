@@ -22,7 +22,7 @@ import {
 } from '@styles/form';
 import { upperFirst } from '@utils/common';
 import type { FormValueKey } from '@hooks';
-import type { FC, PropsWithoutRef } from 'react';
+import type { FC, JSX, PropsWithoutRef } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const ContactForm: FC = () => {
