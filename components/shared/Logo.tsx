@@ -1,6 +1,6 @@
 import Image from 'next/legacy/image';
 import Link from 'next/link';
-import type { FC } from 'react';
+import type { FC, JSX } from 'react';
 
 export const Logo: FC = (): JSX.Element => (
   <Link href={'/'}>

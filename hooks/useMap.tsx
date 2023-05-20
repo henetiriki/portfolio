@@ -1,5 +1,6 @@
 import { Status } from '@googlemaps/react-wrapper';
 import { MapError, MapLoader } from '@components/travel';
+import type { JSX } from 'react';
 
 export const useMap = (): {
   render: (status: Status) => JSX.Element;

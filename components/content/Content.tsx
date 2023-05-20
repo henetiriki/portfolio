@@ -1,7 +1,7 @@
 import { Row } from '@nextui-org/react';
 import Image from 'next/legacy/image';
 import { waveWrapper } from '@styles/shared';
-import type { FC, PropsWithChildren } from 'react';
+import type { FC, JSX, PropsWithChildren } from 'react';
 
 export const Content: FC<PropsWithChildren> = ({ children }): JSX.Element => (
   <>

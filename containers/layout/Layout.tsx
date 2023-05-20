@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import type { FC, PropsWithChildren } from 'react';
+import type { FC, JSX, PropsWithChildren } from 'react';
 
 const DynamicFooter = dynamic(
   () => import('@components/footer').then(mod => mod.Footer),

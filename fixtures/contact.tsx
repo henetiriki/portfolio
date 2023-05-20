@@ -1,4 +1,5 @@
 import type { ErrorMessage } from '@fixtures/types';
+import type { JSX } from 'react';
 
 export const description = 'Get in touch to have a chat';
 

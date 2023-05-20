@@ -2,7 +2,7 @@ import { Container, Link, Text } from '@nextui-org/react';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { footerCopyright } from '@styles/footer';
-import type { FC } from 'react';
+import type { FC, JSX } from 'react';
 
 export const Copyright: FC = (): JSX.Element => {
   const [date] = useState<Date>(new Date());
