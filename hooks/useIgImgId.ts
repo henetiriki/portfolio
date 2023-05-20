@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { usePortfolioState } from '@state/context';
 
 export const useIgImgId = (): string | undefined => {
@@ -32,7 +32,7 @@ export const useIgImgId = (): string | undefined => {
     routeRef.current = path;
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setIgImgId(imgId);
   }, [imgId]);
 
