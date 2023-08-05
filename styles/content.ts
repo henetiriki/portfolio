@@ -1,6 +1,4 @@
-import type { CSS } from '@nextui-org/react';
-
-export const contentWrapper: CSS = {
+export const contentWrapper = {
   bgColor: '$valhalla',
   d: 'flex',
   fd: 'column',

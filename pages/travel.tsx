@@ -1,4 +1,4 @@
-import { Container, Row, Text } from '@nextui-org/react';
+import { Container, Title } from '@mantine/core';
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -6,7 +6,6 @@ import { Content, Header } from '@components/content';
 import { Legend, MapLoader } from '@components/travel';
 import { description } from '@fixtures/travel';
 import { useImgSetup } from '@hooks';
-import { contentWrapper } from '@styles/content';
 import { fullTitle } from '@utils/head';
 import type { getStaticProps } from '@utils/common';
 import type { InferGetStaticPropsType, NextPage } from 'next';
@@ -64,19 +63,19 @@ const Travel: NextPage = ({
           </span>
         </Header>
         <Content>
-          <Row css={{ ...contentWrapper }}>
+          <div>
             <Container>
-              <Text h2>Travel history</Text>
+              <Title order={2}>Travel history</Title>
             </Container>
-          </Row>
-          <Row css={{ ...contentWrapper, padding: 0 }}>
+          </div>
+          <div>
             <DynamicMapWrapper />
-          </Row>
-          <Row css={{ ...contentWrapper }}>
+          </div>
+          <div>
             <Container>
               <Legend />
             </Container>
-          </Row>
+          </div>
         </Content>
       </>
     </>

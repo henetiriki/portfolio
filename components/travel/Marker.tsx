@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
-import { colors } from '@styles/shared';
+import { colorOverrides } from '@styles/shared';
 import { cancelableDelay } from '@utils/common';
 import { getZoomMarkerWeightExponent } from '@utils/travel';
 import type { FC, PropsWithRef } from 'react';
 
-const { cinder, shamrock } = colors;
+const { cinder, shamrock } = colorOverrides;
 
 export const Marker: FC<
   PropsWithRef<
@@ -46,8 +46,8 @@ export const Marker: FC<
         });
         infoWindow?.setContent(
           `<div>
-            <h4 style="color:${shamrock};font-size:1rem">${title}</h4>
-            <p style="color:${cinder};font-size:0.85rem">${description}</p>
+            <h4 style="color:${shamrock[4]};font-size:1rem">${title}</h4>
+            <p style="color:${cinder[4]};font-size:0.85rem">${description}</p>
           </div>`
         );
         infoWindow?.open(map, marker);

@@ -1,24 +1,26 @@
-import { Container, Loading } from '@nextui-org/react';
+import { Container, Loader, createStyles } from '@mantine/core';
+import type { MantineTheme } from '@mantine/core';
 import type { FC, JSX } from 'react';
 
-export const Transition: FC = (): JSX.Element => (
-  <Container
-    css={{
-      bc: 'rgba(12, 14, 39, 0.80)',
-      minHeight: '100vh',
-      minWidth: '100vw',
-      ov: 'hidden',
-      position: 'fixed',
-      zIndex: 200,
-    }}>
-    <Loading
-      color='primary'
-      css={{
-        left: '48vw',
-        position: 'absolute',
-        top: '50vh',
-      }}
-      type='points'
-    />
-  </Container>
-);
+const useTransitionStyles = createStyles(({ fn: { rgba } }: MantineTheme) => ({
+  transitionWrapper: {
+    backgroundColor: rgba('#0C0E27', 0.8),
+    minHeight: '100vh',
+    minWidth: '100vw',
+    overflow: 'hidden',
+    position: 'fixed',
+    zIndex: 200,
+  },
+}));
+
+export const Transition: FC = (): JSX.Element => {
+  const {
+    classes: { transitionWrapper },
+  } = useTransitionStyles();
+
+  return (
+    <Container className={transitionWrapper}>
+      <Loader />
+    </Container>
+  );
+};

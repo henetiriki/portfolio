@@ -1,17 +1,10 @@
-import { CssBaseline } from '@nextui-org/react';
+import { createGetInitialProps } from '@mantine/next';
 import _Document, { Head, Html, Main, NextScript } from 'next/document';
-import { Children } from 'react';
-import type { DocumentContext } from 'next/document';
+
+const getInitialProps = createGetInitialProps();
 
 class Document extends _Document {
-  static async getInitialProps(ctx: DocumentContext) {
-    const initialProps = await _Document.getInitialProps(ctx);
-
-    return {
-      ...initialProps,
-      styles: Children.toArray([initialProps.styles]),
-    };
-  }
+  static getInitialProps = getInitialProps;
 
   render() {
     return (
@@ -25,10 +18,7 @@ class Document extends _Document {
           <meta content='yes' name='mobile-web-app-capable' />
           <meta content='#080a20' name='theme-color' />
           <link href='/manifest.json' rel='manifest' />
-          <link
-            href='https://mastodon.nz/@henetiriki'
-            rel='me'
-          />
+          <link href='https://mastodon.nz/@henetiriki' rel='me' />
           <link
             href='/images/manifest-icons/favicon-16x16.png'
             rel='icon'
@@ -211,7 +201,6 @@ class Document extends _Document {
             href='https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap'
             rel='stylesheet'
           />
-          {CssBaseline.flush()}
           <script
             async
             src='/scripts/hash-redirect.js'

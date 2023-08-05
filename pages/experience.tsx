@@ -1,28 +1,15 @@
+import styled from '@emotion/styled';
 import {
   faBriefcase,
   faGraduationCap,
 } from '@fortawesome/free-solid-svg-icons';
-import { Container, Link, Row, Spacer, Text, styled } from '@nextui-org/react';
+import { Anchor, Container, Text, Title } from '@mantine/core';
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
 import { description, jobs, schools } from '@fixtures/experience';
 import { useImgSetup } from '@hooks';
-import { contentWrapper } from '@styles/content';
-import {
-  timeline,
-  timelineBox,
-  timelineContent,
-  timelineFromTo,
-  timelineHeading,
-  timelineIndicator,
-  timelineLink,
-  timelineLinkText,
-  timelineLocation,
-  timelineTitle,
-  videoContainer,
-} from '@styles/experience';
 import {
   getExperienceDescription,
   getExperienceKeywords,
@@ -44,17 +31,17 @@ const {
   publicRuntimeConfig: { siteUrl },
 } = getConfig();
 
-const TimelineHeading = styled('div', timelineHeading);
+const TimelineHeading = styled.div``;
 
-const TimelineIndicator = styled('div', timelineIndicator);
+const TimelineIndicator = styled.div``;
 
-const Timeline = styled('div', timeline);
+const Timeline = styled.div``;
 
-const TimelineBox = styled('div', timelineBox);
+const TimelineBox = styled.div``;
 
-const TimelineContent = styled('div', timelineContent);
+const TimelineContent = styled.div``;
 
-const VideoContainer = styled('div', videoContainer);
+const VideoContainer = styled.div``;
 
 const Experience: NextPage = ({
   data,
@@ -92,7 +79,7 @@ const Experience: NextPage = ({
           Experience<span>what I’ve done so far</span>
         </Header>
         <Content>
-          <Row css={{ ...contentWrapper }}>
+          <div>
             <Container>
               <TimelineHeading>
                 <TimelineIndicator>
@@ -102,9 +89,7 @@ const Experience: NextPage = ({
                     width={20}
                   />
                 </TimelineIndicator>{' '}
-                <Text css={{ lh: '1rem' }} h2>
-                  Work History
-                </Text>
+                <Title order={2}>Work History</Title>
               </TimelineHeading>
               <Timeline>
                 {jobs.map(
@@ -121,33 +106,26 @@ const Experience: NextPage = ({
                   ) => (
                     <TimelineBox key={idx}>
                       <TimelineContent>
-                        <Text css={timelineFromTo} span>
+                        <Text span>
                           {from} - {to}
                         </Text>{' '}
                         {url && (
-                          <Text css={timelineLinkText}>
-                            <Link
-                              css={timelineLink}
+                          <Text>
+                            <Anchor
                               href={url}
-                              isExternal
                               rel='noopener noreferrer'
                               target='_blank'>
                               {name}
-                            </Link>
+                            </Anchor>
                           </Text>
                         )}
-                        {!url && <Text css={timelineLinkText}>{name}</Text>}
-                        <Text css={timelineLocation} size='$xs'>
-                          {location}
-                        </Text>
-                        <Text css={timelineTitle} h3>
-                          {title}
-                        </Text>
+                        {!url && <Text>{name}</Text>}
+                        <Text size='xs'>{location}</Text>
+                        <Title order={3}>{title}</Title>
                         {content}
                         {accomplishments && (
                           <>
-                            <Spacer y={1} />
-                            <Text h5>Accomplishments</Text>
+                            <Title order={5}>Accomplishments</Title>
                             {accomplishments}
                           </>
                         )}
@@ -168,7 +146,6 @@ const Experience: NextPage = ({
                   )
                 )}
               </Timeline>
-              <Spacer y={4} />
               <TimelineHeading>
                 <TimelineIndicator>
                   <DynamicFontAwesomeIcon
@@ -177,9 +154,7 @@ const Experience: NextPage = ({
                     width={20}
                   />
                 </TimelineIndicator>
-                <Text css={{ lh: '1rem' }} h2>
-                  Education
-                </Text>
+                <Title order={2}>Education</Title>
               </TimelineHeading>
               <Timeline>
                 {schools.map(
@@ -194,25 +169,19 @@ const Experience: NextPage = ({
                   ) => (
                     <TimelineBox key={idx}>
                       <TimelineContent>
-                        <Text css={timelineFromTo} span>
+                        <Text span>
                           {from} - {to}
                         </Text>{' '}
-                        <Text css={timelineLinkText}>
-                          <Link
-                            css={timelineLink}
+                        <Text>
+                          <Anchor
                             href={url}
-                            isExternal
                             rel='noopener noreferrer'
                             target='_blank'>
                             {name}
-                          </Link>
+                          </Anchor>
                         </Text>
-                        <Text css={timelineLocation} size='$xs'>
-                          {location}
-                        </Text>
-                        <Text css={timelineTitle} h3>
-                          {qualification}
-                        </Text>
+                        <Text size='xs'>{location}</Text>
+                        <Title order={3}>{qualification}</Title>
                         {content}
                       </TimelineContent>
                     </TimelineBox>
@@ -220,7 +189,7 @@ const Experience: NextPage = ({
                 )}
               </Timeline>
             </Container>
-          </Row>
+          </div>
         </Content>
       </>
     </>

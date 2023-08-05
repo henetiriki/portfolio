@@ -1,20 +1,18 @@
-import type { CSS } from '@nextui-org/react';
-
-export const footerBackground: CSS = {
+export const footerBackground = {
   bgColor: '$blackRussian',
 };
 
-export const footerLowerBackground: CSS = {
+export const footerLowerBackground = {
   bgColor: '$blackRussianDarker',
 };
 
-export const footerContainer: CSS = {
+export const footerContainer = {
   fontFamily: '$sansHeading',
   pb: 'calc(3 * $md)',
   ta: 'center',
 };
 
-export const footerLastUpdated: CSS = {
+export const footerLastUpdated = {
   color: '$silver',
   fs: '$xs',
   mb: 0,
@@ -23,7 +21,7 @@ export const footerLastUpdated: CSS = {
   opacity: 0.6,
 };
 
-export const footerLines: CSS = {
+export const footerLines = {
   '@xs': {
     ml: 'auto',
     mr: 'auto',
@@ -33,7 +31,7 @@ export const footerLines: CSS = {
   opacity: 0.5,
 };
 
-export const footerLinksContainer: CSS = {
+export const footerLinksContainer = {
   columnGap: '$md',
   dflex: 'center',
   fd: 'row',
@@ -41,7 +39,7 @@ export const footerLinksContainer: CSS = {
   rowGap: '$md',
 };
 
-export const footerLinks: CSS = {
+export const footerLinks = {
   '& a': {
     color: '$white',
   },
@@ -51,7 +49,7 @@ export const footerLinks: CSS = {
   color: '$white',
 };
 
-export const footerCopyright: CSS = {
+export const footerCopyright = {
   color: '$shamrock',
   d: 'inline-block',
   pl: '$sm',

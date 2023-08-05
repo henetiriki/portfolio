@@ -1,51 +1,50 @@
+import styled from '@emotion/styled';
 import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { Text, styled } from '@nextui-org/react';
+import { Title } from '@mantine/core';
 import { MarkerLegend } from '@components/travel/MarkerLegend';
 import { PolylineLegend } from '@components/travel/PolylineLegend';
-import { colors } from '@styles/shared';
-import { legendContainer } from '@styles/travel';
+import { colorOverrides } from '@styles/shared';
 import type { FC } from 'react';
 
-const { alizarin, allPorts, pineGreen, pumpkin, torchRed } = colors;
-const LegendContainer = styled('div', legendContainer);
+const { alizarin, allports, corn, pineGreen, pumpkin, torchRed, viking } =
+  colorOverrides;
+const LegendContainer = styled.div``;
 
 export const Legend: FC = () => (
   <>
-    <Text css={{ pb: '$lg' }} h3>
-      Legend
-    </Text>
+    <Title order={3}>Legend</Title>
     <LegendContainer>
-      <MarkerLegend color={torchRed} icon={faLocationDot}>
+      <MarkerLegend color={torchRed[4]} icon={faLocationDot}>
         current location
       </MarkerLegend>
-      <MarkerLegend color={pumpkin} icon={faLocationDot}>
+      <MarkerLegend color={pumpkin[4]} icon={faLocationDot}>
         past locations
       </MarkerLegend>
-      <MarkerLegend color={pineGreen} icon={faLocationDot}>
+      <MarkerLegend color={pineGreen[4]} icon={faLocationDot}>
         airports
       </MarkerLegend>
-      <MarkerLegend color={alizarin} icon={faLocationDot}>
+      <MarkerLegend color={alizarin[4]} icon={faLocationDot}>
         stations
       </MarkerLegend>
-      <MarkerLegend color={allPorts} icon={faLocationDot}>
+      <MarkerLegend color={allports[4]} icon={faLocationDot}>
         ports
       </MarkerLegend>
-      <PolylineLegend color='$corn' style='solid'>
+      <PolylineLegend color={corn[4]} style='solid'>
         flights
       </PolylineLegend>
-      <PolylineLegend color='$torchRed' style='solid'>
+      <PolylineLegend color={torchRed[4]} style='solid'>
         train rides
       </PolylineLegend>
-      <PolylineLegend color='$viking' style='solid'>
+      <PolylineLegend color={viking[4]} style='solid'>
         sailings
       </PolylineLegend>
-      <PolylineLegend color='$corn' style='dotted'>
+      <PolylineLegend color={corn[4]} style='dotted'>
         upcoming flights
       </PolylineLegend>
-      <PolylineLegend color='$torchRed' style='dotted'>
+      <PolylineLegend color={torchRed[4]} style='dotted'>
         upcoming train rides
       </PolylineLegend>
-      <PolylineLegend color='$viking' style='dotted'>
+      <PolylineLegend color={viking[4]} style='dotted'>
         upcoming sailings
       </PolylineLegend>
     </LegendContainer>

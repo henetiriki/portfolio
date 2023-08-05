@@ -1,26 +1,34 @@
-import { Container, Text } from '@nextui-org/react';
+import { Container, Title, createStyles } from '@mantine/core';
 import type { FC, JSX, PropsWithChildren } from 'react';
 
-export const Header: FC<PropsWithChildren> = ({ children }): JSX.Element => (
-  <Container
-    css={{
-      dflex: 'center',
-      h: '50vh',
-    }}>
-    <Text
-      css={{
-        span: {
-          d: 'block',
-          fontWeight: '$normal',
-          fs: '1.25rem',
-          letterSpacing: '$normal',
-          tt: 'none',
-        },
-        ta: 'center',
-        tt: 'uppercase',
-      }}
-      h1>
-      {children}
-    </Text>
-  </Container>
-);
+const useHeaderStyles = createStyles({
+  h1: {
+    '& span': {
+      display: 'block',
+      fontSize: '1.25rem',
+      fontWeight: 'normal',
+      letterSpacing: 'normal',
+      textTransform: 'none',
+    },
+    textTransform: 'uppercase',
+  },
+  headerWrapper: {
+    alignItems: 'center',
+    display: 'flex',
+    height: '50vh',
+  },
+});
+
+export const Header: FC<PropsWithChildren> = ({ children }): JSX.Element => {
+  const {
+    classes: { h1, headerWrapper },
+  } = useHeaderStyles();
+
+  return (
+    <Container className={headerWrapper}>
+      <Title align='center' className={h1} order={1}>
+        {children}
+      </Title>
+    </Container>
+  );
+};

@@ -1,8 +1,13 @@
-import type { CSS } from '@nextui-org/react';
+import { createStyles } from '@mantine/core';
 
-export const waveWrapper: CSS = {
-  h: '10rem',
-  lh: 0,
-  ov: 'hidden',
-  w: '100%',
-};
+export const useWaveWrapperStyles = createStyles({
+  waveWrapper: {
+    height: '10rem',
+    lineHeight: 0,
+    overflow: 'hidden',
+    width: '100%',
+  },
+  waveWrapperBottom: {
+    marginBottom: '8rem',
+  },
+});

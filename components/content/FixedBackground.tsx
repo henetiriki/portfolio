@@ -1,4 +1,4 @@
-import { Container } from '@nextui-org/react';
+import { Container, createStyles } from '@mantine/core';
 import getConfig from 'next/config';
 import Image from 'next/legacy/image';
 import { useLayoutEffect, useRef } from 'react';
@@ -11,6 +11,16 @@ const {
   publicRuntimeConfig: { imgHost },
 } = getConfig();
 
+const useFixedBackgroundStyles = createStyles({
+  fixedBg: {
+    minHeight: '100vh',
+    minWidth: '100vw',
+    overflow: 'hidden',
+    position: 'fixed',
+    zIndex: -1,
+  },
+});
+
 export const FixedBackground: FC = () => {
   const {
     dispatch,
@@ -18,6 +28,9 @@ export const FixedBackground: FC = () => {
       shared: { pageTopRef },
     },
   } = usePortfolioState();
+  const {
+    classes: { fixedBg },
+  } = useFixedBackgroundStyles();
   const ref = useRef() as MutableRefObject<HTMLDivElement>;
   const igImgId = useIgImgId();
   const { height = 1920, width = 1080 } = useWindowSize();
@@ -33,14 +46,7 @@ export const FixedBackground: FC = () => {
 
   return (
     <div ref={pageTopRef}>
-      <Container
-        css={{
-          minHeight: '100vh',
-          minWidth: '100vw',
-          ov: 'hidden',
-          position: 'fixed',
-          zIndex: -1,
-        }}>
+      <Container className={fixedBg}>
         {igImgId && (
           <Image
             alt=''

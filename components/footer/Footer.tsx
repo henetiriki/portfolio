@@ -1,8 +1,8 @@
-import { Container, Link, Row, Text, styled } from '@nextui-org/react';
+import styled from '@emotion/styled';
+import { Anchor, Container, Text } from '@mantine/core';
 import dynamic from 'next/dynamic';
 import Image from 'next/legacy/image';
 import NextLink from 'next/link';
-import { useRouter } from 'next/router';
 import { Copyright } from '@components/footer';
 import { Logo } from '@components/shared';
 import { socialLinks } from '@fixtures/footer';
@@ -10,16 +10,7 @@ import buildTimeConfig from '@fixtures/generated/build-time-config.json';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
-import {
-  footerBackground,
-  footerContainer,
-  footerLastUpdated,
-  footerLines,
-  footerLinks,
-  footerLinksContainer,
-  footerLowerBackground,
-} from '@styles/footer';
-import { waveWrapper } from '@styles/shared';
+
 import type { SocialLink } from '@fixtures/types';
 import type { FC, JSX } from 'react';
 
@@ -31,7 +22,7 @@ const DynamicFontAwesomeIcon = dynamic(
   }
 );
 
-const FooterLines = styled('div', footerLines);
+const FooterLines = styled.div``;
 
 export const Footer: FC = (): JSX.Element => {
   const {
@@ -39,13 +30,12 @@ export const Footer: FC = (): JSX.Element => {
       shared: { pageTopRef },
     },
   } = usePortfolioState();
-  const { pathname } = useRouter();
   const { scrollToTop } = useScrollTo(pageTopRef);
   const { lastModified } = buildTimeConfig;
 
   return (
     <footer>
-      <Row css={{ ...waveWrapper, h: '5rem' }}>
+      <div>
         <Image
           alt=''
           layout='fill'
@@ -53,8 +43,8 @@ export const Footer: FC = (): JSX.Element => {
           priority
           src='/images/waves/footer-top-haikei.svg'
         />
-      </Row>
-      <Row css={waveWrapper}>
+      </div>
+      <div>
         <Image
           alt=''
           layout='fill'
@@ -62,56 +52,43 @@ export const Footer: FC = (): JSX.Element => {
           priority
           src='/images/waves/footer-bottom-haikei.svg'
         />
-      </Row>
-      <Row css={footerBackground}>
-        <Container as='div' css={footerContainer}>
+      </div>
+      <div>
+        <Container>
           <Container>
             <Logo />
           </Container>
-          <FooterLines css={{ mt: '$xl' }} />
-          <Container css={footerLinksContainer}>
+          <FooterLines />
+          <Container>
             {menuItems.map(({ href, text }, idx) => (
-              <Link
-                as='span'
-                css={{
-                  ...footerLinks,
-                  fontWeight: pathname === href ? 'bold' : 'normal',
-                }}
-                key={idx}
-                onClick={scrollToTop}>
-                <NextLink href={href}>{text}</NextLink>
-              </Link>
+              <NextLink href={href} key={idx} onClick={scrollToTop}>
+                {text}
+              </NextLink>
             ))}
           </Container>
-          <FooterLines css={{ mb: '$lg' }} />
-          <Container css={{ ...footerLinksContainer, pb: 0 }}>
+          <FooterLines />
+          <Container>
             {socialLinks.map(({ icon, title, url }: SocialLink) => (
-              <Link
-                css={footerLinks}
+              <Anchor
                 href={url}
                 key={url}
                 rel='noopener noreferrer'
                 target='_blank'
                 title={title}>
                 <DynamicFontAwesomeIcon height={20} icon={icon} width={20} />
-              </Link>
+              </Anchor>
             ))}
           </Container>
         </Container>
-      </Row>
-      <Row css={footerLowerBackground}>
-        <Container
-          as='div'
-          css={{
-            ...footerContainer,
-            p: '$md',
-          }}>
-          <Container css={{ pt: '$xs' }}>
+      </div>
+      <div>
+        <Container>
+          <Container>
             <Copyright />
           </Container>
-          <Text css={footerLastUpdated}>Updated: {lastModified}</Text>
+          <Text>Updated: {lastModified}</Text>
         </Container>
-      </Row>
+      </div>
     </footer>
   );
 };

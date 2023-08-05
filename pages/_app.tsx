@@ -1,14 +1,13 @@
-import { NextUIProvider } from '@nextui-org/react';
+import { MantineProvider } from '@mantine/core';
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { ThemeProvider } from 'next-themes';
 import { Navigation } from '@components/nav';
 import { ErrorBoundary } from '@components/shared';
 import { Layout } from '@containers/layout';
 import { useLoading } from '@hooks';
 import { PortfolioStateProvider } from '@state/context';
-import { globalStyles, theme } from '@styles/shared';
+import { theme } from '@styles/shared';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
@@ -37,8 +36,6 @@ const Portfolio: NextPage<AppProps> = ({
   pageProps,
 }): JSX.Element => {
   const isLoading = useLoading();
-
-  globalStyles();
 
   return (
     <>
@@ -84,23 +81,16 @@ const Portfolio: NextPage<AppProps> = ({
         />
       </Head>
       <ErrorBoundary>
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='dark'
-          value={{
-            dark: theme.className,
-          }}>
-          <NextUIProvider theme={theme}>
-            <PortfolioStateProvider>
-              {isLoading && <DynamicTransition />}
-              <DynamicFixedBackground />
-              <Navigation />
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </PortfolioStateProvider>
-          </NextUIProvider>
-        </ThemeProvider>
+        <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
+          <PortfolioStateProvider>
+            {isLoading && <DynamicTransition />}
+            <DynamicFixedBackground />
+            <Navigation />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </PortfolioStateProvider>
+        </MantineProvider>
       </ErrorBoundary>
     </>
   );

@@ -1,6 +1,4 @@
-import type { CSS } from '@nextui-org/react';
-
-export const aboutContainer: CSS = {
+export const aboutContainer = {
   d: 'flex',
   fd: 'column',
   fw: 'nowrap',
@@ -11,7 +9,7 @@ export const aboutContainer: CSS = {
   /* eslint-enable sort-keys/sort-keys-fix */
 };
 
-export const imageContainer: CSS = {
+export const imageContainer = {
   '& img': {
     borderColor: '$whisper !important',
     borderStyle: 'solid  !important',

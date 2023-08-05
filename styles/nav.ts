@@ -1,6 +1,4 @@
-import type { CSS } from '@nextui-org/react';
-
-const navActive: CSS = {
+const navActive = {
   '&.active': {
     '&:before': {
       w: '30px',
@@ -19,7 +17,7 @@ const navUnderlineBefore = {
   w: 0,
 };
 
-const navUnderline: CSS = {
+const navUnderline = {
   '&:before': navUnderlineBefore,
   '&:hover': {
     '&:before': {
@@ -30,7 +28,7 @@ const navUnderline: CSS = {
   color: '$white',
 };
 
-export const navLinkSm: CSS = {
+export const navLinkSm = {
   '& a': {
     color: '$white',
   },
@@ -43,7 +41,7 @@ export const navLinkSm: CSS = {
   my: '$md',
 };
 
-export const navLinkMd: CSS = {
+export const navLinkMd = {
   '& a': {
     color: '$white',
   },
@@ -51,12 +49,12 @@ export const navLinkMd: CSS = {
   ...navUnderline,
 };
 
-export const navTypography: CSS = {
+export const navTypography = {
   fs: '$sm',
   tt: 'uppercase',
 };
 
-export const navTopContainer: CSS = {
+export const navTopContainer = {
   ai: 'center',
   d: 'flex',
   jc: 'flex-end',
@@ -67,13 +65,13 @@ export const navTopContainer: CSS = {
   /* eslint-enable sort-keys/sort-keys-fix */
 };
 
-export const navBrand: CSS = {
+export const navBrand = {
   '@xs': {
     w: '12%',
   },
 };
 
-export const scrollToTop: CSS = {
+export const scrollToTop = {
   '&:hover': {
     bc: '$shamrock',
   },

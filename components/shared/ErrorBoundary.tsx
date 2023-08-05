@@ -1,4 +1,4 @@
-import { Container, Text } from '@nextui-org/react';
+import { Title } from '@mantine/core';
 import { Component } from 'react';
 import type { ErrorInfo, PropsWithChildren } from 'react';
 
@@ -23,9 +23,9 @@ class ErrorBoundary extends Component {
     // @ts-ignore
     if (this.state.hasError) {
       return (
-        <Container>
-          <Text h4>Oops, something went wrong!</Text>
-        </Container>
+        <div>
+          <Title order={4}>Oops, something went wrong!</Title>
+        </div>
       );
     }
 

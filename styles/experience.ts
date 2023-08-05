@@ -1,11 +1,9 @@
-import type { CSS } from '@nextui-org/react';
-
-export const timelineHeading: CSS = {
+export const timelineHeading = {
   ai: 'baseline',
   d: 'flex',
 };
 
-export const timelineIndicator: CSS = {
+export const timelineIndicator = {
   bgColor: '$shamrock',
   br: '100%',
   dflex: 'center',
@@ -14,13 +12,13 @@ export const timelineIndicator: CSS = {
   w: '2.5rem',
 };
 
-export const timeline: CSS = {
+export const timeline = {
   borderLeft: '1px solid $silver',
   mb: '30px',
   ml: '20px',
 };
 
-export const timelineBox: CSS = {
+export const timelineBox = {
   '&:after': {
     bgColor: '$shamrock',
     br: '100%',
@@ -47,7 +45,7 @@ export const timelineBox: CSS = {
   pt: '50px',
 };
 
-export const timelineContent: CSS = {
+export const timelineContent = {
   '&:before': {
     borderColor: 'transparent rgba(255, 255, 255, 0.1) transparent transparent',
     borderStyle: 'solid',
@@ -65,25 +63,25 @@ export const timelineContent: CSS = {
   position: 'relative',
 };
 
-export const timelineFromTo: CSS = {
+export const timelineFromTo = {
   color: '$silver',
   fontStyle: 'italic',
   mb: 0,
 };
 
-export const timelineLocation: CSS = {
+export const timelineLocation = {
   color: '$silver',
   span: {
     fontStyle: 'italic',
   },
 };
 
-export const timelineLinkText: CSS = {
+export const timelineLinkText = {
   fs: '$lg',
   mb: 0,
 };
 
-export const timelineLink: CSS = {
+export const timelineLink = {
   color: '$shamrock',
   span: {
     fontStyle: 'italic',
@@ -92,13 +90,13 @@ export const timelineLink: CSS = {
   },
 };
 
-export const timelineTitle: CSS = {
+export const timelineTitle = {
   span: {
     fs: '$lg',
   },
 };
 
-export const videoContainer: CSS = {
+export const videoContainer = {
   '.youtube-frame': {
     border: '0',
   },

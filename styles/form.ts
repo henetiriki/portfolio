@@ -1,6 +1,4 @@
-import type { CSS } from '@nextui-org/react';
-
-export const formContainer: CSS = {
+export const formContainer = {
   /* eslint-disable sort-keys/sort-keys-fix */
   '@xs': {
     mw: '100%',
@@ -14,7 +12,7 @@ export const formContainer: CSS = {
   /* eslint-enable sort-keys/sort-keys-fix */
 };
 
-export const topRow: CSS = {
+export const topRow = {
   d: 'flex',
   fd: 'column',
   /* eslint-disable sort-keys/sort-keys-fix */
@@ -25,7 +23,7 @@ export const topRow: CSS = {
   /* eslint-enable sort-keys/sort-keys-fix */
 };
 
-export const formInput: CSS = {
+export const formInput = {
   mb: '$2xl',
   mt: '$md',
   width: '100%',
@@ -36,13 +34,13 @@ export const formInput: CSS = {
   /* eslint-enable sort-keys/sort-keys-fix */
 };
 
-export const formTextArea: CSS = {
+export const formTextArea = {
   mb: '$2xl',
   mt: '$md',
   width: '100%',
 };
 
-export const submitButton: CSS = {
+export const submitButton = {
   mt: '$md',
   px: '$13',
   w: '100%',

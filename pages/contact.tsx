@@ -1,11 +1,10 @@
-import { Container, Row } from '@nextui-org/react';
+import { Container } from '@mantine/core';
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
 import { description } from '@fixtures/contact';
 import { useImgSetup } from '@hooks';
-import { contentWrapper } from '@styles/content';
 import { fullTitle } from '@utils/head';
 import type { getStaticProps } from '@utils/common';
 import type { InferGetStaticPropsType, NextPage } from 'next';
@@ -53,11 +52,11 @@ const Contact: NextPage = ({
           Get in touch<span>contact me to have a chat</span>
         </Header>
         <Content>
-          <Row css={{ ...contentWrapper }}>
+          <div>
             <Container>
               <DynamicContactForm />
             </Container>
-          </Row>
+          </div>
         </Content>
       </>
     </>

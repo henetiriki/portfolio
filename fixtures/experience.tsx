@@ -3,7 +3,7 @@ import {
   faPlaneDeparture,
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
-import { Row, Spacer, Text } from '@nextui-org/react';
+import { Text } from '@mantine/core';
 import dynamic from 'next/dynamic';
 import type { Job, School } from '@fixtures/types';
 
@@ -426,15 +426,13 @@ export const jobs: Job[] = [
   {
     content: (
       <>
-        <Spacer y={2} />
-        <Row css={{ ai: 'center', d: 'flex' }}>
+        <div>
           <DynamicFontAwesomeIcon
             height={25}
             icon={faPlaneDeparture}
             size='2xs'
             width={25}
           />
-          <Spacer x={1} />
           <DynamicFontAwesomeIcon
             alignmentBaseline='middle'
             height={15}
@@ -442,14 +440,13 @@ export const jobs: Job[] = [
             size='2xs'
             width={15}
           />
-          <Spacer x={1} />
           <DynamicFontAwesomeIcon
             height={25}
             icon={faGlobeAfrica}
             size='2xs'
             width={25}
           />
-        </Row>
+        </div>
       </>
     ),
     institution: {

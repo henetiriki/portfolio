@@ -1,11 +1,9 @@
-import type { CSS } from '@nextui-org/react';
-
 export type DynamicPolylineText = {
   color: string;
   style: 'dotted' | 'solid';
 };
 
-export const legendContainer: CSS = {
+export const legendContainer = {
   /* eslint-disable sort-keys/sort-keys-fix */
   d: 'flex',
   fd: 'column',
@@ -17,17 +15,14 @@ export const legendContainer: CSS = {
   /* eslint-enable sort-keys/sort-keys-fix */
 };
 
-export const markerText: CSS = {
+export const markerText = {
   minWidth: '14rem',
   svg: {
     verticalAlign: 'middle',
   },
 };
 
-export const dynamicPolylineText = ({
-  color,
-  style,
-}: DynamicPolylineText): CSS => ({
+export const dynamicPolylineText = ({ color, style }: DynamicPolylineText) => ({
   d: 'flex',
   minWidth: '14rem',
   span: {
