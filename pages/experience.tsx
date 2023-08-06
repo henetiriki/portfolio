@@ -18,6 +18,7 @@ import { fullTitle } from '@utils/head';
 import type { Job, School } from '@fixtures/types';
 import type { getStaticProps } from '@utils/common';
 import type { InferGetStaticPropsType, NextPage } from 'next';
+import type { JSX } from 'react';
 
 const DynamicFontAwesomeIcon = dynamic(
   () =>

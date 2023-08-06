@@ -1,3 +1,4 @@
+import { Box } from '@mantine/core';
 import dynamic from 'next/dynamic';
 import type { FC, JSX, PropsWithChildren } from 'react';
 
@@ -9,19 +10,20 @@ const DynamicFooter = dynamic(
 );
 
 export const Layout: FC<PropsWithChildren> = ({ children }): JSX.Element => (
-  <div
-    style={{
+  <Box
+    sx={{
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
     }}>
-    <main
-      style={{
+    <Box
+      component='main'
+      sx={{
         flex: 1,
         overflow: 'auto',
       }}>
       {children}
-    </main>
+    </Box>
     <DynamicFooter />
-  </div>
+  </Box>
 );

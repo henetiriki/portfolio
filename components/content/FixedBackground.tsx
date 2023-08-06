@@ -1,4 +1,4 @@
-import { Container, createStyles } from '@mantine/core';
+import { Box, Container } from '@mantine/core';
 import getConfig from 'next/config';
 import Image from 'next/legacy/image';
 import { useLayoutEffect, useRef } from 'react';
@@ -11,16 +11,6 @@ const {
   publicRuntimeConfig: { imgHost },
 } = getConfig();
 
-const useFixedBackgroundStyles = createStyles({
-  fixedBg: {
-    minHeight: '100vh',
-    minWidth: '100vw',
-    overflow: 'hidden',
-    position: 'fixed',
-    zIndex: -1,
-  },
-});
-
 export const FixedBackground: FC = () => {
   const {
     dispatch,
@@ -28,9 +18,6 @@ export const FixedBackground: FC = () => {
       shared: { pageTopRef },
     },
   } = usePortfolioState();
-  const {
-    classes: { fixedBg },
-  } = useFixedBackgroundStyles();
   const ref = useRef() as MutableRefObject<HTMLDivElement>;
   const igImgId = useIgImgId();
   const { height = 1920, width = 1080 } = useWindowSize();
@@ -45,8 +32,15 @@ export const FixedBackground: FC = () => {
   }, [pageTopRef, ref, dispatch]);
 
   return (
-    <div ref={pageTopRef}>
-      <Container className={fixedBg}>
+    <Box ref={pageTopRef}>
+      <Container
+        sx={{
+          minHeight: '100vh',
+          minWidth: '100vw',
+          overflow: 'hidden',
+          position: 'fixed',
+          zIndex: -1,
+        }}>
         {igImgId && (
           <Image
             alt=''
@@ -60,6 +54,6 @@ export const FixedBackground: FC = () => {
           />
         )}
       </Container>
-    </div>
+    </Box>
   );
 };

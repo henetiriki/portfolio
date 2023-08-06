@@ -1,13 +1,11 @@
-import { createStyles } from '@mantine/core';
+import type { Sx } from '@mantine/core';
 
-export const useWaveWrapperStyles = createStyles({
-  waveWrapper: {
-    height: '10rem',
-    lineHeight: 0,
-    overflow: 'hidden',
-    width: '100%',
-  },
-  waveWrapperBottom: {
-    marginBottom: '8rem',
-  },
-});
+export const waveWrapper: Sx = {
+  display: 'flex',
+  height: '10rem',
+  justifyContent: 'flex-start',
+  lineHeight: 0,
+  overflow: 'hidden',
+  position: 'relative',
+  width: '100%',
+};

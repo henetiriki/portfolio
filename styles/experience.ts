@@ -1,118 +1,127 @@
-export const timelineHeading = {
-  ai: 'baseline',
-  d: 'flex',
+import type { MantineTheme, Sx } from '@mantine/core';
+
+export const timelineHeading: Sx = {
+  alignItems: 'baseline',
+  display: 'flex',
 };
 
-export const timelineIndicator = {
-  bgColor: '$shamrock',
-  br: '100%',
-  dflex: 'center',
-  h: '2.5rem',
-  mr: '1.25rem',
-  w: '2.5rem',
-};
+export const timelineIndicator: Sx = ({
+  colors: { shamrock },
+}: MantineTheme) => ({
+  alignItems: 'center',
+  backgroundColor: shamrock[4],
+  borderRadius: '100%',
+  display: 'flex',
+  height: '2.5rem',
+  justifyContent: 'center',
+  marginRight: '1.25rem',
+  width: '2.5rem',
+});
 
-export const timeline = {
-  borderLeft: '1px solid $silver',
-  mb: '30px',
-  ml: '20px',
-};
+export const timeline: Sx = ({ colors: { silver } }: MantineTheme) => ({
+  borderLeft: `1px solid ${silver[4]}`,
+  marginBottom: '30px',
+  marginLeft: '20px',
+});
 
-export const timelineBox = {
+export const timelineBox: Sx = ({ colors: { shamrock } }: MantineTheme) => ({
   '&:after': {
-    bgColor: '$shamrock',
-    br: '100%',
+    backgroundColor: shamrock[4],
+    borderRadius: '100%',
     content: '',
-    h: '20px',
+    height: '20px',
     left: '-11px',
     opacity: 0.4,
     position: 'absolute',
     top: '70px',
-    w: '20px',
+    width: '20px',
   },
   '&:before': {
-    bgColor: '$shamrock',
-    br: '100%',
+    backgroundColor: shamrock[4],
+    borderRadius: '100%',
     content: '',
-    h: '10px',
+    height: '10px',
     left: '-6px',
     position: 'absolute',
     top: '75px',
-    w: '10px',
+    width: '10px',
   },
-  pl: '40px',
+  paddingLeft: '40px',
+  paddingTop: '50px',
   position: 'relative',
-  pt: '50px',
-};
+});
 
-export const timelineContent = {
+export const timelineContent: Sx = ({
+  colors: { white },
+  fn: { rgba },
+}: MantineTheme) => ({
   '&:before': {
-    borderColor: 'transparent rgba(255, 255, 255, 0.1) transparent transparent',
+    borderColor: `transparent ${rgba(white[4], 0.1)} transparent transparent`,
     borderStyle: 'solid',
-    bw: '15px 20px 15px 0',
+    borderWidth: '15px 20px 15px 0',
     content: '',
-    h: 0,
+    height: 0,
     position: 'absolute',
     right: '100%',
     top: '15px',
-    w: 0,
+    width: 0,
   },
-  bgColor: 'rgba(255, 255, 255, 0.1)',
-  br: '$xs',
-  p: '20px',
+  bgColor: rgba(white[4], 0.1),
+  borderRadius: '8px',
+  padding: '20px',
   position: 'relative',
-};
+});
 
-export const timelineFromTo = {
-  color: '$silver',
+export const timelineFromTo: Sx = ({ colors: { silver } }: MantineTheme) => ({
+  color: silver[4],
   fontStyle: 'italic',
-  mb: 0,
-};
+  marginBottom: 0,
+});
 
-export const timelineLocation = {
-  color: '$silver',
+export const timelineLocation: Sx = ({ colors: { silver } }: MantineTheme) => ({
+  color: silver[4],
   span: {
     fontStyle: 'italic',
   },
-};
+});
 
-export const timelineLinkText = {
-  fs: '$lg',
+export const timelineLinkText: Sx = {
+  fontSize: '1.25rem',
   mb: 0,
 };
 
-export const timelineLink = {
-  color: '$shamrock',
+export const timelineLink: Sx = ({ colors: { shamrock } }: MantineTheme) => ({
+  color: shamrock[4],
   span: {
+    fontSize: '0.75rem',
     fontStyle: 'italic',
-    fs: '$sm',
-    pl: '$2',
+    paddingLeft: '4px',
   },
-};
+});
 
-export const timelineTitle = {
+export const timelineTitle: Sx = {
   span: {
-    fs: '$lg',
+    fontSize: '1.25rem',
   },
 };
 
-export const videoContainer = {
+export const videoContainer: Sx = {
   '.youtube-frame': {
     border: '0',
   },
-  h: '0',
+  height: '0',
   'iframe, object, embed': {
     border: 0,
-    h: '100%',
+    height: '100%',
     left: '0',
     position: 'absolute',
     top: '0',
-    w: '100%',
+    width: '100%',
   },
-  mb: '$lg',
-  mt: '$2xl',
-  ov: 'hidden',
-  pb: '30%',
+  marginBottom: '$lg',
+  marginTop: '$2xl',
+  overflow: 'hidden',
+  paddingBottom: '30%',
+  paddingTop: '26.3%',
   position: 'relative',
-  pt: '26.3%',
 };

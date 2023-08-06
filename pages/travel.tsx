@@ -9,6 +9,7 @@ import { useImgSetup } from '@hooks';
 import { fullTitle } from '@utils/head';
 import type { getStaticProps } from '@utils/common';
 import type { InferGetStaticPropsType, NextPage } from 'next';
+import type { JSX } from 'react';
 
 const DynamicMapWrapper = dynamic(
   () => import('@components/travel').then(mod => mod.MapWrapper),

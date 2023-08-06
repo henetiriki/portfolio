@@ -5,6 +5,7 @@ import { ErrorContent } from '@components/shared';
 import { usePortfolioState } from '@state/context';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
+import type { JSX } from 'react';
 
 const FourOhFour: NextPage = (): JSX.Element => {
   const { dispatch } = usePortfolioState();

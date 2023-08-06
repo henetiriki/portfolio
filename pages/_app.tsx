@@ -1,4 +1,4 @@
-import { MantineProvider } from '@mantine/core';
+import { Box, MantineProvider } from '@mantine/core';
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -9,9 +9,11 @@ import { useLoading } from '@hooks';
 import { PortfolioStateProvider } from '@state/context';
 import { theme } from '@styles/shared';
 import { fullTitle } from '@utils/head';
+import type { MantineTheme } from '@mantine/core';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import '@styles/shared/Toastify.css';
+import type { JSX } from 'react';
 
 const DynamicFixedBackground = dynamic(
   () => import('@components/content').then(mod => mod.FixedBackground),
@@ -82,14 +84,21 @@ const Portfolio: NextPage<AppProps> = ({
       </Head>
       <ErrorBoundary>
         <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
-          <PortfolioStateProvider>
-            {isLoading && <DynamicTransition />}
-            <DynamicFixedBackground />
-            <Navigation />
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </PortfolioStateProvider>
+          <Box
+            sx={({ fn: { rgba } }: MantineTheme) => ({
+              backgroundColor: rgba('#0C0E27', 0.8),
+              border: 0,
+              height: '100%',
+            })}>
+            <PortfolioStateProvider>
+              {isLoading && <DynamicTransition />}
+              <DynamicFixedBackground />
+              <Navigation />
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </PortfolioStateProvider>
+          </Box>
         </MantineProvider>
       </ErrorBoundary>
     </>

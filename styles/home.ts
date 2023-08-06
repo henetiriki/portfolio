@@ -1,26 +1,34 @@
-export const aboutContainer = {
-  d: 'flex',
-  fd: 'column',
-  fw: 'nowrap',
-  /* eslint-disable sort-keys/sort-keys-fix */
-  '@xs': {
-    fd: 'row',
-  },
-  /* eslint-enable sort-keys/sort-keys-fix */
-};
+import type { MantineTheme, Sx } from '@mantine/core';
 
-export const imageContainer = {
+export const aboutContainer: Sx = ({ fn: { largerThan } }: MantineTheme) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  flexWrap: 'nowrap',
+  gap: '3rem',
+  [largerThan('xs')]: {
+    flexDirection: 'row',
+  },
+});
+
+export const aboutBox: Sx = ({ fn: { largerThan } }: MantineTheme) => ({
+  [largerThan('xs')]: {
+    flexBasis: '60%',
+  },
+});
+
+export const imageContainer: Sx = ({
+  colors: { whisper },
+  fn: { largerThan },
+}: MantineTheme) => ({
   '& img': {
-    borderColor: '$whisper !important',
+    borderColor: `${whisper[4]} !important`,
+    borderRadius: '0.5rem',
     borderStyle: 'solid  !important',
-    br: '$xs',
-    bw: '$xl  !important',
+    borderWidth: '0.25rem  !important',
   },
-  mt: '$3xl',
-  mw: '400px',
-  /* eslint-disable sort-keys/sort-keys-fix */
-  '@xs': {
-    mt: 0,
+  marginTop: '5rem',
+  maxWidth: '400px',
+  [largerThan('xs')]: {
+    marginTop: 0,
   },
-  /* eslint-enable sort-keys/sort-keys-fix */
-};
+});

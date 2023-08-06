@@ -8,6 +8,7 @@ import { useImgSetup } from '@hooks';
 import { fullTitle } from '@utils/head';
 import type { getStaticProps } from '@utils/common';
 import type { InferGetStaticPropsType, NextPage } from 'next';
+import type { JSX } from 'react';
 
 const DynamicContactForm = dynamic(
   () => import('@components/form').then(mod => mod.ContactForm),

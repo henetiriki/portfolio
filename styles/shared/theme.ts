@@ -15,6 +15,15 @@ export const theme: MantineThemeOverride = {
     xs: rem(10),
   },
   globalStyles: () => ({
+    body: {
+      color: 'white',
+      lineHeight: rem(24),
+      minHeight: '100%',
+      overflowX: 'hidden',
+      padding: 0,
+      position: 'relative',
+      textRendering: 'optimizeLegibility',
+    },
     html: {
       fontSize: '16px',
     },
