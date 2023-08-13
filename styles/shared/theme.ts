@@ -24,6 +24,24 @@ export const theme: MantineThemeOverride = {
       position: 'relative',
       textRendering: 'optimizeLegibility',
     },
+    h1: {
+      letterSpacing: '-0.05rem',
+    },
+    h2: {
+      letterSpacing: '-0.05rem',
+    },
+    h3: {
+      letterSpacing: '-0.05rem',
+    },
+    h4: {
+      letterSpacing: '-0.05rem',
+    },
+    h5: {
+      letterSpacing: '-0.05rem',
+    },
+    h6: {
+      letterSpacing: '-0.05rem',
+    },
     html: {
       fontSize: '16px',
     },
@@ -34,27 +52,27 @@ export const theme: MantineThemeOverride = {
     sizes: {
       h1: {
         fontSize: rem(48),
-        lineHeight: '1.25', // 60px
+        lineHeight: rem(60),
       },
       h2: {
         fontSize: rem(32),
-        lineHeight: '1.5', // 48px
+        lineHeight: rem(48),
       },
       h3: {
         fontSize: rem(24),
-        lineHeight: '1.5', // 36px
+        lineHeight: rem(36),
       },
       h4: {
         fontSize: rem(20),
-        lineHeight: '1.5', // 28px
+        lineHeight: rem(28),
       },
       h5: {
         fontSize: rem(18),
-        lineHeight: '1.333', // 24px
+        lineHeight: rem(24),
       },
       h6: {
         fontSize: rem(14),
-        lineHeight: '1.42', // 20px
+        lineHeight: rem(20),
       },
     },
   },

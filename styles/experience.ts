@@ -28,7 +28,7 @@ export const timelineBox: Sx = ({ colors: { shamrock } }: MantineTheme) => ({
   '&:after': {
     backgroundColor: shamrock[4],
     borderRadius: '100%',
-    content: '',
+    content: "''",
     height: '20px',
     left: '-11px',
     opacity: 0.4,
@@ -39,7 +39,7 @@ export const timelineBox: Sx = ({ colors: { shamrock } }: MantineTheme) => ({
   '&:before': {
     backgroundColor: shamrock[4],
     borderRadius: '100%',
-    content: '',
+    content: "''",
     height: '10px',
     left: '-6px',
     position: 'absolute',
@@ -59,14 +59,14 @@ export const timelineContent: Sx = ({
     borderColor: `transparent ${rgba(white[4], 0.1)} transparent transparent`,
     borderStyle: 'solid',
     borderWidth: '15px 20px 15px 0',
-    content: '',
+    content: "''",
     height: 0,
     position: 'absolute',
     right: '100%',
     top: '15px',
     width: 0,
   },
-  bgColor: rgba(white[4], 0.1),
+  backgroundColor: rgba(white[4], 0.1),
   borderRadius: '8px',
   padding: '20px',
   position: 'relative',
@@ -80,6 +80,7 @@ export const timelineFromTo: Sx = ({ colors: { silver } }: MantineTheme) => ({
 
 export const timelineLocation: Sx = ({ colors: { silver } }: MantineTheme) => ({
   color: silver[4],
+  marginBottom: '1rem',
   span: {
     fontStyle: 'italic',
   },
@@ -91,11 +92,14 @@ export const timelineLinkText: Sx = {
 };
 
 export const timelineLink: Sx = ({ colors: { shamrock } }: MantineTheme) => ({
+  '&:hover': {
+    color: shamrock[5],
+    textDecoration: 'none',
+  },
   color: shamrock[4],
   span: {
     fontSize: '0.75rem',
     fontStyle: 'italic',
-    paddingLeft: '4px',
   },
 });
 

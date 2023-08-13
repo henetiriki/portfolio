@@ -28,6 +28,7 @@
     "incremental": true
   },
   "include": [
+    "emotion.d.ts",
     "next-env.d.ts",
     "mantine-custom-colors.d.ts",
     "**/*.ts",
