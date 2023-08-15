@@ -1,11 +1,10 @@
-import { Anchor, Box, Container, Text, Title } from '@mantine/core';
+import { Anchor, Box, Container, Flex, Text, Title } from '@mantine/core';
 import dynamic from 'next/dynamic';
 import Image from 'next/legacy/image';
 import { Content } from '@components/content';
 import { openSourceContrs } from '@fixtures/home';
 import { useImgSetup } from '@hooks';
-import { contentWrapper } from '@styles/content';
-import { aboutBox, aboutContainer, imageContainer } from '@styles/home';
+import { imageContainer, openSourceLinks } from '@styles/home';
 import { blurDataURL } from '@utils/common';
 import type { MantineTheme } from '@mantine/core';
 import type { getStaticProps } from '@utils/common';
@@ -64,9 +63,13 @@ const Home: NextPage = ({
         </Container>
       </Container>
       <Content>
-        <Box sx={contentWrapper}>
-          <Container sx={aboutContainer}>
-            <Box sx={aboutBox}>
+        <Container>
+          <Flex
+            align={{ base: 'center', md: 'flex-start' }}
+            direction={{ base: 'column', md: 'row' }}
+            gap='xl'
+            justify='space-between'>
+            <Box sx={{ flexBasis: '60%' }}>
               <Title order={2}>About me</Title>
               <Title order={3}>Louw Swart</Title>
               <Title order={4}>Front-end Engineer, Wellington NZ</Title>
@@ -90,38 +93,43 @@ const Home: NextPage = ({
                 equally comfortable performing either or both.
               </Text>
               <Title order={4}>Open Source Contributions</Title>
-              <ul>
+              <Box
+                component='ul'
+                sx={{ listStyleType: 'none', paddingLeft: '0.75rem' }}>
                 {openSourceContrs.map(({ href, text }, idx) => (
                   <li key={idx}>
                     <Anchor
                       color='shamrock'
                       href={href}
                       rel='noopener noreferrer'
+                      sx={openSourceLinks}
                       target='_blank'>
                       {text}
                     </Anchor>
                   </li>
                 ))}
-              </ul>
+              </Box>
               <Title order={4}>Hobbies and Interests</Title>
               <Text component='p'>
                 Photography, Android, travel and plane spotting - not
                 necessarily in that order.
               </Text>
             </Box>
-            <Box sx={imageContainer}>
-              <Image
-                alt='Louw Swart'
-                blurDataURL={blurDataURL(350, 350)}
-                height={350}
-                lazyBoundary='0px'
-                placeholder='blur'
-                src='/images/about/louw.swart.jpg'
-                width={350}
-              />
+            <Box>
+              <Box sx={imageContainer}>
+                <Image
+                  alt='Louw Swart'
+                  blurDataURL={blurDataURL(350, 350)}
+                  height={350}
+                  lazyBoundary='0px'
+                  placeholder='blur'
+                  src='/images/about/louw.swart.jpg'
+                  width={350}
+                />
+              </Box>
             </Box>
-          </Container>
-        </Box>
+          </Flex>{' '}
+        </Container>
       </Content>
     </>
   );

@@ -1,20 +1,10 @@
 import type { MantineTheme, Sx } from '@mantine/core';
 
-export const aboutContainer: Sx = ({ fn: { largerThan } }: MantineTheme) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  flexWrap: 'nowrap',
-  gap: '3rem',
-  [largerThan('xs')]: {
-    flexDirection: 'row',
+export const openSourceLinks: Sx = {
+  '&:hover': {
+    textDecoration: 'none',
   },
-});
-
-export const aboutBox: Sx = ({ fn: { largerThan } }: MantineTheme) => ({
-  [largerThan('xs')]: {
-    flexBasis: '60%',
-  },
-});
+};
 
 export const imageContainer: Sx = ({
   colors: { whisper },
@@ -26,9 +16,9 @@ export const imageContainer: Sx = ({
     borderStyle: 'solid  !important',
     borderWidth: '0.25rem  !important',
   },
-  marginTop: '5rem',
+  marginTop: '3rem',
   maxWidth: '400px',
-  [largerThan('xs')]: {
+  [largerThan('md')]: {
     marginTop: 0,
   },
 });

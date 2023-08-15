@@ -63,20 +63,16 @@ const Travel: NextPage = ({
             steer yourself any direction you choose.” - dr. seuss
           </span>
         </Header>
-        <Content>
-          <div>
-            <Container>
-              <Title order={2}>Travel history</Title>
-            </Container>
-          </div>
-          <div>
-            <DynamicMapWrapper />
-          </div>
-          <div>
-            <Container>
-              <Legend />
-            </Container>
-          </div>
+        <Content waveBottom={false}>
+          <Container>
+            <Title order={2}>Travel history</Title>
+          </Container>
+        </Content>
+        <DynamicMapWrapper />
+        <Content waveTop={false}>
+          <Container>
+            <Legend />
+          </Container>
         </Content>
       </>
     </>

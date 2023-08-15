@@ -2,7 +2,7 @@ import {
   faBriefcase,
   faGraduationCap,
 } from '@fortawesome/free-solid-svg-icons';
-import { Anchor, Box, Container, Text, Title } from '@mantine/core';
+import { Anchor, Container, Text, Title } from '@mantine/core';
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -17,7 +17,6 @@ import {
 } from '@components/experience';
 import { description, jobs, schools } from '@fixtures/experience';
 import { useImgSetup } from '@hooks';
-import { contentWrapper } from '@styles/content';
 import {
   timelineFromTo,
   timelineLink,
@@ -83,104 +82,36 @@ const Experience: NextPage = ({
           Experience<span>what I’ve done so far</span>
         </Header>
         <Content>
-          <Box sx={contentWrapper}>
-            <Container>
-              <TimelineHeading>
-                <TimelineIndicator>
-                  <DynamicFontAwesomeIcon
-                    height={20}
-                    icon={faBriefcase}
-                    width={20}
-                  />
-                </TimelineIndicator>{' '}
-                <Title order={2}>Work History</Title>
-              </TimelineHeading>
-              <Timeline>
-                {jobs.map(
-                  (
-                    {
-                      accomplishments,
-                      content,
-                      institution: { location, name, url },
-                      title,
-                      video,
-                      year: { from, to },
-                    }: Job,
-                    idx: number
-                  ) => (
-                    <TimelineBox key={idx}>
-                      <TimelineContent>
-                        <Text span sx={timelineFromTo}>
-                          {from} - {to}
-                        </Text>{' '}
-                        {url && (
-                          <Text sx={timelineLinkText}>
-                            <Anchor
-                              href={url}
-                              rel='noopener noreferrer'
-                              sx={timelineLink}
-                              target='_blank'>
-                              {name}
-                            </Anchor>
-                          </Text>
-                        )}
-                        {!url && <Text sx={timelineLinkText}>{name}</Text>}
-                        <Text size='sm' sx={timelineLocation}>
-                          {location}
-                        </Text>
-                        <Title order={3} sx={timelineTitle}>
-                          {title}
-                        </Title>
-                        {content}
-                        {accomplishments && (
-                          <>
-                            <Title order={5}>Accomplishments</Title>
-                            {accomplishments}
-                          </>
-                        )}
-                        {video && (
-                          <VideoContainer>
-                            <iframe
-                              allowFullScreen
-                              className='youtube-frame'
-                              height='720'
-                              src={video.videoUrl}
-                              title={video.videoTitle}
-                              width='1280'
-                            />
-                          </VideoContainer>
-                        )}
-                      </TimelineContent>
-                    </TimelineBox>
-                  )
-                )}
-              </Timeline>
-              <TimelineHeading>
-                <TimelineIndicator>
-                  <DynamicFontAwesomeIcon
-                    height={20}
-                    icon={faGraduationCap}
-                    width={20}
-                  />
-                </TimelineIndicator>
-                <Title order={2}>Education</Title>
-              </TimelineHeading>
-              <Timeline>
-                {schools.map(
-                  (
-                    {
-                      content,
-                      institution: { location, name, url },
-                      qualification,
-                      year: { from, to },
-                    }: School,
-                    idx: number
-                  ) => (
-                    <TimelineBox key={idx}>
-                      <TimelineContent>
-                        <Text span sx={timelineFromTo}>
-                          {from} - {to}
-                        </Text>
+          <Container>
+            <TimelineHeading>
+              <TimelineIndicator>
+                <DynamicFontAwesomeIcon
+                  height={20}
+                  icon={faBriefcase}
+                  width={20}
+                />
+              </TimelineIndicator>{' '}
+              <Title order={2}>Work History</Title>
+            </TimelineHeading>
+            <Timeline>
+              {jobs.map(
+                (
+                  {
+                    accomplishments,
+                    content,
+                    institution: { location, name, url },
+                    title,
+                    video,
+                    year: { from, to },
+                  }: Job,
+                  idx: number
+                ) => (
+                  <TimelineBox key={idx}>
+                    <TimelineContent>
+                      <Text span sx={timelineFromTo}>
+                        {from} - {to}
+                      </Text>{' '}
+                      {url && (
                         <Text sx={timelineLinkText}>
                           <Anchor
                             href={url}
@@ -190,20 +121,86 @@ const Experience: NextPage = ({
                             {name}
                           </Anchor>
                         </Text>
-                        <Text size='md' sx={timelineLocation}>
-                          {location}
-                        </Text>
-                        <Title order={3} sx={timelineTitle}>
-                          {qualification}
-                        </Title>
-                        {content}
-                      </TimelineContent>
-                    </TimelineBox>
-                  )
-                )}
-              </Timeline>
-            </Container>
-          </Box>
+                      )}
+                      {!url && <Text sx={timelineLinkText}>{name}</Text>}
+                      <Text size='sm' sx={timelineLocation}>
+                        {location}
+                      </Text>
+                      <Title order={3} sx={timelineTitle}>
+                        {title}
+                      </Title>
+                      {content}
+                      {accomplishments && (
+                        <>
+                          <Title order={5}>Accomplishments</Title>
+                          {accomplishments}
+                        </>
+                      )}
+                      {video && (
+                        <VideoContainer>
+                          <iframe
+                            allowFullScreen
+                            className='youtube-frame'
+                            height='720'
+                            src={video.videoUrl}
+                            title={video.videoTitle}
+                            width='1280'
+                          />
+                        </VideoContainer>
+                      )}
+                    </TimelineContent>
+                  </TimelineBox>
+                )
+              )}
+            </Timeline>
+            <TimelineHeading>
+              <TimelineIndicator>
+                <DynamicFontAwesomeIcon
+                  height={20}
+                  icon={faGraduationCap}
+                  width={20}
+                />
+              </TimelineIndicator>
+              <Title order={2}>Education</Title>
+            </TimelineHeading>
+            <Timeline>
+              {schools.map(
+                (
+                  {
+                    content,
+                    institution: { location, name, url },
+                    qualification,
+                    year: { from, to },
+                  }: School,
+                  idx: number
+                ) => (
+                  <TimelineBox key={idx}>
+                    <TimelineContent>
+                      <Text span sx={timelineFromTo}>
+                        {from} - {to}
+                      </Text>
+                      <Text sx={timelineLinkText}>
+                        <Anchor
+                          href={url}
+                          rel='noopener noreferrer'
+                          sx={timelineLink}
+                          target='_blank'>
+                          {name}
+                        </Anchor>
+                      </Text>
+                      <Text size='md' sx={timelineLocation}>
+                        {location}
+                      </Text>
+                      <Title order={3} sx={timelineTitle}>
+                        {qualification}
+                      </Title>
+                      {content}
+                    </TimelineContent>
+                  </TimelineBox>
+                )
+              )}
+            </Timeline>
+          </Container>
         </Content>
       </>
     </>

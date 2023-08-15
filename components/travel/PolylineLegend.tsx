@@ -1,15 +1,13 @@
-import styled from '@emotion/styled';
+import { Text } from '@mantine/core';
+import { dynamicPolylineText } from '@styles/travel';
 import type { DynamicPolylineText } from '@styles/travel';
 import type { FC, PropsWithChildren } from 'react';
 
 export const PolylineLegend: FC<DynamicPolylineText & PropsWithChildren> = ({
   children,
-}) => {
-  const PolylineText = styled.div``;
-
-  return (
-    <PolylineText>
-      <span /> {children}
-    </PolylineText>
-  );
-};
+  ...props
+}) => (
+  <Text component='p' sx={{ ...dynamicPolylineText(props) }}>
+    <span /> {children}
+  </Text>
+);

@@ -1,35 +1,28 @@
+import type { Sx } from '@mantine/core';
+
 export type DynamicPolylineText = {
   color: string;
   style: 'dotted' | 'solid';
 };
 
-export const legendContainer = {
-  /* eslint-disable sort-keys/sort-keys-fix */
-  d: 'flex',
-  fd: 'column',
-  '@xs': {
-    fd: 'row',
-    fw: 'wrap',
-    jc: 'start',
-  },
-  /* eslint-enable sort-keys/sort-keys-fix */
-};
-
-export const markerText = {
+export const markerText: Sx = {
   minWidth: '14rem',
   svg: {
     verticalAlign: 'middle',
   },
 };
 
-export const dynamicPolylineText = ({ color, style }: DynamicPolylineText) => ({
-  d: 'flex',
+export const dynamicPolylineText = ({
+  color,
+  style,
+}: DynamicPolylineText): Sx => ({
+  display: 'flex',
   minWidth: '14rem',
   span: {
     borderBottom: `3px ${style} ${color}`,
     height: '1em',
-    ml: '5px',
-    mr: '7px',
+    marginLeft: '5px',
+    marginRight: '7px',
     width: '12px',
   },
 });

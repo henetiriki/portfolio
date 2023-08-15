@@ -1,15 +1,14 @@
-import styled from '@emotion/styled';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Text } from '@mantine/core';
+import { markerText } from '@styles/travel';
 import type { IconProp } from '@fortawesome/fontawesome-svg-core';
 import type { FC, PropsWithChildren } from 'react';
-
-const MarkerText = styled.div``;
 
 export const MarkerLegend: FC<
   PropsWithChildren & { color: string; icon: IconProp }
 > = ({ children, color, icon }) => (
-  <MarkerText>
+  <Text component='p' sx={markerText}>
     <FontAwesomeIcon color={color} height={20} icon={icon} width={20} />{' '}
     {children}
-  </MarkerText>
+  </Text>
 );
