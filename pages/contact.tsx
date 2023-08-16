@@ -1,4 +1,3 @@
-import { Container } from '@mantine/core';
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -53,11 +52,7 @@ const Contact: NextPage = ({
           Get in touch<span>contact me to have a chat</span>
         </Header>
         <Content>
-          <div>
-            <Container>
-              <DynamicContactForm />
-            </Container>
-          </div>
+          <DynamicContactForm />
         </Content>
       </>
     </>

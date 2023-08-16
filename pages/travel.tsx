@@ -1,4 +1,4 @@
-import { Container, Title } from '@mantine/core';
+import { Title } from '@mantine/core';
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -64,15 +64,11 @@ const Travel: NextPage = ({
           </span>
         </Header>
         <Content waveBottom={false}>
-          <Container>
-            <Title order={2}>Travel history</Title>
-          </Container>
+          <Title order={2}>Travel history</Title>
         </Content>
         <DynamicMapWrapper />
         <Content waveTop={false}>
-          <Container>
-            <Legend />
-          </Container>
+          <Legend />
         </Content>
       </>
     </>

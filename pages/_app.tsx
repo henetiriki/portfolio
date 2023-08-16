@@ -12,7 +12,6 @@ import { fullTitle } from '@utils/head';
 import type { MantineTheme } from '@mantine/core';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
-import '@styles/shared/Toastify.css';
 import type { JSX } from 'react';
 
 const DynamicFixedBackground = dynamic(

@@ -63,73 +63,71 @@ const Home: NextPage = ({
         </Container>
       </Container>
       <Content>
-        <Container>
-          <Flex
-            align={{ base: 'center', md: 'flex-start' }}
-            direction={{ base: 'column', md: 'row' }}
-            gap='xl'
-            justify='space-between'>
-            <Box sx={{ flexBasis: '60%' }}>
-              <Title order={2}>About me</Title>
-              <Title order={3}>Louw Swart</Title>
-              <Title order={4}>Front-end Engineer, Wellington NZ</Title>
-              <Text component='p'>
-                I have been in <b>Software Development</b> since 2008, with most
-                of that time spent in <b>Agile environments</b>, designing,
-                coding, testing and supporting applications across a{' '}
-                <b>variety of technologies</b> and <b>platforms</b>.
-              </Text>
-              <Text component='p'>
-                While my background is <b>Java</b>, I have been focusing my
-                attention on <b>JavaScript development</b> since June 2014,
-                working with frameworks such as <b>Angular</b>, <b>React</b> and{' '}
-                <b>GraphQL</b>. My passion is developing for the <b>Node.js</b>{' '}
-                runtime.
-              </Text>
-              <Text component='p'>
-                I am a <b>pragmatic</b> individual with a strong{' '}
-                <b>sense of responsibility</b> - I like to{' '}
-                <b>get things done</b>. <b>Front-end</b> or <b>back-end</b>, I’m
-                equally comfortable performing either or both.
-              </Text>
-              <Title order={4}>Open Source Contributions</Title>
-              <Box
-                component='ul'
-                sx={{ listStyleType: 'none', paddingLeft: '0.75rem' }}>
-                {openSourceContrs.map(({ href, text }, idx) => (
-                  <li key={idx}>
-                    <Anchor
-                      color='shamrock'
-                      href={href}
-                      rel='noopener noreferrer'
-                      sx={openSourceLinks}
-                      target='_blank'>
-                      {text}
-                    </Anchor>
-                  </li>
-                ))}
-              </Box>
-              <Title order={4}>Hobbies and Interests</Title>
-              <Text component='p'>
-                Photography, Android, travel and plane spotting - not
-                necessarily in that order.
-              </Text>
+        <Flex
+          align={{ base: 'center', md: 'flex-start' }}
+          direction={{ base: 'column', md: 'row' }}
+          gap='xl'
+          justify='space-between'>
+          <Box sx={{ flexBasis: '60%' }}>
+            <Title order={2}>About me</Title>
+            <Title order={3}>Louw Swart</Title>
+            <Title order={4}>Front-end Engineer, Wellington NZ</Title>
+            <Text component='p'>
+              I have been in <b>Software Development</b> since 2008, with most
+              of that time spent in <b>Agile environments</b>, designing,
+              coding, testing and supporting applications across a{' '}
+              <b>variety of technologies</b> and <b>platforms</b>.
+            </Text>
+            <Text component='p'>
+              While my background is <b>Java</b>, I have been focusing my
+              attention on <b>JavaScript development</b> since June 2014,
+              working with frameworks such as <b>Angular</b>, <b>React</b> and{' '}
+              <b>GraphQL</b>. My passion is developing for the <b>Node.js</b>{' '}
+              runtime.
+            </Text>
+            <Text component='p'>
+              I am a <b>pragmatic</b> individual with a strong{' '}
+              <b>sense of responsibility</b> - I like to <b>get things done</b>.{' '}
+              <b>Front-end</b> or <b>back-end</b>, I’m equally comfortable
+              performing either or both.
+            </Text>
+            <Title order={4}>Open Source Contributions</Title>
+            <Box
+              component='ul'
+              sx={{ listStyleType: 'none', paddingLeft: '0.75rem' }}>
+              {openSourceContrs.map(({ href, text }, idx) => (
+                <li key={idx}>
+                  <Anchor
+                    color='shamrock'
+                    href={href}
+                    rel='noopener noreferrer'
+                    sx={openSourceLinks}
+                    target='_blank'>
+                    {text}
+                  </Anchor>
+                </li>
+              ))}
             </Box>
-            <Box>
-              <Box sx={imageContainer}>
-                <Image
-                  alt='Louw Swart'
-                  blurDataURL={blurDataURL(350, 350)}
-                  height={350}
-                  lazyBoundary='0px'
-                  placeholder='blur'
-                  src='/images/about/louw.swart.jpg'
-                  width={350}
-                />
-              </Box>
+            <Title order={4}>Hobbies and Interests</Title>
+            <Text component='p'>
+              Photography, Android, travel and plane spotting - not necessarily
+              in that order.
+            </Text>
+          </Box>
+          <Box>
+            <Box sx={imageContainer}>
+              <Image
+                alt='Louw Swart'
+                blurDataURL={blurDataURL(350, 350)}
+                height={350}
+                lazyBoundary='0px'
+                placeholder='blur'
+                src='/images/about/louw.swart.jpg'
+                width={350}
+              />
             </Box>
-          </Flex>{' '}
-        </Container>
+          </Box>
+        </Flex>
       </Content>
     </>
   );
