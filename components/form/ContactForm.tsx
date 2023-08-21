@@ -18,11 +18,13 @@ import type { MantineTheme } from '@mantine/core';
 import type { FC } from 'react';
 
 const useStyles = createStyles(
-  ({ colors: { white }, spacing: { xs } }: MantineTheme) => ({
+  ({ colors: { whisper, white }, spacing: { xs } }: MantineTheme) => ({
     input: {
       '&:focus-within': {
         borderColor: white,
       },
+      backgroundColor: 'transparent',
+      borderColor: whisper,
     },
     label: {
       marginBottom: xs,
@@ -81,7 +83,6 @@ export const ContactForm: FC = () => {
               placeholder={`Your ${field}`}
               radius='lg'
               size='md'
-              variant='filled'
               w='100% '
               withAsterisk
               {...getInputProps(field)}
