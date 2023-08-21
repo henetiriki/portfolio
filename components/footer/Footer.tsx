@@ -1,5 +1,4 @@
 import { Anchor, Box, Text } from '@mantine/core';
-import dynamic from 'next/dynamic';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { Copyright } from '@components/footer';
@@ -22,14 +21,6 @@ import {
 } from '@styles/footer';
 import type { SocialLink } from '@fixtures/types';
 import type { FC, JSX } from 'react';
-
-const DynamicFontAwesomeIcon = dynamic(
-  () =>
-    import('@fortawesome/react-fontawesome').then(mod => mod.FontAwesomeIcon),
-  {
-    ssr: false,
-  }
-);
 
 export const Footer: FC = (): JSX.Element => {
   const {
@@ -76,7 +67,7 @@ export const Footer: FC = (): JSX.Element => {
                 sx={footerSocialLinks}
                 target='_blank'
                 title={title}>
-                <DynamicFontAwesomeIcon height={20} icon={icon} width={20} />
+                {icon}
               </Anchor>
             ))}
           </Box>

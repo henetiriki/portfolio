@@ -1,5 +1,3 @@
-import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Anchor,
   Box,
@@ -12,6 +10,7 @@ import {
   rem,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { IconArrowMoveUp } from '@tabler/icons-react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -162,7 +161,7 @@ export const Navigation = () => {
             scrollToTop();
           }}
           sx={scrollToTopIndicator}>
-          <FontAwesomeIcon height={15} icon={faArrowUp} width={15} />
+          <IconArrowMoveUp width={rem(15)} />
         </Box>
       )}
     </>

@@ -1,4 +1,3 @@
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
 import { Flex, Space, Title, useMantineTheme } from '@mantine/core';
 import { MarkerLegend } from '@components/travel/MarkerLegend';
 import { PolylineLegend } from '@components/travel/PolylineLegend';
@@ -18,21 +17,11 @@ export const Legend: FC = () => {
         direction={{ base: 'column', md: 'row' }}
         justify='start'
         wrap='wrap'>
-        <MarkerLegend color={torchRed[4]} icon={faLocationDot}>
-          current location
-        </MarkerLegend>
-        <MarkerLegend color={pumpkin[4]} icon={faLocationDot}>
-          past locations
-        </MarkerLegend>
-        <MarkerLegend color={pineGreen[4]} icon={faLocationDot}>
-          airports
-        </MarkerLegend>
-        <MarkerLegend color={alizarin[4]} icon={faLocationDot}>
-          stations
-        </MarkerLegend>
-        <MarkerLegend color={allports[4]} icon={faLocationDot}>
-          ports
-        </MarkerLegend>
+        <MarkerLegend color={torchRed[4]}>current location</MarkerLegend>
+        <MarkerLegend color={pumpkin[4]}>past locations</MarkerLegend>
+        <MarkerLegend color={pineGreen[4]}>airports</MarkerLegend>
+        <MarkerLegend color={alizarin[4]}>stations</MarkerLegend>
+        <MarkerLegend color={allports[4]}>ports</MarkerLegend>
         <PolylineLegend color={corn[4]} style='solid'>
           flights
         </PolylineLegend>

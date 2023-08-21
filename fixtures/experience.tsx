@@ -1,19 +1,6 @@
-import {
-  faGlobeAfrica,
-  faPlaneDeparture,
-  faPlus,
-} from '@fortawesome/free-solid-svg-icons';
-import { Box, Space, Text } from '@mantine/core';
-import dynamic from 'next/dynamic';
+import { Box, Space, Text, rem } from '@mantine/core';
+import { IconGlobe, IconPlaneDeparture, IconPlus } from '@tabler/icons-react';
 import type { Job, School } from '@fixtures/types';
-
-const DynamicFontAwesomeIcon = dynamic(
-  () =>
-    import('@fortawesome/react-fontawesome').then(mod => mod.FontAwesomeIcon),
-  {
-    ssr: false,
-  }
-);
 
 export const description = 'Work and education history';
 
@@ -22,8 +9,8 @@ export const jobs: Job[] = [
     content: (
       <>
         <Text component='p'>
-          I work as part of a <b>distributed team</b> across multiple timezones
-          within the <b>Customer Tribe</b> at Pet Circle. Our main focus is the
+          as part of a <b>distributed team</b> across multiple timezones within
+          the <b>Customer Tribe</b> at Pet Circle. Our main focus is the
           conversion of occasional shoppers into returning customers via an{' '}
           <b>Auto Delivery</b> service.
         </Text>
@@ -434,39 +421,11 @@ export const jobs: Job[] = [
             justifyContent: 'flex-start',
             width: '100%',
           }}>
-          <Box
-            sx={{
-              '& svg': {
-                height: '25px',
-                width: '25px',
-              },
-            }}>
-            <DynamicFontAwesomeIcon icon={faPlaneDeparture} size='2xs' />
-          </Box>
+          <IconPlaneDeparture width={rem(25)} />
           <Space w='md' />
-          <Box
-            sx={{
-              '& svg': {
-                height: '15px',
-                width: '15px',
-              },
-            }}>
-            <DynamicFontAwesomeIcon
-              alignmentBaseline='middle'
-              icon={faPlus}
-              size='2xs'
-            />
-          </Box>
+          <IconPlus width={rem(15)} />
           <Space w='md' />
-          <Box
-            sx={{
-              '& svg': {
-                height: '25px',
-                width: '25px',
-              },
-            }}>
-            <DynamicFontAwesomeIcon icon={faGlobeAfrica} size='2xs' />
-          </Box>
+          <IconGlobe width={rem(25)} />
         </Box>
       </>
     ),

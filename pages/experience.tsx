@@ -1,10 +1,6 @@
-import {
-  faBriefcase,
-  faGraduationCap,
-} from '@fortawesome/free-solid-svg-icons';
-import { Anchor, Text, Title } from '@mantine/core';
+import { Anchor, Text, Title, rem } from '@mantine/core';
+import { IconBriefcase, IconSchool } from '@tabler/icons-react';
 import getConfig from 'next/config';
-import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
 import {
@@ -33,14 +29,6 @@ import type { Job, School } from '@fixtures/types';
 import type { getStaticProps } from '@utils/common';
 import type { InferGetStaticPropsType, NextPage } from 'next';
 import type { JSX } from 'react';
-
-const DynamicFontAwesomeIcon = dynamic(
-  () =>
-    import('@fortawesome/react-fontawesome').then(mod => mod.FontAwesomeIcon),
-  {
-    ssr: false,
-  }
-);
 
 const {
   publicRuntimeConfig: { siteUrl },
@@ -84,12 +72,8 @@ const Experience: NextPage = ({
         <Content>
           <TimelineHeading>
             <TimelineIndicator>
-              <DynamicFontAwesomeIcon
-                height={20}
-                icon={faBriefcase}
-                width={20}
-              />
-            </TimelineIndicator>{' '}
+              <IconBriefcase width={rem(20)} />
+            </TimelineIndicator>
             <Title order={2}>Work History</Title>
           </TimelineHeading>
           <Timeline>
@@ -154,11 +138,7 @@ const Experience: NextPage = ({
           </Timeline>
           <TimelineHeading>
             <TimelineIndicator>
-              <DynamicFontAwesomeIcon
-                height={20}
-                icon={faGraduationCap}
-                width={20}
-              />
+              <IconSchool width={rem(20)} />
             </TimelineIndicator>
             <Title order={2}>Education</Title>
           </TimelineHeading>
