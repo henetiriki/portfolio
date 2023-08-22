@@ -9,8 +9,8 @@ export const jobs: Job[] = [
     content: (
       <>
         <Text component='p'>
-          as part of a <b>distributed team</b> across multiple timezones within
-          the <b>Customer Tribe</b> at Pet Circle. Our main focus is the
+          I work as part of a <b>distributed team</b> across multiple timezones
+          within the <b>Customer Tribe</b> at Pet Circle. Our main focus is the
           conversion of occasional shoppers into returning customers via an{' '}
           <b>Auto Delivery</b> service.
         </Text>
