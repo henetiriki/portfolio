@@ -1,7 +1,9 @@
-import { Anchor, Box, Text } from '@mantine/core';
+import { Anchor, Box, Flex, Space, Text } from '@mantine/core';
+import { format } from 'date-fns';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { Copyright } from '@components/footer';
+import { useState } from 'react';
+import { FooterLinksContainer } from '@components/footer';
 import { Logo, WaveWrapper } from '@components/shared';
 import { socialLinks } from '@fixtures/footer';
 import buildTimeConfig from '@fixtures/generated/build-time-config.json';
@@ -12,10 +14,10 @@ import {
   footerBackground,
   footerContainer,
   footerContainerBottom,
+  footerCopyright,
   footerLastUpdated,
   footerLines,
   footerLinks,
-  footerLinksContainer,
   footerLowerBackground,
   footerSocialLinks,
 } from '@styles/footer';
@@ -23,6 +25,7 @@ import type { SocialLink } from '@fixtures/types';
 import type { FC, JSX } from 'react';
 
 export const Footer: FC = (): JSX.Element => {
+  const [date] = useState<Date>(new Date());
   const {
     state: {
       shared: { pageTopRef },
@@ -42,7 +45,7 @@ export const Footer: FC = (): JSX.Element => {
             <Logo />
           </Box>
           <Box mt='xl' sx={footerLines} />
-          <Box sx={footerLinksContainer}>
+          <FooterLinksContainer>
             {menuItems.map(({ href, text }) => (
               <Anchor
                 component={NextLink}
@@ -56,9 +59,9 @@ export const Footer: FC = (): JSX.Element => {
                 {text}
               </Anchor>
             ))}
-          </Box>
+          </FooterLinksContainer>
           <Box mb='xl' sx={footerLines} />
-          <Box pb='0' sx={footerLinksContainer}>
+          <FooterLinksContainer pb='0'>
             {socialLinks.map(({ icon, title, url }: SocialLink) => (
               <Anchor
                 href={url}
@@ -70,15 +73,27 @@ export const Footer: FC = (): JSX.Element => {
                 {icon}
               </Anchor>
             ))}
-          </Box>
+          </FooterLinksContainer>
         </Box>
       </Box>
       <Box sx={footerLowerBackground}>
         <Box sx={footerContainerBottom}>
-          <Box sx={{ paddingTop: '0.5rem' }}>
-            <Copyright />
-          </Box>
-          <Text sx={footerLastUpdated}>Updated: {lastModified}</Text>
+          <Flex direction='row' justify='center' pt='0.5rem'>
+            <Text>
+              © 2014 - {format(date, 'yyyy')}{' '}
+              <Anchor
+                href='https://github.com/henetiriki'
+                rel='noopener noreferrer'
+                sx={footerCopyright}
+                target='_blank'>
+                @henetiriki
+              </Anchor>
+            </Text>
+          </Flex>
+          <Space h='xs' />
+          <Flex align='center' justify='center'>
+            <Text sx={footerLastUpdated}>Updated: {lastModified}</Text>
+          </Flex>
         </Box>
       </Box>
     </footer>

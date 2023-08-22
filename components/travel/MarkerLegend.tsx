@@ -8,6 +8,6 @@ export const MarkerLegend: FC<PropsWithChildren & { color: string }> = ({
   color,
 }) => (
   <Text component='p' sx={markerText}>
-    <IconMapPin color={color} width={rem(18)} /> {children}
+    <IconMapPin color={color} size={rem(18)} /> {children}
   </Text>
 );

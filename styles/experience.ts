@@ -1,22 +1,9 @@
 import type { MantineTheme, Sx } from '@mantine/core';
 
-export const timelineHeading: Sx = {
-  alignItems: 'baseline',
-  display: 'flex',
-};
-
-export const timelineIndicator: Sx = ({
-  colors: { shamrock },
-}: MantineTheme) => ({
-  alignItems: 'center',
-  backgroundColor: shamrock[4],
+export const timelineIndicator: Sx = {
   borderRadius: '100%',
-  display: 'flex',
-  height: '2.5rem',
-  justifyContent: 'center',
   marginRight: '1.25rem',
-  width: '2.5rem',
-});
+};
 
 export const timeline: Sx = ({ colors: { silver } }: MantineTheme) => ({
   borderLeft: `1px solid ${silver[4]}`,

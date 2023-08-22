@@ -16,7 +16,7 @@ export const ErrorContent: FC<{ errorHeading: string; message: string }> = ({
         <Title order={2}>{errorHeading}</Title>
         <Text>{message}</Text>
         <Text>
-          <IconHandFinger style={{ rotate: '90deg' }} width={rem(30)} />
+          <IconHandFinger size={rem(30)} style={{ rotate: '90deg' }} />
           <Button onClick={() => router.push('/')}>Shamrock button</Button>
         </Text>
       </Container>

@@ -1,7 +1,6 @@
-import { Box } from '@mantine/core';
-import { timelineHeading } from '@styles/experience';
+import { Flex } from '@mantine/core';
 import type { FC, PropsWithChildren } from 'react';
 
 export const TimelineHeading: FC<PropsWithChildren> = ({ children }) => (
-  <Box sx={timelineHeading}>{children}</Box>
+  <Flex align='end'>{children}</Flex>
 );

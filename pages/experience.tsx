@@ -72,7 +72,7 @@ const Experience: NextPage = ({
         <Content>
           <TimelineHeading>
             <TimelineIndicator>
-              <IconBriefcase width={rem(20)} />
+              <IconBriefcase size={rem(20)} />
             </TimelineIndicator>
             <Title order={2}>Work History</Title>
           </TimelineHeading>
@@ -138,7 +138,7 @@ const Experience: NextPage = ({
           </Timeline>
           <TimelineHeading>
             <TimelineIndicator>
-              <IconSchool width={rem(20)} />
+              <IconSchool size={rem(20)} />
             </TimelineIndicator>
             <Title order={2}>Education</Title>
           </TimelineHeading>

@@ -421,11 +421,11 @@ export const jobs: Job[] = [
             justifyContent: 'flex-start',
             width: '100%',
           }}>
-          <IconPlaneDeparture width={rem(25)} />
+          <IconPlaneDeparture size={rem(25)} />
           <Space w='md' />
-          <IconPlus width={rem(15)} />
+          <IconPlus size={rem(15)} />
           <Space w='md' />
-          <IconGlobe width={rem(25)} />
+          <IconGlobe size={rem(25)} />
         </Box>
       </>
     ),

@@ -45,14 +45,8 @@ export const footerContainerBottom: Sx = (theme: MantineTheme) => ({
 export const footerLastUpdated: Sx = ({
   colors: { silver },
 }: MantineTheme) => ({
-  alignItems: 'center',
   color: silver[4],
-  display: 'flex',
-  fontSize: '0.5rem',
-  justifyContent: 'center',
-  marginBottom: 0,
-  marginLeft: 'auto',
-  marginRight: 'auto',
+  fontSize: '0.6rem',
   opacity: 0.6,
 });
 
@@ -69,17 +63,6 @@ export const footerLines: Sx = ({
   opacity: 0.5,
   width: '100%',
 });
-
-export const footerLinksContainer: Sx = {
-  alignItems: 'center',
-  columnGap: '1rem',
-  display: 'flex',
-  flexDirection: 'row',
-  flexFlow: 'wrap',
-  justifyContent: 'center',
-  padding: '1.25rem 0',
-  rowGap: '1rem',
-};
 
 export const footerLinks: Sx = {
   '&:hover': {
