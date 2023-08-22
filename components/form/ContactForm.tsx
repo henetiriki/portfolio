@@ -39,7 +39,6 @@ export const ContactForm: FC = () => {
   const {
     apiErrors,
     form: { getInputProps, onSubmit },
-    isSubmitted,
     isSubmitting,
     submitForm,
   } = useMantineForm();
@@ -47,6 +46,7 @@ export const ContactForm: FC = () => {
   useEffect(() => {
     apiErrors.map(apiError => {
       notifications.show({
+        autoClose: 6000,
         color: 'torchRed',
         message: apiError,
         title: 'Oops!',
@@ -57,6 +57,7 @@ export const ContactForm: FC = () => {
   useEffect(() => {
     if (isSubmitted) {
       notifications.show({
+        autoClose: 6000,
         color: 'shamrock',
         message: 'Your message has been sent',
         title: 'Thanks!',
@@ -104,7 +105,6 @@ export const ContactForm: FC = () => {
         <Space h='xl' />
         <Button
           color='shamrock'
-          disabled={isSubmitted}
           leftIcon={<IconSend size={rem(21)} />}
           loading={isSubmitting}
           radius='lg'
