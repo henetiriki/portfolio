@@ -39,6 +39,7 @@ export const ContactForm: FC = () => {
   const {
     apiErrors,
     form: { getInputProps, onSubmit },
+    isSubmitted,
     isSubmitting,
     submitForm,
   } = useMantineForm();
