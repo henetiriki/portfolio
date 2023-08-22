@@ -9,11 +9,9 @@ import {
   rem,
 } from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
-import { IconSend } from '@tabler/icons-react';
+import { IconAt, IconMessage, IconSend, IconTag } from '@tabler/icons-react';
 import { useEffect } from 'react';
 import { useMantineForm } from '@hooks';
-import { upperFirst } from '@utils/common';
-import type { FormValueKey } from '@hooks';
 import type { MantineTheme } from '@mantine/core';
 import type { FC } from 'react';
 
@@ -76,24 +74,36 @@ export const ContactForm: FC = () => {
           direction={{ base: 'column', sm: 'row' }}
           gap='xl'
           justify='space-evenly'>
-          {(['name', 'email'] as FormValueKey[]).map((field: FormValueKey) => (
-            <TextInput
-              classNames={{ input, label }}
-              key={field}
-              label={upperFirst(field)}
-              mih={rem(95)}
-              placeholder={`Your ${field}`}
-              radius='lg'
-              size='md'
-              w='100% '
-              withAsterisk
-              {...getInputProps(field)}
-            />
-          ))}
+          <TextInput
+            classNames={{ input, label }}
+            icon={<IconTag size='0.75rem' />}
+            label='Name'
+            mih={rem(95)}
+            placeholder='Your name'
+            radius='lg'
+            size='md'
+            w='100% '
+            withAsterisk
+            {...getInputProps('name')}
+          />
+          <TextInput
+            classNames={{ input, label }}
+            icon={<IconAt size='0.75rem' />}
+            label='Email'
+            mih={rem(95)}
+            placeholder='Your email'
+            radius='lg'
+            size='md'
+            type='email'
+            w='100% '
+            withAsterisk
+            {...getInputProps('email')}
+          />
         </Flex>
         <Space h='xl' />
         <Textarea
           classNames={{ input, label }}
+          icon={<IconMessage size='0.75rem' />}
           label='Message'
           mih={rem(118)}
           placeholder='Your message'
