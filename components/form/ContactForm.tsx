@@ -123,7 +123,7 @@ export const ContactForm: FC = () => {
           type='submit'
           variant='outline'
           w={{ base: '100%', sm: 'auto' }}>
-          Submit
+          {isSubmitting ? 'Sending' : 'Send'}
         </Button>
         <TextInput name='heuning' sx={{ display: 'none' }} />
       </form>
