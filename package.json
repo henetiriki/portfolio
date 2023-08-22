@@ -2,6 +2,11 @@
   "name": "portfolio",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "yarn@3.6.2",
+  "engines": {
+    "node": "^18",
+    "npm": "^9"
+  },
   "scripts": {
     "build": "yarn write:last-modified && next build",
     "clean": "rm -rf .next",
