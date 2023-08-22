@@ -60,6 +60,11 @@ export const useMantineForm = (): {
       setApiErrors([genericError]);
     } finally {
       setIsSubmitting(false);
+
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setApiErrors([]);
+      }, 250);
     }
   };
 

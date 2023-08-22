@@ -68,7 +68,7 @@ export const ContactForm: FC = () => {
 
   return (
     <>
-      <Notifications />
+      <Notifications position='bottom-center' />
       <Title order={2}>Send a message</Title>
       <Space h='md' />
       <form onSubmit={onSubmit(submitForm)}>
