@@ -33,8 +33,8 @@ const {
 } = getConfig();
 
 const Portfolio: NextPage<AppProps> = ({
-  Component,
-  pageProps,
+  Component, // eslint-disable-line react/prop-types
+  pageProps, // eslint-disable-line react/prop-types
 }): JSX.Element => {
   const isLoading = useLoading();
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment, react/prop-types */
 import { Title } from '@mantine/core';
 import { Component } from 'react';
 import type { ErrorInfo, PropsWithChildren } from 'react';
