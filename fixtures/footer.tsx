@@ -1,6 +1,6 @@
 import { rem } from '@mantine/core';
 import {
-  IconBrandGit,
+  IconBrandGithub,
   IconBrandInstagram,
   IconBrandLinkedin,
 } from '@tabler/icons-react';
@@ -8,7 +8,7 @@ import type { SocialLink } from '@fixtures/types';
 
 export const socialLinks: SocialLink[] = [
   {
-    icon: <IconBrandGit size={rem(20)} />,
+    icon: <IconBrandGithub size={rem(20)} />,
     title: 'See examples of my code here',
     url: 'https://github.com/henetiriki',
   },
