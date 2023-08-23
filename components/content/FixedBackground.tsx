@@ -1,4 +1,4 @@
-import { Container } from '@nextui-org/react';
+import { Box, Container } from '@mantine/core';
 import getConfig from 'next/config';
 import Image from 'next/legacy/image';
 import { useLayoutEffect, useRef } from 'react';
@@ -32,12 +32,12 @@ export const FixedBackground: FC = () => {
   }, [pageTopRef, ref, dispatch]);
 
   return (
-    <div ref={pageTopRef}>
+    <Box ref={pageTopRef}>
       <Container
-        css={{
+        sx={{
           minHeight: '100vh',
           minWidth: '100vw',
-          ov: 'hidden',
+          overflow: 'hidden',
           position: 'fixed',
           zIndex: -1,
         }}>
@@ -54,6 +54,6 @@ export const FixedBackground: FC = () => {
           />
         )}
       </Container>
-    </div>
+    </Box>
   );
 };

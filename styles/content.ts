@@ -1,14 +1,14 @@
-import type { CSS } from '@nextui-org/react';
+import type { MantineTheme, Sx } from '@mantine/core';
 
-export const contentWrapper: CSS = {
-  bgColor: '$valhalla',
-  d: 'flex',
-  fd: 'column',
+export const contentWrapper: Sx = ({
+  colors: { valhalla },
+  fn: { largerThan },
+}: MantineTheme) => ({
+  backgroundColor: valhalla[4],
   opacity: 0.9,
-  p: '4rem 0',
-  /* eslint-disable sort-keys/sort-keys-fix */
-  '@xs': {
-    p: '4rem',
+  padding: '2rem 1.5rem',
+  width: '100%',
+  [largerThan('xs')]: {
+    padding: '4rem',
   },
-  /* eslint-enable sort-keys/sort-keys-fix */
-};
+});

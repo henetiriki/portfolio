@@ -1,61 +1,100 @@
-import type { CSS } from '@nextui-org/react';
+import type { MantineTheme, Sx } from '@mantine/core';
 
-export const footerBackground: CSS = {
-  bgColor: '$blackRussian',
-};
+export const footerBackground: Sx = ({
+  colors: { blackRussian },
+}: MantineTheme) => ({
+  backgroundColor: blackRussian[4],
+});
 
-export const footerLowerBackground: CSS = {
-  bgColor: '$blackRussianDarker',
-};
+export const footerLowerBackground: Sx = ({
+  colors: { blackRussian },
+}: MantineTheme) => ({
+  backgroundColor: blackRussian[6],
+});
 
-export const footerContainer: CSS = {
-  fontFamily: '$sansHeading',
-  pb: 'calc(3 * $md)',
-  ta: 'center',
-};
-
-export const footerLastUpdated: CSS = {
-  color: '$silver',
-  fs: '$xs',
-  mb: 0,
-  ml: 'auto',
-  mr: 'auto',
-  opacity: 0.6,
-};
-
-export const footerLines: CSS = {
-  '@xs': {
-    ml: 'auto',
-    mr: 'auto',
-    w: '50%',
+export const footerContainer: Sx = ({
+  breakpoints,
+  fn: { largerThan },
+  headings: { fontFamily },
+}: MantineTheme) => ({
+  fontFamily,
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  [largerThan('xs')]: {
+    maxWidth: breakpoints.xs,
   },
-  borderTop: '1px solid $silver',
+  [largerThan('sm')]: {
+    maxWidth: breakpoints.sm,
+  },
+  [largerThan('md')]: {
+    maxWidth: breakpoints.md,
+  },
+  [largerThan('lg')]: {
+    maxWidth: breakpoints.lg,
+  },
+  paddingBottom: 'calc(3 * 1rem)',
+  textAlign: 'center',
+  width: '100%',
+});
+
+export const footerContainerBottom: Sx = (theme: MantineTheme) => ({
+  ...footerContainer(theme),
+  padding: '1rem',
+});
+
+export const footerLastUpdated: Sx = ({
+  colors: { silver },
+}: MantineTheme) => ({
+  color: silver[4],
+  fontSize: '0.6rem',
+  opacity: 0.6,
+});
+
+export const footerLines: Sx = ({
+  colors: { silver },
+  fn: { largerThan },
+}: MantineTheme) => ({
+  borderTop: `1px solid ${silver[4]}`,
+  [largerThan('md')]: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: '50%',
+  },
   opacity: 0.5,
+  width: '100%',
+});
+
+export const footerLinks: Sx = {
+  '&:hover': {
+    color: 'silver',
+    textDecoration: 'none',
+    transition: 'all 0.2s',
+  },
+  color: 'white',
+  fontSize: '1rem',
+  textDecoration: 'none',
 };
 
-export const footerLinksContainer: CSS = {
-  columnGap: '$md',
-  dflex: 'center',
-  fd: 'row',
-  p: '$lg 0',
-  rowGap: '$md',
-};
-
-export const footerLinks: CSS = {
-  '& a': {
-    color: '$white',
+export const footerSocialLinks: Sx = ({
+  colors: { shamrock, white },
+}: MantineTheme) => ({
+  '& svg': {
+    height: '20px',
+    width: '20px',
   },
   '&:hover': {
-    color: '$shamrock',
+    color: shamrock[4],
   },
-  color: '$white',
-};
+  color: white[4],
+});
 
-export const footerCopyright: CSS = {
-  color: '$shamrock',
-  d: 'inline-block',
-  pl: '$sm',
+export const footerCopyright: Sx = ({
+  colors: { shamrock },
+}: MantineTheme) => ({
+  color: shamrock[4],
+  display: 'inline-block',
+  paddingLeft: '0.75rm',
   svg: {
-    d: 'inline-block',
+    display: 'inline-block',
   },
-};
+});

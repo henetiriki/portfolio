@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { sharedPolylineOpts } from '@fixtures/travel';
 import { usePortfolioState } from '@state/context';
-import { colors } from '@styles/shared';
+import { colorOverrides } from '@styles/shared';
 import { fetcher } from '@utils/common';
 import type {
   RailTripItem,
@@ -9,7 +9,7 @@ import type {
   TripPaths,
 } from '@fixtures/travel/types';
 
-const { torchRed } = colors;
+const { torchRed } = colorOverrides;
 
 export const useRailTrips = (): TripPaths[] => {
   const {
@@ -39,7 +39,7 @@ export const useRailTrips = (): TripPaths[] => {
       {
         polylineOpts: {
           ...sharedPolylineOpts,
-          strokeColor: torchRed,
+          strokeColor: torchRed[4],
         },
         tripPaths: railTrips,
       },
@@ -50,7 +50,7 @@ export const useRailTrips = (): TripPaths[] => {
             {
               icon: {
                 path: 'M 0, -1 0,1',
-                strokeColor: torchRed,
+                strokeColor: torchRed[4],
                 strokeOpacity: 0.9,
                 strokeWeight: 1.5,
               },

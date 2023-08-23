@@ -1,4 +1,3 @@
-import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import type { JSX } from 'react';
 
 export type ErrorMessage = {
@@ -31,7 +30,7 @@ export type LinkItem = {
 };
 
 export type School = {
-  content: React.JSX.Element;
+  content: JSX.Element;
   institution: {
     location: string;
     name: string;
@@ -45,7 +44,7 @@ export type School = {
 };
 
 export type SocialLink = {
-  icon: IconDefinition;
+  icon: JSX.Element;
   title: string;
   url: string;
 };

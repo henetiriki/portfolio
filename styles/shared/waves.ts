@@ -1,8 +1,11 @@
-import type { CSS } from '@nextui-org/react';
+import type { Sx } from '@mantine/core';
 
-export const waveWrapper: CSS = {
-  h: '10rem',
-  lh: 0,
-  ov: 'hidden',
-  w: '100%',
+export const waveWrapper: Sx = {
+  display: 'flex',
+  height: '10rem',
+  justifyContent: 'flex-start',
+  lineHeight: 0,
+  overflow: 'hidden',
+  position: 'relative',
+  width: '100%',
 };

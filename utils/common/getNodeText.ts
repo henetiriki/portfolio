@@ -1,3 +1,5 @@
+import type { JSX } from 'react';
+
 export const getNodeText = (
   node: JSX.Element | JSX.Element[] | string
 ): string => {

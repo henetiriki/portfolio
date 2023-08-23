@@ -1,18 +1,18 @@
-import { NextUIProvider } from '@nextui-org/react';
+import { Box, MantineProvider } from '@mantine/core';
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { ThemeProvider } from 'next-themes';
 import { Navigation } from '@components/nav';
 import { ErrorBoundary } from '@components/shared';
 import { Layout } from '@containers/layout';
 import { useLoading } from '@hooks';
 import { PortfolioStateProvider } from '@state/context';
-import { globalStyles, theme } from '@styles/shared';
+import { theme } from '@styles/shared';
 import { fullTitle } from '@utils/head';
+import type { MantineTheme } from '@mantine/core';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
-import '@styles/shared/Toastify.css';
+import type { JSX } from 'react';
 
 const DynamicFixedBackground = dynamic(
   () => import('@components/content').then(mod => mod.FixedBackground),
@@ -33,12 +33,10 @@ const {
 } = getConfig();
 
 const Portfolio: NextPage<AppProps> = ({
-  Component,
-  pageProps,
+  Component, // eslint-disable-line react/prop-types
+  pageProps, // eslint-disable-line react/prop-types
 }): JSX.Element => {
   const isLoading = useLoading();
-
-  globalStyles();
 
   return (
     <>
@@ -84,13 +82,13 @@ const Portfolio: NextPage<AppProps> = ({
         />
       </Head>
       <ErrorBoundary>
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='dark'
-          value={{
-            dark: theme.className,
-          }}>
-          <NextUIProvider theme={theme}>
+        <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
+          <Box
+            sx={({ fn: { rgba } }: MantineTheme) => ({
+              backgroundColor: rgba('#0C0E27', 0.8),
+              border: 0,
+              height: '100%',
+            })}>
             <PortfolioStateProvider>
               {isLoading && <DynamicTransition />}
               <DynamicFixedBackground />
@@ -99,8 +97,8 @@ const Portfolio: NextPage<AppProps> = ({
                 <Component {...pageProps} />
               </Layout>
             </PortfolioStateProvider>
-          </NextUIProvider>
-        </ThemeProvider>
+          </Box>
+        </MantineProvider>
       </ErrorBoundary>
     </>
   );

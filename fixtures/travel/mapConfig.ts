@@ -1,6 +1,6 @@
-import { colors } from '@styles/shared';
+import { colorOverrides } from '@styles/shared';
 
-const { gunmetal, mediumSeaGreen, paynesGrey, white } = colors;
+const { gunmetal, mediumSeaGreen, paynesGrey, white } = colorOverrides;
 
 export const MAP_MAX_MOBILE = 768;
 export const STROKE_WEIGHT_DEFAULT = 1.25;
@@ -25,7 +25,7 @@ export const mapOptions = (): google.maps.MapOptions => ({
       featureType: 'water',
       stylers: [
         {
-          color: paynesGrey,
+          color: paynesGrey[4],
         },
       ],
     },
@@ -34,7 +34,7 @@ export const mapOptions = (): google.maps.MapOptions => ({
       featureType: 'landscape',
       stylers: [
         {
-          color: mediumSeaGreen,
+          color: mediumSeaGreen[4],
         },
       ],
     },
@@ -42,7 +42,7 @@ export const mapOptions = (): google.maps.MapOptions => ({
       featureType: 'poi',
       stylers: [
         {
-          color: mediumSeaGreen,
+          color: mediumSeaGreen[4],
         },
         {
           lightness: -7,
@@ -54,7 +54,7 @@ export const mapOptions = (): google.maps.MapOptions => ({
       featureType: 'road.highway',
       stylers: [
         {
-          color: mediumSeaGreen,
+          color: mediumSeaGreen[4],
         },
         {
           lightness: -28,
@@ -66,7 +66,7 @@ export const mapOptions = (): google.maps.MapOptions => ({
       featureType: 'road.arterial',
       stylers: [
         {
-          color: mediumSeaGreen,
+          color: mediumSeaGreen[4],
         },
         {
           visibility: 'on',
@@ -81,7 +81,7 @@ export const mapOptions = (): google.maps.MapOptions => ({
       featureType: 'road.local',
       stylers: [
         {
-          color: mediumSeaGreen,
+          color: mediumSeaGreen[4],
         },
         {
           lightness: -18,
@@ -92,7 +92,7 @@ export const mapOptions = (): google.maps.MapOptions => ({
       elementType: 'labels.text.fill',
       stylers: [
         {
-          color: white,
+          color: white[4],
         },
       ],
     },
@@ -109,7 +109,7 @@ export const mapOptions = (): google.maps.MapOptions => ({
       featureType: 'transit',
       stylers: [
         {
-          color: mediumSeaGreen,
+          color: mediumSeaGreen[4],
         },
         {
           lightness: -34,
@@ -124,7 +124,7 @@ export const mapOptions = (): google.maps.MapOptions => ({
           visibility: 'on',
         },
         {
-          color: gunmetal,
+          color: gunmetal[4],
         },
         {
           weight: 0.8,
@@ -135,7 +135,7 @@ export const mapOptions = (): google.maps.MapOptions => ({
       featureType: 'poi.park',
       stylers: [
         {
-          color: mediumSeaGreen,
+          color: mediumSeaGreen[4],
         },
       ],
     },
@@ -144,7 +144,7 @@ export const mapOptions = (): google.maps.MapOptions => ({
       featureType: 'road',
       stylers: [
         {
-          color: gunmetal,
+          color: gunmetal[4],
         },
         {
           weight: 0.3,

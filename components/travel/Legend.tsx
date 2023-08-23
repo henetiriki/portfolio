@@ -1,53 +1,46 @@
-import { faLocationDot } from '@fortawesome/free-solid-svg-icons';
-import { Text, styled } from '@nextui-org/react';
+import { Flex, Space, Title, useMantineTheme } from '@mantine/core';
 import { MarkerLegend } from '@components/travel/MarkerLegend';
 import { PolylineLegend } from '@components/travel/PolylineLegend';
-import { colors } from '@styles/shared';
-import { legendContainer } from '@styles/travel';
 import type { FC } from 'react';
 
-const { alizarin, allPorts, pineGreen, pumpkin, torchRed } = colors;
-const LegendContainer = styled('div', legendContainer);
+export const Legend: FC = () => {
+  const {
+    colors: { alizarin, allports, corn, pineGreen, pumpkin, torchRed, viking },
+  } = useMantineTheme();
 
-export const Legend: FC = () => (
-  <>
-    <Text css={{ pb: '$lg' }} h3>
-      Legend
-    </Text>
-    <LegendContainer>
-      <MarkerLegend color={torchRed} icon={faLocationDot}>
-        current location
-      </MarkerLegend>
-      <MarkerLegend color={pumpkin} icon={faLocationDot}>
-        past locations
-      </MarkerLegend>
-      <MarkerLegend color={pineGreen} icon={faLocationDot}>
-        airports
-      </MarkerLegend>
-      <MarkerLegend color={alizarin} icon={faLocationDot}>
-        stations
-      </MarkerLegend>
-      <MarkerLegend color={allPorts} icon={faLocationDot}>
-        ports
-      </MarkerLegend>
-      <PolylineLegend color='$corn' style='solid'>
-        flights
-      </PolylineLegend>
-      <PolylineLegend color='$torchRed' style='solid'>
-        train rides
-      </PolylineLegend>
-      <PolylineLegend color='$viking' style='solid'>
-        sailings
-      </PolylineLegend>
-      <PolylineLegend color='$corn' style='dotted'>
-        upcoming flights
-      </PolylineLegend>
-      <PolylineLegend color='$torchRed' style='dotted'>
-        upcoming train rides
-      </PolylineLegend>
-      <PolylineLegend color='$viking' style='dotted'>
-        upcoming sailings
-      </PolylineLegend>
-    </LegendContainer>
-  </>
-);
+  return (
+    <>
+      <Title order={3}>Legend</Title>
+      <Space h='md' />
+      <Flex
+        align={{ base: 'flex-start', md: 'center' }}
+        direction={{ base: 'column', md: 'row' }}
+        justify='start'
+        wrap='wrap'>
+        <MarkerLegend color={torchRed[4]}>current location</MarkerLegend>
+        <MarkerLegend color={pumpkin[4]}>past locations</MarkerLegend>
+        <MarkerLegend color={pineGreen[4]}>airports</MarkerLegend>
+        <MarkerLegend color={alizarin[4]}>stations</MarkerLegend>
+        <MarkerLegend color={allports[4]}>ports</MarkerLegend>
+        <PolylineLegend color={corn[4]} style='solid'>
+          flights
+        </PolylineLegend>
+        <PolylineLegend color={torchRed[4]} style='solid'>
+          train rides
+        </PolylineLegend>
+        <PolylineLegend color={viking[4]} style='solid'>
+          sailings
+        </PolylineLegend>
+        <PolylineLegend color={corn[4]} style='dotted'>
+          upcoming flights
+        </PolylineLegend>
+        <PolylineLegend color={torchRed[4]} style='dotted'>
+          upcoming train rides
+        </PolylineLegend>
+        <PolylineLegend color={viking[4]} style='dotted'>
+          upcoming sailings
+        </PolylineLegend>
+      </Flex>
+    </>
+  );
+};

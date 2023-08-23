@@ -1,91 +1,143 @@
-import type { CSS } from '@nextui-org/react';
+import { rem } from '@mantine/core';
+import type { MantineTheme, Sx } from '@mantine/core';
 
-const navActive: CSS = {
+const navActive: Sx = {
   '&.active': {
     '&:before': {
-      w: '30px',
+      width: '30px',
     },
   },
 };
 
-const navUnderlineBefore = {
-  bgColor: '$white',
-  bottom: '-10px',
-  content: '',
-  h: '2px',
-  left: 0,
+const navUnderlineBefore: Sx = ({ colors: { white } }: MantineTheme) => ({
+  backgroundColor: white[4],
+  bottom: rem(-10),
+  content: "''",
+  height: '2px',
   position: 'absolute',
   transition: 'all 0.2s',
-  w: 0,
-};
+  width: 0,
+});
 
-const navUnderline: CSS = {
-  '&:before': navUnderlineBefore,
-  '&:hover': {
-    '&:before': {
-      w: '30px',
+const navUnderline: Sx = (theme: MantineTheme) => {
+  const {
+    colors: { silver, white },
+  } = theme;
+
+  return {
+    '&:before': { ...navUnderlineBefore(theme) },
+    '&:hover': {
+      '&:before': {
+        width: '30px',
+      },
+      color: silver[4],
+      textDecoration: 'none',
+      transition: 'all 0.2s',
     },
-    color: '$white',
-  },
-  color: '$white',
+    color: white[4],
+  };
 };
 
-export const navLinkSm: CSS = {
-  '& a': {
-    color: '$white',
+const navLink: Sx = ({
+  colors: { white },
+  fn: { smallerThan },
+  spacing: { md },
+}: MantineTheme) => ({
+  alignItems: 'center',
+  color: white[4],
+  display: 'flex',
+  fontWeight: 600,
+  height: '100%',
+  [smallerThan('sm')]: {
+    alignItems: 'center',
+    display: 'flex',
+    height: rem(42),
+    width: '100%',
   },
+  paddingLeft: md,
+  paddingRight: md,
+  textDecoration: 'none',
+  textTransform: 'uppercase',
+});
+
+export const navLinkWrapper: Sx = {
+  position: 'relative',
+};
+
+export const navLinkSm: Sx = (theme: MantineTheme) => ({
   ...navActive,
-  ...navUnderline,
+  ...navLink(theme),
+  ...navUnderline(theme),
   '&:before': {
-    ...navUnderlineBefore,
+    ...navUnderlineBefore(theme),
     bottom: '8px',
   },
-  my: '$md',
-};
+  marginBottom: '1rem',
+  marginTop: '1rem',
+});
 
-export const navLinkMd: CSS = {
-  '& a': {
-    color: '$white',
-  },
+export const navLinkMd: Sx = (theme: MantineTheme) => ({
   ...navActive,
-  ...navUnderline,
+  ...navLink(theme),
+  ...navUnderline(theme),
+  fontSize: rem(14),
+});
+
+export const navStickyContainer: Sx = {
+  left: 0,
+  position: 'sticky',
+  right: 0,
+  top: 0,
+  zIndex: 200,
 };
 
-export const navTypography: CSS = {
-  fs: '$sm',
-  tt: 'uppercase',
+export const navHeader: Sx = {
+  alignItems: 'center',
+  borderBottom: 'none',
 };
 
-export const navTopContainer: CSS = {
-  ai: 'center',
-  d: 'flex',
-  jc: 'flex-end',
-  /* eslint-disable sort-keys/sort-keys-fix */
-  '@xs': {
-    jc: 'space-between',
+export const navHiddenMobile: Sx = ({ fn: { smallerThan } }: MantineTheme) => ({
+  [smallerThan('sm')]: {
+    display: 'none',
   },
-  /* eslint-enable sort-keys/sort-keys-fix */
-};
+  height: '100%',
+});
 
-export const navBrand: CSS = {
-  '@xs': {
-    w: '12%',
+export const navHiddenDesktop: Sx = ({ fn: { largerThan } }: MantineTheme) => ({
+  [largerThan('sm')]: {
+    display: 'none',
   },
+});
+
+export const navDrawer: Sx = (theme: MantineTheme) => {
+  const {
+    colors: { blackRussian },
+  } = theme;
+
+  return {
+    ...navHiddenDesktop(theme),
+    '& section': {
+      '& div': { backgroundColor: blackRussian[6] },
+      overflow: 'hidden',
+    },
+  };
 };
 
-export const scrollToTop: CSS = {
+export const scrollToTopIndicator: Sx = ({
+  colors: { matterhorn, shamrock, white },
+}: MantineTheme) => ({
   '&:hover': {
-    bc: '$shamrock',
+    backgroundColor: shamrock[4],
   },
-  bc: '$matterhorn',
+  backgroundColor: matterhorn[4],
+  borderRadius: '40px',
   bottom: '20px',
-  br: '40px',
-  color: '$white',
+  color: white[4],
   cursor: 'pointer',
   outline: 'none',
-  p: '10px 8px 5px',
+  padding: '10px 8px 5px',
   position: 'fixed',
   right: '30px',
-  ta: 'center',
+  textAlign: 'center',
   zIndex: 2,
-};
+});

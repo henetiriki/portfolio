@@ -1,26 +1,38 @@
-import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Container, Link, Navbar, styled } from '@nextui-org/react';
+import {
+  Anchor,
+  Box,
+  Burger,
+  Container,
+  Drawer,
+  Group,
+  Header,
+  ScrollArea,
+  rem,
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { IconArrowMoveUp } from '@tabler/icons-react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Logo } from '@components/shared';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import {
-  navBrand,
+  navDrawer,
+  navHeader,
+  navHiddenDesktop,
+  navHiddenMobile,
   navLinkMd,
   navLinkSm,
-  navTopContainer,
-  navTypography,
-  scrollToTop,
+  navLinkWrapper,
+  navStickyContainer,
+  scrollToTopIndicator,
 } from '@styles/nav';
-import type { FC, JSX, MouseEvent, MutableRefObject } from 'react';
+import type { MantineTheme } from '@mantine/core';
+import type { MouseEvent } from 'react';
 
-const ScrollToTop = styled('a', scrollToTop);
-
-export const Navigation: FC = (): JSX.Element => {
+export const Navigation = () => {
   const {
     state: {
       shared: { pageTopRef },
@@ -28,107 +40,129 @@ export const Navigation: FC = (): JSX.Element => {
   } = usePortfolioState();
   const { pathname } = useRouter();
   const { scrollToTop } = useScrollTo(pageTopRef);
-  const navToggleRef = useRef() as MutableRefObject<any>;
   const [scrollPosition, setScrollPosition] = useState(0);
   const [scrollToTopVisible, setScrollToTopVisible] = useState(false);
-  const [navExpanded, setNavExpanded] = useState(false);
-  const [navContainerBgColor, setNavContainerBgColor] = useState('transparent');
+  const [navBgTransparent, setNavBgTransparent] = useState(true);
+  const [drawerOpened, { close: closeDrawer, toggle: toggleDrawer }] =
+    useDisclosure(false);
 
   useEffect(() => {
-    if (navExpanded) {
-      if (navContainerBgColor !== '$blackRussian') {
-        setNavContainerBgColor('$blackRussian');
+    const onScrollPositionChange: EventListener = () => {
+      setScrollPosition(window.scrollY);
+    };
+
+    window.addEventListener('scroll', onScrollPositionChange);
+
+    return () => {
+      window.removeEventListener('scroll', onScrollPositionChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (drawerOpened) {
+      if (navBgTransparent) {
+        setNavBgTransparent(false);
       }
 
       return;
     }
 
     if (scrollPosition > 10) {
-      if (navContainerBgColor !== '$blackRussian') {
-        setNavContainerBgColor('$blackRussian');
+      if (navBgTransparent) {
+        setNavBgTransparent(false);
         setScrollToTopVisible(true);
       }
 
       return;
     }
 
-    if (navContainerBgColor !== 'transparent') {
-      setNavContainerBgColor('transparent');
+    if (!navBgTransparent) {
+      setNavBgTransparent(true);
       setScrollToTopVisible(false);
     }
-  }, [
-    navContainerBgColor,
-    scrollPosition,
-    navExpanded,
-    setNavContainerBgColor,
-  ]);
+  }, [drawerOpened, navBgTransparent, scrollPosition]);
 
   return (
     <>
-      <Navbar
-        containerCss={{ bgColor: navContainerBgColor, minWidth: '100vw' }}
-        disableBlur
-        disableShadow
-        onScrollPositionChange={setScrollPosition}
-        variant='sticky'>
-        <Navbar.Toggle
-          // @ts-ignore
-          onChange={setNavExpanded}
-          ref={navToggleRef}
-          showIn='xs'
-        />
-        <Container css={navTopContainer}>
-          <Navbar.Brand css={navBrand}>
-            <Logo />
-          </Navbar.Brand>
-          <Navbar.Content css={navTypography} hideIn='xs'>
-            {menuItems.map(({ href, text }, idx) => {
+      <Box sx={navStickyContainer}>
+        <Header
+          height={76}
+          px='xl'
+          sx={({ colors: { blackRussian } }: MantineTheme) => ({
+            ...navHeader,
+            backgroundColor: navBgTransparent ? 'transparent' : blackRussian[4],
+          })}>
+          <Container h={'100%'}>
+            <Group position='apart' sx={{ height: '100%' }}>
+              <Logo />
+              <Group spacing={0} sx={navHiddenMobile}>
+                {menuItems.map(({ href, text }) => {
+                  const isActive = href === pathname;
+
+                  return (
+                    <Box key={href} sx={navLinkWrapper}>
+                      <Anchor
+                        className={isActive ? 'active' : ''}
+                        component={NextLink}
+                        href={href}
+                        onClick={scrollToTop}
+                        sx={navLinkMd}>
+                        {text}
+                      </Anchor>
+                    </Box>
+                  );
+                })}
+              </Group>
+
+              <Burger
+                onClick={toggleDrawer}
+                opened={drawerOpened}
+                sx={navHiddenDesktop}
+              />
+            </Group>
+          </Container>
+        </Header>
+
+        <Drawer
+          onClose={closeDrawer}
+          opened={drawerOpened}
+          padding='md'
+          size='100%'
+          sx={navDrawer}
+          zIndex={1000000}>
+          <ScrollArea h={`calc(100vh - ${rem(60)})`} mx='-md'>
+            {menuItems.map(({ href, text }) => {
               const isActive = href === pathname;
 
               return (
-                <Navbar.Link
-                  as='span'
-                  className={isActive ? 'active' : ''}
-                  css={navLinkMd}
-                  isActive
-                  key={idx}
-                  onClick={scrollToTop}>
-                  <NextLink href={href}>{text}</NextLink>
-                </Navbar.Link>
+                <Box key={href} sx={navLinkWrapper}>
+                  <Anchor
+                    className={isActive ? 'active' : ''}
+                    component={NextLink}
+                    href={href}
+                    onClick={() => {
+                      toggleDrawer();
+                      scrollToTop();
+                    }}
+                    sx={navLinkSm}>
+                    {text}
+                  </Anchor>
+                </Box>
               );
             })}
-          </Navbar.Content>
-        </Container>
-        <Navbar.Collapse isOpen={navExpanded}>
-          {menuItems.map(({ href, text }, idx) => {
-            const isActive = href === pathname;
-
-            return (
-              <Navbar.CollapseItem css={navTypography} isActive key={idx}>
-                <Link
-                  as='span'
-                  className={isActive ? 'active' : ''}
-                  css={navLinkSm}
-                  // work-around for mobile nav not closing on click
-                  onClick={() => {
-                    navToggleRef.current?.click();
-                    scrollToTop();
-                  }}>
-                  <NextLink href={href}>{text}</NextLink>
-                </Link>
-              </Navbar.CollapseItem>
-            );
-          })}
-        </Navbar.Collapse>
-      </Navbar>
+          </ScrollArea>
+        </Drawer>
+      </Box>
       {scrollToTopVisible && (
-        <ScrollToTop
+        <Box
+          component='a'
           onClick={(event: MouseEvent<HTMLAnchorElement>) => {
             event.preventDefault();
             scrollToTop();
-          }}>
-          <FontAwesomeIcon height={15} icon={faArrowUp} width={15} />
-        </ScrollToTop>
+          }}
+          sx={scrollToTopIndicator}>
+          <IconArrowMoveUp size={rem(15)} />
+        </Box>
       )}
     </>
   );

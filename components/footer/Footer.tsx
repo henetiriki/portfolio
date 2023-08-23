@@ -1,10 +1,10 @@
-import { Container, Link, Row, Text, styled } from '@nextui-org/react';
-import dynamic from 'next/dynamic';
-import Image from 'next/legacy/image';
+import { Anchor, Box, Flex, Space, Text } from '@mantine/core';
+import { format } from 'date-fns';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { Copyright } from '@components/footer';
-import { Logo } from '@components/shared';
+import { useState } from 'react';
+import { FooterLinksContainer } from '@components/footer';
+import { Logo, WaveWrapper } from '@components/shared';
 import { socialLinks } from '@fixtures/footer';
 import buildTimeConfig from '@fixtures/generated/build-time-config.json';
 import { menuItems } from '@fixtures/nav';
@@ -13,27 +13,19 @@ import { usePortfolioState } from '@state/context';
 import {
   footerBackground,
   footerContainer,
+  footerContainerBottom,
+  footerCopyright,
   footerLastUpdated,
   footerLines,
   footerLinks,
-  footerLinksContainer,
   footerLowerBackground,
+  footerSocialLinks,
 } from '@styles/footer';
-import { waveWrapper } from '@styles/shared';
 import type { SocialLink } from '@fixtures/types';
 import type { FC, JSX } from 'react';
 
-const DynamicFontAwesomeIcon = dynamic(
-  () =>
-    import('@fortawesome/react-fontawesome').then(mod => mod.FontAwesomeIcon),
-  {
-    ssr: false,
-  }
-);
-
-const FooterLines = styled('div', footerLines);
-
 export const Footer: FC = (): JSX.Element => {
+  const [date] = useState<Date>(new Date());
   const {
     state: {
       shared: { pageTopRef },
@@ -45,73 +37,65 @@ export const Footer: FC = (): JSX.Element => {
 
   return (
     <footer>
-      <Row css={{ ...waveWrapper, h: '5rem' }}>
-        <Image
-          alt=''
-          layout='fill'
-          objectFit='cover'
-          priority
-          src='/images/waves/footer-top-haikei.svg'
-        />
-      </Row>
-      <Row css={waveWrapper}>
-        <Image
-          alt=''
-          layout='fill'
-          objectFit='cover'
-          priority
-          src='/images/waves/footer-bottom-haikei.svg'
-        />
-      </Row>
-      <Row css={footerBackground}>
-        <Container as='div' css={footerContainer}>
-          <Container>
+      <WaveWrapper sx={{ height: '5rem' }} wave='footer-top' />
+      <WaveWrapper wave='footer-bottom' />
+      <Box sx={footerBackground}>
+        <Box sx={footerContainer}>
+          <Box>
             <Logo />
-          </Container>
-          <FooterLines css={{ mt: '$xl' }} />
-          <Container css={footerLinksContainer}>
-            {menuItems.map(({ href, text }, idx) => (
-              <Link
-                as='span'
-                css={{
+          </Box>
+          <Box mt='xl' sx={footerLines} />
+          <FooterLinksContainer>
+            {menuItems.map(({ href, text }) => (
+              <Anchor
+                component={NextLink}
+                href={href}
+                key={href}
+                onClick={scrollToTop}
+                sx={{
                   ...footerLinks,
                   fontWeight: pathname === href ? 'bold' : 'normal',
-                }}
-                key={idx}
-                onClick={scrollToTop}>
-                <NextLink href={href}>{text}</NextLink>
-              </Link>
+                }}>
+                {text}
+              </Anchor>
             ))}
-          </Container>
-          <FooterLines css={{ mb: '$lg' }} />
-          <Container css={{ ...footerLinksContainer, pb: 0 }}>
+          </FooterLinksContainer>
+          <Box mb='xl' sx={footerLines} />
+          <FooterLinksContainer pb='0'>
             {socialLinks.map(({ icon, title, url }: SocialLink) => (
-              <Link
-                css={footerLinks}
+              <Anchor
                 href={url}
                 key={url}
                 rel='noopener noreferrer'
+                sx={footerSocialLinks}
                 target='_blank'
                 title={title}>
-                <DynamicFontAwesomeIcon height={20} icon={icon} width={20} />
-              </Link>
+                {icon}
+              </Anchor>
             ))}
-          </Container>
-        </Container>
-      </Row>
-      <Row css={footerLowerBackground}>
-        <Container
-          as='div'
-          css={{
-            ...footerContainer,
-            p: '$md',
-          }}>
-          <Container css={{ pt: '$xs' }}>
-            <Copyright />
-          </Container>
-          <Text css={footerLastUpdated}>Updated: {lastModified}</Text>
-        </Container>
-      </Row>
+          </FooterLinksContainer>
+        </Box>
+      </Box>
+      <Box sx={footerLowerBackground}>
+        <Box sx={footerContainerBottom}>
+          <Flex direction='row' justify='center' pt='0.5rem'>
+            <Text>
+              © 2014 - {format(date, 'yyyy')}{' '}
+              <Anchor
+                href='https://github.com/henetiriki'
+                rel='noopener noreferrer'
+                sx={footerCopyright}
+                target='_blank'>
+                @henetiriki
+              </Anchor>
+            </Text>
+          </Flex>
+          <Space h='xs' />
+          <Flex align='center' justify='center'>
+            <Text sx={footerLastUpdated}>Updated: {lastModified}</Text>
+          </Flex>
+        </Box>
+      </Box>
     </footer>
   );
 };

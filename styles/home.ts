@@ -1,28 +1,24 @@
-import type { CSS } from '@nextui-org/react';
+import type { MantineTheme, Sx } from '@mantine/core';
 
-export const aboutContainer: CSS = {
-  d: 'flex',
-  fd: 'column',
-  fw: 'nowrap',
-  /* eslint-disable sort-keys/sort-keys-fix */
-  '@xs': {
-    fd: 'row',
+export const openSourceLinks: Sx = {
+  '&:hover': {
+    textDecoration: 'none',
   },
-  /* eslint-enable sort-keys/sort-keys-fix */
 };
 
-export const imageContainer: CSS = {
+export const imageContainer: Sx = ({
+  colors: { whisper },
+  fn: { largerThan },
+}: MantineTheme) => ({
   '& img': {
-    borderColor: '$whisper !important',
+    borderColor: `${whisper[4]} !important`,
+    borderRadius: '0.5rem',
     borderStyle: 'solid  !important',
-    br: '$xs',
-    bw: '$xl  !important',
+    borderWidth: '0.25rem  !important',
   },
-  mt: '$3xl',
-  mw: '400px',
-  /* eslint-disable sort-keys/sort-keys-fix */
-  '@xs': {
-    mt: 0,
+  marginTop: '3rem',
+  maxWidth: '400px',
+  [largerThan('md')]: {
+    marginTop: 0,
   },
-  /* eslint-enable sort-keys/sort-keys-fix */
-};
+});

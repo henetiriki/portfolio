@@ -1,6 +1,6 @@
-import { colors } from '@styles/shared';
+import { colorOverrides } from '@styles/shared';
 
-const { alizarin, allPorts, pineGreen, pumpkin, torchRed } = colors;
+const { alizarin, allports, pineGreen, pumpkin, torchRed } = colorOverrides;
 
 const sharedIconOpts: google.maps.Symbol = {
   fillOpacity: 0.95,
@@ -10,30 +10,30 @@ const sharedIconOpts: google.maps.Symbol = {
 
 export const previousCityIcon: google.maps.Symbol = {
   ...sharedIconOpts,
-  fillColor: pumpkin,
+  fillColor: pumpkin[4],
   scale: 1,
 };
 
 export const currentCityIcon: google.maps.Symbol = {
   ...sharedIconOpts,
-  fillColor: torchRed,
+  fillColor: torchRed[4],
   scale: 1.25,
 };
 
 export const airportIcon: google.maps.Symbol = {
   ...sharedIconOpts,
-  fillColor: pineGreen,
+  fillColor: pineGreen[4],
   scale: 0.85,
 };
 
 export const portIcon: google.maps.Symbol = {
   ...sharedIconOpts,
-  fillColor: allPorts,
+  fillColor: allports[4],
   scale: 0.85,
 };
 
 export const stationIcon: google.maps.Symbol = {
   ...sharedIconOpts,
-  fillColor: alizarin,
+  fillColor: alizarin[4],
   scale: 0.85,
 };

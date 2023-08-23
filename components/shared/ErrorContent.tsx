@@ -1,17 +1,8 @@
-import { faHandPointRight } from '@fortawesome/free-solid-svg-icons';
-import { Button, Container, Spacer, Text } from '@nextui-org/react';
-import dynamic from 'next/dynamic';
+import { Button, Container, Text, Title, rem } from '@mantine/core';
+import { IconHandFinger } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import { Content } from '@components/content';
 import type { FC } from 'react';
-
-const DynamicFontAwesomeIcon = dynamic(
-  () =>
-    import('@fortawesome/react-fontawesome').then(mod => mod.FontAwesomeIcon),
-  {
-    ssr: false,
-  }
-);
 
 export const ErrorContent: FC<{ errorHeading: string; message: string }> = ({
   errorHeading,
@@ -22,18 +13,11 @@ export const ErrorContent: FC<{ errorHeading: string; message: string }> = ({
   return (
     <Content>
       <Container>
-        <Text h2>{errorHeading}</Text>
+        <Title order={2}>{errorHeading}</Title>
         <Text>{message}</Text>
-        <Spacer y={3} />
-        <Text css={{ ai: 'center', d: 'flex', gap: '$xl' }}>
-          <DynamicFontAwesomeIcon
-            height={30}
-            icon={faHandPointRight}
-            width={30}
-          />
-          <Button bordered color='success' onClick={() => router.push('/')}>
-            Shamrock button
-          </Button>
+        <Text>
+          <IconHandFinger size={rem(30)} style={{ rotate: '90deg' }} />
+          <Button onClick={() => router.push('/')}>Shamrock button</Button>
         </Text>
       </Container>
     </Content>

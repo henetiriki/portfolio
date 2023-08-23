@@ -1,4 +1,4 @@
-import { styled } from '@nextui-org/react';
+import styled from '@emotion/styled';
 import {
   Children,
   cloneElement,
@@ -14,10 +14,10 @@ import { usePortfolioState } from '@state/context';
 import { delay } from '@utils/common';
 import type { FC, PropsWithChildren } from 'react';
 
-const MapContainer = styled('div', {
-  h: '65vh',
-  w: '100%',
-});
+const MapContainer = styled.div`
+  height: 65vh;
+  width: 100%;
+`;
 
 export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
   children,
@@ -90,6 +90,7 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
       {Children.map(children, child => {
         if (map && infoWindow && isValidElement(child)) {
           // set the map prop on the child component
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           return cloneElement(child, { infoWindow, map });
         }
