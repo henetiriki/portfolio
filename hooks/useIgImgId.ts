@@ -65,7 +65,7 @@ export const useIgImgId = (): string | undefined => {
     if (!igImgId) {
       fetchNextImgId();
     }
-  }, [igImgId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, igImgId]);
 
   useEffect(() => {
     const { asPath, isReady } = router;
