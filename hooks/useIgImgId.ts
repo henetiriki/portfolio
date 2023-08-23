@@ -1,11 +1,14 @@
 import { useRouter } from 'next/router';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { usePortfolioState } from '@state/context';
+import { fetcher } from '@utils/common';
+import type { ImageId } from '@utils/common';
 
 export const useIgImgId = (): string | undefined => {
   const router = useRouter();
   const routeRef = useRef<string>();
   const {
+    dispatch,
     state: {
       shared: { imgId },
     },
@@ -33,8 +36,36 @@ export const useIgImgId = (): string | undefined => {
   };
 
   useLayoutEffect(() => {
-    setIgImgId(imgId);
+    if (imgId) {
+      setIgImgId(imgId);
+    }
   }, [imgId]);
+
+  useLayoutEffect(() => {
+    const fetchNextImgId = async () => {
+      try {
+        const { imgId } = await fetcher<ImageId>('/api/img-id');
+
+        dispatch({
+          payload: {
+            imgId,
+          },
+          type: 'set-ig-img-id',
+        });
+      } catch (error: unknown) {
+        dispatch({
+          payload: {
+            imgId: 'B8S5LnGpGUn',
+          },
+          type: 'set-ig-img-id',
+        });
+      }
+    };
+
+    if (!igImgId) {
+      fetchNextImgId();
+    }
+  }, [igImgId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const { asPath, isReady } = router;
