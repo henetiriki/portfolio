@@ -78,10 +78,6 @@ export const footerLinks: Sx = {
 export const footerSocialLinks: Sx = ({
   colors: { shamrock, white },
 }: MantineTheme) => ({
-  '& svg': {
-    height: '20px',
-    width: '20px',
-  },
   '&:hover': {
     color: shamrock[4],
   },
