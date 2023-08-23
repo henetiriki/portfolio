@@ -1,5 +1,4 @@
 export * from './types';
-export * from './useImgSetup';
 export * from './useDeepCompareEffectForMaps';
 export * from './useIgImgId';
 export * from './useIntersectionObserver';
