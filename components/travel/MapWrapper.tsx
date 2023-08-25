@@ -1,9 +1,11 @@
 import { Wrapper } from '@googlemaps/react-wrapper';
+import { Box } from '@mantine/core';
+import { useIntersection } from '@mantine/hooks';
 import getConfig from 'next/config';
 import { useEffect, useState } from 'react';
 import { Map, Marker, Polyline } from '@components/travel';
 import { cities, markerLocations, tripPolylines } from '@fixtures/travel';
-import { useIntersectionObserver, useMap, useRailTrips } from '@hooks';
+import { useMap, useRailTrips } from '@hooks';
 import type {
   City,
   Location,
@@ -17,17 +19,17 @@ const { publicRuntimeConfig } = getConfig();
 
 export const MapWrapper: FC = () => {
   const { render } = useMap();
-  const [ref, isVisible] = useIntersectionObserver<HTMLDivElement>({
+  const { entry, ref } = useIntersection({
     threshold: 0.8,
   });
   const railTripPolylines = useRailTrips();
   const [dropMarkers, setDropMarkers] = useState(false);
 
   useEffect(() => {
-    if (!dropMarkers && isVisible) {
+    if (!dropMarkers && entry?.isIntersecting) {
       setDropMarkers(true);
     }
-  }, [dropMarkers, isVisible]);
+  }, [dropMarkers, entry]);
 
   return (
     <>
@@ -101,7 +103,7 @@ export const MapWrapper: FC = () => {
             )}
         </Map>
       </Wrapper>
-      <div ref={ref} />
+      <Box ref={ref} />
     </>
   );
 };

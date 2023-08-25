@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useViewportSize } from '@mantine/hooks';
 import {
   Children,
   cloneElement,
@@ -9,7 +10,7 @@ import {
   useState,
 } from 'react';
 import { MAP_MAX_MOBILE, aucklandPoint, mapOptions } from '@fixtures/travel';
-import { useDeepCompareEffectForMaps, useWindowSize } from '@hooks';
+import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { delay } from '@utils/common';
 import type { FC, PropsWithChildren } from 'react';
@@ -29,7 +30,7 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
     },
   } = usePortfolioState();
   const mapRef = useRef<HTMLDivElement>(null);
-  const { width } = useWindowSize();
+  const { width } = useViewportSize();
   const [map, setMap] = useState<google.maps.Map>();
   const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>();
 
