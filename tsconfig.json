@@ -16,7 +16,7 @@
       "@containers/*": ["containers/*"],
       "@fixtures/*": ["fixtures/*"],
       "@hooks": ["hooks"],
-      "@pages/*": ["pages/*"],
+      "@pages/*": ["src/pages/*"],
       "@server/*": ["src/server/*"],
       "@state/*": ["src/state/*"],
       "@styles/*": ["src/styles/*"],
