@@ -27,10 +27,10 @@ export type ExtendedCustomColorOverrides = Record<
 export const colorOverrides: ExtendedCustomColorOverrides = {
   /* eslint-disable sort-keys/sort-keys-fix */
   whisper: [
+    '#FFFFFF',
+    '#FBFBFB',
     '#F8F8F8',
-    '#F6F6F6',
     '#F4F4F4',
-    '#F1F1F1',
     '#EEEEEE',
     '#BEBEBE',
     '#989898',
