@@ -8,11 +8,11 @@ const CUSTOM_APP_DOMAIN = process.env.CUSTOM_APP_DOMAIN;
 const GMAIL_SENDER_EMAIL = process.env.GMAIL_SENDER_EMAIL;
 
 const DISALLOWED_CHARS = /[<>^|%()&+]/;
-/* eslint-disable no-useless-escape */
 const URL_REGEX =
+  // eslint-disable-next-line security/detect-unsafe-regex
   /\(?(?:(http|https|ftp):\/\/)(?:((?:[^\W\s]|\.|-|[:]{1})+)@{1})?((?:www.)?(?:[^\W\s]|\.|-)+[\.][^\W\s]{2,4}|localhost(?=\/)|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(?::(\d*))?([\/]?[^\s\?]*[\/]{1})*(?:\/?([^\s\n\?\[\]\{\}#]*(?:(?=\.)){1}|[^\s\n\?\[\]\{\}\.#]*)?([\.]{1}[^\s\?#]*)?)?(?:\?{1}([^\s\n#\[\]]*))?([#][^\s\n]*)?\)?/;
+// eslint-disable-next-line no-useless-escape
 const EMAIL_REGEX = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
-/* eslint-enable no-useless-escape */
 
 const SUBJECT = `Message from {0} | ${CUSTOM_APP_DOMAIN}`;
 const SUBJECT_COPY = `Thanks for your message | ${CUSTOM_APP_DOMAIN}`;
@@ -37,6 +37,7 @@ const CONTENT_COPY: Buffer = readFileSync(
 
 const formatValue = (value: string, args: string[]) =>
   value.replace(/{(\d+)}/g, (match, number) =>
+    // eslint-disable-next-line security/detect-object-injection
     typeof args[number] !== 'undefined' ? args[number] : match
   );
 

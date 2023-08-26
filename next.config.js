@@ -1,4 +1,17 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /** @type {import('next').NextConfig} */
+
+const lastModified = new Intl.DateTimeFormat('en-NZ', {
+  day: 'numeric',
+  hour: 'numeric',
+  hour12: false,
+  minute: 'numeric',
+  month: 'numeric',
+  timeZone: 'Pacific/Auckland',
+  timeZoneName: 'short',
+  year: 'numeric',
+}).format(new Date());
+
 const withoutBundleAnalyzer = config => config;
 const withoutPWA = config => config;
 
@@ -67,6 +80,7 @@ const nextConfig = withBundleAnalyzer(
     publicRuntimeConfig: {
       googleApiKey: process.env.GOOGLE_MAPS_API_KEY,
       imgHost: process.env.IMAGE_HOST,
+      lastModified,
       siteUrl: process.env.HOST,
     },
     reactStrictMode: true,
