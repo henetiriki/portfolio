@@ -23,7 +23,7 @@ export type Action =
       type: 'set-trip-polylines-loaded';
     }
   | {
-      payload: {};
+      payload: never;
       type: 'reset-markers-polyline-loaded';
     }
   | { payload: { imgId: string }; type: 'set-ig-img-id' };
