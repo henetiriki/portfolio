@@ -19,7 +19,7 @@
       "@pages/*": ["pages/*"],
       "@server/*": ["server/*"],
       "@state/*": ["state/*"],
-      "@styles/*": ["styles/*"],
+      "@styles/*": ["src/styles/*"],
       "@utils/*": ["src/utils/*"]
     },
     "resolveJsonModule": true,
