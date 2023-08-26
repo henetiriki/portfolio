@@ -2,10 +2,17 @@
 /** @type {import('next').NextConfig} */
 
 const dayjs = require('dayjs');
+const advancedFormat = require('dayjs/plugin/advancedFormat');
+const timezone = require('dayjs/plugin/timezone');
+const utc = require('dayjs/plugin/utc');
 
 const withoutBundleAnalyzer = config => config;
 const withoutPWA = config => config;
 
+dayjs.extend(advancedFormat);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault('Pacific/Auckland');
 const lastModified = dayjs(Date.now()).format('MM/DD/YYYY HH:mm');
 
 const withBundleAnalyzer =
