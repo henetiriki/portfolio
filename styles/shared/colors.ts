@@ -1,6 +1,6 @@
 import type { Tuple } from '@mantine/core';
 
-export type ExtendedCustomColors =
+export type ExtendedCustomColor =
   | 'alizarin'
   | 'allports'
   | 'blackRussian'
@@ -17,28 +17,15 @@ export type ExtendedCustomColors =
   | 'torchRed'
   | 'valhalla'
   | 'viking'
-  | 'whisper'
-  | 'white';
+  | 'whisper';
 
-type ExtendedCustomColorsOverride = Record<
-  ExtendedCustomColors,
+export type ExtendedCustomColorOverrides = Record<
+  ExtendedCustomColor,
   Tuple<string, 10>
 >;
 
-export const colorOverrides: ExtendedCustomColorsOverride = {
+export const colorOverrides: ExtendedCustomColorOverrides = {
   /* eslint-disable sort-keys/sort-keys-fix */
-  white: [
-    '#FFFFFF',
-    '#FFFFFF',
-    '#FFFFFF',
-    '#FFFFFF',
-    '#FFFFFF',
-    '#FFFFFF',
-    '#FFFFFF',
-    '#FFFFFF',
-    '#FFFFFF',
-    '#FFFFFF',
-  ],
   whisper: [
     '#F8F8F8',
     '#F6F6F6',

@@ -1,11 +1,16 @@
-import { colorOverrides } from '@styles/shared';
-
-const { gunmetal, mediumSeaGreen, paynesGrey, white } = colorOverrides;
+import type { MantineThemeColorsOverride } from '@mantine/core';
 
 export const MAP_MAX_MOBILE = 768;
 export const STROKE_WEIGHT_DEFAULT = 1.25;
 
-export const mapOptions = (): google.maps.MapOptions => ({
+type MapOptionsProps = {
+  white: string;
+} & MantineThemeColorsOverride;
+
+export const mapOptions = ({
+  colors: { gunmetal, mediumSeaGreen, paynesGrey },
+  white,
+}: MapOptionsProps): google.maps.MapOptions => ({
   center: {
     lat: 0.0,
     lng: 32.0,
@@ -92,7 +97,7 @@ export const mapOptions = (): google.maps.MapOptions => ({
       elementType: 'labels.text.fill',
       stylers: [
         {
-          color: white[4],
+          color: white,
         },
       ],
     },

@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useMantineTheme } from '@mantine/core';
 import { useViewportSize } from '@mantine/hooks';
 import {
   Children,
@@ -24,6 +25,7 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
   children,
   ...options
 }) => {
+  const { colors, white } = useMantineTheme();
   const {
     state: {
       travel: { markersLoaded, railPolylinesLoaded, tripPolylinesLoaded },
@@ -70,7 +72,7 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
       const zoom = mapMaxMobile ? 1 : 2;
 
       map.setOptions({
-        ...mapOptions(),
+        ...mapOptions({ colors, white }),
         ...options,
         minZoom: zoom,
         zoom,

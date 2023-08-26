@@ -1,26 +1,20 @@
-import { Anchor, Box, Flex, Space, Text } from '@mantine/core';
+import { Anchor, Flex, Text } from '@mantine/core';
 import { format } from 'date-fns';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { FooterLinksContainer } from '@components/footer';
+import {
+  FooterContainer,
+  FooterLines,
+  FooterLinksContainer,
+} from '@components/footer';
 import { Logo, WaveWrapper } from '@components/shared';
 import { socialLinks } from '@fixtures/footer';
 import buildTimeConfig from '@fixtures/generated/build-time-config.json';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
-import {
-  footerBackground,
-  footerContainer,
-  footerContainerBottom,
-  footerCopyright,
-  footerLastUpdated,
-  footerLines,
-  footerLinks,
-  footerLowerBackground,
-  footerSocialLinks,
-} from '@styles/footer';
+import { footerLinks, footerSocialLinks } from '@styles/footer';
 import type { SocialLink } from '@fixtures/types';
 import type { FC, JSX } from 'react';
 
@@ -39,63 +33,60 @@ export const Footer: FC = (): JSX.Element => {
     <footer>
       <WaveWrapper sx={{ height: '5rem' }} wave='footer-top' />
       <WaveWrapper wave='footer-bottom' />
-      <Box sx={footerBackground}>
-        <Box sx={footerContainer}>
-          <Box>
-            <Logo />
-          </Box>
-          <Box mt='xl' sx={footerLines} />
-          <FooterLinksContainer>
-            {menuItems.map(({ href, text }) => (
-              <Anchor
-                component={NextLink}
-                href={href}
-                key={href}
-                onClick={scrollToTop}
-                sx={{
-                  ...footerLinks,
-                  fontWeight: pathname === href ? 'bold' : 'normal',
-                }}>
-                {text}
-              </Anchor>
-            ))}
-          </FooterLinksContainer>
-          <Box mb='xl' sx={footerLines} />
-          <FooterLinksContainer pb='0'>
-            {socialLinks.map(({ icon, title, url }: SocialLink) => (
-              <Anchor
-                href={url}
-                key={url}
-                rel='noopener noreferrer'
-                sx={footerSocialLinks}
-                target='_blank'
-                title={title}>
-                {icon}
-              </Anchor>
-            ))}
-          </FooterLinksContainer>
-        </Box>
-      </Box>
-      <Box sx={footerLowerBackground}>
-        <Box sx={footerContainerBottom}>
-          <Flex direction='row' justify='center' pt='0.5rem'>
-            <Text>
-              © 2014 - {format(date, 'yyyy')}{' '}
-              <Anchor
-                href='https://github.com/henetiriki'
-                rel='noopener noreferrer'
-                sx={footerCopyright}
-                target='_blank'>
-                @henetiriki
-              </Anchor>
-            </Text>
-          </Flex>
-          <Space h='xs' />
-          <Flex align='center' justify='center'>
-            <Text sx={footerLastUpdated}>Updated: {lastModified}</Text>
-          </Flex>
-        </Box>
-      </Box>
+      <FooterContainer bg='blackRussian'>
+        <Logo />
+        <FooterLines mt='xl' />
+        <FooterLinksContainer>
+          {menuItems.map(({ href, text }) => (
+            <Anchor
+              c='white'
+              component={NextLink}
+              fw={pathname === href ? '700' : '400'}
+              fz='lg'
+              href={href}
+              key={href}
+              onClick={scrollToTop}
+              sx={footerLinks}>
+              {text}
+            </Anchor>
+          ))}
+        </FooterLinksContainer>
+        <FooterLines mb='xl' />
+        <FooterLinksContainer pb='0'>
+          {socialLinks.map(({ icon, title, url }: SocialLink) => (
+            <Anchor
+              c='white'
+              href={url}
+              key={url}
+              rel='noopener noreferrer'
+              sx={footerSocialLinks}
+              target='_blank'
+              title={title}>
+              {icon}
+            </Anchor>
+          ))}
+        </FooterLinksContainer>
+      </FooterContainer>
+      <FooterContainer bg='blackRussian.6'>
+        <Flex direction='row' justify='center'>
+          <Text component='p' m='xs'>
+            © 2014 - {format(date, 'yyyy')}{' '}
+            <Anchor
+              c='shamrock'
+              href='https://github.com/henetiriki'
+              pl='xs'
+              rel='noopener noreferrer'
+              target='_blank'>
+              @henetiriki
+            </Anchor>
+          </Text>
+        </Flex>
+        <Flex align='center' justify='center'>
+          <Text c='silver' component='p' fz='xs' m='xs' opacity={0.6}>
+            Updated: {lastModified}
+          </Text>
+        </Flex>
+      </FooterContainer>
     </footer>
   );
 };
