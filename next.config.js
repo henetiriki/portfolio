@@ -13,7 +13,7 @@ dayjs.extend(advancedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('Pacific/Auckland');
-const lastModified = dayjs(Date.now()).format('MM/DD/YYYY HH:mm');
+const lastModified = dayjs.tz(Date.now()).format('MM/DD/YYYY HH:mm z');
 
 const withBundleAnalyzer =
   process.env.ANALYZE === 'true'
