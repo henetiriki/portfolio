@@ -20,7 +20,7 @@
       "@server/*": ["server/*"],
       "@state/*": ["state/*"],
       "@styles/*": ["styles/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["src/utils/*"]
     },
     "resolveJsonModule": true,
     "isolatedModules": true,
