@@ -18,7 +18,7 @@ import {
   VUVLI,
 } from './ports';
 
-const gbdvrFrcqfWayPoints: google.maps.LatLngLiteral[] = [
+const GBDVR_FRCQF_WAY_POINTS: google.maps.LatLngLiteral[] = [
   { lat: 51.1247, lng: 1.33261 },
   { lat: 51.12473, lng: 1.33253 },
   { lat: 51.12485, lng: 1.33235 },
@@ -577,7 +577,7 @@ const NCMEE_NZAKL_WAY_POINTS: google.maps.LatLngLiteral[] = [
  * Array of Cruises for the Contact section
  */
 export const cruises: google.maps.LatLngLiteral[][] = [
-  [GBDVR.position, ...gbdvrFrcqfWayPoints, FRCQF.position],
+  [GBDVR.position, ...GBDVR_FRCQF_WAY_POINTS, FRCQF.position],
   [BCTSA.position, ...BCTSA_BCSWA_WAY_POINTS, BCSWA.position],
   [GBPME.position, ...GBPME_GBRYD_WAY_POINTS, GBRYD.position],
   [NZWLG.position, ...NZWLG_NZPCN_WAY_POINTS, NZPCN.position],
