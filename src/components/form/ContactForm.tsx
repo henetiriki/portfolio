@@ -7,12 +7,14 @@ import {
   Title,
   createStyles,
   rem,
+  useMantineTheme,
 } from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
 import { IconAt, IconMessage, IconSend, IconTag } from '@tabler/icons-react';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useMantineForm } from '@hooks';
 import type { MantineTheme } from '@mantine/core';
+import type { NotificationProps } from '@mantine/notifications';
 import type { FC } from 'react';
 
 const useStyles = createStyles(
@@ -35,34 +37,45 @@ export const ContactForm: FC = () => {
     classes: { input, label },
   } = useStyles();
   const {
+    colors: { blackRussian },
+  } = useMantineTheme();
+  const {
     apiErrors,
     form: { getInputProps, onSubmit },
     isSubmitted,
     isSubmitting,
     submitForm,
   } = useMantineForm();
+  const defaultNotificationProps: Omit<NotificationProps, 'message'> = useMemo(
+    () => ({
+      autoClose: 6000,
+      sx: { backgroundColor: blackRussian[6] },
+      withBorder: true,
+    }),
+    [blackRussian]
+  );
 
   useEffect(() => {
     apiErrors.map(apiError => {
       notifications.show({
-        autoClose: 6000,
+        ...defaultNotificationProps,
         color: 'torchRed',
         message: apiError,
         title: 'Oops!',
       });
     });
-  }, [apiErrors]);
+  }, [apiErrors, blackRussian, defaultNotificationProps]);
 
   useEffect(() => {
     if (isSubmitted) {
       notifications.show({
-        autoClose: 6000,
+        ...defaultNotificationProps,
         color: 'shamrock',
         message: 'Your message has been sent',
         title: 'Thanks!',
       });
     }
-  }, [isSubmitted]);
+  }, [blackRussian, defaultNotificationProps, isSubmitted]);
 
   return (
     <>

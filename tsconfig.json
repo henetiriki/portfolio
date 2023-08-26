@@ -18,7 +18,7 @@
       "@fixtures/*": ["src/fixtures/*"],
       "@hooks": ["src/hooks"],
       "@pages/*": ["src/pages/*"],
-      "@server/*": ["src/server/*"],
+      "@server/*": ["server/*"],
       "@state/*": ["src/state/*"],
       "@styles/*": ["src/styles/*"],
       "@utils/*": ["src/utils/*"]
