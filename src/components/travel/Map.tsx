@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { useMantineTheme } from '@mantine/core';
 import { useViewportSize } from '@mantine/hooks';
 import {
   Children,
@@ -25,7 +24,6 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
   children,
   ...options
 }) => {
-  const { colors, white } = useMantineTheme();
   const {
     state: {
       travel: { markersLoaded, railPolylinesLoaded, tripPolylinesLoaded },
@@ -37,7 +35,7 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
   const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>();
 
   const zoomMap = useCallback<(nextZoom: number, maxZoom: number) => void>(
-    (nextZoom = 0, maxZoom = 0) => {
+    async (nextZoom = 0, maxZoom = 0) => {
       if (map) {
         if (nextZoom < maxZoom) {
           const tilesLoadedEventListener: google.maps.MapsEventListener =
@@ -46,9 +44,9 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
               zoomMap(map.getZoom()! + 1, maxZoom);
             });
 
-          delay(80).then(() => {
-            map.setZoom(nextZoom);
-          });
+          await delay(80);
+
+          map.setZoom(nextZoom);
 
           return;
         }
@@ -72,7 +70,7 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
       const zoom = mapMaxMobile ? 1 : 2;
 
       map.setOptions({
-        ...mapOptions({ colors, white }),
+        ...mapOptions(),
         ...options,
         minZoom: zoom,
         zoom,
