@@ -1,6 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /** @type {import('next').NextConfig} */
+
+const { format } = require('date-fns');
 const withoutBundleAnalyzer = config => config;
 const withoutPWA = config => config;
+
+const lastModified = format(Date.now(), 'dd/MM/yyyy HH:mm');
 
 const withBundleAnalyzer =
   process.env.ANALYZE === 'true'
@@ -67,6 +72,7 @@ const nextConfig = withBundleAnalyzer(
     publicRuntimeConfig: {
       googleApiKey: process.env.GOOGLE_MAPS_API_KEY,
       imgHost: process.env.IMAGE_HOST,
+      lastModified,
       siteUrl: process.env.HOST,
     },
     reactStrictMode: true,

@@ -15,7 +15,9 @@ import type {
 } from '@fixtures/travel/types';
 import type { FC } from 'react';
 
-const { publicRuntimeConfig } = getConfig();
+const {
+  publicRuntimeConfig: { googleApiKey },
+} = getConfig();
 
 export const MapWrapper: FC = () => {
   const { render } = useMap();
@@ -33,10 +35,7 @@ export const MapWrapper: FC = () => {
 
   return (
     <>
-      <Wrapper
-        apiKey={publicRuntimeConfig.googleApiKey}
-        libraries={['geometry']}
-        render={render}>
+      <Wrapper apiKey={googleApiKey} libraries={['geometry']} render={render}>
         <Map>
           {cities.map(
             ({ description, icon, position, title }: City, idx: number) => (

@@ -1,5 +1,6 @@
 import { Anchor, Flex, Text } from '@mantine/core';
 import { format } from 'date-fns';
+import getConfig from 'next/config';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -10,13 +11,16 @@ import {
 } from '@components/footer';
 import { Logo, WaveWrapper } from '@components/shared';
 import { socialLinks } from '@fixtures/footer';
-import buildTimeConfig from '@fixtures/generated/build-time-config.json';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { footerLinks, footerSocialLinks } from '@styles/footer';
 import type { SocialLink } from '@fixtures/types';
 import type { FC, JSX } from 'react';
+
+const {
+  publicRuntimeConfig: { lastModified },
+} = getConfig();
 
 export const Footer: FC = (): JSX.Element => {
   const [date] = useState<Date>(new Date());
@@ -27,7 +31,6 @@ export const Footer: FC = (): JSX.Element => {
   } = usePortfolioState();
   const { pathname } = useRouter();
   const { scrollToTop } = useScrollTo(pageTopRef);
-  const { lastModified } = buildTimeConfig;
 
   return (
     <footer>
