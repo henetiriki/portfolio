@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const { format } = require('date-fns');
 const jsonFile = require('jsonfile');
 
 const generatedFile = path.join(
   process.cwd(),
+  'src',
   'fixtures',
   'generated',
   'build-time-config.json'
