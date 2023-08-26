@@ -8,7 +8,7 @@ export const genericError: JSX.Element = (
 );
 const disallowedChars: JSX.Element = (
   <>
-    contains one or more illegal characters:{' '}
+    contains one or more disallowed characters:{' '}
     <i>&lt; &gt; ^ | ” ’ % ; ( ) & + -</i>
   </>
 );
