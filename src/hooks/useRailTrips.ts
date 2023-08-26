@@ -21,9 +21,8 @@ export const useRailTrips = (): TripPaths[] => {
   const [fetching, setFetching] = useState(false);
 
   const fetchRailtrips = async (): Promise<TripPaths[]> => {
-    const { trips, upcomingTrips } = await fetcher<RailTrips>(
-      '/api/rail-trips'
-    );
+    const { trips, upcomingTrips } =
+      await fetcher<RailTrips>('/api/rail-trips');
 
     const railTrips: string[][] = [];
     const upcomingRailTrips: string[][] = [];

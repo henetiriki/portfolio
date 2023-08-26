@@ -4,7 +4,9 @@ import { useEffect, useRef } from 'react';
 import type { EffectCallback } from 'react';
 
 const deepCompareEqualsForMaps = createCustomEqual(
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   deepEqual => (a: any, b: any) => {
     if (
       isLatLngLiteral(a) ||
@@ -15,11 +17,13 @@ const deepCompareEqualsForMaps = createCustomEqual(
       return new google.maps.LatLng(a).equals(new google.maps.LatLng(b));
     }
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return deepEqual(a, b);
   }
 );
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const useDeepCompareMemoize = (value: any) => {
   const ref = useRef();
 
@@ -32,6 +36,7 @@ const useDeepCompareMemoize = (value: any) => {
 
 export const useDeepCompareEffectForMaps = (
   callback: EffectCallback,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dependencies: any[]
   // eslint-disable-next-line react-hooks/exhaustive-deps
 ) => useEffect(callback, dependencies.map(useDeepCompareMemoize));
