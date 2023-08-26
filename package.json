@@ -53,7 +53,6 @@
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "@typescript-eslint/parser": "^6.4.1",
-    "dayjs": "^1.11.9",
     "eslint": "^8.47.0",
     "eslint-config-next": "^13.4.19",
     "eslint-config-prettier": "^9.0.0",
@@ -73,10 +72,10 @@
     "webpack": "^5"
   },
   "lint-staged": {
-    "**/*.{ts,tsx,js,jsx,cjs}": [
+    "**/*.{cjs,js,jsx,mjs,ts,tsx}": [
       "eslint --fix"
     ],
-    "**/*.{ts,tsx,cjs,js,jsx,json,html,scss,md}": [
+    "**/*.{cjs,html,js,jsx,json,md,mjs,scss,ts,tsx}": [
       "prettier --ignore-path .prettierignore --write"
     ]
   },

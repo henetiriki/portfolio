@@ -1,10 +1,9 @@
 import { Anchor, Flex, Text } from '@mantine/core';
 import { IconCopyright } from '@tabler/icons-react';
-import dayjs from 'dayjs';
 import getConfig from 'next/config';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useMemo } from 'react';
 import {
   FooterContainer,
   FooterLines,
@@ -24,7 +23,7 @@ const {
 } = getConfig();
 
 export const Footer: FC = (): JSX.Element => {
-  const [date] = useState<number>(Date.now());
+  const currentYear = useMemo<number>(() => new Date().getFullYear(), []);
   const {
     state: {
       shared: { pageTopRef },
@@ -82,7 +81,7 @@ export const Footer: FC = (): JSX.Element => {
               target='_blank'>
               @henetiriki
             </Anchor>{' '}
-            <IconCopyright size={11} /> 2014 - {dayjs(date).format('YYYY')}
+            <IconCopyright size={11} /> 2014 - {currentYear}
           </Text>
         </Flex>
         <Flex align='center' justify='center'>

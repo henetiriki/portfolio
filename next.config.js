@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /** @type {import('next').NextConfig} */
 
-const dayjs = require('dayjs');
-const advancedFormat = require('dayjs/plugin/advancedFormat');
-const timezone = require('dayjs/plugin/timezone');
-const utc = require('dayjs/plugin/utc');
+const lastModified = new Intl.DateTimeFormat('en-NZ', {
+  day: 'numeric',
+  hour: 'numeric',
+  hour12: false,
+  minute: 'numeric',
+  month: 'numeric',
+  timeZone: 'Pacific/Auckland',
+  timeZoneName: 'short',
+  year: 'numeric',
+}).format(new Date());
 
 const withoutBundleAnalyzer = config => config;
 const withoutPWA = config => config;
-
-dayjs.extend(advancedFormat);
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.tz.setDefault('Pacific/Auckland');
-const lastModified = dayjs.tz(Date.now()).format('MM/DD/YYYY HH:mm z');
 
 const withBundleAnalyzer =
   process.env.ANALYZE === 'true'
