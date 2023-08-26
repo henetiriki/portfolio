@@ -38,12 +38,9 @@ export const timelineBox: Sx = ({ colors: { shamrock } }: MantineTheme) => ({
   position: 'relative',
 });
 
-export const timelineContent: Sx = ({
-  colors: { white },
-  fn: { rgba },
-}: MantineTheme) => ({
+export const timelineContent: Sx = ({ fn: { rgba }, white }: MantineTheme) => ({
   '&:before': {
-    borderColor: `transparent ${rgba(white[4], 0.1)} transparent transparent`,
+    borderColor: `transparent ${rgba(white, 0.1)} transparent transparent`,
     borderStyle: 'solid',
     borderWidth: '15px 20px 15px 0',
     content: "''",
@@ -53,7 +50,7 @@ export const timelineContent: Sx = ({
     top: '15px',
     width: 0,
   },
-  backgroundColor: rgba(white[4], 0.1),
+  backgroundColor: rgba(white, 0.1),
   borderRadius: '8px',
   padding: '20px',
   position: 'relative',

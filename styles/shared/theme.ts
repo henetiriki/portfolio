@@ -77,6 +77,5 @@ export const theme: MantineThemeOverride = {
     },
   },
   loader: 'dots',
-  primaryColor: 'white',
   primaryShade: 4,
 };

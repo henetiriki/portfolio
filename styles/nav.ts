@@ -9,8 +9,8 @@ const navActive: Sx = {
   },
 };
 
-const navUnderlineBefore: Sx = ({ colors: { white } }: MantineTheme) => ({
-  backgroundColor: white[4],
+const navUnderlineBefore: Sx = ({ white }: MantineTheme) => ({
+  backgroundColor: white,
   bottom: rem(-10),
   content: "''",
   height: '2px',
@@ -21,7 +21,8 @@ const navUnderlineBefore: Sx = ({ colors: { white } }: MantineTheme) => ({
 
 const navUnderline: Sx = (theme: MantineTheme) => {
   const {
-    colors: { silver, white },
+    colors: { silver },
+    white,
   } = theme;
 
   return {
@@ -34,17 +35,17 @@ const navUnderline: Sx = (theme: MantineTheme) => {
       textDecoration: 'none',
       transition: 'all 0.2s',
     },
-    color: white[4],
+    color: white,
   };
 };
 
 const navLink: Sx = ({
-  colors: { white },
   fn: { smallerThan },
   spacing: { md },
+  white,
 }: MantineTheme) => ({
   alignItems: 'center',
-  color: white[4],
+  color: white,
   display: 'flex',
   fontWeight: 600,
   height: '100%',
@@ -124,7 +125,8 @@ export const navDrawer: Sx = (theme: MantineTheme) => {
 };
 
 export const scrollToTopIndicator: Sx = ({
-  colors: { matterhorn, shamrock, white },
+  colors: { matterhorn, shamrock },
+  white,
 }: MantineTheme) => ({
   '&:hover': {
     backgroundColor: shamrock[4],
@@ -132,7 +134,7 @@ export const scrollToTopIndicator: Sx = ({
   backgroundColor: matterhorn[4],
   borderRadius: '40px',
   bottom: '20px',
-  color: white[4],
+  color: white,
   cursor: 'pointer',
   outline: 'none',
   padding: '10px 8px 5px',

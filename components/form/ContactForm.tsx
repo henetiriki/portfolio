@@ -16,7 +16,7 @@ import type { MantineTheme } from '@mantine/core';
 import type { FC } from 'react';
 
 const useStyles = createStyles(
-  ({ colors: { whisper, white }, spacing: { xs } }: MantineTheme) => ({
+  ({ colors: { whisper }, spacing: { xs }, white }: MantineTheme) => ({
     input: {
       '&:focus-within': {
         borderColor: white,
