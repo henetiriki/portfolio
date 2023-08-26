@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /** @type {import('next').NextConfig} */
 
-const { format } = require('date-fns');
+const dayjs = require('dayjs');
+
 const withoutBundleAnalyzer = config => config;
 const withoutPWA = config => config;
 
-const lastModified = format(Date.now(), 'dd/MM/yyyy HH:mm');
+const lastModified = dayjs(Date.now()).format('MM/DD/YYYY HH:mm');
 
 const withBundleAnalyzer =
   process.env.ANALYZE === 'true'

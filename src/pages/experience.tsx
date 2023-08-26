@@ -1,4 +1,4 @@
-import { Anchor, Text, Title, rem } from '@mantine/core';
+import { Anchor, Text, Title } from '@mantine/core';
 import { IconBriefcase, IconSchool } from '@tabler/icons-react';
 import getConfig from 'next/config';
 import Head from 'next/head';
@@ -65,7 +65,7 @@ const Experience: NextPage = (): JSX.Element => (
       <Content>
         <TimelineHeading>
           <TimelineIndicator>
-            <IconBriefcase size={rem(20)} />
+            <IconBriefcase size={20} />
           </TimelineIndicator>
           <Title order={2}>Work History</Title>
         </TimelineHeading>
@@ -131,7 +131,7 @@ const Experience: NextPage = (): JSX.Element => (
         </Timeline>
         <TimelineHeading>
           <TimelineIndicator>
-            <IconSchool size={rem(20)} />
+            <IconSchool size={20} />
           </TimelineIndicator>
           <Title order={2}>Education</Title>
         </TimelineHeading>

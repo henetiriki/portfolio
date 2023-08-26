@@ -116,7 +116,7 @@ export const ContactForm: FC = () => {
         <Space h='xl' />
         <Button
           color='shamrock'
-          leftIcon={<IconSend size={rem(21)} />}
+          leftIcon={<IconSend size={21} />}
           loading={isSubmitting}
           radius='lg'
           size='md'

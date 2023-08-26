@@ -1,5 +1,6 @@
 import { Anchor, Flex, Text } from '@mantine/core';
-import { format } from 'date-fns';
+import { IconCopyright } from '@tabler/icons-react';
+import dayjs from 'dayjs';
 import getConfig from 'next/config';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
@@ -23,7 +24,7 @@ const {
 } = getConfig();
 
 export const Footer: FC = (): JSX.Element => {
-  const [date] = useState<Date>(new Date());
+  const [date] = useState<number>(Date.now());
   const {
     state: {
       shared: { pageTopRef },
@@ -73,15 +74,15 @@ export const Footer: FC = (): JSX.Element => {
       <FooterContainer bg='blackRussian.6'>
         <Flex direction='row' justify='center'>
           <Text component='p' m='xs'>
-            © 2014 - {format(date, 'yyyy')}{' '}
             <Anchor
               c='shamrock'
               href='https://github.com/henetiriki'
-              pl='xs'
+              pr='xs'
               rel='noopener noreferrer'
               target='_blank'>
               @henetiriki
-            </Anchor>
+            </Anchor>{' '}
+            <IconCopyright size={11} /> 2014 - {dayjs(date).format('YYYY')}
           </Text>
         </Flex>
         <Flex align='center' justify='center'>

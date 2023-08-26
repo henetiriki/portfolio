@@ -161,7 +161,7 @@ export const Navigation = () => {
             scrollToTop();
           }}
           sx={scrollToTopIndicator}>
-          <IconArrowMoveUp size={rem(15)} />
+          <IconArrowMoveUp size={15} />
         </Box>
       )}
     </>
