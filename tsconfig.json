@@ -13,7 +13,7 @@
     "moduleResolution": "node",
     "paths": {
       "@components/*": ["components/*"],
-      "@containers/*": ["containers/*"],
+      "@containers/*": ["src/containers/*"],
       "@fixtures/*": ["fixtures/*"],
       "@hooks": ["src/hooks"],
       "@pages/*": ["src/pages/*"],

@@ -28,9 +28,11 @@ export const useRailTrips = (): TripPaths[] => {
     const upcomingRailTrips: string[][] = [];
 
     trips?.forEach(({ path }: RailTripItem, idx: number) => {
+      // eslint-disable-next-line security/detect-object-injection
       railTrips[idx] = [path];
     });
     upcomingTrips?.forEach(({ path }: RailTripItem, idx: number) => {
+      // eslint-disable-next-line security/detect-object-injection
       upcomingRailTrips[idx] = [path];
     });
 
