@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { Content } from '@components/content';
 import { openSourceContrs } from '@fixtures/home';
-import { blurDataURL } from '@utils/common';
 import type { MantineTheme } from '@mantine/core';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
@@ -125,7 +124,7 @@ const Home: NextPage = (): JSX.Element => (
             })}>
             <Image
               alt='Louw Swart'
-              blurDataURL={blurDataURL(350, 350)}
+              blurDataURL='/images/blur/shimmer.svg'
               height={350}
               placeholder='blur'
               src='/images/about/louw.swart.jpg'

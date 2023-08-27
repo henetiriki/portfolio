@@ -1,11 +1,9 @@
 import { Box, Container } from '@mantine/core';
-import { useViewportSize } from '@mantine/hooks';
 import getConfig from 'next/config';
 import Image from 'next/image';
 import { useLayoutEffect, useRef } from 'react';
 import { useIgImgId } from '@hooks';
 import { usePortfolioState } from '@state/context';
-import { blurDataURL } from '@utils/common';
 import type { FC, MutableRefObject } from 'react';
 
 const {
@@ -21,7 +19,6 @@ export const FixedBackground: FC = () => {
   } = usePortfolioState();
   const ref = useRef() as MutableRefObject<HTMLDivElement>;
   const igImgId = useIgImgId();
-  const { height, width } = useViewportSize();
 
   useLayoutEffect(() => {
     if (!pageTopRef) {
@@ -45,7 +42,7 @@ export const FixedBackground: FC = () => {
         {igImgId && (
           <Image
             alt=''
-            blurDataURL={blurDataURL(width || 1080, height || 1920)}
+            blurDataURL='/images/blur/shimmer.svg'
             fill
             placeholder='blur'
             priority={true}
