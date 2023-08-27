@@ -124,11 +124,11 @@ const Home: NextPage = (): JSX.Element => (
             })}>
             <Image
               alt='Louw Swart'
-              blurDataURL='/images/blur/shimmer.svg'
               height={350}
-              placeholder='blur'
               src='/images/about/louw.swart.jpg'
               style={{
+                backgroundImage: 'url(/images/blur/shimmer.svg)',
+                backgroundSize: 'cover',
                 height: 'auto',
                 maxWidth: '100%',
               }}

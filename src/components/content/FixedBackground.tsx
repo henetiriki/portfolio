@@ -42,14 +42,14 @@ export const FixedBackground: FC = () => {
         {igImgId && (
           <Image
             alt=''
-            blurDataURL='/images/blur/shimmer.svg'
             fill
-            placeholder='blur'
             priority={true}
             quality={100}
             sizes='100vw'
             src={`${imgHost}/${igImgId}.jpg`}
             style={{
+              backgroundImage: 'url(/images/blur/shimmer.svg)',
+              backgroundSize: 'cover',
               objectFit: 'cover',
             }}
           />
