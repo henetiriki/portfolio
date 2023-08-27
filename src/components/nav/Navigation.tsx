@@ -24,7 +24,7 @@ import {
   navHiddenMobile,
   navLinkMd,
   navLinkSm,
-} from '@styles/nav';
+} from '@styles';
 import type { MantineTheme } from '@mantine/core';
 import type { MouseEvent } from 'react';
 

@@ -1,5 +1,5 @@
 import { rem } from '@mantine/core';
-import { colorOverrides } from '@styles/shared/colors';
+import { colorOverrides } from '@styles';
 import type { MantineThemeOverride } from '@mantine/core';
 
 export const theme: MantineThemeOverride = {

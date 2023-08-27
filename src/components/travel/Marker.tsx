@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
-import { colorOverrides } from '@styles/shared';
+import { colorOverrides } from '@styles';
 import { cancelableDelay } from '@utils/common';
 import { getZoomMarkerWeightExponent } from '@utils/travel';
 import type { FC, PropsWithRef } from 'react';

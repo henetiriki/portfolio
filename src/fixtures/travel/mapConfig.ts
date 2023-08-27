@@ -1,4 +1,4 @@
-import { colorOverrides } from '@styles/shared';
+import { colorOverrides } from '@styles';
 
 export const MAP_MAX_MOBILE = 768;
 export const STROKE_WEIGHT_DEFAULT = 1.25;

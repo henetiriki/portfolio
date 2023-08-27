@@ -1,6 +1,6 @@
 import { cruises, upcomingCruises } from '@fixtures/travel/cruises';
 import { flights, upcomingFlights } from '@fixtures/travel/flights';
-import { colorOverrides } from '@styles/shared';
+import { colorOverrides } from '@styles';
 import type { TripPolylines } from '@fixtures/travel/types';
 
 const { corn, viking } = colorOverrides;
