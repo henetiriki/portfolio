@@ -14,8 +14,8 @@ import { socialLinks } from '@fixtures/footer';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
-import { footerLinks, footerSocialLinks } from '@styles/footer';
 import type { SocialLink } from '@fixtures/types';
+import type { MantineTheme } from '@mantine/core';
 import type { FC, JSX } from 'react';
 
 const {
@@ -49,7 +49,13 @@ export const Footer: FC = (): JSX.Element => {
               href={href}
               key={href}
               onClick={scrollToTop}
-              sx={footerLinks}>
+              sx={({ colors: { silver } }: MantineTheme) => ({
+                '&:hover': {
+                  color: silver[4],
+                  textDecoration: 'none',
+                  transition: 'all 0.2s',
+                },
+              })}>
               {text}
             </Anchor>
           ))}
@@ -62,7 +68,11 @@ export const Footer: FC = (): JSX.Element => {
               href={url}
               key={url}
               rel='noopener noreferrer'
-              sx={footerSocialLinks}
+              sx={({ colors: { shamrock } }: MantineTheme) => ({
+                '&:hover': {
+                  color: shamrock[4],
+                },
+              })}
               target='_blank'
               title={title}>
               {icon}
