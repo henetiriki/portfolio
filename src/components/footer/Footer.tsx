@@ -34,7 +34,7 @@ export const Footer: FC = (): JSX.Element => {
 
   return (
     <footer>
-      <WaveWrapper sx={{ height: '10rem' }} wave='footer-top' />
+      <WaveWrapper sx={{ height: '5rem' }} wave='footer-top' />
       <WaveWrapper wave='footer-bottom' />
       <FooterContainer bg='blackRussian'>
         <Logo />
