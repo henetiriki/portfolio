@@ -36,6 +36,9 @@ export const FixedBackground: FC = () => {
     <Box ref={pageTopRef}>
       <Container
         sx={{
+          img: { 
+            transition: 'all 300ms',
+          },
           minHeight: '100vh',
           minWidth: '100vw',
           overflow: 'hidden',
