@@ -7,7 +7,7 @@ type Wave = 'content-bottom' | 'content-top' | 'footer-bottom' | 'footer-top';
 
 export const WaveWrapper: FC<{ sx?: Sx; wave: Wave }> = ({ sx = {}, wave }) => (
   <Flex
-    h='15rem'
+    h='10rem'
     justify='flex-start'
     lh={0}
     pos='relative'
