@@ -20,14 +20,10 @@ import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import {
   navDrawer,
-  navHeader,
   navHiddenDesktop,
   navHiddenMobile,
   navLinkMd,
   navLinkSm,
-  navLinkWrapper,
-  navStickyContainer,
-  scrollToTopIndicator,
 } from '@styles/nav';
 import type { MantineTheme } from '@mantine/core';
 import type { MouseEvent } from 'react';
@@ -84,34 +80,38 @@ export const Navigation = () => {
 
   return (
     <>
-      <Box sx={navStickyContainer}>
+      <Box
+        left={0}
+        pos='sticky'
+        right={0}
+        sx={{
+          zIndex: 200,
+        }}
+        top={0}>
         <Header
+          bg={navBgTransparent ? 'transparent' : 'blackRussian'}
           height={76}
           px='xl'
-          sx={({ colors: { blackRussian } }: MantineTheme) => ({
-            ...navHeader,
-            backgroundColor: navBgTransparent ? 'transparent' : blackRussian[4],
-          })}>
+          sx={{
+            alignItems: 'center',
+            borderBottom: 'none',
+          }}>
           <Container h={'100%'}>
             <Group position='apart' sx={{ height: '100%' }}>
               <Logo />
               <Group spacing={0} sx={navHiddenMobile}>
-                {menuItems.map(({ href, text }) => {
-                  const isActive = href === pathname;
-
-                  return (
-                    <Box key={href} sx={navLinkWrapper}>
-                      <Anchor
-                        className={isActive ? 'active' : ''}
-                        component={NextLink}
-                        href={href}
-                        onClick={scrollToTop}
-                        sx={navLinkMd}>
-                        {text}
-                      </Anchor>
-                    </Box>
-                  );
-                })}
+                {menuItems.map(({ href, text }) => (
+                  <Box key={href} pos='relative'>
+                    <Anchor
+                      className={href === pathname ? 'active' : ''}
+                      component={NextLink}
+                      href={href}
+                      onClick={scrollToTop}
+                      sx={navLinkMd}>
+                      {text}
+                    </Anchor>
+                  </Box>
+                ))}
               </Group>
 
               <Burger
@@ -131,36 +131,46 @@ export const Navigation = () => {
           sx={navDrawer}
           zIndex={1000000}>
           <ScrollArea h={`calc(100vh - ${rem(60)})`} mx='-md'>
-            {menuItems.map(({ href, text }) => {
-              const isActive = href === pathname;
-
-              return (
-                <Box key={href} sx={navLinkWrapper}>
-                  <Anchor
-                    className={isActive ? 'active' : ''}
-                    component={NextLink}
-                    href={href}
-                    onClick={() => {
-                      toggleDrawer();
-                      scrollToTop();
-                    }}
-                    sx={navLinkSm}>
-                    {text}
-                  </Anchor>
-                </Box>
-              );
-            })}
+            {menuItems.map(({ href, text }) => (
+              <Box key={href} pos='relative'>
+                <Anchor
+                  className={href === pathname ? 'active' : ''}
+                  component={NextLink}
+                  href={href}
+                  onClick={() => {
+                    toggleDrawer();
+                    scrollToTop();
+                  }}
+                  sx={navLinkSm}>
+                  {text}
+                </Anchor>
+              </Box>
+            ))}
           </ScrollArea>
         </Drawer>
       </Box>
       {scrollToTopVisible && (
         <Box
+          bg='matterhorn'
+          bottom={20}
           component='a'
           onClick={(event: MouseEvent<HTMLAnchorElement>) => {
             event.preventDefault();
             scrollToTop();
           }}
-          sx={scrollToTopIndicator}>
+          p='10px 8px 5px'
+          pos='fixed'
+          right={30}
+          sx={({ colors: { shamrock } }: MantineTheme) => ({
+            '&:hover': {
+              backgroundColor: shamrock[4],
+            },
+            borderRadius: '40px',
+            cursor: 'pointer',
+            outline: 'none',
+            zIndex: 2,
+          })}
+          ta='center'>
           <IconArrowMoveUp size={15} />
         </Box>
       )}

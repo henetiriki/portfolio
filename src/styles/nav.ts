@@ -61,10 +61,6 @@ const navLink: Sx = ({
   textTransform: 'uppercase',
 });
 
-export const navLinkWrapper: Sx = {
-  position: 'relative',
-};
-
 export const navLinkSm: Sx = (theme: MantineTheme) => ({
   ...navActive,
   ...navLink(theme),
@@ -83,19 +79,6 @@ export const navLinkMd: Sx = (theme: MantineTheme) => ({
   ...navUnderline(theme),
   fontSize: rem(14),
 });
-
-export const navStickyContainer: Sx = {
-  left: 0,
-  position: 'sticky',
-  right: 0,
-  top: 0,
-  zIndex: 200,
-};
-
-export const navHeader: Sx = {
-  alignItems: 'center',
-  borderBottom: 'none',
-};
 
 export const navHiddenMobile: Sx = ({ fn: { smallerThan } }: MantineTheme) => ({
   [smallerThan('sm')]: {
@@ -123,23 +106,3 @@ export const navDrawer: Sx = (theme: MantineTheme) => {
     },
   };
 };
-
-export const scrollToTopIndicator: Sx = ({
-  colors: { matterhorn, shamrock },
-  white,
-}: MantineTheme) => ({
-  '&:hover': {
-    backgroundColor: shamrock[4],
-  },
-  backgroundColor: matterhorn[4],
-  borderRadius: '40px',
-  bottom: '20px',
-  color: white,
-  cursor: 'pointer',
-  outline: 'none',
-  padding: '10px 8px 5px',
-  position: 'fixed',
-  right: '30px',
-  textAlign: 'center',
-  zIndex: 2,
-});
