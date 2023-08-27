@@ -59,9 +59,9 @@ const Home: NextPage = (): JSX.Element => (
       <Flex
         align={{ base: 'center', md: 'flex-start' }}
         direction={{ base: 'column', md: 'row' }}
-        gap='xl'
+        gap='2.5rem'
         justify='space-between'>
-        <Box sx={{ flexBasis: '60%' }}>
+        <Box sx={{ flexBasis: '50%' }}>
           <Title order={2}>About me</Title>
           <Title order={3}>Louw Swart</Title>
           <Title order={4}>Front-end Engineer, Wellington NZ</Title>
