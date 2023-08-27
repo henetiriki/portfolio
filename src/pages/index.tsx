@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { Content } from '@components/content';
 import { openSourceContrs } from '@fixtures/home';
+import { blurDataURL } from '@utils/common';
 import type { MantineTheme } from '@mantine/core';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
@@ -125,9 +126,10 @@ const Home: NextPage = (): JSX.Element => (
             <Image
               alt='Louw Swart'
               height={350}
+              loading='lazy'
               src='/images/about/louw.swart.jpg'
               style={{
-                backgroundImage: 'url(/images/blur/shimmer.svg)',
+                backgroundImage: `url(${blurDataURL(350, 350)})`,
                 backgroundSize: 'cover',
                 height: 'auto',
                 maxWidth: '100%',

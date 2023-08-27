@@ -1,3 +1,4 @@
+export * from './blurDataURL';
 export * from './fetcher';
 export * from './getNodeText';
 export * from './delay';
