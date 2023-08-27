@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic';
 import Image from 'next/legacy/image';
 import { Content } from '@components/content';
 import { openSourceContrs } from '@fixtures/home';
-import { imageContainer, openSourceLinks } from '@styles/home';
 import { blurDataURL } from '@utils/common';
 import type { MantineTheme } from '@mantine/core';
 import type { NextPage } from 'next';
@@ -94,7 +93,11 @@ const Home: NextPage = (): JSX.Element => (
                   color='shamrock'
                   href={href}
                   rel='noopener noreferrer'
-                  sx={openSourceLinks}
+                  sx={{
+                    '&:hover': {
+                      textDecoration: 'none',
+                    },
+                  }}
                   target='_blank'>
                   {text}
                 </Anchor>
@@ -108,7 +111,18 @@ const Home: NextPage = (): JSX.Element => (
           </Text>
         </Box>
         <Box>
-          <Box sx={imageContainer}>
+          <Box
+            id='XXXXX'
+            maw={400}
+            mt={{ base: 'xl', md: 0 }}
+            sx={({ colors: { whisper } }: MantineTheme) => ({
+              '& img': {
+                borderColor: `${whisper[4]} !important`,
+                borderRadius: '0.5rem',
+                borderStyle: 'solid !important',
+                borderWidth: '0.25rem !important',
+              },
+            })}>
             <Image
               alt='Louw Swart'
               blurDataURL={blurDataURL(350, 350)}
