@@ -1,4 +1,4 @@
-import { Box, Space, Text } from '@mantine/core';
+import { Box, Space, Text, Title } from '@mantine/core';
 import { IconGlobe, IconPlaneDeparture, IconPlus } from '@tabler/icons-react';
 import type { Job, School } from '@fixtures/types';
 
@@ -51,14 +51,17 @@ export const jobs: Job[] = [
   },
   {
     accomplishments: (
-      <Text component='p'>
-        My team delivered a front-end React application hosted as an{' '}
-        <b>Amazon S3 static site</b>. This single page application formed part
-        of a larger project required to meet the obligations of new lending and
-        borrowing legislation (CCCFA). We were able to deliver in advance of the
-        delivery date, which in turn helped BNZ be compliant well before the
-        government deadline.
-      </Text>
+      <>
+        <Title order={5}>Accomplishments</Title>
+        <Text component='p'>
+          My team delivered a front-end React application hosted as an{' '}
+          <b>Amazon S3 static site</b>. This single page application formed part
+          of a larger project required to meet the obligations of new lending
+          and borrowing legislation (CCCFA). We were able to deliver in advance
+          of the delivery date, which in turn helped BNZ be compliant well
+          before the government deadline.
+        </Text>
+      </>
     ),
     content: (
       <>
@@ -253,11 +256,14 @@ export const jobs: Job[] = [
   },
   {
     accomplishments: (
-      <Text component='p'>
-        I worked alongside members of the hardware team on the implementation of
-        a <b>RESTful JSON</b> communication protocol over HTTP for the 2nd
-        Generation Onboard Units.
-      </Text>
+      <>
+        <Title order={5}>Accomplishments</Title>
+        <Text component='p'>
+          I worked alongside members of the hardware team on the implementation
+          of a <b>RESTful JSON</b> communication protocol over HTTP for the 2nd
+          Generation Onboard Units.
+        </Text>
+      </>
     ),
     content: (
       <>
@@ -295,6 +301,7 @@ export const jobs: Job[] = [
   {
     accomplishments: (
       <>
+        <Title order={5}>Accomplishments</Title>
         <Text component='p'>
           I was involved in a major overhaul of the UI for the PPM System,
           which, amongst other tasks, included the implementation of a{' '}
@@ -336,6 +343,7 @@ export const jobs: Job[] = [
   {
     accomplishments: (
       <>
+        <Title order={5}>Accomplishments</Title>
         <Text component='p'>
           I integrated an open-source <b>mobile framework</b> (WURFL) into the
           Quirk software stack which enabled the development of mobile client
@@ -471,8 +479,8 @@ export const schools: School[] = [
     },
     qualification: 'Comprehensive Programming',
     year: {
-      from: 2006,
-      to: 2007,
+      from: '2006',
+      to: '2007',
     },
   },
 ];

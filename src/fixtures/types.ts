@@ -5,23 +5,29 @@ export type ErrorMessage = {
   message: JSX.Element;
 };
 
+export type Year = {
+  from: string;
+  to: string;
+};
+
+export type Institution = {
+  location: JSX.Element | string;
+  name: JSX.Element | string;
+  url?: string;
+};
+
+export type Video = {
+  videoTitle: string;
+  videoUrl: string;
+};
+
 export type Job = {
   accomplishments?: JSX.Element;
   content: JSX.Element | null;
-  institution: {
-    location: JSX.Element | string;
-    name: JSX.Element | string;
-    url?: string;
-  };
+  institution: Institution;
   title: JSX.Element | string;
-  video?: {
-    videoTitle: string;
-    videoUrl: string;
-  };
-  year: {
-    from: string;
-    to: string;
-  };
+  video?: Video;
+  year: Year;
 };
 
 export type LinkItem = {
@@ -31,16 +37,9 @@ export type LinkItem = {
 
 export type School = {
   content: JSX.Element;
-  institution: {
-    location: string;
-    name: string;
-    url?: string;
-  };
+  institution: Institution;
   qualification: string;
-  year: {
-    from: number;
-    to: number;
-  };
+  year: Year;
 };
 
 export type SocialLink = {

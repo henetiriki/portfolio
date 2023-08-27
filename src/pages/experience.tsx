@@ -1,4 +1,3 @@
-import { Anchor, Text, Title } from '@mantine/core';
 import { IconBriefcase, IconSchool } from '@tabler/icons-react';
 import getConfig from 'next/config';
 import Head from 'next/head';
@@ -7,18 +6,14 @@ import {
   Timeline,
   TimelineBox,
   TimelineContent,
+  TimelineFromTo,
   TimelineHeading,
-  TimelineIndicator,
+  TimelineInstitution,
+  TimelineLocation,
+  TimelineTitle,
   VideoContainer,
 } from '@components/experience';
 import { description, jobs, schools } from '@fixtures/experience';
-import {
-  timelineFromTo,
-  timelineLink,
-  timelineLinkText,
-  timelineLocation,
-  timelineTitle,
-} from '@styles/experience';
 import {
   getExperienceDescription,
   getExperienceKeywords,
@@ -63,12 +58,10 @@ const Experience: NextPage = (): JSX.Element => (
         Experience<span>what I’ve done so far</span>
       </Header>
       <Content>
-        <TimelineHeading>
-          <TimelineIndicator>
-            <IconBriefcase size={20} />
-          </TimelineIndicator>
-          <Title order={2}>Work History</Title>
-        </TimelineHeading>
+        <TimelineHeading
+          icon={<IconBriefcase size={20} />}
+          title='Work History'
+        />
         <Timeline>
           {jobs.map(
             (
@@ -78,63 +71,25 @@ const Experience: NextPage = (): JSX.Element => (
                 institution: { location, name, url },
                 title,
                 video,
-                year: { from, to },
+                year,
               }: Job,
               idx: number
             ) => (
-              <TimelineBox key={idx}>
+              <TimelineBox key={`job-${idx}`}>
                 <TimelineContent>
-                  <Text span sx={timelineFromTo}>
-                    {from} - {to}
-                  </Text>{' '}
-                  {url && (
-                    <Text sx={timelineLinkText}>
-                      <Anchor
-                        href={url}
-                        rel='noopener noreferrer'
-                        sx={timelineLink}
-                        target='_blank'>
-                        {name}
-                      </Anchor>
-                    </Text>
-                  )}
-                  {!url && <Text sx={timelineLinkText}>{name}</Text>}
-                  <Text size='sm' sx={timelineLocation}>
-                    {location}
-                  </Text>
-                  <Title order={3} sx={timelineTitle}>
-                    {title}
-                  </Title>
+                  <TimelineFromTo year={year} />
+                  <TimelineInstitution name={name} url={url} />
+                  <TimelineLocation location={location} />
+                  <TimelineTitle title={title} />
                   {content}
-                  {accomplishments && (
-                    <>
-                      <Title order={5}>Accomplishments</Title>
-                      {accomplishments}
-                    </>
-                  )}
-                  {video && (
-                    <VideoContainer>
-                      <iframe
-                        allowFullScreen
-                        className='youtube-frame'
-                        height='720'
-                        src={video.videoUrl}
-                        title={video.videoTitle}
-                        width='1280'
-                      />
-                    </VideoContainer>
-                  )}
+                  {accomplishments}
+                  <VideoContainer video={video} />
                 </TimelineContent>
               </TimelineBox>
             )
           )}
         </Timeline>
-        <TimelineHeading>
-          <TimelineIndicator>
-            <IconSchool size={20} />
-          </TimelineIndicator>
-          <Title order={2}>Education</Title>
-        </TimelineHeading>
+        <TimelineHeading icon={<IconSchool size={20} />} title='Education' />
         <Timeline>
           {schools.map(
             (
@@ -142,30 +97,16 @@ const Experience: NextPage = (): JSX.Element => (
                 content,
                 institution: { location, name, url },
                 qualification,
-                year: { from, to },
+                year,
               }: School,
               idx: number
             ) => (
-              <TimelineBox key={idx}>
+              <TimelineBox key={`school-${idx}`}>
                 <TimelineContent>
-                  <Text span sx={timelineFromTo}>
-                    {from} - {to}
-                  </Text>
-                  <Text sx={timelineLinkText}>
-                    <Anchor
-                      href={url}
-                      rel='noopener noreferrer'
-                      sx={timelineLink}
-                      target='_blank'>
-                      {name}
-                    </Anchor>
-                  </Text>
-                  <Text size='md' sx={timelineLocation}>
-                    {location}
-                  </Text>
-                  <Title order={3} sx={timelineTitle}>
-                    {qualification}
-                  </Title>
+                  <TimelineFromTo year={year} />
+                  <TimelineInstitution name={name} url={url} />
+                  <TimelineLocation location={location} />
+                  <TimelineTitle title={qualification} />
                   {content}
                 </TimelineContent>
               </TimelineBox>

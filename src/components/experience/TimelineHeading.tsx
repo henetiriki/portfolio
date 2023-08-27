@@ -1,6 +1,21 @@
-import { Flex } from '@mantine/core';
-import type { FC, PropsWithChildren } from 'react';
+import { Flex, Title } from '@mantine/core';
+import type { FC, JSX } from 'react';
 
-export const TimelineHeading: FC<PropsWithChildren> = ({ children }) => (
-  <Flex align='end'>{children}</Flex>
+export const TimelineHeading: FC<{ icon: JSX.Element; title: string }> = ({
+  icon,
+  title,
+}) => (
+  <Flex align='end'>
+    <Flex
+      align='center'
+      bg='shamrock'
+      h='2.5rem'
+      justify='center'
+      mr='1.25rem'
+      sx={{ borderRadius: '100%' }}
+      w='2.5rem'>
+      {icon}
+    </Flex>
+    <Title order={2}>{title}</Title>
+  </Flex>
 );
