@@ -1,5 +1,5 @@
 import { Tooltip } from '@mantine/core';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import Link from 'next/link';
 import type { FC, JSX } from 'react';
 
@@ -11,6 +11,10 @@ export const Logo: FC = (): JSX.Element => (
         height={40}
         priority
         src='/images/ouwl.png'
+        style={{
+          height: 'auto',
+          maxWidth: '100%',
+        }}
         width={40}
       />
     </Link>
