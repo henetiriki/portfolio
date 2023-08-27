@@ -1,4 +1,4 @@
-import { colorOverrides } from '@styles/shared';
+import { colorOverrides } from '@styles';
 
 const { alizarin, allports, pineGreen, pumpkin, torchRed } = colorOverrides;
 

@@ -1,5 +1,5 @@
 import type { DefaultMantineColor, Tuple } from '@mantine/core';
-import type { ExtendedCustomColor } from '@styles/shared/colors';
+import type { ExtendedCustomColor } from '@styles/colors';
 
 declare module '@mantine/core' {
   export interface MantineThemeColorsOverride {

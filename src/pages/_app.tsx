@@ -7,7 +7,7 @@ import { ErrorBoundary } from '@components/shared';
 import { Layout } from '@containers/layout';
 import { useLoading } from '@hooks';
 import { PortfolioStateProvider } from '@state/context';
-import { theme } from '@styles/shared';
+import { theme } from '@styles';
 import { fullTitle } from '@utils/head';
 import type { MantineTheme } from '@mantine/core';
 import type { NextPage } from 'next';

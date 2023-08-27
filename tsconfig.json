@@ -18,9 +18,9 @@
       "@fixtures/*": ["src/fixtures/*"],
       "@hooks": ["src/hooks"],
       "@pages/*": ["src/pages/*"],
-      "@server/*": ["server/*"],
+      "@server/*": ["src/server/*"],
       "@state/*": ["src/state/*"],
-      "@styles/*": ["src/styles/*"],
+      "@styles": ["src/styles"],
       "@utils/*": ["src/utils/*"]
     },
     "resolveJsonModule": true,

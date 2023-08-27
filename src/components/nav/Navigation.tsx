@@ -1,5 +1,4 @@
 import {
-  Anchor,
   Box,
   Burger,
   Container,
@@ -11,24 +10,13 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconArrowMoveUp } from '@tabler/icons-react';
-import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { NavigationLink } from '@components/nav/NavigationLink';
 import { Logo } from '@components/shared';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
-import {
-  navDrawer,
-  navHeader,
-  navHiddenDesktop,
-  navHiddenMobile,
-  navLinkMd,
-  navLinkSm,
-  navLinkWrapper,
-  navStickyContainer,
-  scrollToTopIndicator,
-} from '@styles/nav';
 import type { MantineTheme } from '@mantine/core';
 import type { MouseEvent } from 'react';
 
@@ -84,40 +72,53 @@ export const Navigation = () => {
 
   return (
     <>
-      <Box sx={navStickyContainer}>
+      <Box
+        left={0}
+        pos='sticky'
+        right={0}
+        sx={{
+          zIndex: 200,
+        }}
+        top={0}>
         <Header
+          bg={navBgTransparent ? 'transparent' : 'blackRussian'}
           height={76}
           px='xl'
-          sx={({ colors: { blackRussian } }: MantineTheme) => ({
-            ...navHeader,
-            backgroundColor: navBgTransparent ? 'transparent' : blackRussian[4],
-          })}>
+          sx={{
+            alignItems: 'center',
+            borderBottom: 'none',
+          }}>
           <Container h={'100%'}>
             <Group position='apart' sx={{ height: '100%' }}>
               <Logo />
-              <Group spacing={0} sx={navHiddenMobile}>
-                {menuItems.map(({ href, text }) => {
-                  const isActive = href === pathname;
-
-                  return (
-                    <Box key={href} sx={navLinkWrapper}>
-                      <Anchor
-                        className={isActive ? 'active' : ''}
-                        component={NextLink}
-                        href={href}
-                        onClick={scrollToTop}
-                        sx={navLinkMd}>
-                        {text}
-                      </Anchor>
-                    </Box>
-                  );
-                })}
+              <Group
+                spacing={0}
+                sx={({ fn: { smallerThan } }: MantineTheme) => ({
+                  [smallerThan('sm')]: {
+                    display: 'none',
+                  },
+                  height: '100%',
+                })}>
+                {menuItems.map(({ href, text }) => (
+                  <Box key={href} pos='relative'>
+                    <NavigationLink
+                      href={href}
+                      onClickCb={scrollToTop}
+                      pathname={pathname}>
+                      {text}
+                    </NavigationLink>
+                  </Box>
+                ))}
               </Group>
 
               <Burger
                 onClick={toggleDrawer}
                 opened={drawerOpened}
-                sx={navHiddenDesktop}
+                sx={({ fn: { largerThan } }: MantineTheme) => ({
+                  [largerThan('sm')]: {
+                    display: 'none',
+                  },
+                })}
               />
             </Group>
           </Container>
@@ -128,39 +129,59 @@ export const Navigation = () => {
           opened={drawerOpened}
           padding='md'
           size='100%'
-          sx={navDrawer}
+          sx={({
+            colors: { blackRussian },
+            fn: { largerThan },
+          }: MantineTheme) => ({
+            [largerThan('sm')]: {
+              display: 'none',
+            },
+            '& section': {
+              '& div': { backgroundColor: blackRussian[6] },
+              overflow: 'hidden',
+            },
+          })}
           zIndex={1000000}>
           <ScrollArea h={`calc(100vh - ${rem(60)})`} mx='-md'>
-            {menuItems.map(({ href, text }) => {
-              const isActive = href === pathname;
-
-              return (
-                <Box key={href} sx={navLinkWrapper}>
-                  <Anchor
-                    className={isActive ? 'active' : ''}
-                    component={NextLink}
-                    href={href}
-                    onClick={() => {
-                      toggleDrawer();
-                      scrollToTop();
-                    }}
-                    sx={navLinkSm}>
-                    {text}
-                  </Anchor>
-                </Box>
-              );
-            })}
+            {menuItems.map(({ href, text }) => (
+              <Box key={href} pos='relative'>
+                <NavigationLink
+                  href={href}
+                  onClickCb={() => {
+                    toggleDrawer();
+                    scrollToTop();
+                  }}
+                  pathname={pathname}
+                  variant={'sm'}>
+                  {text}
+                </NavigationLink>
+              </Box>
+            ))}
           </ScrollArea>
         </Drawer>
       </Box>
       {scrollToTopVisible && (
         <Box
+          bg='matterhorn'
+          bottom={20}
           component='a'
           onClick={(event: MouseEvent<HTMLAnchorElement>) => {
             event.preventDefault();
             scrollToTop();
           }}
-          sx={scrollToTopIndicator}>
+          p='10px 8px 5px'
+          pos='fixed'
+          right={30}
+          sx={({ colors: { shamrock } }: MantineTheme) => ({
+            '&:hover': {
+              backgroundColor: shamrock[4],
+            },
+            borderRadius: '40px',
+            cursor: 'pointer',
+            outline: 'none',
+            zIndex: 2,
+          })}
+          ta='center'>
           <IconArrowMoveUp size={15} />
         </Box>
       )}

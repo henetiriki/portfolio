@@ -19,6 +19,7 @@ const SUBJECT_COPY = `Thanks for your message | ${CUSTOM_APP_DOMAIN}`;
 const CONTENT: Buffer = readFileSync(
   path.join(
     process.cwd(),
+    'src',
     'server',
     'contact',
     'templates',
@@ -28,6 +29,7 @@ const CONTENT: Buffer = readFileSync(
 const CONTENT_COPY: Buffer = readFileSync(
   path.join(
     process.cwd(),
+    'src',
     'server',
     'contact',
     'templates',

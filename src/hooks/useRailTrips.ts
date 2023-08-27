@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { sharedPolylineOpts } from '@fixtures/travel';
 import { usePortfolioState } from '@state/context';
-import { colorOverrides } from '@styles/shared';
+import { colorOverrides } from '@styles';
 import { fetcher } from '@utils/common';
 import type {
   RailTripItem,
