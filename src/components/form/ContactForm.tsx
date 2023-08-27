@@ -6,7 +6,6 @@ import {
   Textarea,
   Title,
   createStyles,
-  rem,
   useMantineTheme,
 } from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
@@ -91,10 +90,10 @@ export const ContactForm: FC = () => {
             classNames={{ input, label }}
             icon={<IconTag size='0.75rem' />}
             label='Name'
-            mih={rem(95)}
+            mih={110}
             placeholder='Your name'
             radius='lg'
-            size='md'
+            size='lg'
             w='100% '
             withAsterisk
             {...getInputProps('name')}
@@ -103,10 +102,10 @@ export const ContactForm: FC = () => {
             classNames={{ input, label }}
             icon={<IconAt size='0.75rem' />}
             label='Email'
-            mih={rem(95)}
+            mih={110}
             placeholder='Your email'
             radius='lg'
-            size='md'
+            size='lg'
             type='email'
             w='100% '
             withAsterisk
@@ -118,10 +117,11 @@ export const ContactForm: FC = () => {
           classNames={{ input, label }}
           icon={<IconMessage size='0.75rem' />}
           label='Message'
-          mih={rem(118)}
+          mih={180}
+          minRows={4}
           placeholder='Your message'
           radius='lg'
-          size='md'
+          size='lg'
           variant='filled'
           withAsterisk
           {...getInputProps('message')}
@@ -132,10 +132,10 @@ export const ContactForm: FC = () => {
           leftIcon={<IconSend size={21} />}
           loading={isSubmitting}
           radius='lg'
-          size='md'
+          size='lg'
           type='submit'
           variant='outline'
-          w={{ base: '100%', sm: 'auto' }}>
+          w={{ base: '100%', md: '25%', sm: '35%' }}>
           {isSubmitting ? 'Sending' : 'Send'}
         </Button>
         <TextInput name='heuning' sx={{ display: 'none' }} />
