@@ -107,7 +107,7 @@ const nextConfig = withBundleAnalyzer(
           source: '/assets/images/manifesticons/eightbitme-192.png',
         },
         {
-          destination: 'https://meet.google.com',
+          destination: 'https://meet.google.com/oyb-fjxw-ysa',
           has: [
             {
               type: 'host',
