@@ -106,6 +106,16 @@ const nextConfig = withBundleAnalyzer(
           permanent: true,
           source: '/assets/images/manifesticons/eightbitme-192.png',
         },
+        {
+          destination: 'https://meet.google.com',
+          has: [
+            {
+              type: 'host',
+              value: 'meet.ouq77.kiwi',
+            },
+          ],
+          source: '/',
+        },
       ];
     },
     serverRuntimeConfig: {
