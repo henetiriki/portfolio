@@ -114,6 +114,7 @@ const nextConfig = withBundleAnalyzer(
               value: 'meet.ouq77.kiwi',
             },
           ],
+          permanent: true,
           source: '/',
         },
       ];
