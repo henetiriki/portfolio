@@ -95,7 +95,7 @@ export const Footer: FC = (): JSX.Element => {
           </Text>
         </Flex>
         <Flex align='center' justify='center'>
-          <Text c='silver' component='p' fz='xs' m='xs' opacity={0.6}>
+          <Text c='silver' component='p' fz='sm' m='xs' opacity={0.7}>
             Updated: {lastModified}
           </Text>
         </Flex>
