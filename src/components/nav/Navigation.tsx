@@ -112,6 +112,7 @@ export const Navigation = () => {
               </Group>
 
               <Burger
+                aria-label={drawerOpened ? 'Close menu' : 'Open menu'}
                 onClick={toggleDrawer}
                 opened={drawerOpened}
                 sx={({ fn: { largerThan } }: MantineTheme) => ({
