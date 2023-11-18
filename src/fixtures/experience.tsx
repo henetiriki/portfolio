@@ -6,6 +6,23 @@ export const description = 'Work and education history';
 
 export const jobs: Job[] = [
   {
+    content: <></>,
+    institution: {
+      location: <>Wellington, New Zealand</>,
+      name: 'Tertiary Education Commission',
+      url: 'https://tec.govt.nz/',
+    },
+    title: (
+      <>
+        Senior Front-end Developer <span>(contract)</span>
+      </>
+    ),
+    year: {
+      from: 'October 2023',
+      to: 'Present',
+    },
+  },
+  {
     content: (
       <>
         <Text component='p'>
@@ -46,7 +63,7 @@ export const jobs: Job[] = [
     title: 'Senior Front-end Developer',
     year: {
       from: 'May 2022',
-      to: 'Present',
+      to: 'October 2023',
     },
   },
   {
