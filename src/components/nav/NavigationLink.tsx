@@ -18,19 +18,15 @@ export const NavigationLink: FC<
     href={href}
     my={variant === 'md' ? undefined : '1rem'}
     onClick={onClickCb}
-    sx={({
-      colors: { silver },
-      fn: { smallerThan },
-      spacing: { md },
-      white,
-    }: MantineTheme) => ({
+    sx={({ fn: { smallerThan }, spacing: { md } }: MantineTheme) => ({
       '&.active': {
         '&:before': {
           width: '30px',
         },
+        color: 'white',
       },
       '&:before': {
-        backgroundColor: white,
+        backgroundColor: 'white',
         bottom: rem(variant === 'md' ? -10 : 8),
         content: "''",
         height: '2px',
@@ -42,12 +38,12 @@ export const NavigationLink: FC<
         '&:before': {
           width: '30px',
         },
-        color: silver[4],
+        color: 'white',
         textDecoration: 'none',
         transition: 'all 0.2s',
       },
       alignItems: 'center',
-      color: white,
+      color: 'silver.1',
       fontSize: variant === 'md' ? rem(14) : 'sm',
       fontWeight: 600,
       height: '100%',
