@@ -42,20 +42,20 @@ export const Footer: FC = (): JSX.Element => {
         <FooterLinksContainer>
           {menuItems.map(({ href, text }) => (
             <Anchor
-              c='white'
+              c={pathname === href ? 'white' : 'silver.1'}
               component={NextLink}
               fw={pathname === href ? '700' : '400'}
               fz='lg'
               href={href}
               key={href}
               onClick={scrollToTop}
-              sx={({ colors: { silver } }: MantineTheme) => ({
+              sx={{
                 '&:hover': {
-                  color: silver[4],
+                  color: 'white',
                   textDecoration: 'none',
                   transition: 'all 0.2s',
                 },
-              })}>
+              }}>
               {text}
             </Anchor>
           ))}

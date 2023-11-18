@@ -8,7 +8,8 @@ export const TimelineTitle: FC<{ title: JSX.Element | string }> = ({
     order={3}
     sx={{
       span: {
-        fontSize: '1.25rem',
+        fontSize: '1rem',
+        fontStyle: 'italic',
       },
     }}>
     {title}
