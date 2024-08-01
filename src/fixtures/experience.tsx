@@ -10,7 +10,7 @@ export const jobs: Job[] = [
       <>
         <Text component='p'>
           I’m embedded in a delivery team on TEC’s <b>Data Systems Refresh</b>{' '}
-          (DSR) programme working on data collections (Commitments & Actuals)
+          (DSR) programme working on data collections (Commitments &amp; Actuals)
           from Tertiary Education Organisations (TEOs), which in turn supports
           the allocation of funding to the education sector.
         </Text>
@@ -59,14 +59,14 @@ export const jobs: Job[] = [
         </Text>
         <Text component='p'>
           The <b>E-commerce platform</b> used a variety of technologies,
-          including <b>Preact</b>. CI/CD consists of a combination of{' '}
+          including <b>Preact</b>. CI/CD consisted of a combination of{' '}
           <b>Jenkins</b> and <b>GitHub Actions</b>. The stack ran on{' '}
           <b>Google Cloud Platform</b>.
         </Text>
         <Text component='p'>
           <b>SEO</b> and <b>conversion metrics</b> were very important. Google{' '}
           <b>Optimize</b> and <b>Tag Manager</b> were used to great effect to
-          perform <b>A/B experiments</b> and pick the best outcomes for the
+          perform <b>A/B experiments</b> and ultimately picking the best outcomes for the
           business.
         </Text>
       </>
