@@ -6,7 +6,22 @@ export const description = 'Work and education history';
 
 export const jobs: Job[] = [
   {
-    content: <></>,
+    content: (
+      <>
+        <Text component='p'>
+          I’m embedded in a delivery team on TEC’s <b>Data Systems Refresh</b>{' '}
+          (DSR) programme working on data collections (Commitments &amp; Actuals)
+          from Tertiary Education Organisations (TEOs), which in turn supports
+          the allocation of funding to the education sector.
+        </Text>
+        <Text component='p'>
+          Technologies include <b>Angular</b>, <b>Angular Material</b> and a C#
+          backend with an SQL database. <b>GitHub Actions</b> is the CI/CD in
+          use with <b>Playwright</b> used as the E2E framework. The stack is
+          deployed on <b>Azure</b> infrastructure.
+        </Text>
+      </>
+    ),
     institution: {
       location: <>Wellington, New Zealand</>,
       name: 'Tertiary Education Commission',
@@ -23,31 +38,36 @@ export const jobs: Job[] = [
     },
   },
   {
+    accomplishments: (
+      <>
+        <Title order={5}>Accomplishments</Title>
+        <Text component='p'>
+          One of my own objectives was <b>mentoring</b> team members on good{' '}
+          <b>SDLC</b> practices and continuous improvement - breaking stories
+          down into small, releasable chunks, writing testable code and focusing
+          on a WIP limits.
+        </Text>
+      </>
+    ),
     content: (
       <>
         <Text component='p'>
-          I work as part of a <b>distributed team</b> across multiple timezones
-          within the <b>Customer Tribe</b> at Pet Circle. Our main focus is the
-          conversion of occasional shoppers into returning customers via an{' '}
-          <b>Auto Delivery</b> service.
+          I worked as part of a <b>distributed team</b> across multiple time
+          zones within the <b>Customer Tribe</b> at Pet Circle. The main focus
+          was the conversion of occasional shoppers into returning customers via
+          an <b>Auto Delivery</b> service.
         </Text>
         <Text component='p'>
-          The <b>E-commerce platform</b> uses a variety of technologies,
-          including <b>Preact</b>. CI/CD consists of a combination of{' '}
-          <b>Jenkins</b> and <b>GitHub Actions</b>. The stack runs on{' '}
+          The <b>E-commerce platform</b> used a variety of technologies,
+          including <b>Preact</b>. CI/CD consisted of a combination of{' '}
+          <b>Jenkins</b> and <b>GitHub Actions</b>. The stack ran on{' '}
           <b>Google Cloud Platform</b>.
         </Text>
         <Text component='p'>
-          <b>SEO</b> and <b>conversion metrics</b> are very important. Google{' '}
-          <b>Optimize</b> and <b>Tag Manager</b> are used to great effect to
-          perform <b>A/B experiments</b> and pick the best outcomes for the
+          <b>SEO</b> and <b>conversion metrics</b> were very important. Google{' '}
+          <b>Optimize</b> and <b>Tag Manager</b> were used to great effect to
+          perform <b>A/B experiments</b> and ultimately picking the best outcomes for the
           business.
-        </Text>
-        <Text component='p'>
-          One of my own objectives has been <b>mentoring</b> team members on
-          good <b>SDLC</b> practices and continuous improvement - breaking
-          stories down into small, releasable chunks, writing testable code and
-          focusing on a WIP limit.
         </Text>
       </>
     ),
@@ -87,7 +107,6 @@ export const jobs: Job[] = [
           BNZ Digital, where I started on contract and then switched to
           permanent employment.
         </Text>
-
         <Text component='p'>
           The technology stack included, amongst others, <b>React</b>,{' '}
           <b>Cypress</b>, <b>OpenShift</b> and <b>AWS</b>. The CI/CD tool was{' '}
