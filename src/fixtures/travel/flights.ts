@@ -67,6 +67,7 @@ import {
   PEK,
   PER,
   PLZ,
+  PPQ,
   PVG,
   RAR,
   ROT,
@@ -186,4 +187,6 @@ export const flights: google.maps.LatLngLiteral[][] = [
   [AKL.position, HBA.position],
 ];
 
-export const upcomingFlights: google.maps.LatLngLiteral[][] = [];
+export const upcomingFlights: google.maps.LatLngLiteral[][] = [
+  [AKL.position, PPQ.position],
+];
