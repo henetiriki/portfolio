@@ -545,6 +545,12 @@ export const HBA: Location = {
   title: 'HBA // Hobart International',
 };
 
+export const PPQ: Location = {
+  description: `Paraparaumu, ${newZealand}`,
+  position: { lat: -40.904148, lng: 174.989765 },
+  title: 'PPQ // Kapiti Coast Airport',
+};
+
 export const airports: Location[] = [
   KIM,
   PLZ,
@@ -634,4 +640,5 @@ export const airports: Location[] = [
   SFO,
   OOL,
   HBA,
+  PPQ,
 ];
