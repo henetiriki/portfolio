@@ -79,9 +79,7 @@ const Home: NextPage = (): JSX.Element => (
           </Text>
           <Text component='p'>
             I am a <b>pragmatic</b> individual with a strong{' '}
-            <b>sense of responsibility</b> - I like to <b>get things done</b>.{' '}
-            <b>Front-end</b> or <b>back-end</b>, I’m equally comfortable
-            performing either or both.
+            <b>sense of responsibility</b> - I like to <b>get things done</b>.
           </Text>
           <Title order={4}>Open Source Contributions</Title>
           <Box
