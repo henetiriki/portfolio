@@ -6,18 +6,32 @@ export const description = 'Work and education history';
 
 export const jobs: Job[] = [
   {
+    accomplishments: (
+      <>
+        <Title order={5}>Accomplishments</Title>
+        <Text component='p'>
+          I built a flexible and customisable template configuration setup that
+          will enable new data collection flows to be rolled out quickly in
+          future.
+        </Text>
+        <Text component='p'>
+          I also assisted QA in setting up Playwright as the E2E test framework,
+          including the use of Playwright Axe for accessibility coverage.
+        </Text>
+      </>
+    ),
     content: (
       <>
         <Text component='p'>
-          I’m embedded in a delivery team on TEC’s <b>Data Systems Refresh</b>{' '}
-          (DSR) programme working on data collections (Commitments &amp; Actuals)
-          from Tertiary Education Organisations (TEOs), which in turn supports
-          the allocation of funding to the education sector.
+          I was embedded in a delivery team on TEC’s Data Systems Refresh (DSR)
+          programme working on data collections (Commitments &amp; Actuals) from
+          Tertiary Education Organisations (TEOs), which in turn supports the
+          allocation of funding to the education sector.
         </Text>
         <Text component='p'>
-          Technologies include <b>Angular</b>, <b>Angular Material</b> and a C#
-          backend with an SQL database. <b>GitHub Actions</b> is the CI/CD in
-          use with <b>Playwright</b> used as the E2E framework. The stack is
+          Technologies included <b>Angular</b>, <b>Angular Material</b> and a C#
+          backend with an SQL database. <b>GitHub Actions</b> was the CI/CD in
+          use with <b>Playwright</b> used as the E2E framework. The stack was
           deployed on <b>Azure</b> infrastructure.
         </Text>
       </>
@@ -34,7 +48,7 @@ export const jobs: Job[] = [
     ),
     year: {
       from: 'October 2023',
-      to: 'Present',
+      to: 'February 2025',
     },
   },
   {
@@ -66,8 +80,8 @@ export const jobs: Job[] = [
         <Text component='p'>
           <b>SEO</b> and <b>conversion metrics</b> were very important. Google{' '}
           <b>Optimize</b> and <b>Tag Manager</b> were used to great effect to
-          perform <b>A/B experiments</b> and ultimately picking the best outcomes for the
-          business.
+          perform <b>A/B experiments</b> and ultimately picking the best
+          outcomes for the business.
         </Text>
       </>
     ),
@@ -216,10 +230,11 @@ export const jobs: Job[] = [
           teams.
         </Text>
         <Text component='p'>
-          I was closely involved in the implementation of a new <b>React</b>
-          -based front-end for the <i>Stuff.co.nz</i> news site article pages.
-          The application, including the back-end interfaces like <b>GraphQL</b>
-          , was served via <b>Express</b> in a <b>Node.js</b> runtime.
+          I was closely involved in the implementation of a new{' '}
+          <b>React-based</b> front-end for the <i>Stuff.co.nz</i> news site
+          article pages. The application, including the back-end interfaces like{' '}
+          <b>GraphQL</b>, was served via <b>Express</b> in a <b>Node.js</b>{' '}
+          runtime.
         </Text>
         <Text component='p'>
           Other projects included the implementation of an implicit flow
@@ -264,7 +279,7 @@ export const jobs: Job[] = [
           <b>
             <i>Westpac One&reg;</i>
           </b>
-          .
+          {''}.
         </Text>
         <Text component='p'>
           The server-side development environment was <b>Java</b>, while the
@@ -355,9 +370,8 @@ export const jobs: Job[] = [
           <b>user interface elements</b> as well as <b>web services</b> and{' '}
           <b>back-end integrations</b> for a performance management platform
           (PPM) used in a variety of industries worldwide. The deployment of
-          this <b>multi-tier application</b> consisted of a web environment (
-          <b>Tomcat</b> &amp; <b>JBoss</b>), on the{' '}
-          <b>Java EE technology stack</b>.
+          this <b>multi-tier application</b> consisted of<b>Tomcat</b> &amp;{' '}
+          <b>JBoss</b> on the <b>Java EE</b> technology stack.
         </Text>
         <Text component='p'>
           The development environment was <b>Java</b>, utilising third-party
@@ -488,25 +502,23 @@ export const jobs: Job[] = [
 export const schools: School[] = [
   {
     content: (
-      <>
-        <Text component='p'>
-          Java SE/EE;
-          <br />
-          Linux Red Hat;
-          <br />
-          Processing and Logic concepts;
-          <br />
-          Program Design;
-          <br />
-          Software Engineering;
-          <br />
-          Relational Database &amp; Modelling Design;
-          <br />
-          SQL Server 2000;
-          <br />
-          Linux Administration;
-        </Text>
-      </>
+      <Text component='p'>
+        Java SE/EE;
+        <br />
+        Linux Red Hat;
+        <br />
+        Processing and Logic concepts;
+        <br />
+        Program Design;
+        <br />
+        Software Engineering;
+        <br />
+        Relational Database &amp; Modelling Design;
+        <br />
+        SQL Server 2000;
+        <br />
+        Linux Administration;
+      </Text>
     ),
     institution: {
       location: 'Cape Town, South Africa',
