@@ -10,8 +10,8 @@ export const jobs: Job[] = [
       <>
         <Title order={5}>Accomplishments</Title>
         <Text component='p'>
-          I built a very flexible and customisable template configuration setup
-          that will enable new data collection flows to be rolled out quickly in
+          I built a flexible and customisable template configuration setup that
+          will enable new data collection flows to be rolled out quickly in
           future.
         </Text>
         <Text component='p'>
