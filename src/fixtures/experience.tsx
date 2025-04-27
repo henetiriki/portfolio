@@ -6,6 +6,23 @@ export const description = 'Work and education history';
 
 export const jobs: Job[] = [
   {
+    content: null,
+    institution: {
+      location: 'Wellington, New Zealand',
+      name: 'BNZ',
+      url: 'https://www.bnz.co.nz',
+    },
+    title: (
+      <>
+        Senior Front-end Developer <span>(contract)</span>
+      </>
+    ),
+    year: {
+      from: 'April 2025',
+      to: 'PRESENT',
+    },
+  },
+  {
     accomplishments: (
       <>
         <Title order={5}>Accomplishments</Title>
