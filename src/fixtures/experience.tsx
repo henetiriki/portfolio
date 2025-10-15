@@ -6,7 +6,21 @@ export const description = 'Work and education history';
 
 export const jobs: Job[] = [
   {
-    content: null,
+    content: (
+      <>
+        <Text component='p'>
+          Worked in a team tasked with replacing a bespoke BNZ deposit and home
+          lending pricing application.
+        </Text>
+        <Text component='p'>
+          The React UI, built using BNZ’s mini-app (micro-front-end) pattern,
+          interfaced with a BNZ microservice, which in turn integrated with an
+          external system. The application required user access management with
+          different screens for various user roles to be implemented via AD
+          groups.
+        </Text>
+      </>
+    ),
     institution: {
       location: 'Wellington, New Zealand',
       name: 'BNZ',
@@ -19,7 +33,7 @@ export const jobs: Job[] = [
     ),
     year: {
       from: 'April 2025',
-      to: 'PRESENT',
+      to: 'October 2025',
     },
   },
   {
