@@ -25,7 +25,7 @@ const deepCompareEqualsForMaps = createCustomEqual(
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const useDeepCompareMemoize = (value: any) => {
-  const ref = useRef();
+  const ref = useRef(null);
 
   if (!deepCompareEqualsForMaps(value, ref.current)) {
     ref.current = value;

@@ -6,7 +6,7 @@ import { useLayoutEffect, useRef } from 'react';
 import { useIgImgId } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { blurDataURL } from '@utils/common';
-import type { FC, MutableRefObject } from 'react';
+import type { FC, RefObject } from 'react';
 
 const {
   publicRuntimeConfig: { imgHost },
@@ -19,7 +19,7 @@ export const FixedBackground: FC = () => {
       shared: { pageTopRef },
     },
   } = usePortfolioState();
-  const ref = useRef() as MutableRefObject<HTMLDivElement>;
+  const ref = useRef(null) as any as RefObject<HTMLDivElement>;
   const igImgId = useIgImgId();
   const { height, width } = useViewportSize();
 
