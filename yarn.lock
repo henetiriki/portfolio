@@ -3234,21 +3234,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tabler/icons-react@npm:^3.31.0":
-  version: 3.31.0
-  resolution: "@tabler/icons-react@npm:3.31.0"
+"@tabler/icons-react@npm:^3.35.0":
+  version: 3.35.0
+  resolution: "@tabler/icons-react@npm:3.35.0"
   dependencies:
-    "@tabler/icons": "npm:3.31.0"
+    "@tabler/icons": "npm:3.35.0"
   peerDependencies:
     react: ">= 16"
-  checksum: 10/edc80c6398a4df8a5dea78beb8f9a9ae3af2238860c7a5fe683fb7e5dfb36a2ad12732300cfeaebea3c6c55b28525c6a28eca82e1c35d66da2bc7be31c839fbb
+  checksum: 10/778c43f47f1ebb585d01eff271213e5ee6ba5de936fe8fbbf85cff1b128ab7a0cf9b4e39338df38deb8168a6f795145fb84b834da31ed1e394f6798060ae1483
   languageName: node
   linkType: hard
 
-"@tabler/icons@npm:3.31.0":
-  version: 3.31.0
-  resolution: "@tabler/icons@npm:3.31.0"
-  checksum: 10/400b6e250069074075243154354bdd5282c584c528fc42ef6bd903a4f5173256f3a984d14ab6d35dfe7d22c0313e5128cb30db70607b3f555cf18c468d118fcb
+"@tabler/icons@npm:3.35.0":
+  version: 3.35.0
+  resolution: "@tabler/icons@npm:3.35.0"
+  checksum: 10/f1a14161a3d020edcb23445a411ccaa15e89780d59504b4bb2c0dda1088f27e974eac281bcb1ebb4c2759b1fc53358f038832d39f953ad33b43ffb504836fe3e
   languageName: node
   linkType: hard
 
@@ -3333,7 +3333,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.15.35":
+"@types/node@npm:^22.18.10":
   version: 22.18.10
   resolution: "@types/node@npm:22.18.10"
   dependencies:
@@ -5355,16 +5355,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-unused-imports@npm:^4.1.4":
-  version: 4.1.4
-  resolution: "eslint-plugin-unused-imports@npm:4.1.4"
+"eslint-plugin-unused-imports@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "eslint-plugin-unused-imports@npm:4.2.0"
   peerDependencies:
     "@typescript-eslint/eslint-plugin": ^8.0.0-0 || ^7.0.0 || ^6.0.0 || ^5.0.0
     eslint: ^9.0.0 || ^8.0.0
   peerDependenciesMeta:
     "@typescript-eslint/eslint-plugin":
       optional: true
-  checksum: 10/8e987028ad925ce1e04c01dcae70adbf44c2878a8b15c4327b33a2861e471d7fe00f6fe213fbd2b936f3fcefc8ccabb0d778aa1d6e0e0387a3dc7fe150cd4ed4
+  checksum: 10/99285bd61a46ad5eaacd54525c04564feed3529dc2ae7800c736b7f4f011daa370133adb481677ad840f020681c0f409f3edfe3bc8f9f234c42bf4674bc4b576
   languageName: node
   linkType: hard
 
@@ -5545,10 +5545,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-equals@npm:^5.2.2":
-  version: 5.2.2
-  resolution: "fast-equals@npm:5.2.2"
-  checksum: 10/87939dc01c6634f844369c2d774c9bf82b6c5935eb45c698fdfd2e708439c6c94a67a41c67c7e063759394e319850ee563e717e65776c8f5997566b0cbb17c7a
+"fast-equals@npm:^5.3.2":
+  version: 5.3.2
+  resolution: "fast-equals@npm:5.3.2"
+  checksum: 10/01236bf0b64c091dec9d3781515b493a3ca7ca3cd466fad071bdc13b275403a9119933f3d6473178b1b935a6f685fbe2e7aff0c68baef358f48547e3c7f683dc
   languageName: node
   linkType: hard
 
@@ -7838,9 +7838,9 @@ __metadata:
     "@mantine/notifications": "npm:^6.0.22"
     "@next/bundle-analyzer": "npm:^14.2.33"
     "@next/env": "npm:^14.2.33"
-    "@tabler/icons-react": "npm:^3.31.0"
+    "@tabler/icons-react": "npm:^3.35.0"
     "@types/google.maps": "npm:^3.58.1"
-    "@types/node": "npm:^22.15.35"
+    "@types/node": "npm:^22.18.10"
     "@types/nodemailer": "npm:^6.4.20"
     "@types/react": "npm:^18.3.26"
     "@types/react-dom": "npm:^18.3.7"
@@ -7854,21 +7854,21 @@ __metadata:
     eslint-plugin-sort-destructure-keys: "npm:^2.0.0"
     eslint-plugin-sort-keys: "npm:^2.3.5"
     eslint-plugin-typescript-sort-keys: "npm:^3.3.0"
-    eslint-plugin-unused-imports: "npm:^4.1.4"
-    fast-equals: "npm:^5.2.2"
+    eslint-plugin-unused-imports: "npm:^4.2.0"
+    fast-equals: "npm:^5.3.2"
     husky: "npm:^9.1.7"
     lint-staged: "npm:^15.5.2"
     next: "npm:^14.2.33"
     next-pwa: "npm:^5.6.0"
     next-sitemap: "npm:^4.2.3"
     nodemailer: "npm:^6.10.1"
-    prettier: "npm:^3.5.3"
+    prettier: "npm:^3.6.2"
     prop-types: "npm:^15.8.1"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-type-animation: "npm:^3.2.0"
     sharp: "npm:^0.34.4"
-    typescript: "npm:^5.8.3"
+    typescript: "npm:^5.9.3"
     webpack: "npm:^5"
   languageName: unknown
   linkType: soft
@@ -7898,12 +7898,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.5.3":
-  version: 3.5.3
-  resolution: "prettier@npm:3.5.3"
+"prettier@npm:^3.6.2":
+  version: 3.6.2
+  resolution: "prettier@npm:3.6.2"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10/7050c08f674d9e49fbd9a4c008291d0715471f64e94cc5e4b01729affce221dfc6875c8de7e66b728c64abc9352eefb7eaae071b5f79d30081be207b53774b78
+  checksum: 10/1213691706bcef1371d16ef72773c8111106c3533b660b1cc8ec158bd109cdf1462804125f87f981f23c4a3dba053b6efafda30ab0114cc5b4a725606bb9ff26
   languageName: node
   linkType: hard
 
@@ -9313,23 +9313,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.8.3":
-  version: 5.8.3
-  resolution: "typescript@npm:5.8.3"
+"typescript@npm:^5.9.3":
+  version: 5.9.3
+  resolution: "typescript@npm:5.9.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10/65c40944c51b513b0172c6710ee62e951b70af6f75d5a5da745cb7fab132c09ae27ffdf7838996e3ed603bb015dadd099006658046941bd0ba30340cc563ae92
+  checksum: 10/c089d9d3da2729fd4ac517f9b0e0485914c4b3c26f80dc0cffcb5de1719a17951e92425d55db59515c1a7ddab65808466debb864d0d56dcf43f27007d0709594
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.8.3#optional!builtin<compat/typescript>":
-  version: 5.8.3
-  resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"
+"typescript@patch:typescript@npm%3A^5.9.3#optional!builtin<compat/typescript>":
+  version: 5.9.3
+  resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=5786d5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10/b9b1e73dabac5dc730c041325dbd9c99467c1b0d239f1b74ec3b90d831384af3e2ba973946232df670519147eb51a2c20f6f96163cea2b359f03de1e2091cc4f
+  checksum: 10/696e1b017bc2635f4e0c94eb4435357701008e2f272f553d06e35b494b8ddc60aa221145e286c28ace0c89ee32827a28c2040e3a69bdc108b1a5dc8fb40b72e3
   languageName: node
   linkType: hard
 
