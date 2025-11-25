@@ -551,6 +551,12 @@ export const PPQ: Location = {
   title: 'PPQ // Kapiti Coast Airport',
 };
 
+export const MQP: Location = {
+  description: `Nelspruit, ${southAfrica}`,
+  position: { lat: -25.382502, lng: 31.106561 },
+  title: 'MQP // Kruger Mpumalanga International',
+};
+
 export const airports: Location[] = [
   KIM,
   PLZ,
@@ -641,4 +647,5 @@ export const airports: Location[] = [
   OOL,
   HBA,
   PPQ,
+  MQP,
 ];

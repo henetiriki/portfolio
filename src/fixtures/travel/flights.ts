@@ -58,6 +58,7 @@ import {
   MEL,
   MIA,
   MPM,
+  MQP,
   MRU,
   NBO,
   NPL,
@@ -186,6 +187,7 @@ export const flights: google.maps.LatLngLiteral[][] = [
   [OOL.position, SYD.position],
   [AKL.position, HBA.position],
   [AKL.position, PPQ.position],
+  [JNB.position, MQP.position],
 ];
 
 export const upcomingFlights: google.maps.LatLngLiteral[][] = [];
