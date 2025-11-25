@@ -4543,6 +4543,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"botid@npm:^1.5.10":
+  version: 1.5.10
+  resolution: "botid@npm:1.5.10"
+  peerDependencies:
+    next: "*"
+    react: ^18.0.0 || ^19.0.0
+  peerDependenciesMeta:
+    next:
+      optional: true
+    react:
+      optional: true
+  checksum: 10/73f8e33eda8b15f065fb1af472062d6c6f964d07e9078e13baae07096bedbf51414df52160c4f6f5b43b580d8b6fee1ec200f902db72ac4f9f0782ef11802f3e
+  languageName: node
+  linkType: hard
+
 "bowser@npm:^2.11.0":
   version: 2.12.1
   resolution: "bowser@npm:2.12.1"
@@ -8078,6 +8093,7 @@ __metadata:
     "@types/react-dom": "npm:^18.3.7"
     "@typescript-eslint/eslint-plugin": "npm:^7.18.0"
     "@typescript-eslint/parser": "npm:^7.18.0"
+    botid: "npm:^1.5.10"
     eslint: "npm:^8.57.1"
     eslint-config-next: "npm:^14.2.33"
     eslint-config-prettier: "npm:^9.1.2"

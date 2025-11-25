@@ -1,4 +1,5 @@
 import { Box, MantineProvider } from '@mantine/core';
+import { BotIdClient } from 'botid/client';
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -32,6 +33,13 @@ const {
   publicRuntimeConfig: { siteUrl },
 } = getConfig();
 
+const protectedRoutes = [
+  {
+    method: 'POST',
+    path: '/api/contact',
+  },
+];
+
 const Portfolio: NextPage<AppProps> = ({
   Component, // eslint-disable-line react/prop-types
   pageProps, // eslint-disable-line react/prop-types
@@ -42,6 +50,7 @@ const Portfolio: NextPage<AppProps> = ({
     <>
       <Head>
         <title key='pageTitle'>{fullTitle('Portfolio')}</title>
+        <BotIdClient protect={protectedRoutes} />
         <meta content='width=device-width, initial-scale=1' name='viewport' />
         <link href={siteUrl} key='canonical' rel='canonical' />
         <meta
