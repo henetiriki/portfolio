@@ -40,8 +40,6 @@ const Home: NextPage = (): JSX.Element => (
               1000,
               'photographer',
               1000,
-              'cat parent',
-              1000,
               'plane spotter',
               1000,
               'traveller',

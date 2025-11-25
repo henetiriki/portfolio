@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /** @type {import('next').NextConfig} */
 
+const { withBotId } = require('botid/next/config');
+
 const lastModified = new Intl.DateTimeFormat('en-NZ', {
   day: 'numeric',
   hour: 'numeric',
@@ -57,73 +59,75 @@ const securityHeaders = [
 ];
 
 const nextConfig = withBundleAnalyzer(
-  withPWA({
-    async headers() {
-      return [
-        {
-          headers: securityHeaders,
-          // Apply these headers to all routes in your application.
-          source: '/:path*',
-        },
-      ];
-    },
-    images: {
-      minimumCacheTTL: 31536000,
-      remotePatterns: [
-        {
-          hostname: process.env.IMAGE_HOST_NAME,
-          pathname: `/${process.env.IMAGE_HOST_PATH}/*`,
-          protocol: process.env.IMAGE_HOST_PROTOCOL,
-        },
-      ],
-    },
-    publicRuntimeConfig: {
-      googleApiKey: process.env.GOOGLE_MAPS_API_KEY,
-      imgHost: process.env.IMAGE_HOST,
-      lastModified,
-      siteUrl: process.env.HOST,
-    },
-    reactStrictMode: true,
-    async redirects() {
-      return [
-        {
-          destination: '/',
-          permanent: true,
-          source: '/docs(/?.*)',
-        },
-        {
-          destination: '/',
-          permanent: true,
-          source: '/static(/?.*)',
-        },
-        {
-          destination: '/images/manifest-icons/favicon-196x196.png',
-          permanent: true,
-          source: '/resources/images/icon.png',
-        },
-        {
-          destination: '/images/manifest-icons/favicon-196x196.png',
-          permanent: true,
-          source: '/assets/images/manifesticons/eightbitme-192.png',
-        },
-        {
-          destination: 'https://meet.google.com/oyb-fjxw-ysa',
-          has: [
-            {
-              type: 'host',
-              value: 'meet.ouq77.kiwi',
-            },
-          ],
-          permanent: true,
-          source: '/',
-        },
-      ];
-    },
-    serverRuntimeConfig: {
-      igImgIds: process.env.ISTAGRAM_IMAGE_IDS,
-    },
-    swcMinify: true,
-  })
+  withPWA(
+    withBotId({
+      async headers() {
+        return [
+          {
+            headers: securityHeaders,
+            // Apply these headers to all routes in your application.
+            source: '/:path*',
+          },
+        ];
+      },
+      images: {
+        minimumCacheTTL: 31536000,
+        remotePatterns: [
+          {
+            hostname: process.env.IMAGE_HOST_NAME,
+            pathname: `/${process.env.IMAGE_HOST_PATH}/*`,
+            protocol: process.env.IMAGE_HOST_PROTOCOL,
+          },
+        ],
+      },
+      publicRuntimeConfig: {
+        googleApiKey: process.env.GOOGLE_MAPS_API_KEY,
+        imgHost: process.env.IMAGE_HOST,
+        lastModified,
+        siteUrl: process.env.HOST,
+      },
+      reactStrictMode: true,
+      async redirects() {
+        return [
+          {
+            destination: '/',
+            permanent: true,
+            source: '/docs(/?.*)',
+          },
+          {
+            destination: '/',
+            permanent: true,
+            source: '/static(/?.*)',
+          },
+          {
+            destination: '/images/manifest-icons/favicon-196x196.png',
+            permanent: true,
+            source: '/resources/images/icon.png',
+          },
+          {
+            destination: '/images/manifest-icons/favicon-196x196.png',
+            permanent: true,
+            source: '/assets/images/manifesticons/eightbitme-192.png',
+          },
+          {
+            destination: 'https://meet.google.com/oyb-fjxw-ysa',
+            has: [
+              {
+                type: 'host',
+                value: 'meet.ouq77.kiwi',
+              },
+            ],
+            permanent: true,
+            source: '/',
+          },
+        ];
+      },
+      serverRuntimeConfig: {
+        igImgIds: process.env.ISTAGRAM_IMAGE_IDS,
+      },
+      swcMinify: true,
+    })
+  )
 );
 
 module.exports = nextConfig;
