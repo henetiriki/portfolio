@@ -63,17 +63,18 @@ const Home: NextPage = (): JSX.Element => (
           <Title order={3}>Louw Swart</Title>
           <Title order={4}>Front-end Engineer, Wellington NZ</Title>
           <Text component='p'>
-            I have been in <b>Software Development</b> since 2008, with most of
-            that time spent in <b>Agile environments</b>, designing, coding,
-            testing and supporting applications across a{' '}
-            <b>variety of technologies</b> and <b>platforms</b>.
+            I have had a varied career spanning 8 years in the travel industry
+            as a <b>flight attendant</b>, after which I joined the IT sector in
+            2008, where I’ve been employed in{' '}
+            <b>various software development roles</b>. These include working
+            within industries such as <b>banking</b> and <b>media</b>, and for
+            companies contracting services to <b>government organisations</b>.
           </Text>
           <Text component='p'>
-            While my background is <b>Java</b>, I have been focusing my
-            attention on <b>JavaScript development</b> since June 2014, working
-            with frameworks such as <b>Angular</b>, <b>React</b> and{' '}
-            <b>GraphQL</b>. My passion is developing for the <b>Node.js</b>{' '}
-            runtime.
+            While my background is <b>full-stack</b> (Java), I’ve been
+            specialising in <b>Front-end development</b> since 2014, working
+            with frameworks such as <b>Angular</b>, <b>React</b>, <b>Next.js</b>{' '}
+            and <b>GraphQL</b>.
           </Text>
           <Text component='p'>
             I am a <b>pragmatic</b> individual with a strong{' '}
