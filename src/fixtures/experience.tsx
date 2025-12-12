@@ -13,11 +13,12 @@ export const jobs: Job[] = [
           lending pricing application.
         </Text>
         <Text component='p'>
-          The React UI, built using BNZ’s mini-app (micro-front-end) pattern,
-          interfaced with a BNZ microservice, which in turn integrated with an
-          external system. The application required user access management with
-          different screens for various user roles to be implemented via AD
-          groups.
+          The <b>React</b> UI, built using BNZ’s mini-app (
+          <b>micro-front-end</b>) pattern, interfaced with a BNZ microservice,
+          which in turn integrated with an external system. The application
+          required <b>user access management</b> with different screens for
+          various user roles to be implemented via AD groups. Other technologies
+          included <b>TanStack query</b> (React query) an a bespoke UI library.
         </Text>
       </>
     ),
