@@ -18,7 +18,7 @@ export const jobs: Job[] = [
           which in turn integrated with an external system. The application
           required <b>user access management</b> with different screens for
           various user roles to be implemented via AD groups. Other technologies
-          included <b>TanStack query</b> (React query) an a bespoke UI library.
+          included <b>TanStack query</b> (React query) and a bespoke UI library.
         </Text>
       </>
     ),
@@ -91,7 +91,7 @@ export const jobs: Job[] = [
           One of my own objectives was <b>mentoring</b> team members on good{' '}
           <b>SDLC</b> practices and continuous improvement - breaking stories
           down into small, releasable chunks, writing testable code and focusing
-          on a WIP limits.
+          on a WIP limit.
         </Text>
       </>
     ),
@@ -222,8 +222,8 @@ export const jobs: Job[] = [
       <>
         <Text component='p'>
           I joined Stuff (Fairfax Media) as a <b>Full-Stack Engineer</b> in
-          September 2017 and worked in a team focused on building a new curation
-          tool to satisfy several specific editorial tasks.
+          September 2017, and worked in a team focused on building a new
+          curation tool to satisfy several specific editorial tasks.
         </Text>
         <Text component='p'>
           The application was written in <b>Typescript</b> using <b>Angular</b>{' '}
@@ -389,7 +389,7 @@ export const jobs: Job[] = [
           I was involved in a major overhaul of the UI for the PPM System,
           which, amongst other tasks, included the implementation of a{' '}
           <b>WYSIWYG editor</b> inside GWT. I worked with my team in New Zealand
-          alongside teams in the US and China to re-build the data collection
+          alongside teams in the US and China to rebuild the data collection
           component.
         </Text>
       </>
@@ -428,7 +428,7 @@ export const jobs: Job[] = [
         <Title order={5}>Accomplishments</Title>
         <Text component='p'>
           I integrated an open-source <b>mobile framework</b> (WURFL) into the
-          Quirk software stack which enabled the development of mobile client
+          Quirk software stack, which enabled the development of mobile client
           solutions. I converted <b>Google’s server-side JSP tracking</b> code
           to fit into the Quirk stack and WebWork framework.
         </Text>
@@ -455,9 +455,9 @@ export const jobs: Job[] = [
           backed by <b>Spring</b>, <b>MySQL</b> and <b>Hibernate</b>.
         </Text>
         <Text component='p'>
-          Other duties included maintenance and support of existing
+          Other duties included the maintenance and support of existing
           applications, interfacing with clients regularly for presentations and
-          training, the compilation of client-facing documentation where
+          training, the compilation of client-facing documentation, where
           required and performing on-call server monitoring.
         </Text>
       </>
@@ -487,7 +487,7 @@ export const jobs: Job[] = [
         I worked as part of a team that developed <b>Java ME</b> applications
         for <b>embedded systems</b>. I was also involved with the server-side
         software and mobile sites supporting the download and installation
-        thereof. Other duties included maintenance of existing software.
+        thereof. Other duties included the maintenance of existing software.
       </Text>
     ),
     institution: {
