@@ -108,13 +108,20 @@ const Portfolio: NextPage = (): JSX.Element => (
                   Beauty WithIn
                 </Anchor>
               </Title>
-              <Text component='p'>
-                <b>Squarespace + Acuity Integration</b>
+              <Text
+                component='p'
+                sx={{
+                  span: {
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                  },
+                }}>
+                <span>Squarespace + Acuity Integration</span>
                 <br />
                 <br />A sophisticated web design for a Registered Nurse-led
-                clinic based in Brisbane, Australia. I implemented a custom
-                <i>Squarespace</i> layout and paired it with{' '}
-                <i>Acuity Scheduling</i> engine to manage aesthetic
+                clinic based in Brisbane, Australia. I implemented a custom{' '}
+                <b>Squarespace</b> layout and paired it with{' '}
+                <b>Acuity Scheduling</b> engine to manage aesthetic
                 consultations, deposit payments, and automated client workflows.
               </Text>
             </Box>
@@ -177,15 +184,21 @@ const Portfolio: NextPage = (): JSX.Element => (
                   CSA Architects
                 </Anchor>
               </Title>
-              <Text component='p'>
-                <b>Minimalist Squarespace Build</b>
+              <Text
+                component='p'
+                sx={{
+                  span: {
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                  },
+                }}>
+                <span>Minimalist Squarespace Build</span>
                 <br />
-                <br />A sophisticated digital portfolio for a Western Cape
-                architecture firm. Using Squarespace, I built a clean,
-                responsive interface that balances project portfolios with
-                technical service descriptions. The result is a high-end,
-                functional site that aligns with the client’s brand of
-                “simplistic and smart design”.
+                <br />A digital portfolio for a South African architecture firm.
+                Using <b>Squarespace</b>, I built a clean, responsive interface
+                that balances project portfolios with technical service
+                descriptions. The result is a high-end, functional site that
+                aligns with the client’s brand of “simplistic and smart design”.
               </Text>
             </Box>
           </Container>
@@ -231,8 +244,15 @@ const Portfolio: NextPage = (): JSX.Element => (
               <Title order={3}>
                 <Text>Reserved for You</Text>
               </Title>
-              <Text component='p'>
-                <b>Is Your Brand Next?</b>
+              <Text
+                component='p'
+                sx={{
+                  span: {
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                  },
+                }}>
+                <span>Is Your Brand Next?</span>
                 <br />
                 <br />
                 I’ve helped aesthetics clinics and architects level up their
@@ -249,10 +269,7 @@ const Portfolio: NextPage = (): JSX.Element => (
                       color: shamrock[5],
                       textDecoration: 'none',
                     },
-                    span: {
-                      fontSize: '0.75rem',
-                      fontStyle: 'italic',
-                    },
+                    fontSize: '1rem',
                   })}>
                   Let’s Chat!
                 </Anchor>
