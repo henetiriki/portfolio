@@ -20,7 +20,7 @@ const Portfolio: NextPage = (): JSX.Element => (
   <>
     <Head>
       <title key='pageTitle'>{fullTitle('Portfolio')}</title>
-      <link href={`${siteUrl}/experience`} key='canonical' rel='canonical' />
+      <link href={`${siteUrl}/portfolio`} key='canonical' rel='canonical' />
       <meta content={description} key='pageDescription' name='description' />
       <meta
         content='portfolio freelance squarespace'
