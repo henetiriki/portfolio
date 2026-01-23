@@ -55,7 +55,7 @@ const Experience: NextPage = (): JSX.Element => (
     </Head>
     <>
       <Header>
-        Experience<span>what I’ve done so far</span>
+        Experience<span>where I’ve worked so far</span>
       </Header>
       <Content>
         <TimelineHeading
