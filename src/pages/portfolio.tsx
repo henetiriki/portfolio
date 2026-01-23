@@ -229,7 +229,7 @@ const Portfolio: NextPage = (): JSX.Element => (
                 padding: '15px',
               }}>
               <Title order={3}>
-                <Text c='shamrock'>Reserved for You</Text>
+                <Text>Reserved for You</Text>
               </Title>
               <Text component='p'>
                 <b>Is Your Brand Next?</b>
