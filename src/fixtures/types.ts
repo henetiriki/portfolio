@@ -47,3 +47,10 @@ export type SocialLink = {
   title: string;
   url: string;
 };
+
+export type PortfolioItem = {
+  content: JSX.Element;
+  imageUrl: string;
+  title: string;
+  url?: string;
+};
