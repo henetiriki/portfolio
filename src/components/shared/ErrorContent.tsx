@@ -15,16 +15,17 @@ export const ErrorContent: FC<{ errorHeading: string; message: string }> = ({
       <Container>
         <Title order={2}>{errorHeading}</Title>
         <Text>{message}</Text>
-        <Space h={40} />
+        <Space h='xl' />
         <Text>
           <Button
-            c='shamrock'
+            color='shamrock'
             leftIcon={<IconHandFinger size={21} style={{ rotate: '90deg' }} />}
             onClick={() => router.push('/')}
             radius='lg'
             size='lg'
             type='submit'
-            variant='outline'>
+            variant='outline'
+            w={{ base: '100%', md: '25%', sm: '35%' }}>
             Shamrock button
           </Button>
         </Text>
