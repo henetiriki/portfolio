@@ -1,4 +1,4 @@
-import { Button, Container, Text, Title } from '@mantine/core';
+import { Button, Container, Space, Text, Title } from '@mantine/core';
 import { IconHandFinger } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
 import { Content } from '@components/content';
@@ -15,9 +15,19 @@ export const ErrorContent: FC<{ errorHeading: string; message: string }> = ({
       <Container>
         <Title order={2}>{errorHeading}</Title>
         <Text>{message}</Text>
+        <Space h='xl' />
         <Text>
-          <IconHandFinger size={30} style={{ rotate: '90deg' }} />
-          <Button onClick={() => router.push('/')}>Shamrock button</Button>
+          <Button
+            color='shamrock'
+            leftIcon={<IconHandFinger size={21} style={{ rotate: '90deg' }} />}
+            onClick={() => router.push('/')}
+            radius='lg'
+            size='lg'
+            type='submit'
+            variant='outline'
+            w={{ base: '100%', md: '25%', sm: '35%' }}>
+            Shamrock button
+          </Button>
         </Text>
       </Container>
     </Content>

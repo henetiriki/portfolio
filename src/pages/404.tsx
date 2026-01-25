@@ -27,7 +27,7 @@ const FourOhFour: NextPage = (): JSX.Element => {
       </Head>
       <>
         <Header>
-          four-o-four<span>wherefore art thou</span>
+          four-oh-four<span>wherefore art thou</span>
         </Header>
         <ErrorContent
           errorHeading='Looks like that doesn’t exist'
