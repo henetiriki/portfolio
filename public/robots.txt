@@ -23,7 +23,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://portfolio.ouq77.kiwi
+Host: https://www.ouq77.kiwi
 
 # Sitemaps
-Sitemap: https://portfolio.ouq77.kiwi/sitemap.xml
+Sitemap: https://www.ouq77.kiwi/sitemap.xml
