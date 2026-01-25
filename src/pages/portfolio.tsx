@@ -76,15 +76,44 @@ const Portfolio: NextPage = (): JSX.Element => (
                     padding: 0,
                     position: 'relative',
                   }}>
-                  <Image
-                    alt={title}
-                    blurDataURL={blurDataURL(350, 192)}
-                    layout='fill'
-                    lazyBoundary='0px'
-                    objectFit='cover'
-                    placeholder='blur'
-                    src={imageUrl}
-                  />
+                  {url && (
+                    <Anchor
+                      c='shamrock'
+                      href={url}
+                      rel='noopener noreferrer'
+                      sx={({ colors: { shamrock } }: MantineTheme) => ({
+                        '&:hover': {
+                          color: shamrock[5],
+                          textDecoration: 'none',
+                        },
+                        span: {
+                          fontSize: '0.75rem',
+                          fontStyle: 'italic',
+                        },
+                      })}
+                      target='_blank'>
+                      <Image
+                        alt={title}
+                        blurDataURL={blurDataURL(350, 192)}
+                        layout='fill'
+                        lazyBoundary='0px'
+                        objectFit='cover'
+                        placeholder='blur'
+                        src={imageUrl}
+                      />
+                    </Anchor>
+                  )}
+                  {!url && (
+                    <Image
+                      alt={title}
+                      blurDataURL={blurDataURL(350, 192)}
+                      layout='fill'
+                      lazyBoundary='0px'
+                      objectFit='cover'
+                      placeholder='blur'
+                      src={imageUrl}
+                    />
+                  )}
                 </Box>
                 <Box
                   sx={{
