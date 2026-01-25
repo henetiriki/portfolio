@@ -1,6 +1,7 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
   changefreq: 'monthly',
+  generateIndexSitemap: false,
   generateRobotsTxt: true,
   robotsTxtOptions: {
     policies: [

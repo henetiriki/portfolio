@@ -8,14 +8,13 @@
     "npm": "^10"
   },
   "scripts": {
-    "build": "next build",
+    "build": "next build && next-sitemap",
     "clean": "rm -rf .next",
     "dev": "NODE_OPTIONS='--inspect --trace-warnings' next dev",
     "eslint:check": "eslint .",
     "eslint:write": "eslint . --fix",
     "lint:check": "next lint",
     "lint:write": "next lint --fix",
-    "postbuild": "next-sitemap",
     "prepare": "husky install",
     "prettier:check": "prettier . --check --ignore-path .prettierignore",
     "prettier:write": "prettier . --write --ignore-path .prettierignore",
