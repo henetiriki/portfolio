@@ -1,14 +1,10 @@
-import { Anchor, Flex, Text } from '@mantine/core';
+import { Anchor, Flex, Space, Text } from '@mantine/core';
 import { IconCopyright } from '@tabler/icons-react';
 import getConfig from 'next/config';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
-import {
-  FooterContainer,
-  FooterLines,
-  FooterLinksContainer,
-} from '@components/footer';
+import { FooterContainer, FooterLinksContainer } from '@components/footer';
 import { Logo, WaveWrapper } from '@components/shared';
 import { socialLinks } from '@fixtures/footer';
 import { menuItems } from '@fixtures/nav';
@@ -38,7 +34,7 @@ export const Footer: FC = (): JSX.Element => {
       <WaveWrapper wave='footer-bottom' />
       <FooterContainer bg='blackRussian'>
         <Logo />
-        <FooterLines mt='xl' />
+        <Space mt='xl' />
         <FooterLinksContainer>
           {menuItems.map(({ href, text }) => (
             <Anchor
@@ -60,7 +56,6 @@ export const Footer: FC = (): JSX.Element => {
             </Anchor>
           ))}
         </FooterLinksContainer>
-        <FooterLines mb='xl' />
         <FooterLinksContainer pb='0'>
           {socialLinks.map(({ icon, title, url }: SocialLink) => (
             <Anchor
