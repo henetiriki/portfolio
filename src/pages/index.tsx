@@ -24,7 +24,9 @@ const Home: NextPage = (): JSX.Element => (
         zIndex: 1,
       }}>
       <Container sx={{ textAlign: 'center' }}>
-        <Title order={1}>Louw Swart</Title>
+        <Title order={1} sx={{ textTransform: 'uppercase' }}>
+          Louw Swart
+        </Title>
         <Title
           order={4}
           sx={({ colors: { shamrock } }: MantineTheme) => ({

@@ -4,12 +4,12 @@ import type { FC, JSX, PropsWithChildren } from 'react';
 export const Header: FC<PropsWithChildren> = ({ children }): JSX.Element => (
   <Container
     sx={{
-      height: '50vh',
+      height: '75vh',
+      paddingTop: '30vh',
     }}>
     <Title
       order={1}
       sx={{
-        paddingTop: '20%',
         span: {
           display: 'block',
           fontSize: '1.25rem',
