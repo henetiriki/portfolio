@@ -86,6 +86,12 @@ const Portfolio: NextPage = (): JSX.Element => (
                           color: shamrock[5],
                           textDecoration: 'none',
                         },
+                        img: {
+                          '&:hover': {
+                            transform: 'scale(1.1)',
+                          },
+                          transition: 'transform 0.25s ease',
+                        },
                         span: {
                           fontSize: '0.75rem',
                           fontStyle: 'italic',
