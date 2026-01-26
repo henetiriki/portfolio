@@ -17,10 +17,9 @@ const Home: NextPage = (): JSX.Element => (
   <>
     <Container
       sx={{
-        alignItems: 'center',
-        display: 'flex',
         height: '75vh',
-        justifyContent: 'center',
+        paddingTop: '32vh',
+        textAlign: 'center',
         zIndex: 1,
       }}>
       <Container sx={{ textAlign: 'center' }}>
