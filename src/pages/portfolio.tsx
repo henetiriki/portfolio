@@ -1,4 +1,4 @@
-import { Anchor, Box, Container, Text, Title } from '@mantine/core';
+import { Anchor, Box, Container, Space, Text, Title } from '@mantine/core';
 import getConfig from 'next/config';
 import Head from 'next/head';
 import Image from 'next/legacy/image';
@@ -43,7 +43,9 @@ const Portfolio: NextPage = (): JSX.Element => (
         Portfolio<span>freelance work I’ve done</span>
       </Header>
       <Content>
-        <Container
+        <Title order={2}>Website portfolio</Title>
+        <Space h='xl' />
+        <Box
           sx={{
             display: 'flex',
             flexWrap: 'wrap',
@@ -162,7 +164,7 @@ const Portfolio: NextPage = (): JSX.Element => (
               </Container>
             )
           )}
-        </Container>
+        </Box>
       </Content>
     </>
   </>
