@@ -5,7 +5,7 @@ export const Header: FC<PropsWithChildren> = ({ children }): JSX.Element => (
   <Container
     sx={{
       height: '75vh',
-      paddingTop: '32vh',
+      paddingTop: '30vh',
     }}>
     <Title
       order={1}

@@ -18,7 +18,7 @@ const Home: NextPage = (): JSX.Element => (
     <Container
       sx={{
         height: '75vh',
-        paddingTop: '32vh',
+        paddingTop: '30vh',
         textAlign: 'center',
         zIndex: 1,
       }}>
