@@ -23,7 +23,6 @@ export const ErrorContent: FC<{ errorHeading: string; message: string }> = ({
             onClick={() => router.push('/')}
             radius='lg'
             size='lg'
-            type='submit'
             variant='outline'
             w={{ base: '100%', md: '25%', sm: '35%' }}>
             Shamrock button
