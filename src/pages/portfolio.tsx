@@ -63,7 +63,7 @@ const Portfolio: NextPage = (): JSX.Element => (
                   [largerThan('sm')]: {
                     width: 'calc(100% / 2.1)',
                   },
-                  [largerThan('md')]: {
+                  [largerThan(1080)]: {
                     width: 'calc(100% / 3.3)',
                   },
                   width: '100%',
@@ -71,11 +71,8 @@ const Portfolio: NextPage = (): JSX.Element => (
                 <Box
                   sx={({ fn: { largerThan } }: MantineTheme) => ({
                     color: 'white',
-                    [largerThan('sm')]: {
-                      height: '180px',
-                    },
-                    [largerThan('md')]: {
-                      height: '190px',
+                    [largerThan(1080)]: {
+                      height: '155px',
                     },
                     height: '200px',
                     padding: 0,
