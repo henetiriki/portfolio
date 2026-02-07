@@ -1,7 +1,9 @@
-import { Anchor, Box, Container, Space, Text, Title } from '@mantine/core';
+import { Anchor, Box, Button, Space, Text, Title } from '@mantine/core';
+import { IconMessage } from '@tabler/icons-react';
 import getConfig from 'next/config';
 import Head from 'next/head';
 import Image from 'next/legacy/image';
+import NextLink from 'next/link';
 import { Content, Header } from '@components/content';
 import { description, portfolioItems } from '@fixtures/portfolio';
 import { blurDataURL } from '@utils/common';
@@ -49,56 +51,48 @@ const Portfolio: NextPage = (): JSX.Element => (
           sx={{
             display: 'flex',
             flexWrap: 'wrap',
-            marginLeft: '-15px',
-            marginRight: '-15px',
+            gap: '1.5rem',
+            justifyContent: 'space-around',
           }}>
           {portfolioItems.map(
-            ({ content, imageUrl, title, url }: PortfolioItem) => (
-              <Container
+            ({ action, content, imageUrl, title, url }: PortfolioItem) => (
+              <Box
                 key={title}
                 sx={({ fn: { largerThan } }: MantineTheme) => ({
-                  marginBottom: '30px',
-                  paddingLeft: '15px',
-                  paddingRight: '15px',
-                  position: 'relative',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
                   [largerThan('sm')]: {
-                    flex: '0 0 50%',
-                    maxWidth: '50%',
+                    width: 'calc(100% / 2.1)',
                   },
                   [largerThan('md')]: {
-                    flex: '0 0 33.333333%',
-                    maxWidth: '33.333333%',
+                    width: 'calc(100% / 3.3)',
                   },
                   width: '100%',
                 })}>
                 <Box
-                  sx={{
+                  sx={({ fn: { largerThan } }: MantineTheme) => ({
                     color: 'white',
-                    height: '192px',
+                    [largerThan('sm')]: {
+                      height: '180px',
+                    },
+                    [largerThan('md')]: {
+                      height: '190px',
+                    },
+                    height: '200px',
                     padding: 0,
                     position: 'relative',
-                  }}>
+                  })}>
                   {url && (
                     <Anchor
-                      c='shamrock'
                       href={url}
                       rel='noopener noreferrer'
-                      sx={({ colors: { shamrock } }: MantineTheme) => ({
-                        '&:hover': {
-                          color: shamrock[5],
-                          textDecoration: 'none',
-                        },
+                      sx={{
                         img: {
                           '&:hover': {
                             transform: 'scale(1.1)',
                           },
                           transition: 'transform 0.25s ease',
                         },
-                        span: {
-                          fontSize: '0.75rem',
-                          fontStyle: 'italic',
-                        },
-                      })}
+                      }}
                       target='_blank'>
                       <Image
                         alt={title}
@@ -125,7 +119,6 @@ const Portfolio: NextPage = (): JSX.Element => (
                 </Box>
                 <Box
                   sx={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
                     padding: '15px',
                   }}>
                   <Title order={3}>
@@ -160,8 +153,28 @@ const Portfolio: NextPage = (): JSX.Element => (
                     }}>
                     {content}
                   </Text>
+                  {action && (
+                    <Button
+                      color='shamrock'
+                      component={NextLink}
+                      href={action.href}
+                      leftIcon={<IconMessage size={21} />}
+                      radius='lg'
+                      size='lg'
+                      sx={({ colors: { shamrock } }: MantineTheme) => ({
+                        '&:hover': {
+                          color: shamrock[5],
+                          textDecoration: 'none',
+                        },
+                        fontSize: '1rem',
+                        marginTop: '1rem',
+                      })}
+                      variant='outline'>
+                      {action.label}
+                    </Button>
+                  )}
                 </Box>
-              </Container>
+              </Box>
             )
           )}
         </Box>

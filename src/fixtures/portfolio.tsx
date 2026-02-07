@@ -1,7 +1,4 @@
-import { Anchor } from '@mantine/core';
-import NextLink from 'next/link';
 import type { PortfolioItem } from '@fixtures/types';
-import type { MantineTheme } from '@mantine/core';
 
 export const description =
   'Portfolio of freelance work built on the Squarespace platform';
@@ -39,6 +36,10 @@ export const portfolioItems: PortfolioItem[] = [
     url: 'https://www.csarc.co.za',
   },
   {
+    action: {
+      href: '/contact',
+      label: 'Let’s Chat',
+    },
     content: (
       <>
         <span>Is Your Brand Next?</span>
@@ -47,21 +48,6 @@ export const portfolioItems: PortfolioItem[] = [
         I’ve helped aesthetics clinics and architects level up their digital
         game. Now it’s your turn. Secure your spot in my portfolio and let’s
         build your new <b>Squarespace</b> home.
-        <br />
-        <br />
-        <Anchor
-          c='shamrock'
-          component={NextLink}
-          href='/contact'
-          sx={({ colors: { shamrock } }: MantineTheme) => ({
-            '&:hover': {
-              color: shamrock[5],
-              textDecoration: 'none',
-            },
-            fontSize: '1rem',
-          })}>
-          Let’s Chat!
-        </Anchor>
       </>
     ),
     imageUrl: '/images/portfolio/coming_soon.jpg',
