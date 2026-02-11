@@ -47,19 +47,37 @@ export const Marker: FC<
         infoWindow?.setHeaderDisabled(true);
         infoWindow?.setContent(
           `<div>
-            <h4 style="color:${shamrock[4]};font-size:1rem;margin:0.25rem 0 0.25rem">${title}</h4>
+            <h4 style="color:${shamrock[4]};font-size:1rem;margin:0.25rem 0 0.45rem">${title}</h4>
             <p style="color:${cinder[4]};font-size:0.85rem;margin:0.25rem 0 0.25rem">${description}</p>
           </div>`
         );
         infoWindow?.open(map, marker);
-        cancelableDelay(5000, () => {
-          infoWindow?.close();
-        });
       });
     }
 
     return undefined;
   }, [infoWindow, map, marker, options]);
+
+  const infoWindowVisibleEventListener = useCallback<
+    () => google.maps.MapsEventListener | undefined
+  >(() => {
+    let infoWindowTimer: ReturnType<typeof setTimeout> | undefined;
+
+    if (infoWindow) {
+      return google.maps.event.addListener(infoWindow, 'visible', () => {
+        if (infoWindowTimer) {
+          clearTimeout(infoWindowTimer);
+        }
+        if (infoWindow?.isOpen) {
+          infoWindowTimer = cancelableDelay(5000, () => {
+            infoWindow?.close();
+          });
+        }
+      });
+    }
+
+    return undefined;
+  }, [infoWindow]);
 
   const zoomEventListener = useCallback<
     () => google.maps.MapsEventListener | undefined
@@ -114,6 +132,15 @@ export const Marker: FC<
       infoWindow?.close();
     };
   }, [marker, markerOpts, markerReady, setMarkerScale]);
+
+  useEffect(() => {
+    const eventListener: google.maps.MapsEventListener | undefined =
+      infoWindowVisibleEventListener();
+
+    return () => {
+      eventListener?.remove();
+    };
+  }, [infoWindowVisibleEventListener]);
 
   useEffect(() => {
     const eventListener: google.maps.MapsEventListener | undefined =
