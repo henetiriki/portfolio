@@ -46,8 +46,8 @@ export const Marker: FC<
         });
         infoWindow?.setContent(
           `<div>
-            <h4 style="color:${shamrock[4]};font-size:1rem">${title}</h4>
-            <p style="color:${cinder[4]};font-size:0.85rem">${description}</p>
+            <h4 style="color:${shamrock[4]};font-size:1rem;margin:0.25rem 0 0.25rem">${title}</h4>
+            <p style="color:${cinder[4]};font-size:0.85rem;margin:0.25rem 0 0.25rem">${description}</p>
           </div>`
         );
         infoWindow?.open(map, marker);
