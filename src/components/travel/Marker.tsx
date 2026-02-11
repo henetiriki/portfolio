@@ -44,6 +44,7 @@ export const Marker: FC<
         cancelableDelay(2000, () => {
           marker?.setAnimation(null);
         });
+        infoWindow?.setHeaderDisabled(true);
         infoWindow?.setContent(
           `<div>
             <h4 style="color:${shamrock[4]};font-size:1rem;margin:0.25rem 0 0.25rem">${title}</h4>
@@ -51,6 +52,9 @@ export const Marker: FC<
           </div>`
         );
         infoWindow?.open(map, marker);
+        cancelableDelay(5000, () => {
+          infoWindow?.close();
+        });
       });
     }
 
