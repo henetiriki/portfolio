@@ -72,6 +72,7 @@ import {
   PVG,
   RAR,
   ROT,
+  SCL,
   SFO,
   SID,
   SIN,
@@ -190,4 +191,6 @@ export const flights: google.maps.LatLngLiteral[][] = [
   [JNB.position, MQP.position],
 ];
 
-export const upcomingFlights: google.maps.LatLngLiteral[][] = [];
+export const upcomingFlights: google.maps.LatLngLiteral[][] = [
+  [JNB.position, GRU.position, SCL.position],
+];

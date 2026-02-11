@@ -557,6 +557,12 @@ export const MQP: Location = {
   title: 'MQP // Kruger Mpumalanga International',
 };
 
+export const SCL: Location = {
+  description: 'Santiago, Chile',
+  position: { lat: -33.394267, lng: -70.793749 },
+  title: 'SCL // Arturo Merino Benítez International',
+};
+
 export const airports: Location[] = [
   KIM,
   PLZ,
@@ -648,4 +654,5 @@ export const airports: Location[] = [
   HBA,
   PPQ,
   MQP,
+  SCL,
 ];
