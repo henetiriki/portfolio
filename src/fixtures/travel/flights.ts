@@ -189,8 +189,7 @@ export const flights: google.maps.LatLngLiteral[][] = [
   [AKL.position, HBA.position],
   [AKL.position, PPQ.position],
   [JNB.position, MQP.position],
+  [GRU.position, SCL.position],
 ];
 
-export const upcomingFlights: google.maps.LatLngLiteral[][] = [
-  [JNB.position, GRU.position, SCL.position],
-];
+export const upcomingFlights: google.maps.LatLngLiteral[][] = [];
