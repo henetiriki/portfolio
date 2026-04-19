@@ -9,6 +9,36 @@ export const jobs: Job[] = [
     content: (
       <>
         <Text component='p'>
+          <b>Objective</b>: Executing a planned career pivot and sabbatical,
+          enabling me to spend quality time with family while also undertaking
+          long-delayed travel plans.
+        </Text>
+        <Text component='p'>
+          <b>Travel</b>: Accomplished a lifelong goal of navigating diverse
+          environments in Chile, Argentina and Patagonia, which definitely
+          enhanced my cultural fluency and adaptability.
+        </Text>
+        <Text component='p'>
+          <b>Preparation</b>: Currently finalising a relocation to South Africa
+          after 14 years in New Zealand; fully equipped and available for
+          remote-first roles in the <b>GMT+2</b> timezone.
+        </Text>
+      </>
+    ),
+    institution: {
+      location: 'South Africa, Chile, Argentina',
+      name: 'Career break',
+    },
+    title: 'International Travel & Family Priorities',
+    year: {
+      from: 'November 2025',
+      to: 'Present',
+    },
+  },
+  {
+    content: (
+      <>
+        <Text component='p'>
           Worked in a team tasked with replacing a bespoke BNZ deposit and home
           lending pricing application.
         </Text>
