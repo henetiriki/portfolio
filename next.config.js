@@ -114,7 +114,7 @@ const nextConfig = withBundleAnalyzer(
             has: [
               {
                 type: 'host',
-                value: 'meet.ouq77.kiwi',
+                value: 'meet.ouwl.house',
               },
             ],
             permanent: true,

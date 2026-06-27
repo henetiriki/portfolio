@@ -587,7 +587,7 @@ export const schools: School[] = [
       name: 'CTI',
       url: 'https://en.wikipedia.org/wiki/CTI_Education_Group',
     },
-    qualification: 'Comprehensive Programming',
+    qualification: 'Certificate in Information Systems',
     year: {
       from: '2006',
       to: '2007',
