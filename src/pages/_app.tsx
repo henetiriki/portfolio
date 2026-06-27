@@ -64,7 +64,7 @@ const Portfolio: NextPage<AppProps> = ({
           name='keywords'
         />
         <meta content='summary' name='twitter:card' />
-        <meta content='https://www.ouq77.kiwi' name='twitter:url' />
+        <meta content='https://www.ouwl.house' name='twitter:url' />
         <meta content='Louw Swart // Portfolio' name='twitter:title' />
         <meta
           content='Online Portfolio and CV for Louw Swart'
@@ -72,7 +72,7 @@ const Portfolio: NextPage<AppProps> = ({
           name='twitter:description'
         />
         <meta
-          content='https://www.ouq77.kiwi/images/og-images/portfolio.png'
+          content='https://www.ouwl.house/images/og-images/portfolio.png'
           name='twitter:image'
         />
         <meta content='@henetiriki' name='twitter:creator' />
@@ -84,9 +84,9 @@ const Portfolio: NextPage<AppProps> = ({
           property='og:description'
         />
         <meta content='Louw Swart // Portfolio' property='og:site_name' />
-        <meta content='https://www.ouq77.kiwi' property='og:url' />
+        <meta content='https://www.ouwl.house' property='og:url' />
         <meta
-          content='https://www.ouq77.kiwi/images/og-images/portfolio.png'
+          content='https://www.ouwl.house/images/og-images/portfolio.png'
           property='og:image'
         />
       </Head>

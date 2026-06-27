@@ -23,7 +23,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://www.ouq77.kiwi
+Host: https://www.ouwl.house
 
 # Sitemaps
-Sitemap: https://www.ouq77.kiwi/sitemap.xml
+Sitemap: https://www.ouwl.house/sitemap.xml
