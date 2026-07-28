@@ -20,6 +20,10 @@ Disallow: /
 
 # *
 User-agent: *
+Disallow: /static
+
+# *
+User-agent: *
 Allow: /
 
 # Host
