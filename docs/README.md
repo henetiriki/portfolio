@@ -1,0 +1,25 @@
+# Documentation
+
+Specs describing the current implementation of Louw Swart's personal portfolio site, generated from a read-through of the codebase on 2026-08-04. These documents describe **what exists today**, not a design proposal — treat the source under `src/` as the source of truth if anything drifts out of sync.
+
+## Contents
+
+- [Architecture](architecture.md) — tech stack, directory layout, request lifecycle, path aliases
+- [Pages & Routing](pages-and-routing.md) — every route, its purpose, and the redirects in `next.config.js`
+- [State Management](state-management.md) — the single global `PortfolioState` context/reducer
+- [Components](components.md) — component catalog grouped by feature area
+- [Travel / Google Maps Feature](travel-feature.md) — how the interactive map, markers and polylines work
+- [Contact Feature](contact-feature.md) — form validation, spam handling, and the Nodemailer-based email flow
+- [Styling & Theming](styling-theming.md) — Mantine theme, custom color palette, Emotion usage
+- [PWA & SEO](pwa-seo.md) — manifest, service worker, meta tags, sitemap/robots
+- [Environment Variables](environment-variables.md) — every `process.env` value the app reads
+- [Development Workflow](development.md) — scripts, linting, formatting, git hooks
+
+## At a glance
+
+- **Framework**: Next.js 14 (Pages Router) + React 18 + TypeScript, strict mode
+- **UI kit**: Mantine v6 (`@mantine/core`, `form`, `hooks`, `notifications`) styled via Emotion `sx`/`createStyles`
+- **Purpose**: a single-person portfolio/CV site with four content pages (Home, Experience, Portfolio, Travel) and a Contact page that emails the owner
+- **Notable integrations**: Google Maps JS API (travel map), Vercel BotID (bot/spam protection on the contact form), Nodemailer over Gmail SMTP, `next-pwa` (opt-in), `next-sitemap`
+- **State**: one `useReducer`-backed React Context (`PortfolioState`) shared app-wide — no Redux/Zustand/query library
+- **Package manager**: Yarn 4 (Berry), Node `^20`
