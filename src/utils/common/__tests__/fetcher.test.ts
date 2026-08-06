@@ -22,21 +22,12 @@ describe('fetcher', () => {
     expect(global.fetch).toHaveBeenCalledTimes(2);
   });
 
-  it('rejects with the text() promise (not its resolved value) once retries are exhausted', async () => {
+  it('rejects with the resolved response text once retries are exhausted', async () => {
     const text = jest.fn().mockResolvedValue('Internal Server Error');
 
     global.fetch = jest.fn().mockResolvedValue({ ok: false, text });
 
-    let rejection: unknown;
-
-    try {
-      await fetcher('/api/test', 0);
-    } catch (error: unknown) {
-      rejection = error;
-    }
-
+    await expect(fetcher('/api/test', 0)).rejects.toBe('Internal Server Error');
     expect(global.fetch).toHaveBeenCalledTimes(1);
-    expect(rejection).toBeInstanceOf(Promise);
-    await expect(rejection).resolves.toBe('Internal Server Error');
   });
 });

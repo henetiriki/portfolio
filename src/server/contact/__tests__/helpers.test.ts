@@ -52,9 +52,9 @@ describe('validate', () => {
     ]);
   });
 
-  it('rejects an email with uppercase characters (the regex is lowercase-only)', () => {
+  it('accepts an email with uppercase characters', () => {
     expect(validate({ ...validSubmission, email: 'Jane@Example.com' })).toEqual(
-      ['e_email_invalid']
+      []
     );
   });
 
