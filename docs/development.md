@@ -18,8 +18,9 @@
 | `prettier:check` / `prettier:write` | `prettier . --check/--write --ignore-path .prettierignore` | Formatting                                                                            |
 | `type-check`                        | `tsc --pretty --noEmit`                                    | TypeScript type checking without emitting output                                      |
 | `prepare`                           | `husky install`                                            | Installs git hooks (runs automatically on `yarn install` via the `prepare` lifecycle) |
-
-There is currently **no test script** and no test files in the repo — no unit/integration/e2e test tooling is configured for this project.
+| `test`                              | `jest`                                                     | Runs the Jest suite once                                                              |
+| `test:watch`                        | `jest --watch`                                             | Jest in watch mode                                                                    |
+| `test:coverage`                     | `jest --coverage`                                          | Jest with a coverage report                                                           |
 
 ## Linting & formatting
 
@@ -44,6 +45,18 @@ There is currently **no test script** and no test files in the repo — no unit/
 ```
 
 So every commit auto-fixes lint issues and reformats staged files of the listed types (including this `/docs` folder's Markdown) before the commit completes.
+
+## Testing
+
+Jest + React Testing Library, set up 2026-08-06 (see [Roadmap](roadmap.md) — the harness itself is done; the tiered coverage work it unblocks is still open).
+
+- **`jest.config.js`** wraps Next's own `next/jest` preset (which loads `next.config.js`/`.babelrc`-equivalent SWC settings, mocks CSS/image imports, and — since Next 12.1 — automatically turns the `@alias/*` paths from `tsconfig.json` into Jest `moduleNameMapper` entries, so no alias config had to be duplicated here). `testEnvironment` is `jest-environment-jsdom`.
+- **`jest.setup.ts`** imports `@testing-library/jest-dom` for the `toBeInTheDocument()`-style matchers, wired in via `setupFilesAfterEnv`.
+- **`.env.test`** — `next.config.js` reads several `process.env` vars unconditionally at module-load time (`IMAGE_HOST_NAME`, `IMAGE_HOST_PROTOCOL`, etc. — see [Environment Variables](environment-variables.md)) and validates the resulting `images.remotePatterns` shape, so `next/jest` fails to even load the config without them. Next.js loads `.env.test` (not `.env.local`) when `NODE_ENV=test`, so this file holds committed, non-secret dummy values (fake API keys, `example.test` addresses) purely so the config validates under Jest — it is **not** a source of real credentials.
+- **`src/utils/test/render.tsx`** is a custom RTL `render` (the standard Testing Library "custom render" recipe) that wraps the tree in `MantineProvider` with the app's real `theme`, and re-exports everything else from `@testing-library/react`. Tests should import `render`/`screen`/etc. from `@utils/test/render` rather than `@testing-library/react` directly, so components relying on theme context (`useMantineTheme()`, `colors: {...}` in `sx` callbacks) resolve real values instead of Mantine's fallback defaults.
+- Test files live in a `__tests__` folder alongside the code they cover (e.g. [`components/content/__tests__/Header.test.tsx`](../src/components/content/__tests__/Header.test.tsx)), not colocated as `Component.test.tsx`. `jest.config.js`'s `testMatch` is scoped to `src/**/__tests__/**/*.test.{ts,tsx}` specifically so this is enforced — a stray `.test.tsx` file sitting next to its source won't silently run.
+- ESLint has a `files: ['**/*.test.{ts,tsx}', 'jest.setup.ts']` override enabling the `jest` env, so `describe`/`it`/`expect`/`jest` globals don't trip `no-undef`-style errors.
+- **Known gap**: many components/hooks/pages call `getConfig()` from `next/config` at module scope (`publicRuntimeConfig`/`serverRuntimeConfig`) or depend on `next/router`'s `useRouter()`, global `google.maps`, or `fetch`. None of that is mocked yet — only `next/config`'s dependency on `.env.test` is currently handled (indirectly, via the file above). Components that call `getConfig()` or `useRouter()` directly will need per-test mocking before they can be tested; this is expected, tracked as the tiered coverage work in [Roadmap](roadmap.md), not a setup defect.
 
 ## TypeScript
 

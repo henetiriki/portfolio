@@ -14,6 +14,14 @@ module.exports = {
     'plugin:security/recommended',
     'prettier',
   ],
+  overrides: [
+    {
+      env: {
+        jest: true,
+      },
+      files: ['**/*.test.{ts,tsx}', 'jest.setup.ts'],
+    },
+  ],
   parser: '@typescript-eslint/parser',
   plugins: [
     '@typescript-eslint',

@@ -4,7 +4,8 @@ Planned work, not in any particular order or priority. Each item below is a cand
 
 ## Testing
 
-- [ ] **Add unit test coverage** (Jest + React Testing Library). No test tooling exists today — see [development.md](development.md#scripts-packagejson). Scoped plan (setup, tiers, effort estimate) was worked out on 2026-08-06; roughly 28–41 hours for everything except deep Google Maps SDK mocking, +8–14 hours for that. Sequencing note: the Maps-layer tests should encode _intended_ behavior, not just pin down the current output — see "Audit & fix Google Maps layer regressions" below, which should inform those tests rather than follow them.
+- [x] **Set up Jest + React Testing Library.** Done 2026-08-06 — see [development.md](development.md#testing) for the harness (`jest.config.js` via `next/jest`, `.env.test`, the `@utils/test/render` custom-render helper, ESLint's jest-env override) and two passing smoke tests (`state/reducer.test.ts`, `components/content/Header.test.tsx`).
+- [ ] **Add unit test coverage.** The harness above is ready; this is the actual tiered coverage work. Scoped plan (tiers, effort estimate) was worked out on 2026-08-06; roughly 26–38 hours remaining for everything except deep Google Maps SDK mocking, +8–14 hours for that. Known gap to solve per-test as this proceeds: `getConfig()`/`useRouter()`/`google.maps`/`fetch` aren't mocked yet — see [development.md](development.md#testing). Sequencing note: the Maps-layer tests should encode _intended_ behavior, not just pin down the current output — see "Audit & fix Google Maps layer regressions" below, which should inform those tests rather than follow them.
 - [ ] **Add a CI workflow.** No `.github/workflows` (or any CI) exists yet. A basic lint + type-check + test GitHub Action on push/PR would make the test-coverage item above actually enforced rather than just available locally.
 
 ## Framework & dependency upgrades
