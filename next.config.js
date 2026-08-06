@@ -126,6 +126,7 @@ const nextConfig = withBundleAnalyzer(
         igImgIds: process.env.ISTAGRAM_IMAGE_IDS,
       },
       swcMinify: true,
+      transpilePackages: ['@googlemaps/typescript-guards'],
     })
   )
 );
