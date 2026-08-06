@@ -2,7 +2,9 @@
 
 All values are read via `process.env` in `next.config.js` (which exposes some of them to the client through `publicRuntimeConfig`) or directly in server-only modules under `src/server/`. None of the app's own env vars use the `NEXT_PUBLIC_*` convention — client-visible values are threaded through `publicRuntimeConfig` instead, which requires calling `getConfig()` from `next/config` at the point of use (see e.g. `pages/index.tsx`, `FixedBackground.tsx`).
 
-`.env` and `.env.production` are checked into this repo and only contain non-secret host/feature-flag config (see below); `.env*.local` is gitignored for anything sensitive.
+`.env`, `.env.production`, and `.env.test` are checked into this repo and only contain non-secret host/feature-flag config (see below); `.env*.local` is gitignored for anything sensitive.
+
+`.env.test` (added alongside the Jest setup — see [Development Workflow](development.md#testing)) holds dummy values for every var `next.config.js` reads unconditionally at module load, purely so `next/jest` can load a valid config while running tests. Next.js loads `.env.test` instead of `.env.local` whenever `NODE_ENV=test`. None of its values are real credentials.
 
 ## Committed defaults
 
