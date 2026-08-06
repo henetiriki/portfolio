@@ -17,6 +17,8 @@ export const send = async (message: Mail.Options): Promise<SendResponse> => {
         `Message not sent: isBot ${verification.isBot}; message ${message}`
       );
       reject({ error: new Error('Access denied'), success: false });
+
+      return;
     }
 
     const transporter = nodeMailer.createTransport(
@@ -38,6 +40,8 @@ export const send = async (message: Mail.Options): Promise<SendResponse> => {
         if (error) {
           console.error(`Message not sent: ${error}`);
           reject({ error, success: false });
+
+          return;
         }
         console.error(`Message sent: ${JSON.stringify(info)}`);
         resolve({ success: true });

@@ -5,6 +5,7 @@ import {
   validate,
 } from '@server/contact';
 import type { Submission } from '@pages/api/types';
+import type { SendResponse } from '@server/contact';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -20,19 +21,21 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   // send the message to the website owner
-  const { error, success } = await send(buildMessage(submission));
+  try {
+    await send(buildMessage(submission));
+  } catch (rejection: unknown) {
+    const { error } = rejection as SendResponse;
 
-  if (!success) {
     return res.status(500).json({ data: error?.message || 'Unknown error' });
   }
 
   // send a copy of the message to the sender
-  const { error: ccError, success: ccSuccess } = await send(
-    buildMessageCopy(submission)
-  );
+  try {
+    await send(buildMessageCopy(submission));
+  } catch (rejection: unknown) {
+    const { error } = rejection as SendResponse;
 
-  if (!ccSuccess) {
-    return res.status(500).json({ data: ccError?.message || 'Unknown error' });
+    return res.status(500).json({ data: error?.message || 'Unknown error' });
   }
 
   res.status(200).json({ data: 'Sent successfully' });

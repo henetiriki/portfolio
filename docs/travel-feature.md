@@ -1,0 +1,48 @@
+# Travel / Google Maps Feature
+
+The `/travel` page renders an interactive Google Map plotting places the site owner has lived, flown, sailed, and taken trains through, plus upcoming trips. It's the most complex feature in the app.
+
+## Data model (`src/fixtures/travel/`)
+
+| File                                     | Exports                                                                                          | Shape                                                                                                                                                                                             |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `types.ts`                               | `Location`, `City`, `MarkerLocations`, `TripPolylines`, `TripPaths`, `RailTripItem`, `RailTrips` | Core interfaces (see below)                                                                                                                                                                       |
+| `cities.ts`                              | `cities: City[]`, `aucklandPoint`                                                                | Places lived — each has a `description`, `position`, `title`, an icon (`currentCityIcon` for the present city, `previousCityIcon` for the rest), and `current?: boolean` for the one live-in city |
+| `countries.ts`                           | Country name constants                                                                           | Used to build `title` strings like `` `Cape Town, ${southAfrica}` ``                                                                                                                              |
+| `airports.ts`, `stations.ts`, `ports.ts` | `Location[]`                                                                                     | Visited airports/train stations/sea ports, grouped under `markerLocations`                                                                                                                        |
+| `icons.ts`                               | `previousCityIcon`, `currentCityIcon`, `airportIcon`, `portIcon`, `stationIcon`                  | `google.maps.Symbol` pin definitions — same teardrop SVG path, different `fillColor`/`scale` per category, sourced from the theme's `colorOverrides`                                              |
+| `flights.ts`, `cruises.ts`               | `flights`/`upcomingFlights`, `cruises`/`upcomingCruises`: `google.maps.LatLngLiteral[][]`        | Point-to-point leg arrays for `Polyline`'s `legs` prop                                                                                                                                            |
+| `railTrips.ts`                           | `railTrips: RailTrips` (`{ trips, upcomingTrips }`)                                              | Each `RailTripItem` is `{ path, trip }` where `path` is a Google-encoded polyline string                                                                                                          |
+| `mapConfig.ts`                           | `mapOptions()`, `MAP_MAX_MOBILE`, `STROKE_WEIGHT_DEFAULT`                                        | The map's visual style (custom `styles` array recoloring water/landscape/roads/POIs to match the site palette), world bounds restriction, and mobile zoom threshold (768px)                       |
+| `polylines.ts`                           | `sharedPolylineOpts`, `tripPolylines: TripPolylines[]`                                           | Combines flights (corn/yellow) and cruises (viking/blue) with their "upcoming" (dotted, zero-opacity solid line + a repeating dash icon) counterparts, filtered to drop empty groups              |
+| `markerLocations.ts`                     | `markerLocations: MarkerLocations[]`                                                             | Groups `airports`/`stations`/`ports` each with their icon, in the order markers get dropped                                                                                                       |
+
+## Rendering pipeline
+
+1. **`pages/travel.tsx`** dynamically imports `MapWrapper` (`ssr: false`, `loading: MapLoader`) inside a `Content` section, with the `Legend` below.
+2. **`MapWrapper`**:
+   - Sets up `useIntersection({ threshold: 0.8 })` on a sentinel `<Box ref={ref} />` placed after the map — markers/polylines ("`dropMarkers`") only start rendering once 80% of the map is scrolled into view, deferring the (expensive) marker-drop/polyline-draw work until the user actually reaches the map.
+   - Always renders the 9 `cities` as `Marker`s immediately (not gated by `dropMarkers`) since they're the primary content.
+   - Once `dropMarkers` is true, renders `markerLocations` (airports/stations/ports) and `tripPolylines` (flights/cruises) as `Marker`/`Polyline` children, each flagged `endMarker`/`endTripPolyline` on the very last item in the very last group — these flags are what trigger the "all loaded" dispatches.
+   - Also calls `useRailTrips()` to fetch `/api/rail-trips`, decode it into two `TripPaths` groups (solid trips, dotted upcoming trips colored `torchRed`), cache the result in global state, and renders those as `Polyline`s too (flagged `endRailTripPolyline`).
+   - Wraps everything in `@googlemaps/react-wrapper`'s `<Wrapper apiKey={googleApiKey} libraries={['geometry']} render={render} />` — `render` (from `useMap()`) shows `MapLoader` while the Maps JS API script loads and `MapError` if it fails.
+3. **`Map`**:
+   - Instantiates a single `google.maps.Map` on mount, and a single shared `google.maps.InfoWindow` that all markers push content into (only one info bubble open at a time).
+   - Applies `mapOptions()` merged with any `options` passed as props, plus a responsive `zoom`/`minZoom` (1 below 768px viewport width, else 2) — recalculated via `useDeepCompareEffectForMaps` (a `useEffect` whose dependency array is deep-compared, with special-cased `LatLng`/`LatLngLiteral` equality, so Maps SDK object identity churn doesn't cause redundant re-renders).
+   - Clones every child (`Marker`/`Polyline`) to inject `map`/`infoWindow` props once both exist — this is how the imperative Maps SDK objects get wired to the declarative React tree.
+   - Once `markersLoaded && railPolylinesLoaded && tripPolylinesLoaded` are all `true` in global state, pans to `aucklandPoint` and steps the zoom in one level at a time (`zoomMap`, 80ms per step, listening for `zoom_changed` between steps) up to zoom 5 — the "reveal" animation.
+4. **`Marker`** / **`Polyline`** are effect-only components (`return null`) that imperatively create/configure a single `google.maps.Marker`/`Polyline` object:
+   - Staggered entrance: each waits `idx * order * 100`ms before calling `.setMap(map)`, so markers/lines drop in sequence rather than all at once.
+   - `Marker` drop animation (`google.maps.Animation.DROP`), click → bounce for 2s + open the shared `InfoWindow` with the marker's title/description (rendered as a raw HTML string styled inline), which auto-closes after 5s of being visible.
+   - `Marker` icon scale responds to `zoom_changed` via `getZoomMarkerWeightExponent` (steps at zoom ≤10/≤16/≤22).
+   - `Polyline` path comes from either literal `legs` (`LatLngLiteral[]` → `LatLng[]`) or a Google-encoded `paths[0]` string decoded via `google.maps.geometry.encoding.decodePath` (hence the `libraries={['geometry']}` requirement on `Wrapper`).
+   - `Polyline` stroke weight responds to `zoom_changed` via `getZoomPolylineWeightExponent` (finer-grained steps at zoom ≤4/8/12/16/20/24), scaling `STROKE_WEIGHT_DEFAULT` (1.25).
+   - Both dispatch a `*Loaded: true` action when their `end*` flag item finishes staggering in, and `false` on unmount/cleanup (so re-mounting the map — e.g. route away and back — resets the loaded flags and replays the reveal animation, while `railTripPolylines` stays cached via `reset-markers-polyline-loaded`).
+
+## Rail trips API round-trip
+
+`useRailTrips()` fetches `/api/rail-trips` (which just serves the static `railTrips` fixture as JSON — kept server-side rather than imported directly so it isn't bundled into the client JS eagerly) via `fetcher` (30s timeout, `AbortController`, 2 retries on non-OK response). It reshapes `{ trips, upcomingTrips }` into two `TripPaths` groups matching the flight/cruise polyline shape, then dispatches `set-rail-trip-polylines` to cache the result in global state so it's only fetched once per session (checked via `railTripPolylines.length` before fetching).
+
+## Environment dependency
+
+The Google Maps JS API key is read server-side from `GOOGLE_MAPS_API_KEY` and exposed to the client via `publicRuntimeConfig.googleApiKey` (see [Environment Variables](environment-variables.md)) — it is **not** prefixed `NEXT_PUBLIC_*`; Next.js's `publicRuntimeConfig` mechanism is used instead, which requires the custom `_app.tsx`/pages to call `getConfig()` rather than relying on build-time inlining.
