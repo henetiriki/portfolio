@@ -49,11 +49,12 @@ Multiple errors can be returned together (except the honeypot short-circuit); th
 
 ### Sending (`send.ts`)
 
-- Calls `checkBotId()` (server-side BotID verification) before sending; if `verification.isBot`, logs and rejects with `{ success: false, error: 'Access denied' }` — **note**: the code calls `reject(...)` inside the executor but does not `return` afterward, so execution falls through and still attempts `transporter.sendMail(...)` even for a detected bot (see the flagged issue below).
+- Calls `checkBotId()` (server-side BotID verification) before sending; if `verification.isBot`, logs and rejects with `{ success: false, error: 'Access denied' }` and returns immediately — `transporter.sendMail(...)` is never reached for a detected bot.
 - Uses `nodemailer.createTransport({ service: 'gmail', auth: { user: GMAIL_APP_EMAIL, pass: GMAIL_APP_PASSWORD } }, { from: GMAIL_SENDER_EMAIL })` — a Gmail App Password, not the account's normal password, is required (`GMAIL_APP_PASSWORD`).
-- Resolves `{ success: true }` on send, rejects `{ success: false, error }` on failure. Errors are logged with `console.error`.
+- Resolves `{ success: true }` on send, rejects `{ success: false, error }` on failure (and returns immediately after rejecting — no fallthrough). Errors are logged with `console.error`.
+- `api/contact.ts` wraps each `send(...)` call in its own `try`/`catch`, mapping a caught rejection to a `500` response with `error?.message || 'Unknown error'`.
 
-> **Known rough edge**: `send()`'s `Promise` executor doesn't `return` after either `reject(...)` call — not after the bot-check reject, nor inside the `sendMail` callback's error branch — so execution falls through and the promise can still `resolve({ success: true })` after already having rejected (the first settlement wins per Promise semantics, but the code reads as if both paths run to completion, and a detected bot still triggers `transporter.sendMail(...)`). Separately, `api/contact.ts` calls `send(...)` with a plain `await` and destructures its resolved value — it never wraps the call in `try`/`catch`, so an actual rejection (bot detected, malformed transport config, etc.) would surface as an unhandled promise rejection rather than the intended `500` response. Worth revisiting if bot traffic starts producing unclean logs or unexpected 500s.
+> **Fixed 2026-08-06**: this used to have two bugs — `send()`'s `Promise` executor was missing `return` after both `reject(...)` calls (so a detected bot still triggered `transporter.sendMail(...)`, and a send error could still resolve after already rejecting), and `api/contact.ts` called `send(...)` with a bare `await` and no `try`/`catch`, so a rejection would have surfaced as an unhandled promise rejection instead of a `500`. Both are fixed and covered by regression tests in `server/contact/__tests__/send.test.ts` (asserts `createTransport` is never called for a detected bot) and `pages/api/__tests__/contact.test.ts`.
 
 ## Environment variables used
 

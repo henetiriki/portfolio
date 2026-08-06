@@ -46,6 +46,8 @@ public/            Static assets, PWA manifest, icons, email-adjacent HTML templ
                     portfolio screenshots, wave SVGs, and a tiny hash-redirect script
 ```
 
+Nearly every folder above also has its own `__tests__/` subfolder alongside the source it covers (e.g. `src/components/travel/__tests__/`) — see [Development Workflow](development.md#testing) for the full testing setup and conventions.
+
 ## Path aliases
 
 Defined in `tsconfig.json` (`compilerOptions.paths`) and mirrored by ESLint's import resolution:
