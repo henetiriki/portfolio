@@ -6,9 +6,9 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 const {
   serverRuntimeConfig: { igImgIds },
 } = getConfig();
-const imageIds: string[] = igImgIds?.split(',') || [];
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (_: NextApiRequest, res: NextApiResponse) => {
+  const imageIds: string[] = igImgIds?.split(',') || [];
   const imgId = await randomItem(imageIds);
   const data: ImageId = { imgId };
 
