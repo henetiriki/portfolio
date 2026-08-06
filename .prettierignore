@@ -1,5 +1,6 @@
 .yarn/
 .next/
+coverage/
 
 public/fallback-*.js
 public/sw.js
