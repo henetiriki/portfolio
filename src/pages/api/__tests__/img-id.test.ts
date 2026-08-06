@@ -31,4 +31,20 @@ describe('img-id API handler', () => {
       });
     }
   });
+
+  it('responds with an undefined imgId when no image ids are configured', async () => {
+    jest.resetModules();
+    jest.doMock('next/config', () => ({
+      __esModule: true,
+      default: () => ({ serverRuntimeConfig: { igImgIds: undefined } }),
+    }));
+
+    const { default: freshHandler } = await import('@pages/api/img-id');
+    const { json, req, res, status } = createMockApiContext();
+
+    await freshHandler(req, res);
+
+    expect(status).toHaveBeenCalledWith(200);
+    expect(json).toHaveBeenCalledWith({ imgId: undefined });
+  });
 });

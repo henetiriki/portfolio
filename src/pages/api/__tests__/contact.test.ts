@@ -68,6 +68,19 @@ describe('contact API handler', () => {
     expect(json).toHaveBeenCalledWith({ data: 'copy failed' });
   });
 
+  it('falls back to "Unknown error" when the confirmation copy rejection has no error message', async () => {
+    (send as jest.Mock)
+      .mockResolvedValueOnce({ success: true })
+      .mockRejectedValueOnce({ success: false });
+
+    const { json, req, res, status } = createMockApiContext(validSubmission);
+
+    await handler(req, res);
+
+    expect(status).toHaveBeenCalledWith(500);
+    expect(json).toHaveBeenCalledWith({ data: 'Unknown error' });
+  });
+
   it('responds 200 once both the owner email and confirmation copy send successfully', async () => {
     (send as jest.Mock).mockResolvedValue({ success: true });
 
