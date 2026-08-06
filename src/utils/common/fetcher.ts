@@ -32,7 +32,7 @@ export const fetcher = async <T>(
       return fetcher(url, retries - 1);
     }
 
-    return Promise.reject(response.text());
+    return Promise.reject(await response.text());
   }
 
   return response.json();
