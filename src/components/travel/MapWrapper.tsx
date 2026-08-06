@@ -42,7 +42,7 @@ export const MapWrapper: FC = () => {
               <Marker
                 description={description}
                 icon={icon}
-                idx={idx}
+                idx={idx + 1}
                 key={title}
                 position={position}
                 title={title}
@@ -60,7 +60,7 @@ export const MapWrapper: FC = () => {
                       idx === locations.length - 1
                     }
                     icon={icon}
-                    idx={idx}
+                    idx={idx + 1}
                     key={`${order}${idx}`}
                     order={order + 1}
                   />

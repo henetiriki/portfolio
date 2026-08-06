@@ -30,6 +30,7 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
     },
   } = usePortfolioState();
   const mapRef = useRef<HTMLDivElement>(null);
+  const initialZoomSetRef = useRef(false);
   const { width } = useViewportSize();
   const [map, setMap] = useState<google.maps.Map>();
   const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>();
@@ -67,14 +68,19 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
   useDeepCompareEffectForMaps(() => {
     if (map && width) {
       const mapMaxMobile = width < MAP_MAX_MOBILE;
-      const zoom = mapMaxMobile ? 1 : 2;
+      const minZoom = mapMaxMobile ? 1 : 2;
 
       map.setOptions({
         ...mapOptions(),
         ...options,
-        minZoom: zoom,
-        zoom,
+        minZoom,
+        // Only force the starting zoom once, on initial setup — otherwise a
+        // window resize after the map has loaded would snap it back to the
+        // viewport default and discard the user's own zoom level.
+        ...(!initialZoomSetRef.current && { zoom: minZoom }),
       });
+
+      initialZoomSetRef.current = true;
     }
   }, [map, options, width]);
 
