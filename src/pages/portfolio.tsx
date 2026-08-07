@@ -2,7 +2,7 @@ import { Anchor, Box, Button, Space, Text, Title } from '@mantine/core';
 import { IconMessage } from '@tabler/icons-react';
 import getConfig from 'next/config';
 import Head from 'next/head';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import NextLink from 'next/link';
 import { Content, Header } from '@components/content';
 import { description, portfolioItems } from '@fixtures/portfolio';
@@ -94,11 +94,11 @@ const Portfolio: NextPage = (): JSX.Element => (
                       <Image
                         alt={title}
                         blurDataURL={blurDataURL(350, 192)}
-                        layout='fill'
-                        lazyBoundary='0px'
-                        objectFit='cover'
+                        fill
                         placeholder='blur'
+                        sizes='100vw'
                         src={imageUrl}
+                        style={{ objectFit: 'cover' }}
                       />
                     </Anchor>
                   )}
@@ -106,11 +106,11 @@ const Portfolio: NextPage = (): JSX.Element => (
                     <Image
                       alt={title}
                       blurDataURL={blurDataURL(350, 192)}
-                      layout='fill'
-                      lazyBoundary='0px'
-                      objectFit='cover'
+                      fill
                       placeholder='blur'
+                      sizes='100vw'
                       src={imageUrl}
+                      style={{ objectFit: 'cover' }}
                     />
                   )}
                 </Box>

@@ -1,6 +1,6 @@
 import { Anchor, Box, Container, Flex, Text, Title } from '@mantine/core';
 import dynamic from 'next/dynamic';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import { Content } from '@components/content';
 import { openSourceContrs } from '@fixtures/home';
 import { blurDataURL } from '@utils/common';
@@ -125,7 +125,6 @@ const Home: NextPage = (): JSX.Element => (
               alt='Louw Swart'
               blurDataURL={blurDataURL(350, 350)}
               height={350}
-              lazyBoundary='0px'
               placeholder='blur'
               src='/images/about/louw.swart.jpg'
               width={350}
