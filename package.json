@@ -37,6 +37,7 @@
     "@mantine/notifications": "^6.0.22",
     "@tabler/icons-react": "^3.46.0",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "botid": "^1.5.11",
     "fast-equals": "^5.4.1",
     "next": "^14.2.35",

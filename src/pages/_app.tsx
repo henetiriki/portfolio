@@ -1,5 +1,6 @@
 import { Box, MantineProvider } from '@mantine/core';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { BotIdClient } from 'botid/client';
 import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
@@ -111,6 +112,7 @@ const Portfolio: NextPage<AppProps> = ({
         </MantineProvider>
       </ErrorBoundary>
       <Analytics />
+      <SpeedInsights />
     </>
   );
 };
