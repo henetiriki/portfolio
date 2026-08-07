@@ -12,3 +12,10 @@ export type SendResponse = {
   error?: Error;
   success: boolean;
 };
+
+export type Submission = {
+  email: string;
+  heuning?: string;
+  message: string;
+  name: string;
+};

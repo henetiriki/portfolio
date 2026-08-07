@@ -4,8 +4,7 @@ import {
   send,
   validate,
 } from '@server/contact';
-import type { Submission } from '@pages/api/types';
-import type { SendResponse } from '@server/contact';
+import type { SendResponse, Submission } from '@server/contact';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

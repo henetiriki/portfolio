@@ -4,7 +4,7 @@
 
 | Concern         | Choice                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------ |
-| Framework       | Next.js `^14.2.35`, **Pages Router** (`src/pages`)                                         |
+| Framework       | Next.js `^15.5.23`, **Pages Router** (`src/pages`)                                         |
 | Language        | TypeScript `^5.9`, `strict: true`                                                          |
 | UI library      | Mantine v6 (`core`, `form`, `hooks`, `notifications`, `next`)                              |
 | Styling         | Emotion (`@emotion/react`, `@emotion/styled`) via Mantine's `sx` prop and `createStyles`   |

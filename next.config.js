@@ -62,6 +62,7 @@ const baseConfig = withBotId({
   },
   images: {
     minimumCacheTTL: 31536000,
+    qualities: [100],
     remotePatterns: [
       {
         hostname: process.env.IMAGE_HOST_NAME,
@@ -115,7 +116,6 @@ const baseConfig = withBotId({
   serverRuntimeConfig: {
     igImgIds: process.env.ISTAGRAM_IMAGE_IDS,
   },
-  swcMinify: true,
   transpilePackages: ['@googlemaps/typescript-guards'],
 });
 
