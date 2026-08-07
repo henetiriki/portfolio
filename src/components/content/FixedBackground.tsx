@@ -45,9 +45,8 @@ export const FixedBackground: FC = () => {
         {igImgId && (
           <Image
             alt=''
-            blurDataURL={blurDataURL(width || 1080, height || 1920)}
             fill
-            placeholder='blur'
+            placeholder={blurDataURL(width || 1080, height || 1920)}
             priority={true}
             quality={100}
             sizes='100vw'

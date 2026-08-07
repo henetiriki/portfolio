@@ -123,9 +123,8 @@ const Home: NextPage = (): JSX.Element => (
             })}>
             <Image
               alt='Louw Swart'
-              blurDataURL={blurDataURL(350, 350)}
               height={350}
-              placeholder='blur'
+              placeholder={blurDataURL(350, 350)}
               src='/images/about/louw.swart.jpg'
               width={350}
             />

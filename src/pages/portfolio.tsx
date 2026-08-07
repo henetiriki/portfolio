@@ -93,9 +93,8 @@ const Portfolio: NextPage = (): JSX.Element => (
                       target='_blank'>
                       <Image
                         alt={title}
-                        blurDataURL={blurDataURL(350, 192)}
                         fill
-                        placeholder='blur'
+                        placeholder={blurDataURL(350, 192)}
                         sizes='100vw'
                         src={imageUrl}
                         style={{ objectFit: 'cover' }}
@@ -105,9 +104,8 @@ const Portfolio: NextPage = (): JSX.Element => (
                   {!url && (
                     <Image
                       alt={title}
-                      blurDataURL={blurDataURL(350, 192)}
                       fill
-                      placeholder='blur'
+                      placeholder={blurDataURL(350, 192)}
                       sizes='100vw'
                       src={imageUrl}
                       style={{ objectFit: 'cover' }}
