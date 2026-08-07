@@ -8,7 +8,7 @@ import {
   installGoogleMapsMock,
   resetGoogleMapsMock,
 } from '@utils/test/googleMapsMock';
-import { render } from '@utils/test/render';
+import { act, render } from '@utils/test/render';
 import type { FC } from 'react';
 
 jest.mock('@mantine/hooks', () => ({
@@ -152,6 +152,34 @@ describe('Map', () => {
       lat: -36.847639,
       lng: 174.762473,
     });
+  });
+
+  it('steps the zoom up one level at a time once loaded, then re-enables scroll zoom at the target', async () => {
+    render(
+      <PortfolioStateProvider>
+        <Map />
+        <DispatchAllLoaded />
+      </PortfolioStateProvider>
+    );
+
+    const [map] = MockMap.instances;
+
+    // desktop viewport sets the initial zoom to 2 on mount, so the
+    // post-load reveal climbs 2 -> 3 -> 4 before reaching the target of 5,
+    // pausing 80ms between each step (see zoomMap in Map.tsx)
+    await act(async () => {
+      await jest.advanceTimersByTimeAsync(80);
+    });
+    expect(map.setZoom).toHaveBeenNthCalledWith(1, 3);
+
+    await act(async () => {
+      await jest.advanceTimersByTimeAsync(80);
+    });
+    expect(map.setZoom).toHaveBeenNthCalledWith(2, 4);
+
+    expect(map.setOptions).toHaveBeenCalledWith(
+      expect.objectContaining({ scrollwheel: true })
+    );
   });
 
   it('clones children with the map and info window once both exist', () => {

@@ -35,25 +35,27 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
   const [map, setMap] = useState<google.maps.Map>();
   const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>();
 
+  // Only ever called once `map` is already confirmed truthy — either from
+  // the effect below (gated on `map && ...`) or recursively from its own
+  // listener closing over that same guarantee — so it's safe to assert its
+  // presence here rather than re-guard against a state this can't be in.
   const zoomMap = useCallback<(nextZoom: number, maxZoom: number) => void>(
-    async (nextZoom = 0, maxZoom = 0) => {
-      if (map) {
-        if (nextZoom < maxZoom) {
-          const tilesLoadedEventListener: google.maps.MapsEventListener =
-            google.maps.event.addListener(map, 'zoom_changed', () => {
-              google.maps.event.removeListener(tilesLoadedEventListener);
-              zoomMap(map.getZoom()! + 1, maxZoom);
-            });
+    async (nextZoom: number, maxZoom: number) => {
+      if (nextZoom < maxZoom) {
+        const tilesLoadedEventListener: google.maps.MapsEventListener =
+          google.maps.event.addListener(map!, 'zoom_changed', () => {
+            google.maps.event.removeListener(tilesLoadedEventListener);
+            zoomMap(map!.getZoom()! + 1, maxZoom);
+          });
 
-          await delay(80);
+        await delay(80);
 
-          map.setZoom(nextZoom);
+        map!.setZoom(nextZoom);
 
-          return;
-        }
-
-        map.setOptions({ scrollwheel: true });
+        return;
       }
+
+      map!.setOptions({ scrollwheel: true });
     },
     [map]
   );
