@@ -51,6 +51,18 @@ const securityHeaders = [
 ];
 
 const baseConfig = withBotId({
+  // Replaces the old publicRuntimeConfig: next/config's runtime config is
+  // deprecated and removed entirely in Next.js 16. These are re-exposed under
+  // NEXT_PUBLIC_* names (rather than renaming the underlying env vars, which
+  // are also read server-side and configured in Vercel under their current
+  // names) so client code can read them as plain `process.env.NEXT_PUBLIC_*`
+  // — see docs/environment-variables.md.
+  env: {
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
+    NEXT_PUBLIC_IMAGE_HOST: process.env.IMAGE_HOST,
+    NEXT_PUBLIC_LAST_MODIFIED: lastModified,
+    NEXT_PUBLIC_SITE_URL: process.env.HOST,
+  },
   async headers() {
     return [
       {
@@ -70,12 +82,6 @@ const baseConfig = withBotId({
         protocol: process.env.IMAGE_HOST_PROTOCOL,
       },
     ],
-  },
-  publicRuntimeConfig: {
-    googleApiKey: process.env.GOOGLE_MAPS_API_KEY,
-    imgHost: process.env.IMAGE_HOST,
-    lastModified,
-    siteUrl: process.env.HOST,
   },
   reactStrictMode: true,
   async redirects() {
@@ -112,9 +118,6 @@ const baseConfig = withBotId({
         source: '/',
       },
     ];
-  },
-  serverRuntimeConfig: {
-    igImgIds: process.env.ISTAGRAM_IMAGE_IDS,
   },
   transpilePackages: ['@googlemaps/typescript-guards'],
 });

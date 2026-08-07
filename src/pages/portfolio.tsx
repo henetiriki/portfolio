@@ -1,6 +1,5 @@
 import { Anchor, Box, Button, Space, Text, Title } from '@mantine/core';
 import { IconMessage } from '@tabler/icons-react';
-import getConfig from 'next/config';
 import Head from 'next/head';
 import Image from 'next/image';
 import NextLink from 'next/link';
@@ -14,9 +13,7 @@ import type { MantineTheme } from '@mantine/core';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
-const {
-  publicRuntimeConfig: { siteUrl },
-} = getConfig();
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 const Portfolio: NextPage = (): JSX.Element => (
   <>
