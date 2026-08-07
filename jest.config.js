@@ -19,6 +19,14 @@ const customJestConfig = {
     '!src/utils/test/**',
   ],
   coveragePathIgnorePatterns: ['<rootDir>/node_modules/'],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+  },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   testEnvironment: 'jest-environment-jsdom',
   testMatch: ['<rootDir>/src/**/__tests__/**/*.test.{ts,tsx}'],
