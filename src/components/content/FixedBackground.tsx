@@ -1,7 +1,7 @@
 import { Box, Container } from '@mantine/core';
 import { useViewportSize } from '@mantine/hooks';
 import getConfig from 'next/config';
-import Image from 'next/legacy/image';
+import Image from 'next/image';
 import { useLayoutEffect, useRef } from 'react';
 import { useIgImgId } from '@hooks';
 import { usePortfolioState } from '@state/context';
@@ -45,13 +45,13 @@ export const FixedBackground: FC = () => {
         {igImgId && (
           <Image
             alt=''
-            blurDataURL={blurDataURL(width || 1080, height || 1920)}
-            layout='fill'
-            objectFit='cover'
-            placeholder='blur'
+            fill
+            placeholder={blurDataURL(width || 1080, height || 1920)}
             priority={true}
             quality={100}
+            sizes='100vw'
             src={`${imgHost}/${igImgId}.jpg`}
+            style={{ objectFit: 'cover' }}
           />
         )}
       </Container>
