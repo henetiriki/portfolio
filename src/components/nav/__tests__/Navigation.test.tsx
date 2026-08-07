@@ -1,10 +1,33 @@
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/router';
+import { useEffect, useRef } from 'react';
 import { Navigation } from '@components/nav/Navigation';
-import { PortfolioStateProvider } from '@state/context';
-import { render, screen } from '@utils/test/render';
+import { PortfolioStateProvider, usePortfolioState } from '@state/context';
+import { fireEvent, render, screen, waitFor } from '@utils/test/render';
+import type { FC, PropsWithChildren } from 'react';
 
 jest.mock('next/router', () => ({ useRouter: jest.fn() }));
+
+const scrollTo = (y: number) => {
+  Object.defineProperty(window, 'scrollY', { configurable: true, value: y });
+  fireEvent.scroll(window);
+};
+
+const WithPageTopRef: FC<PropsWithChildren> = ({ children }) => {
+  const { dispatch } = usePortfolioState();
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    dispatch({ payload: { pageTopRef: ref }, type: 'set-page-top-ref' });
+  }, [dispatch]);
+
+  return (
+    <>
+      <div ref={ref} />
+      {children}
+    </>
+  );
+};
 
 describe('Navigation', () => {
   beforeEach(() => {
@@ -59,5 +82,87 @@ describe('Navigation', () => {
     expect(
       screen.getByRole('button', { hidden: true, name: 'Close menu' })
     ).toBeInTheDocument();
+  });
+
+  it('shows the scroll-to-top button once scrolled past the threshold', () => {
+    render(
+      <PortfolioStateProvider>
+        <Navigation />
+      </PortfolioStateProvider>
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Scroll to top' })
+    ).not.toBeInTheDocument();
+
+    scrollTo(50);
+
+    expect(
+      screen.getByRole('button', { name: 'Scroll to top' })
+    ).toBeInTheDocument();
+  });
+
+  it('hides the scroll-to-top button again once scrolled back near the top', () => {
+    render(
+      <PortfolioStateProvider>
+        <Navigation />
+      </PortfolioStateProvider>
+    );
+
+    scrollTo(50);
+    expect(
+      screen.getByRole('button', { name: 'Scroll to top' })
+    ).toBeInTheDocument();
+
+    scrollTo(0);
+
+    expect(
+      screen.queryByRole('button', { name: 'Scroll to top' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('scrolls back to the page top when the scroll-to-top button is clicked', async () => {
+    render(
+      <PortfolioStateProvider>
+        <WithPageTopRef>
+          <Navigation />
+        </WithPageTopRef>
+      </PortfolioStateProvider>
+    );
+
+    scrollTo(50);
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Scroll to top' })
+    );
+
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  });
+
+  it('closes the drawer and scrolls to top when a drawer link is clicked', async () => {
+    render(
+      <PortfolioStateProvider>
+        <WithPageTopRef>
+          <Navigation />
+        </WithPageTopRef>
+      </PortfolioStateProvider>
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: 'Open menu' }));
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('link', { name: 'Experience' }));
+
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
+      behavior: 'smooth',
+      block: 'start',
+    });
+    await waitFor(() =>
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    );
   });
 });

@@ -30,4 +30,27 @@ describe('fetcher', () => {
     await expect(fetcher('/api/test', 0)).rejects.toBe('Internal Server Error');
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
+
+  it('aborts the in-flight request once the 30s timeout elapses', async () => {
+    jest.useFakeTimers();
+
+    let capturedSignal: AbortSignal | undefined;
+
+    global.fetch = jest.fn((_url, init?: RequestInit) => {
+      capturedSignal = init?.signal as AbortSignal;
+
+      return new Promise(() => {});
+    });
+
+    fetcher('/api/test');
+    await Promise.resolve();
+
+    expect(capturedSignal?.aborted).toBe(false);
+
+    jest.advanceTimersByTime(30000);
+
+    expect(capturedSignal?.aborted).toBe(true);
+
+    jest.useRealTimers();
+  });
 });

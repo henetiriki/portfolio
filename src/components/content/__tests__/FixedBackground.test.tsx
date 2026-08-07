@@ -1,9 +1,14 @@
+import { useViewportSize } from '@mantine/hooks';
 import { useRouter } from 'next/router';
 import { FixedBackground } from '@components/content/FixedBackground';
 import { PortfolioStateProvider, usePortfolioState } from '@state/context';
 import { render, screen, waitFor } from '@utils/test/render';
 
 jest.mock('next/router', () => ({ useRouter: jest.fn() }));
+jest.mock('@mantine/hooks', () => ({
+  ...jest.requireActual('@mantine/hooks'),
+  useViewportSize: jest.fn(),
+}));
 
 const PageTopRefProbe = () => {
   const {
@@ -21,6 +26,10 @@ describe('FixedBackground', () => {
       asPath: '/',
       events: { off: jest.fn(), on: jest.fn() },
       isReady: true,
+    });
+    (useViewportSize as jest.Mock).mockReturnValue({
+      height: 768,
+      width: 1024,
     });
   });
 
@@ -72,6 +81,28 @@ describe('FixedBackground', () => {
 
       expect(img?.getAttribute('src')).toContain(
         encodeURIComponent('http://localhost:3000/images/B8S5LnGpGUn.jpg')
+      );
+    });
+  });
+
+  it('falls back to default blur dimensions when the viewport size is not yet known', async () => {
+    (useViewportSize as jest.Mock).mockReturnValue({ height: 0, width: 0 });
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue({ imgId: 'abc123' }),
+      ok: true,
+    });
+
+    const { container } = render(
+      <PortfolioStateProvider>
+        <FixedBackground />
+      </PortfolioStateProvider>
+    );
+
+    await waitFor(() => {
+      const img = container.querySelector('img');
+
+      expect(img?.getAttribute('src')).toContain(
+        encodeURIComponent('http://localhost:3000/images/abc123.jpg')
       );
     });
   });

@@ -1,6 +1,7 @@
 import {
   buildMessage,
   buildMessageCopy,
+  formatValue,
   validate,
 } from '@server/contact/helpers';
 import type { Submission } from '@pages/api/types';
@@ -114,5 +115,17 @@ describe('buildMessageCopy', () => {
     expect(mail.subject).toBe('Thanks for your message | example.test');
     expect(mail.to).toBe('Jane <jane@example.com>');
     expect(mail.html).toContain('Hi, Jane');
+  });
+});
+
+describe('formatValue', () => {
+  it('substitutes each {n} placeholder with its matching arg', () => {
+    expect(formatValue('Hello {0}, you are {1}', ['Jane', 'welcome'])).toBe(
+      'Hello Jane, you are welcome'
+    );
+  });
+
+  it('leaves a placeholder untouched when no matching arg is supplied', () => {
+    expect(formatValue('Hello {0} {1}', ['Jane'])).toBe('Hello Jane {1}');
   });
 });

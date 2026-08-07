@@ -84,6 +84,14 @@ describe('Polyline', () => {
     expect(polyline.setOptions.mock.calls[0][0].path).toHaveLength(2);
   });
 
+  it('builds an empty path when neither legs nor paths are provided', () => {
+    renderPolyline({ legs: undefined, paths: undefined });
+
+    const [polyline] = MockPolyline.instances;
+
+    expect(polyline.setOptions.mock.calls[0][0].path).toEqual([]);
+  });
+
   it('drops onto the map after an idx * order * 100ms stagger', () => {
     renderPolyline({ idx: 2, order: 3, paths: ['x'] });
 

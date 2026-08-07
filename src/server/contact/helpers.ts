@@ -36,7 +36,7 @@ const CONTENT_COPY: Buffer = readFileSync(
   )
 );
 
-const formatValue = (value: string, args: string[]) =>
+export const formatValue = (value: string, args: string[]) =>
   value.replace(/{(\d+)}/g, (match, number) =>
     // eslint-disable-next-line security/detect-object-injection
     typeof args[number] !== 'undefined' ? args[number] : match
