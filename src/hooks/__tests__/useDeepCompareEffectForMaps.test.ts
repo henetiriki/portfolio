@@ -82,4 +82,28 @@ describe('useDeepCompareEffectForMaps', () => {
 
     expect(callback).toHaveBeenCalledTimes(2);
   });
+
+  it('does not re-run when a LatLngLiteral field nested inside a dependency is deep-equal across renders', () => {
+    const callback = jest.fn();
+    const { rerender } = renderHook(
+      ({ deps }) => useDeepCompareEffectForMaps(callback, deps),
+      { initialProps: { deps: [{ position: { lat: 1, lng: 2 } }] } }
+    );
+
+    rerender({ deps: [{ position: { lat: 1, lng: 2 } }] });
+
+    expect(callback).toHaveBeenCalledTimes(1);
+  });
+
+  it('re-runs when a LatLngLiteral field nested inside a dependency changes', () => {
+    const callback = jest.fn();
+    const { rerender } = renderHook(
+      ({ deps }) => useDeepCompareEffectForMaps(callback, deps),
+      { initialProps: { deps: [{ position: { lat: 1, lng: 2 } }] } }
+    );
+
+    rerender({ deps: [{ position: { lat: 3, lng: 4 } }] });
+
+    expect(callback).toHaveBeenCalledTimes(2);
+  });
 });

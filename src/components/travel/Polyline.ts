@@ -55,22 +55,21 @@ export const Polyline: FC<
     return [];
   }, []);
 
-  const zoomEventListener = useCallback<
-    () => google.maps.MapsEventListener | undefined
-  >(() => {
-    if (map && polyline) {
-      return google.maps.event.addListener(map, 'zoom_changed', () => {
+  // Only ever called from the effect below once `map && polyline` are both
+  // already confirmed truthy, so it's safe to assert their presence here
+  // rather than re-guard against a state this closure can't actually be in.
+  const zoomEventListener = useCallback<() => google.maps.MapsEventListener>(
+    () =>
+      google.maps.event.addListener(map!, 'zoom_changed', () => {
         const strokeWeight =
-          STROKE_WEIGHT_DEFAULT * getZoomPolylineWeightExponent(map.getZoom());
+          STROKE_WEIGHT_DEFAULT * getZoomPolylineWeightExponent(map!.getZoom());
 
-        if (polyline.get('strokeWeight') !== strokeWeight) {
-          polyline.set('strokeWeight', strokeWeight);
+        if (polyline!.get('strokeWeight') !== strokeWeight) {
+          polyline!.set('strokeWeight', strokeWeight);
         }
-      });
-    }
-
-    return undefined;
-  }, [map, polyline]);
+      }),
+    [map, polyline]
+  );
 
   useEffect(() => {
     if (!polyline) {
