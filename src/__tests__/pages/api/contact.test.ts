@@ -1,7 +1,7 @@
 import handler from '@pages/api/contact';
 import { send } from '@server/contact/send';
 import { createMockApiContext } from '@utils/test/apiContext';
-import type { Submission } from '@pages/api/types';
+import type { Submission } from '@server/contact';
 
 jest.mock('../../../server/contact/send', () => ({ send: jest.fn() }));
 

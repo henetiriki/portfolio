@@ -1,15 +1,15 @@
 import handler from '@pages/api/img-id';
 import { createMockApiContext } from '@utils/test/apiContext';
 
-jest.mock('next/config', () => ({
-  __esModule: true,
-  default: () => ({
-    serverRuntimeConfig: { igImgIds: 'id-1,id-2,id-3' },
-  }),
-}));
-
 describe('img-id API handler', () => {
+  const originalIgImgIds = process.env.ISTAGRAM_IMAGE_IDS;
+
+  afterEach(() => {
+    process.env.ISTAGRAM_IMAGE_IDS = originalIgImgIds;
+  });
+
   it('responds 200 with one of the configured image ids', async () => {
+    process.env.ISTAGRAM_IMAGE_IDS = 'id-1,id-2,id-3';
     const { json, req, res, status } = createMockApiContext();
 
     await handler(req, res);
@@ -21,6 +21,8 @@ describe('img-id API handler', () => {
   });
 
   it('keeps returning a valid image id across more calls than there are configured ids (regression test for the pool-depletion bug)', async () => {
+    process.env.ISTAGRAM_IMAGE_IDS = 'id-1,id-2,id-3';
+
     for (let i = 0; i < 10; i += 1) {
       const { json, req, res } = createMockApiContext();
 
@@ -33,16 +35,11 @@ describe('img-id API handler', () => {
   });
 
   it('responds with an undefined imgId when no image ids are configured', async () => {
-    jest.resetModules();
-    jest.doMock('next/config', () => ({
-      __esModule: true,
-      default: () => ({ serverRuntimeConfig: { igImgIds: undefined } }),
-    }));
+    delete process.env.ISTAGRAM_IMAGE_IDS;
 
-    const { default: freshHandler } = await import('@pages/api/img-id');
     const { json, req, res, status } = createMockApiContext();
 
-    await freshHandler(req, res);
+    await handler(req, res);
 
     expect(status).toHaveBeenCalledWith(200);
     expect(json).toHaveBeenCalledWith({ imgId: undefined });

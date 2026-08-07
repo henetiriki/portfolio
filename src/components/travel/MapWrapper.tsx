@@ -1,7 +1,6 @@
 import { Wrapper } from '@googlemaps/react-wrapper';
 import { Box } from '@mantine/core';
 import { useIntersection } from '@mantine/hooks';
-import getConfig from 'next/config';
 import { useEffect, useState } from 'react';
 import { Map, Marker, Polyline } from '@components/travel';
 import { cities, markerLocations, tripPolylines } from '@fixtures/travel';
@@ -15,9 +14,11 @@ import type {
 } from '@fixtures/travel/types';
 import type { FC } from 'react';
 
-const {
-  publicRuntimeConfig: { googleApiKey },
-} = getConfig();
+// Always set in every real environment (dev/test/.env.local/Vercel) — see
+// docs/environment-variables.md. Asserted rather than defaulted so a missing
+// key fails loudly (Google Maps rejecting an empty apiKey) instead of
+// silently rendering a broken map.
+const googleApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 
 export const MapWrapper: FC = () => {
   const { render } = useMap();

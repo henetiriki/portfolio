@@ -1,4 +1,3 @@
-import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
@@ -14,9 +13,7 @@ const DynamicContactForm = dynamic(
   }
 );
 
-const {
-  publicRuntimeConfig: { siteUrl },
-} = getConfig();
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 const Contact: NextPage = (): JSX.Element => (
   <>

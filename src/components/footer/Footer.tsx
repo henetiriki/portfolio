@@ -1,6 +1,5 @@
 import { Anchor, Flex, Space, Text } from '@mantine/core';
 import { IconCopyright } from '@tabler/icons-react';
-import getConfig from 'next/config';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
@@ -14,9 +13,7 @@ import type { SocialLink } from '@fixtures/types';
 import type { MantineTheme } from '@mantine/core';
 import type { FC, JSX } from 'react';
 
-const {
-  publicRuntimeConfig: { lastModified },
-} = getConfig();
+const lastModified = process.env.NEXT_PUBLIC_LAST_MODIFIED;
 
 export const Footer: FC = (): JSX.Element => {
   const currentYear = useMemo<number>(() => new Date().getFullYear(), []);

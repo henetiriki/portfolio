@@ -1,5 +1,4 @@
 import { IconBriefcase, IconSchool } from '@tabler/icons-react';
-import getConfig from 'next/config';
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
 import {
@@ -23,9 +22,7 @@ import type { Job, School } from '@fixtures/types';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
-const {
-  publicRuntimeConfig: { siteUrl },
-} = getConfig();
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 const Experience: NextPage = (): JSX.Element => (
   <>

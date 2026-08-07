@@ -1,7 +1,6 @@
 import { readFileSync } from 'fs';
 import path from 'path';
-import type { Submission } from '@pages/api/types';
-import type { ErrorType } from '@server/contact';
+import type { ErrorType, Submission } from '@server/contact';
 import type Mail from 'nodemailer/lib/mailer';
 
 const CUSTOM_APP_DOMAIN = process.env.CUSTOM_APP_DOMAIN;

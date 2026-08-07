@@ -3,7 +3,7 @@ import {
   buildMessageCopy,
   validate,
 } from '@server/contact/helpers';
-import type { Submission } from '@pages/api/types';
+import type { Submission } from '@server/contact';
 
 const validSubmission: Submission = {
   email: 'jane@example.com',

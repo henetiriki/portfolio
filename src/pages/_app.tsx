@@ -2,7 +2,6 @@ import { Box, MantineProvider } from '@mantine/core';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { BotIdClient } from 'botid/client';
-import getConfig from 'next/config';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Navigation } from '@components/nav';
@@ -31,9 +30,7 @@ const DynamicTransition = dynamic(
   }
 );
 
-const {
-  publicRuntimeConfig: { siteUrl },
-} = getConfig();
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 const protectedRoutes = [
   {
