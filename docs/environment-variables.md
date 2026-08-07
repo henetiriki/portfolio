@@ -13,7 +13,7 @@ All values are read via `process.env` in `next.config.js` (which exposes some of
 | `.env`            | `PROTOCOL` | (set locally)  | Used to help derive image-host / URL config for local dev                                            |
 | `.env`            | `HOSTNAME` | (set locally)  | ditto                                                                                                |
 | `.env`            | `HOST`     | (set locally)  | Base site URL — feeds `publicRuntimeConfig.siteUrl`, canonical links, and `next-sitemap`'s `siteUrl` |
-| `.env.production` | `WITH_PWA` | `true`/`false` | Gates whether `next-pwa` wraps the Next config (service worker generation)                           |
+| `.env.production` | `WITH_PWA` | `true`/`false` | Gates whether Serwist wraps the Next config (service worker generation)                              |
 
 ## Required at runtime (not committed — supply via `.env.local` / hosting platform env config)
 
@@ -40,10 +40,10 @@ All values are read via `process.env` in `next.config.js` (which exposes some of
 
 ### Build-only
 
-| Variable   | Consumed by      | Purpose                                                                                                                           |
-| ---------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `ANALYZE`  | `next.config.js` | `true` wraps the config with `@next/bundle-analyzer` for a local bundle-size report                                               |
-| `WITH_PWA` | `next.config.js` | `true` wraps the config with `next-pwa` (service worker generation); unset/`false` in normal dev to avoid stale SW caching issues |
+| Variable   | Consumed by      | Purpose                                                                                                                        |
+| ---------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `ANALYZE`  | `next.config.js` | `true` wraps the config with `@next/bundle-analyzer` for a local bundle-size report                                            |
+| `WITH_PWA` | `next.config.js` | `true` wraps the config with Serwist (service worker generation); unset/`false` in normal dev to avoid stale SW caching issues |
 
 ## Not currently read from env
 
