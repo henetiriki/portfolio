@@ -163,6 +163,7 @@ export const Navigation = () => {
       </Box>
       {scrollToTopVisible && (
         <Box
+          aria-label='Scroll to top'
           bg='matterhorn'
           bottom={20}
           component='a'
@@ -173,6 +174,7 @@ export const Navigation = () => {
           p='10px 8px 5px'
           pos='fixed'
           right={30}
+          role='button'
           sx={({ colors: { shamrock } }: MantineTheme) => ({
             '&:hover': {
               backgroundColor: shamrock[4],

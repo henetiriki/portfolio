@@ -32,12 +32,18 @@ export const triggerMapsEvent = (
   eventName: string,
   ...args: any[]
 ) => {
-  listenerRegistry
-    .get(target)
-    ?.get(eventName)
-    ?.forEach(handler => {
-      handler(...args);
-    });
+  // Snapshot the listeners before iterating: a handler that synchronously
+  // registers a new listener on this same event (e.g. Map.tsx's recursive
+  // zoomMap) would otherwise have that new listener visited by this same
+  // `forEach` too — Set.forEach sees elements added mid-iteration — causing
+  // unbounded synchronous recursion instead of waiting for the next real
+  // trigger. Real event systems (DOM, Node's EventEmitter) snapshot for
+  // exactly this reason.
+  const handlers = listenerRegistry.get(target)?.get(eventName);
+
+  [...(handlers ?? [])].forEach(handler => {
+    handler(...args);
+  });
 };
 
 export class MockLatLng {

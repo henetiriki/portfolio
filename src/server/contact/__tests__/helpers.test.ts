@@ -115,4 +115,28 @@ describe('buildMessageCopy', () => {
     expect(mail.to).toBe('Jane <jane@example.com>');
     expect(mail.html).toContain('Hi, Jane');
   });
+
+  // formatValue (the internal {n}-placeholder substituter used to build
+  // this html) isn't exported, and the real checked-in templates always
+  // have exactly as many placeholders as args — so its "no matching arg"
+  // fallback can only be exercised indirectly, through the public API,
+  // with a fake template that has an extra placeholder.
+  it('leaves an extra template placeholder untouched when no matching arg is supplied for it', async () => {
+    jest.resetModules();
+    jest.doMock('fs', () => ({
+      ...jest.requireActual('fs'),
+      readFileSync: jest.fn(() => 'Hi, {0} {1}'),
+    }));
+
+    const { buildMessageCopy: freshBuildMessageCopy } =
+      await import('@server/contact/helpers');
+
+    const mail = freshBuildMessageCopy({
+      email: 'jane@example.com',
+      message: 'irrelevant',
+      name: 'Jane',
+    });
+
+    expect(mail.html).toBe('Hi, Jane {1}');
+  });
 });

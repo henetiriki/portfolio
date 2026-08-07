@@ -122,4 +122,22 @@ describe('useIgImgId', () => {
     expect(result.current).toBe('abc123');
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
+
+  it('does not track the route while the router is not ready yet', async () => {
+    const events = createRouterEvents();
+
+    (useRouter as jest.Mock).mockReturnValue({
+      asPath: '/home',
+      events,
+      isReady: false,
+    });
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue({ imgId: 'abc123' }),
+      ok: true,
+    });
+
+    const { result } = renderHook(() => useIgImgId(), { wrapper });
+
+    await waitFor(() => expect(result.current).toBe('abc123'));
+  });
 });

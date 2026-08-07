@@ -169,6 +169,41 @@ describe('Marker', () => {
     expect(infoWindow.close).toHaveBeenCalledTimes(1);
   });
 
+  it('stagger-drops using the default order when none is provided', () => {
+    renderMarker({ idx: 2, order: undefined });
+
+    const [marker] = MockMarker.instances;
+
+    act(() => {
+      jest.advanceTimersByTime(199);
+    });
+    expect(marker.setMap).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(1);
+    });
+    expect(marker.setMap).toHaveBeenCalledWith(expect.any(MockMap));
+  });
+
+  it('does not schedule an auto-close when the info window becomes visible while already closed', () => {
+    const { infoWindow } = renderMarker({ idx: 1, order: 1 });
+
+    act(() => {
+      jest.advanceTimersByTime(100);
+    });
+
+    infoWindow.close.mockClear();
+
+    act(() => {
+      triggerMapsEvent(infoWindow, 'visible');
+    });
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(infoWindow.close).not.toHaveBeenCalled();
+  });
+
   it('rescales the icon in response to zoom changes', () => {
     const { map } = renderMarker({ idx: 1, order: 1 });
 
@@ -187,6 +222,69 @@ describe('Marker', () => {
     expect(marker.setIcon).toHaveBeenCalledWith(
       expect.objectContaining({ scale: 2.25 })
     );
+  });
+
+  it('skips re-setting the icon when a zoom change does not actually change the scale', () => {
+    const { map } = renderMarker({ idx: 1, order: 1 });
+
+    act(() => {
+      jest.advanceTimersByTime(100);
+    });
+
+    const [marker] = MockMarker.instances;
+
+    act(() => {
+      map.setZoom(20);
+    });
+    marker.setIcon.mockClear();
+
+    act(() => {
+      map.setZoom(20);
+    });
+
+    expect(marker.setIcon).not.toHaveBeenCalled();
+  });
+
+  it('clears the previous auto-close timer when the info window becomes visible again before it elapses', () => {
+    const { infoWindow } = renderMarker({ idx: 1, order: 1 });
+
+    act(() => {
+      jest.advanceTimersByTime(100);
+    });
+
+    infoWindow.close.mockClear();
+
+    act(() => {
+      infoWindow.open();
+    });
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
+    act(() => {
+      infoWindow.open();
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(4999);
+    });
+    expect(infoWindow.close).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(1);
+    });
+    expect(infoWindow.close).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not attach an info-window visibility listener when no info window is provided', () => {
+    renderMarker({ idx: 1, infoWindow: undefined, order: 1 });
+
+    act(() => {
+      jest.advanceTimersByTime(100);
+    });
+
+    const [marker] = MockMarker.instances;
+
+    expect(marker.setMap).toHaveBeenCalledWith(expect.any(MockMap));
   });
 
   it('removes the marker from the map on unmount', () => {

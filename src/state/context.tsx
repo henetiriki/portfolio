@@ -12,7 +12,7 @@ export const usePortfolioState = () => {
 
   if (context === undefined) {
     throw new Error(
-      'usePortfolioState must be used withing a PortfolioStateProvider'
+      'usePortfolioState must be used within a PortfolioStateProvider'
     );
   }
 

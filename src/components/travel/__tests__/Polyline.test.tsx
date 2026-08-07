@@ -84,6 +84,30 @@ describe('Polyline', () => {
     expect(polyline.setOptions.mock.calls[0][0].path).toHaveLength(2);
   });
 
+  it('builds an empty path when neither legs nor paths are provided', () => {
+    renderPolyline({ legs: undefined, paths: undefined });
+
+    const [polyline] = MockPolyline.instances;
+
+    expect(polyline.setOptions.mock.calls[0][0].path).toEqual([]);
+  });
+
+  it('stagger-drops using the default order when none is provided', () => {
+    renderPolyline({ idx: 2, order: undefined, paths: ['x'] });
+
+    const [polyline] = MockPolyline.instances;
+
+    act(() => {
+      jest.advanceTimersByTime(199);
+    });
+    expect(polyline.setMap).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(1);
+    });
+    expect(polyline.setMap).toHaveBeenCalledWith(expect.any(MockMap));
+  });
+
   it('drops onto the map after an idx * order * 100ms stagger', () => {
     renderPolyline({ idx: 2, order: 3, paths: ['x'] });
 
@@ -155,6 +179,27 @@ describe('Polyline', () => {
     });
 
     expect(polyline.set).toHaveBeenCalledWith('strokeWeight', 2.5);
+  });
+
+  it('skips re-setting the stroke weight when a zoom change does not actually change it', () => {
+    const { map } = renderPolyline({ idx: 1, order: 1, paths: ['x'] });
+
+    act(() => {
+      jest.advanceTimersByTime(100);
+    });
+
+    const [polyline] = MockPolyline.instances;
+
+    act(() => {
+      map.setZoom(10);
+    });
+    polyline.set.mockClear();
+
+    act(() => {
+      map.setZoom(10);
+    });
+
+    expect(polyline.set).not.toHaveBeenCalled();
   });
 
   it('removes the polyline from the map on unmount', () => {
