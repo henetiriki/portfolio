@@ -1,7 +1,6 @@
 import {
   buildMessage,
   buildMessageCopy,
-  formatValue,
   validate,
 } from '@server/contact/helpers';
 import type { Submission } from '@pages/api/types';
@@ -116,16 +115,28 @@ describe('buildMessageCopy', () => {
     expect(mail.to).toBe('Jane <jane@example.com>');
     expect(mail.html).toContain('Hi, Jane');
   });
-});
 
-describe('formatValue', () => {
-  it('substitutes each {n} placeholder with its matching arg', () => {
-    expect(formatValue('Hello {0}, you are {1}', ['Jane', 'welcome'])).toBe(
-      'Hello Jane, you are welcome'
-    );
-  });
+  // formatValue (the internal {n}-placeholder substituter used to build
+  // this html) isn't exported, and the real checked-in templates always
+  // have exactly as many placeholders as args — so its "no matching arg"
+  // fallback can only be exercised indirectly, through the public API,
+  // with a fake template that has an extra placeholder.
+  it('leaves an extra template placeholder untouched when no matching arg is supplied for it', async () => {
+    jest.resetModules();
+    jest.doMock('fs', () => ({
+      ...jest.requireActual('fs'),
+      readFileSync: jest.fn(() => 'Hi, {0} {1}'),
+    }));
 
-  it('leaves a placeholder untouched when no matching arg is supplied', () => {
-    expect(formatValue('Hello {0} {1}', ['Jane'])).toBe('Hello Jane {1}');
+    const { buildMessageCopy: freshBuildMessageCopy } =
+      await import('@server/contact/helpers');
+
+    const mail = freshBuildMessageCopy({
+      email: 'jane@example.com',
+      message: 'irrelevant',
+      name: 'Jane',
+    });
+
+    expect(mail.html).toBe('Hi, Jane {1}');
   });
 });
