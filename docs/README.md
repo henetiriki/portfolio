@@ -21,6 +21,6 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - **Framework**: Next.js 14 (Pages Router) + React 18 + TypeScript, strict mode
 - **UI kit**: Mantine v6 (`@mantine/core`, `form`, `hooks`, `notifications`) styled via Emotion `sx`/`createStyles`
 - **Purpose**: a single-person portfolio/CV site with four content pages (Home, Experience, Portfolio, Travel) and a Contact page that emails the owner
-- **Notable integrations**: Google Maps JS API (travel map), Vercel BotID (bot/spam protection on the contact form), Nodemailer over Gmail SMTP, `next-pwa` (opt-in), `next-sitemap`
+- **Notable integrations**: Google Maps JS API (travel map), Vercel BotID (bot/spam protection on the contact form), Nodemailer over Gmail SMTP, Serwist (opt-in PWA/service worker), `next-sitemap`
 - **State**: one `useReducer`-backed React Context (`PortfolioState`) shared app-wide — no Redux/Zustand/query library
-- **Package manager**: Yarn 4 (Berry), Node `^20`
+- **Package manager**: Yarn 4 (Berry), Node `24.x`

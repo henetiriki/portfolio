@@ -21,10 +21,8 @@ out/
 
 # generated
 build/
-public/fallback-*.js
 public/sitemap.xml
 public/sw.js*
-public/workbox-*.js*
 
 # misc
 .DS_Store

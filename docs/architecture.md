@@ -12,9 +12,9 @@
 | Maps            | `@googlemaps/react-wrapper` + `@googlemaps/typescript-guards` (Google Maps JavaScript API) |
 | Email           | `nodemailer` over Gmail SMTP                                                               |
 | Bot protection  | `botid` (Vercel BotID) client + server checks                                              |
-| PWA             | `next-pwa` (only enabled when `WITH_PWA=true`)                                             |
+| PWA             | Serwist (only enabled when `WITH_PWA=true`)                                                |
 | Sitemap/robots  | `next-sitemap` (runs as a `build` step)                                                    |
-| Package manager | Yarn 4 (Berry), Node `^20`                                                                 |
+| Package manager | Yarn 4 (Berry), Node `24.x`                                                                |
 | Lint/format     | ESLint (`next/core-web-vitals` + a large custom ruleset), Prettier, Husky + lint-staged    |
 
 ## Directory layout

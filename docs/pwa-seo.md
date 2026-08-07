@@ -4,7 +4,7 @@
 
 - `public/manifest.json` declares the app name ("Louw Swart // Portfolio"), `theme_color` (`#080a20`, matching `blackRussian`), `display: fullscreen`, maskable icons (192/512), and three `shortcuts` (Experience, Travel, Contact) for the OS-level app icon long-press menu. Linked from `_document.tsx` via `<link rel='manifest'>`.
 - `_document.tsx` also declares a full matrix of `apple-touch-startup-image` `<link>` tags (one per iOS device size/orientation/pixel-ratio combination) pointing at pre-generated splash images in `public/images/manifest-icons/`, plus standard favicons and an `apple-touch-icon`.
-- **Service worker / offline support is opt-in**, not always-on: `next.config.js` only wraps the config with `next-pwa` when `WITH_PWA=true` at build time (`withoutPWA` is a no-op passthrough otherwise). When enabled, `next-pwa` emits `public/sw.js`, `public/workbox-*.js`, and `public/fallback-*.js` (all gitignored — build artifacts, not source) and `pages/_offline.tsx` is served for uncached routes while offline.
+- **Service worker / offline support is opt-in**, not always-on: `next.config.js` only wraps the config with [Serwist](https://serwist.pages.dev/) when `WITH_PWA=true` at build time (migrated from `next-pwa` 2026-08-07 — see [Roadmap](roadmap.md) for why and how). Since `@serwist/next` is ESM-only, `next.config.js` exports an async function and dynamically `import()`s it only in that branch. The service worker's source lives at `service-worker/index.ts` (its own `tsconfig.json`, excluded from the root one — `webworker` and `dom` libs can't mix in one `tsc` run) and uses Serwist's `defaultCache` for next-pwa-parity runtime caching. When enabled, the build emits `public/sw.js` (gitignored — a build artifact, not source) with `pages/_offline.tsx` precached and served as the fallback for uncached routes while offline.
 - `mobile-web-app-capable` / `apple-mobile-web-app-capable` meta tags are set unconditionally, independent of whether the service worker build is active.
 
 ## SEO / meta tags
@@ -19,7 +19,7 @@
 - `next-sitemap.config.js` runs as part of `yarn build` (`"build": "next build && next-sitemap"`), generating `public/sitemap.xml` and `public/robots.txt` from `siteUrl: process.env.HOST`.
 - `generateIndexSitemap: false` — a single flat `sitemap.xml`, no sitemap index, appropriate for a handful of routes.
 - `robotsTxtOptions.policies`: blocks every Baidu spider variant (`Baiduspider`, `baiduspider`, `Baiduspider+`, `-video`, `-image`) site-wide, disallows `/static` for all other user agents, and otherwise allows everything.
-- The generated `public/robots.txt` is checked into git (not gitignored, unlike `sitemap.xml`/`sw.js`/`workbox-*`/`fallback-*`) — it's committed output rather than a purely ephemeral build artifact, so a `/static` route disallow or Baidu block can be reviewed/diffed directly. This is the reason the recent "Add /static to robots.txt ignore" commit shows up as a plain file diff.
+- The generated `public/robots.txt` is checked into git (not gitignored, unlike `sitemap.xml`/`sw.js`) — it's committed output rather than a purely ephemeral build artifact, so a `/static` route disallow or Baidu block can be reviewed/diffed directly. This is the reason the recent "Add /static to robots.txt ignore" commit shows up as a plain file diff.
 
 ## Bot protection (BotID)
 

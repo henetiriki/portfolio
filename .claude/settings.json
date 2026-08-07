@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yarn jest *)",
+      "Bash(yarn eslint:check *)",
+      "Bash(npx jest *)",
+      "Bash(yarn test:coverage *)",
+      "Bash(yarn type-check *)",
+      "Bash(yarn test *)",
+      "Bash(yarn prettier:check *)",
+      "Bash(yarn npm audit *)",
+      "Bash(npm view *)",
+      "mcp__Claude_Browser__read_console_messages",
+      "mcp__Claude_Browser__preview_logs",
+      "mcp__Claude_Browser__read_network_requests"
+    ]
+  }
+}

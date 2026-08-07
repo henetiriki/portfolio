@@ -15,7 +15,6 @@ const lastModified = new Intl.DateTimeFormat('en-NZ', {
 }).format(new Date());
 
 const withoutBundleAnalyzer = config => config;
-const withoutPWA = config => config;
 
 const withBundleAnalyzer =
   process.env.ANALYZE === 'true'
@@ -23,13 +22,6 @@ const withBundleAnalyzer =
         enabled: process.env.ANALYZE === 'true',
       })
     : withoutBundleAnalyzer;
-
-const withPWA =
-  process.env.WITH_PWA === 'true'
-    ? require('next-pwa')({
-        dest: 'public',
-      })
-    : withoutPWA;
 
 const securityHeaders = [
   {
@@ -58,77 +50,90 @@ const securityHeaders = [
   },
 ];
 
-const nextConfig = withBundleAnalyzer(
-  withPWA(
-    withBotId({
-      async headers() {
-        return [
-          {
-            headers: securityHeaders,
-            // Apply these headers to all routes in your application.
-            source: '/:path*',
-          },
-        ];
+const baseConfig = withBotId({
+  async headers() {
+    return [
+      {
+        headers: securityHeaders,
+        // Apply these headers to all routes in your application.
+        source: '/:path*',
       },
-      images: {
-        minimumCacheTTL: 31536000,
-        remotePatterns: [
+    ];
+  },
+  images: {
+    minimumCacheTTL: 31536000,
+    remotePatterns: [
+      {
+        hostname: process.env.IMAGE_HOST_NAME,
+        pathname: `/${process.env.IMAGE_HOST_PATH}/*`,
+        protocol: process.env.IMAGE_HOST_PROTOCOL,
+      },
+    ],
+  },
+  publicRuntimeConfig: {
+    googleApiKey: process.env.GOOGLE_MAPS_API_KEY,
+    imgHost: process.env.IMAGE_HOST,
+    lastModified,
+    siteUrl: process.env.HOST,
+  },
+  reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        destination: '/',
+        permanent: true,
+        source: '/docs(/?.*)',
+      },
+      {
+        destination: '/',
+        permanent: true,
+        source: '/static(/?.*)',
+      },
+      {
+        destination: '/images/manifest-icons/favicon-196x196.png',
+        permanent: true,
+        source: '/resources/images/icon.png',
+      },
+      {
+        destination: '/images/manifest-icons/favicon-196x196.png',
+        permanent: true,
+        source: '/assets/images/manifesticons/eightbitme-192.png',
+      },
+      {
+        destination: 'https://meet.google.com/ydp-nsra-gbo',
+        has: [
           {
-            hostname: process.env.IMAGE_HOST_NAME,
-            pathname: `/${process.env.IMAGE_HOST_PATH}/*`,
-            protocol: process.env.IMAGE_HOST_PROTOCOL,
+            type: 'host',
+            value: 'meet.ouwl.house',
           },
         ],
+        permanent: true,
+        source: '/',
       },
-      publicRuntimeConfig: {
-        googleApiKey: process.env.GOOGLE_MAPS_API_KEY,
-        imgHost: process.env.IMAGE_HOST,
-        lastModified,
-        siteUrl: process.env.HOST,
-      },
-      reactStrictMode: true,
-      async redirects() {
-        return [
-          {
-            destination: '/',
-            permanent: true,
-            source: '/docs(/?.*)',
-          },
-          {
-            destination: '/',
-            permanent: true,
-            source: '/static(/?.*)',
-          },
-          {
-            destination: '/images/manifest-icons/favicon-196x196.png',
-            permanent: true,
-            source: '/resources/images/icon.png',
-          },
-          {
-            destination: '/images/manifest-icons/favicon-196x196.png',
-            permanent: true,
-            source: '/assets/images/manifesticons/eightbitme-192.png',
-          },
-          {
-            destination: 'https://meet.google.com/ydp-nsra-gbo',
-            has: [
-              {
-                type: 'host',
-                value: 'meet.ouwl.house',
-              },
-            ],
-            permanent: true,
-            source: '/',
-          },
-        ];
-      },
-      serverRuntimeConfig: {
-        igImgIds: process.env.ISTAGRAM_IMAGE_IDS,
-      },
-      swcMinify: true,
-      transpilePackages: ['@googlemaps/typescript-guards'],
-    })
-  )
-);
+    ];
+  },
+  serverRuntimeConfig: {
+    igImgIds: process.env.ISTAGRAM_IMAGE_IDS,
+  },
+  swcMinify: true,
+  transpilePackages: ['@googlemaps/typescript-guards'],
+});
 
-module.exports = nextConfig;
+// @serwist/next is ESM-only (no CJS build), so it can't be `require()`d from
+// this CommonJS config file — a dynamic `import()` inside an async config
+// function is Next.js's own documented escape hatch for this. Only loaded
+// when WITH_PWA=true (matching the previous next-pwa gating) so local/preview
+// builds don't pay for it.
+module.exports = async () => {
+  if (process.env.WITH_PWA !== 'true') {
+    return withBundleAnalyzer(baseConfig);
+  }
+
+  const { default: withSerwistInit } = await import('@serwist/next');
+  const withSerwist = withSerwistInit({
+    swDest: 'public/sw.js',
+    swSrc: 'service-worker/index.ts',
+  });
+
+  return withBundleAnalyzer(withSerwist(baseConfig));
+};

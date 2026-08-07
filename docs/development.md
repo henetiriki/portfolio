@@ -31,7 +31,7 @@
   - `react/function-component-definition` is turned **off** — both arrow-function and `function` component styles are allowed (in practice, arrow functions assigned to `const` are used consistently).
   - `plugin:security/recommended` flags patterns like dynamic object property access (`array[index]`) — several files carry `// eslint-disable-next-line security/detect-object-injection` comments where indexed access is intentional and safe (e.g. `reducer.ts`, `useRailTrips.ts`).
 - **Prettier** (`.prettierrc.json`): single quotes (incl. JSX), no semicolon omission (`semi: true`), 80-char print width, trailing commas (`es5`), `bracketSameLine: true` (closing `>` of multi-line JSX tags stays on the last prop's line — visible throughout the component files).
-- `.eslintignore` / `.prettierignore` both exclude `.yarn/`, `.next/`, and the `next-pwa`-generated `public/fallback-*.js` / `public/sw.js` / `public/workbox-*.js`.
+- `.eslintignore` / `.prettierignore` both exclude `.yarn/`, `.next/`, and Serwist's generated `public/sw.js`.
 
 ## Git hooks
 
