@@ -4,12 +4,17 @@ import { render, screen, waitFor } from '@utils/test/render';
 
 describe('ContactForm', () => {
   it('renders the name, email and message fields plus a send button', () => {
-    render(<ContactForm />);
+    const { container } = render(<ContactForm />);
 
     expect(screen.getByLabelText(/^Name/)).toBeInTheDocument();
     expect(screen.getByLabelText(/^Email/)).toBeInTheDocument();
     expect(screen.getByLabelText(/^Message/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Send' })).toBeInTheDocument();
+    expect(
+      container
+        .querySelector('input[name="heuning"]')
+        ?.closest('.mantine-TextInput-root')
+    ).toHaveStyle({ display: 'none' });
   });
 
   it('shows inline validation errors and never calls fetch when required fields are empty', async () => {
@@ -23,6 +28,10 @@ describe('ContactForm', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('Please enter a valid email')).toBeInTheDocument();
     expect(screen.getByText('Please enter your message')).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Name/)).toHaveAttribute(
+      'data-error',
+      'true'
+    );
     expect(global.fetch).not.toHaveBeenCalled();
   });
 

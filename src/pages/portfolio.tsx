@@ -6,10 +6,10 @@ import NextLink from 'next/link';
 import { Content, Header } from '@components/content';
 import { description, portfolioItems } from '@fixtures/portfolio';
 import { blurDataURL } from '@utils/common';
-
 import { fullTitle } from '@utils/head';
+import classes from './portfolio.module.css';
+
 import type { PortfolioItem } from '@fixtures/types';
-import type { MantineTheme } from '@mantine/core';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
@@ -44,49 +44,16 @@ const Portfolio: NextPage = (): JSX.Element => (
       <Content>
         <Title order={2}>Website portfolio</Title>
         <Space h='xl' />
-        <Box
-          sx={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '1.5rem',
-            justifyContent: 'space-around',
-          }}>
+        <Box className={classes.grid}>
           {portfolioItems.map(
             ({ action, content, imageUrl, title, url }: PortfolioItem) => (
-              <Box
-                key={title}
-                sx={({ fn: { largerThan } }: MantineTheme) => ({
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  [largerThan('sm')]: {
-                    width: 'calc(100% / 2.1)',
-                  },
-                  [largerThan(1080)]: {
-                    width: 'calc(100% / 3.3)',
-                  },
-                  width: '100%',
-                })}>
-                <Box
-                  sx={({ fn: { largerThan } }: MantineTheme) => ({
-                    color: 'white',
-                    [largerThan(1080)]: {
-                      height: '155px',
-                    },
-                    height: '200px',
-                    padding: 0,
-                    position: 'relative',
-                  })}>
+              <Box className={classes.card} key={title}>
+                <Box className={classes.imageWrapper}>
                   {url && (
                     <Anchor
+                      className={classes.imageLink}
                       href={url}
                       rel='noopener noreferrer'
-                      sx={{
-                        img: {
-                          '&:hover': {
-                            transform: 'scale(1.1)',
-                          },
-                          transition: 'transform 0.25s ease',
-                        },
-                      }}
                       target='_blank'>
                       <Image
                         alt={title}
@@ -109,58 +76,33 @@ const Portfolio: NextPage = (): JSX.Element => (
                     />
                   )}
                 </Box>
-                <Box
-                  sx={{
-                    padding: '15px',
-                  }}>
+                <Box className={classes.cardBody}>
                   <Title order={3}>
                     {url && (
                       <Anchor
                         c='shamrock'
+                        className={classes.titleLink}
                         href={url}
+                        inherit
                         rel='noopener noreferrer'
-                        sx={({ colors: { shamrock } }: MantineTheme) => ({
-                          '&:hover': {
-                            color: shamrock[5],
-                            textDecoration: 'none',
-                          },
-                          span: {
-                            fontSize: '0.75rem',
-                            fontStyle: 'italic',
-                          },
-                        })}
                         target='_blank'>
                         {title}
                       </Anchor>
                     )}
-                    {!url && <Text>{title}</Text>}
+                    {!url && title}
                   </Title>
-                  <Text
-                    component='p'
-                    sx={{
-                      span: {
-                        fontSize: '1rem',
-                        fontWeight: 700,
-                      },
-                    }}>
+                  <Text className={classes.cardText} component='p'>
                     {content}
                   </Text>
                   {action && (
                     <Button
-                      color='shamrock'
+                      className={classes.actionButton}
+                      color='shamrock.4'
                       component={NextLink}
                       href={action.href}
-                      leftIcon={<IconMessage size={21} />}
+                      leftSection={<IconMessage size={21} />}
                       radius='lg'
                       size='lg'
-                      sx={({ colors: { shamrock } }: MantineTheme) => ({
-                        '&:hover': {
-                          color: shamrock[5],
-                          textDecoration: 'none',
-                        },
-                        fontSize: '1rem',
-                        marginTop: '1rem',
-                      })}
                       variant='outline'>
                       {action.label}
                     </Button>

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { FC, JSX } from 'react';
 
 export const Logo: FC = (): JSX.Element => (
-  <Tooltip color='blackRussian.6' label={'Ouwl'}>
+  <Tooltip color='black-russian.6' label={'Ouwl'}>
     <Link href={'/'}>
       <Image
         alt='Ouwl'

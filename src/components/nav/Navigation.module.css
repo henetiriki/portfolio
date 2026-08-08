@@ -1,0 +1,63 @@
+.root {
+  z-index: 200;
+}
+
+.desktopLinks {
+  height: 100%;
+
+  @mixin smaller-than $mantine-breakpoint-sm {
+    display: none;
+  }
+}
+
+.burger {
+  @mixin larger-than $mantine-breakpoint-sm {
+    display: none;
+  }
+}
+
+.drawer {
+  @mixin larger-than $mantine-breakpoint-sm {
+    display: none;
+  }
+}
+
+.drawerContent {
+  background-color: var(--mantine-color-black-russian-6);
+  overflow: hidden;
+}
+
+.drawerHeader,
+.drawerBody {
+  background-color: var(--mantine-color-black-russian-6);
+}
+
+.drawerHeader {
+  min-height: 3.375rem;
+  padding: 0;
+}
+
+.drawerClose {
+  color: var(--mantine-color-whisper-0);
+  height: 2.125rem;
+  position: absolute;
+  right: calc(var(--mantine-spacing-xl) + var(--mantine-spacing-md));
+  top: 1.3125rem;
+  width: 2.125rem;
+}
+
+.drawerClose svg {
+  height: 1.625rem;
+  width: 1.625rem;
+}
+
+.scrollToTop {
+  border-radius: 40px;
+  cursor: pointer;
+  outline: none;
+  z-index: 2;
+}
+
+.scrollToTop:hover {
+  background-color: var(--mantine-color-shamrock-4);
+}

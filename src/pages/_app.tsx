@@ -1,4 +1,7 @@
 import { Box, MantineProvider } from '@mantine/core';
+import '@mantine/core/styles.css';
+import { Notifications } from '@mantine/notifications';
+import '@mantine/notifications/styles.css';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { BotIdClient } from 'botid/client';
@@ -10,8 +13,8 @@ import { Layout } from '@containers/layout';
 import { useLoading } from '@hooks';
 import { PortfolioStateProvider } from '@state/context';
 import { theme } from '@styles';
+import '@styles/global.css';
 import { fullTitle } from '@utils/head';
-import type { MantineTheme } from '@mantine/core';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import type { JSX } from 'react';
@@ -90,13 +93,8 @@ const Portfolio: NextPage<AppProps> = ({
         />
       </Head>
       <ErrorBoundary>
-        <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
-          <Box
-            sx={({ fn: { rgba } }: MantineTheme) => ({
-              backgroundColor: rgba('#0C0E27', 0.8),
-              border: 0,
-              height: '100%',
-            })}>
+        <MantineProvider forceColorScheme='dark' theme={theme}>
+          <Box bd={0} bg='rgba(12, 14, 39, 0.8)' h='100%'>
             <PortfolioStateProvider>
               {isLoading && <DynamicTransition />}
               <DynamicFixedBackground />
@@ -106,6 +104,7 @@ const Portfolio: NextPage<AppProps> = ({
               </Layout>
             </PortfolioStateProvider>
           </Box>
+          <Notifications position='bottom-center' />
         </MantineProvider>
       </ErrorBoundary>
       <Analytics />

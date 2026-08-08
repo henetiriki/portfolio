@@ -1,10 +1,15 @@
-import { rem } from '@mantine/core';
+import { Loader, createTheme, rem } from '@mantine/core';
 import { colorOverrides } from '@styles';
-import type { MantineThemeOverride } from '@mantine/core';
 
-export const theme: MantineThemeOverride = {
-  colorScheme: 'dark',
+export const theme = createTheme({
   colors: colorOverrides,
+  components: {
+    Loader: Loader.extend({
+      defaultProps: {
+        type: 'dots',
+      },
+    }),
+  },
   fontFamily:
     'Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
   fontSizes: {
@@ -14,38 +19,6 @@ export const theme: MantineThemeOverride = {
     xl: rem(18),
     xs: rem(10),
   },
-  globalStyles: () => ({
-    body: {
-      color: 'white',
-      lineHeight: rem(24),
-      minHeight: '100%',
-      overflowX: 'hidden',
-      padding: 0,
-      position: 'relative',
-      textRendering: 'optimizeLegibility',
-    },
-    h1: {
-      letterSpacing: '-0.05rem',
-    },
-    h2: {
-      letterSpacing: '-0.05rem',
-    },
-    h3: {
-      letterSpacing: '-0.05rem',
-    },
-    h4: {
-      letterSpacing: '-0.05rem',
-    },
-    h5: {
-      letterSpacing: '-0.05rem',
-    },
-    h6: {
-      letterSpacing: '-0.05rem',
-    },
-    html: {
-      fontSize: '16px',
-    },
-  }),
   headings: {
     fontFamily:
       'Montserrat, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
@@ -76,7 +49,6 @@ export const theme: MantineThemeOverride = {
       },
     },
   },
-  loader: 'dots',
   primaryColor: 'whisper',
   primaryShade: 4,
-};
+});

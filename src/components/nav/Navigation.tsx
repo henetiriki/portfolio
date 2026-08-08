@@ -4,7 +4,6 @@ import {
   Container,
   Drawer,
   Group,
-  Header,
   ScrollArea,
   rem,
 } from '@mantine/core';
@@ -17,7 +16,7 @@ import { Logo } from '@components/shared';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
-import type { MantineTheme } from '@mantine/core';
+import classes from './Navigation.module.css';
 import type { MouseEvent } from 'react';
 
 export const Navigation = () => {
@@ -72,33 +71,17 @@ export const Navigation = () => {
 
   return (
     <>
-      <Box
-        left={0}
-        pos='sticky'
-        right={0}
-        sx={{
-          zIndex: 200,
-        }}
-        top={0}>
-        <Header
-          bg={navBgTransparent ? 'transparent' : 'blackRussian'}
-          height={76}
-          px='xl'
-          sx={{
-            alignItems: 'center',
-            borderBottom: 'none',
-          }}>
-          <Container h={'100%'}>
-            <Group position='apart' sx={{ height: '100%' }}>
+      <Box className={classes.root} left={0} pos='sticky' right={0} top={0}>
+        <Box
+          bd='none'
+          bg={navBgTransparent ? 'transparent' : 'black-russian'}
+          component='header'
+          h={rem(76)}
+          px='xl'>
+          <Container h='100%'>
+            <Group h='100%' justify='space-between'>
               <Logo />
-              <Group
-                spacing={0}
-                sx={({ fn: { smallerThan } }: MantineTheme) => ({
-                  [smallerThan('sm')]: {
-                    display: 'none',
-                  },
-                  height: '100%',
-                })}>
+              <Group className={classes.desktopLinks} gap={0}>
                 {menuItems.map(({ href, text }) => (
                   <Box key={href} pos='relative'>
                     <NavigationLink
@@ -113,35 +96,28 @@ export const Navigation = () => {
 
               <Burger
                 aria-label={drawerOpened ? 'Close menu' : 'Open menu'}
+                className={classes.burger}
                 onClick={toggleDrawer}
                 opened={drawerOpened}
-                sx={({ fn: { largerThan } }: MantineTheme) => ({
-                  [largerThan('sm')]: {
-                    display: 'none',
-                  },
-                })}
+                style={{ visibility: drawerOpened ? 'hidden' : undefined }}
               />
             </Group>
           </Container>
-        </Header>
+        </Box>
 
         <Drawer
+          className={classes.drawer}
+          classNames={{
+            body: classes.drawerBody,
+            close: classes.drawerClose,
+            content: classes.drawerContent,
+            header: classes.drawerHeader,
+          }}
+          closeButtonProps={{ 'aria-label': 'Close menu' }}
           onClose={closeDrawer}
           opened={drawerOpened}
           padding='md'
           size='100%'
-          sx={({
-            colors: { blackRussian },
-            fn: { largerThan },
-          }: MantineTheme) => ({
-            [largerThan('sm')]: {
-              display: 'none',
-            },
-            '& section': {
-              '& div': { backgroundColor: blackRussian[6] },
-              overflow: 'hidden',
-            },
-          })}
           zIndex={1000000}>
           <ScrollArea h={`calc(100vh - ${rem(60)})`} mx='-md'>
             {menuItems.map(({ href, text }) => (
@@ -166,6 +142,7 @@ export const Navigation = () => {
           aria-label='Scroll to top'
           bg='matterhorn'
           bottom={20}
+          className={classes.scrollToTop}
           component='a'
           onClick={(event: MouseEvent<HTMLAnchorElement>) => {
             event.preventDefault();
@@ -175,15 +152,6 @@ export const Navigation = () => {
           pos='fixed'
           right={30}
           role='button'
-          sx={({ colors: { shamrock } }: MantineTheme) => ({
-            '&:hover': {
-              backgroundColor: shamrock[4],
-            },
-            borderRadius: '40px',
-            cursor: 'pointer',
-            outline: 'none',
-            zIndex: 2,
-          })}
           ta='center'>
           <IconArrowMoveUp size={15} />
         </Box>

@@ -1,0 +1,13 @@
+.title {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.title span {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: 2rem;
+  text-transform: none;
+}

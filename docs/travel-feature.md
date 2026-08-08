@@ -24,7 +24,7 @@ The `/travel` page renders an interactive Google Map plotting places the site ow
    - Sets up `useIntersection({ threshold: 0.8 })` on a sentinel `<Box ref={ref} />` placed after the map — markers/polylines ("`dropMarkers`") only start rendering once 80% of the map is scrolled into view, deferring the (expensive) marker-drop/polyline-draw work until the user actually reaches the map.
    - Always renders the 9 `cities` as `Marker`s immediately (not gated by `dropMarkers`) since they're the primary content.
    - Once `dropMarkers` is true, renders `markerLocations` (airports/stations/ports) and `tripPolylines` (flights/cruises) as `Marker`/`Polyline` children, each flagged `endMarker`/`endTripPolyline` on the very last item in the very last group — these flags are what trigger the "all loaded" dispatches.
-   - Also calls `useRailTrips()` to fetch `/api/rail-trips`, decode it into two `TripPaths` groups (solid trips, dotted upcoming trips colored `torchRed`), cache the result in global state, and renders those as `Polyline`s too (flagged `endRailTripPolyline`).
+   - Also calls `useRailTrips()` to fetch `/api/rail-trips`, decode it into two `TripPaths` groups (solid trips, dotted upcoming trips colored `torch-red`), cache the result in global state, and renders those as `Polyline`s too (flagged `endRailTripPolyline`).
    - Wraps everything in `@googlemaps/react-wrapper`'s `<Wrapper apiKey={googleApiKey} libraries={['geometry']} render={render} />` — `render` (from `useMap()`) shows `MapLoader` while the Maps JS API script loads and `MapError` if it fails.
 3. **`Map`**:
    - Instantiates a single `google.maps.Map` on mount, and a single shared `google.maps.InfoWindow` that all markers push content into (only one info bubble open at a time).
@@ -45,4 +45,4 @@ The `/travel` page renders an interactive Google Map plotting places the site ow
 
 ## Environment dependency
 
-The Google Maps JS API key is read server-side from `GOOGLE_MAPS_API_KEY` and exposed to the client via `publicRuntimeConfig.googleApiKey` (see [Environment Variables](environment-variables.md)) — it is **not** prefixed `NEXT_PUBLIC_*`; Next.js's `publicRuntimeConfig` mechanism is used instead, which requires the custom `_app.tsx`/pages to call `getConfig()` rather than relying on build-time inlining.
+The Google Maps JS API key is read server-side from `GOOGLE_MAPS_API_KEY` and re-exposed to the client as `process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` via `next.config.js`'s `env` block (see [Environment Variables](environment-variables.md)) — the underlying var name was deliberately left unrenamed (it's also read server-side and already configured under that name in Vercel), so this bridges it to a build-time-inlined `NEXT_PUBLIC_*` name instead of Next's now-deprecated `publicRuntimeConfig`/`getConfig()` mechanism.

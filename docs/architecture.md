@@ -6,8 +6,8 @@
 | --------------- | ------------------------------------------------------------------------------------------ |
 | Framework       | Next.js `^15.5.23`, **Pages Router** (`src/pages`)                                         |
 | Language        | TypeScript `^5.9`, `strict: true`                                                          |
-| UI library      | Mantine v6 (`core`, `form`, `hooks`, `notifications`, `next`)                              |
-| Styling         | Emotion (`@emotion/react`, `@emotion/styled`) via Mantine's `sx` prop and `createStyles`   |
+| UI library      | Mantine v7 (`core`, `form`, `hooks`, `notifications`)                                      |
+| Styling         | CSS Modules + CSS variables (`postcss-preset-mantine`, `postcss-simple-vars`)              |
 | Icons           | `@tabler/icons-react`                                                                      |
 | Maps            | `@googlemaps/react-wrapper` + `@googlemaps/typescript-guards` (Google Maps JavaScript API) |
 | Email           | `nodemailer` over Gmail SMTP                                                               |

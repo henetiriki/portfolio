@@ -1,28 +1,20 @@
 import { Anchor, Text } from '@mantine/core';
+import classes from './TimelineInstitution.module.css';
 import type { Institution } from '@fixtures/types';
-import type { MantineTheme } from '@mantine/core';
 import type { FC } from 'react';
 
 export const TimelineInstitution: FC<Omit<Institution, 'location'>> = ({
   name,
   url,
 }) => (
-  <Text fz='1.25rem' mb={0}>
+  <Text fz='1.25rem' mb={0} mt={0}>
     {url && (
       <Anchor
         c='shamrock'
+        className={classes.link}
         href={url}
+        inherit
         rel='noopener noreferrer'
-        sx={({ colors: { shamrock } }: MantineTheme) => ({
-          '&:hover': {
-            color: shamrock[5],
-            textDecoration: 'none',
-          },
-          span: {
-            fontSize: '0.75rem',
-            fontStyle: 'italic',
-          },
-        })}
         target='_blank'>
         {name}
       </Anchor>

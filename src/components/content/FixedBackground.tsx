@@ -5,6 +5,7 @@ import { useLayoutEffect, useRef } from 'react';
 import { useIgImgId } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { blurDataURL } from '@utils/common';
+import classes from './FixedBackground.module.css';
 import type { FC, MutableRefObject } from 'react';
 
 const imgHost = process.env.NEXT_PUBLIC_IMAGE_HOST;
@@ -32,13 +33,10 @@ export const FixedBackground: FC = () => {
   return (
     <Box ref={pageTopRef}>
       <Container
-        sx={{
-          minHeight: '100vh',
-          minWidth: '100vw',
-          overflow: 'hidden',
-          position: 'fixed',
-          zIndex: -1,
-        }}>
+        className={classes.container}
+        mih='100vh'
+        miw='100vw'
+        pos='fixed'>
         {igImgId && (
           <Image
             alt=''

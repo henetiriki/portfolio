@@ -1,0 +1,67 @@
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: space-around;
+}
+
+.card {
+  background-color: alpha(var(--mantine-color-white), 0.1);
+  width: 100%;
+
+  @mixin larger-than $mantine-breakpoint-sm {
+    width: calc(100% / 2.1);
+  }
+
+  @mixin larger-than 1080px {
+    width: calc(100% / 3.3);
+  }
+}
+
+.imageWrapper {
+  color: white;
+  height: 200px;
+  padding: 0;
+  position: relative;
+
+  @mixin larger-than 1080px {
+    height: 155px;
+  }
+}
+
+.imageLink img {
+  transition: transform 0.25s ease;
+}
+
+.imageLink:hover img {
+  transform: scale(1.1);
+}
+
+.cardBody {
+  padding: 15px;
+}
+
+.titleLink:hover {
+  color: var(--mantine-color-shamrock-5);
+  text-decoration: none;
+}
+
+.titleLink span {
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.cardText span {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.actionButton {
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+.actionButton:hover {
+  color: var(--mantine-color-shamrock-5);
+  text-decoration: none;
+}

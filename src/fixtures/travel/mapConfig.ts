@@ -3,7 +3,12 @@ import { colorOverrides } from '@styles';
 export const MAP_MAX_MOBILE = 768;
 export const STROKE_WEIGHT_DEFAULT = 1.25;
 
-const { gunmetal, mediumSeaGreen, paynesGrey, whisper } = colorOverrides;
+const {
+  gunmetal,
+  ['medium-sea-green']: mediumSeaGreen,
+  ['paynes-grey']: paynesGrey,
+  whisper,
+} = colorOverrides;
 
 export const mapOptions = (): google.maps.MapOptions => ({
   center: {

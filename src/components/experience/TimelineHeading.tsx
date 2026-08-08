@@ -12,7 +12,7 @@ export const TimelineHeading: FC<{ icon: JSX.Element; title: string }> = ({
       h='2.5rem'
       justify='center'
       mr='1.25rem'
-      sx={{ borderRadius: '100%' }}
+      style={{ borderRadius: '100%' }}
       w='2.5rem'>
       {icon}
     </Flex>

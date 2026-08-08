@@ -1,0 +1,35 @@
+html {
+  font-size: 16px;
+}
+
+body {
+  background-color: transparent;
+  color: var(--mantine-color-whisper-0);
+  line-height: 1.5rem;
+  min-height: 100%;
+  overflow-x: hidden;
+  padding: 0;
+  position: relative;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: -0.05rem;
+}
+
+img {
+  vertical-align: middle;
+}
+
+p.mantine-Text-root {
+  margin: 1em 0;
+}
+
+html:root[data-mantine-color-scheme='dark'] {
+  --mantine-color-error: var(--mantine-color-torch-red-2);
+}

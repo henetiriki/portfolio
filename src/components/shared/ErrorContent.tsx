@@ -18,8 +18,10 @@ export const ErrorContent: FC<{ errorHeading: string; message: string }> = ({
         <Space h='xl' />
         <Text>
           <Button
-            color='shamrock'
-            leftIcon={<IconHandFinger size={21} style={{ rotate: '90deg' }} />}
+            color='shamrock.4'
+            leftSection={
+              <IconHandFinger size={21} style={{ rotate: '90deg' }} />
+            }
             onClick={() => router.push('/')}
             radius='lg'
             size='lg'

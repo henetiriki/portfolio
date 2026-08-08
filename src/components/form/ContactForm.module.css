@@ -1,0 +1,16 @@
+.input {
+  background-color: transparent;
+  border-color: var(--mantine-color-whisper-4);
+}
+
+.input:focus-within {
+  border-color: var(--mantine-color-white);
+}
+
+.input[data-error] {
+  border-color: var(--mantine-color-error);
+}
+
+.label {
+  margin-bottom: var(--mantine-spacing-xs);
+}

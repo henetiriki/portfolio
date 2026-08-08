@@ -17,7 +17,7 @@ export const PolylineLegend: FC<DynamicPolylineText & PropsWithChildren> = ({
       h='1em'
       ml={5}
       mr={7}
-      sx={{ borderBottom: `3px ${style} ${color}` }}
+      style={{ borderBottom: `3px ${style} ${color}` }}
       w={12}
     />{' '}
     {children}

@@ -15,4 +15,13 @@ describe('WaveWrapper', () => {
 
     expect(img?.getAttribute('src')).toContain('footer-bottom');
   });
+
+  it('lets a caller override its default height', () => {
+    const { container } = render(
+      <WaveWrapper style={{ height: '5rem' }} wave='footer-top' />
+    );
+    const img = container.querySelector('img');
+
+    expect(img?.parentElement).toHaveStyle({ height: '5rem' });
+  });
 });

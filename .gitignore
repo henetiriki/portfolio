@@ -23,6 +23,7 @@ out/
 build/
 public/sitemap.xml
 public/sw.js*
+src/styles/mantine-custom-properties.css
 
 # misc
 .DS_Store

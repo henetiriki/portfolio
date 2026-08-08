@@ -1,0 +1,26 @@
+.hero {
+  z-index: 1;
+}
+
+.about {
+  flex-basis: 50%;
+}
+
+.contributions {
+  list-style-type: none;
+}
+
+.subtitle span {
+  color: var(--mantine-color-shamrock-4);
+}
+
+.openSourceLink:hover {
+  text-decoration: none;
+}
+
+.profilePicture img {
+  border-color: var(--mantine-color-whisper-4) !important;
+  border-radius: 0.5rem;
+  border-style: solid !important;
+  border-width: 0.25rem !important;
+}
