@@ -5,7 +5,7 @@ import type { RenderOptions } from '@testing-library/react';
 import type { FC, PropsWithChildren, ReactElement } from 'react';
 
 const AllProviders: FC<PropsWithChildren> = ({ children }) => (
-  <MantineProvider theme={theme} withGlobalStyles withNormalizeCSS>
+  <MantineProvider defaultColorScheme='dark' theme={theme}>
     {children}
   </MantineProvider>
 );

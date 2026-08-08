@@ -1,6 +1,6 @@
-import { Anchor, rem } from '@mantine/core';
+import { Anchor } from '@mantine/core';
 import NextLink from 'next/link';
-import type { MantineTheme } from '@mantine/core';
+import classes from './NavigationLink.module.css';
 import type { FC, PropsWithChildren } from 'react';
 
 export const NavigationLink: FC<
@@ -12,52 +12,12 @@ export const NavigationLink: FC<
   } & PropsWithChildren
 > = ({ children, href, onClickCb, pathname, variant = 'md' }) => (
   <Anchor
-    className={href === pathname ? 'active' : ''}
+    className={`${classes.link} ${variant === 'sm' ? classes.sm : ''} ${href === pathname ? classes.active : ''}`.trim()}
     component={NextLink}
     display='flex'
     href={href}
     my={variant === 'md' ? undefined : '1rem'}
-    onClick={onClickCb}
-    sx={({ fn: { smallerThan }, spacing: { md } }: MantineTheme) => ({
-      '&.active': {
-        '&:before': {
-          width: '30px',
-        },
-        color: 'white',
-      },
-      '&:before': {
-        backgroundColor: 'white',
-        bottom: rem(variant === 'md' ? -10 : 8),
-        content: "''",
-        height: '2px',
-        position: 'absolute',
-        transition: 'all 0.2s',
-        width: 0,
-      },
-      '&:hover': {
-        '&:before': {
-          width: '30px',
-        },
-        color: 'white',
-        textDecoration: 'none',
-        transition: 'all 0.2s',
-      },
-      alignItems: 'center',
-      color: 'silver.1',
-      fontSize: variant === 'md' ? rem(14) : 'sm',
-      fontWeight: 600,
-      height: '100%',
-      [smallerThan('sm')]: {
-        alignItems: 'center',
-        display: 'flex',
-        height: rem(42),
-        width: '100%',
-      },
-      paddingLeft: md,
-      paddingRight: md,
-      textDecoration: 'none',
-      textTransform: 'uppercase',
-    })}>
+    onClick={onClickCb}>
     {children}
   </Anchor>
 );

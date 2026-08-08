@@ -1,8 +1,11 @@
 import { Box, useMantineTheme } from '@mantine/core';
 import type { BoxProps } from '@mantine/core';
-import type { FC } from 'react';
+import type { FC, PropsWithChildren } from 'react';
 
-export const FooterContainer: FC<BoxProps> = ({ children, ...others }) => {
+export const FooterContainer: FC<PropsWithChildren<BoxProps>> = ({
+  children,
+  ...others
+}) => {
   const {
     headings: { fontFamily: footerFf },
   } = useMantineTheme();

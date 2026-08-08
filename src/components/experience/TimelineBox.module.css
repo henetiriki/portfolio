@@ -1,0 +1,22 @@
+.box::after {
+  background-color: var(--mantine-color-shamrock-4);
+  border-radius: 100%;
+  content: '';
+  height: 20px;
+  left: -11px;
+  opacity: 0.4;
+  position: absolute;
+  top: 70px;
+  width: 20px;
+}
+
+.box::before {
+  background-color: var(--mantine-color-shamrock-4);
+  border-radius: 100%;
+  content: '';
+  height: 10px;
+  left: -6px;
+  position: absolute;
+  top: 75px;
+  width: 10px;
+}

@@ -11,7 +11,7 @@ export const MarkerLegend: FC<PropsWithChildren & { color: string }> = ({
       c={color}
       component={IconMapPin}
       size={18}
-      sx={{
+      style={{
         verticalAlign: 'middle',
       }}
     />{' '}

@@ -1,0 +1,28 @@
+html {
+  font-size: 16px;
+}
+
+body {
+  /* Mantine v7's base stylesheet sets an opaque `background-color: var(--mantine-color-body)`
+     on body by default (v6's normalize.css didn't). FixedBackground relies on
+     a `position: fixed; z-index: -1` image to show through everything above
+     it — an opaque body background paints in front of that negative z-index
+     layer and hides it, so this has to stay transparent. */
+  background-color: transparent;
+  color: white;
+  line-height: 1.5rem;
+  min-height: 100%;
+  overflow-x: hidden;
+  padding: 0;
+  position: relative;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: -0.05rem;
+}

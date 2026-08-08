@@ -1,0 +1,9 @@
+.navLink:hover {
+  color: white;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.socialLink:hover {
+  color: var(--mantine-color-shamrock-4);
+}

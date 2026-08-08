@@ -1,4 +1,3 @@
-import styled from '@emotion/styled';
 import { useViewportSize } from '@mantine/hooks';
 import {
   Children,
@@ -15,10 +14,7 @@ import { usePortfolioState } from '@state/context';
 import { delay } from '@utils/common';
 import type { FC, PropsWithChildren } from 'react';
 
-const MapContainer = styled.div`
-  height: 65vh;
-  width: 100%;
-`;
+const mapContainerStyle = { height: '65vh', width: '100%' };
 
 export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
   children,
@@ -95,7 +91,7 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
 
   return (
     <>
-      <MapContainer id='map' ref={mapRef} />
+      <div id='map' ref={mapRef} style={mapContainerStyle} />
       {Children.map(children, child => {
         if (map && infoWindow && isValidElement(child)) {
           // set the map prop on the child component

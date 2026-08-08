@@ -1,0 +1,59 @@
+.link {
+  align-items: center;
+  color: var(--mantine-color-silver-1);
+  font-size: 0.875rem;
+  font-weight: 600;
+  height: 100%;
+  padding-left: var(--mantine-spacing-md);
+  padding-right: var(--mantine-spacing-md);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.link::before {
+  background-color: white;
+  bottom: -0.625rem;
+  content: '';
+  height: 2px;
+  position: absolute;
+  transition: all 0.2s;
+  width: 0;
+}
+
+.link.sm {
+  font-size: var(--mantine-font-size-sm);
+}
+
+.link.sm::before {
+  bottom: 0.5rem;
+}
+
+.link:hover {
+  color: white;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.link:hover::before {
+  width: 30px;
+}
+
+.active {
+  color: white;
+}
+
+.active::before {
+  width: 30px;
+}
+
+/* $mantine-breakpoint-* is a postcss-simple-vars build-time substitution,
+   not a CSS custom property — var(--mantine-*) is invalid inside an @media
+   condition and would silently never match. */
+@media (max-width: calc($mantine-breakpoint-sm - 0.1px)) {
+  .link {
+    align-items: center;
+    display: flex;
+    height: 2.625rem;
+    width: 100%;
+  }
+}

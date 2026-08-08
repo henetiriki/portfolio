@@ -11,14 +11,14 @@ const DynamicFooter = dynamic(
 
 export const Layout: FC<PropsWithChildren> = ({ children }): JSX.Element => (
   <Box
-    sx={{
+    style={{
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
     }}>
     <Box
       component='main'
-      sx={{
+      style={{
         flex: 1,
         overflow: 'auto',
       }}>

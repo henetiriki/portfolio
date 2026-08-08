@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Content } from '@components/content';
 import { openSourceContrs } from '@fixtures/home';
 import { blurDataURL } from '@utils/common';
-import type { MantineTheme } from '@mantine/core';
+import classes from './index.module.css';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
@@ -16,23 +16,17 @@ const DynamicTypeAnimation = dynamic(
 const Home: NextPage = (): JSX.Element => (
   <>
     <Container
-      sx={{
+      style={{
         height: '75vh',
         paddingTop: '30vh',
         textAlign: 'center',
         zIndex: 1,
       }}>
-      <Container sx={{ textAlign: 'center' }}>
-        <Title order={1} sx={{ textTransform: 'uppercase' }}>
+      <Container style={{ textAlign: 'center' }}>
+        <Title order={1} style={{ textTransform: 'uppercase' }}>
           Louw Swart
         </Title>
-        <Title
-          order={4}
-          sx={({ colors: { shamrock } }: MantineTheme) => ({
-            span: {
-              color: shamrock[4],
-            },
-          })}>
+        <Title className={classes.subtitle} order={4}>
           I’m a{' '}
           <DynamicTypeAnimation
             repeat={Infinity}
@@ -59,7 +53,7 @@ const Home: NextPage = (): JSX.Element => (
         direction={{ base: 'column', md: 'row' }}
         gap='2.5rem'
         justify='space-between'>
-        <Box sx={{ flexBasis: '50%' }}>
+        <Box style={{ flexBasis: '50%' }}>
           <Title order={2}>About me</Title>
           <Title order={3}>Louw Swart</Title>
           <Title order={4}>Front-end Engineer, Wellington NZ</Title>
@@ -84,18 +78,14 @@ const Home: NextPage = (): JSX.Element => (
           <Title order={4}>Open Source Contributions</Title>
           <Box
             component='ul'
-            sx={{ listStyleType: 'none', paddingLeft: '0.75rem' }}>
+            style={{ listStyleType: 'none', paddingLeft: '0.75rem' }}>
             {openSourceContrs.map(({ href, text }, idx) => (
               <li key={idx}>
                 <Anchor
+                  className={classes.openSourceLink}
                   color='shamrock'
                   href={href}
                   rel='noopener noreferrer'
-                  sx={{
-                    '&:hover': {
-                      textDecoration: 'none',
-                    },
-                  }}
                   target='_blank'>
                   {text}
                 </Anchor>
@@ -110,17 +100,9 @@ const Home: NextPage = (): JSX.Element => (
         </Box>
         <Box>
           <Box
-            id='XXXXX'
+            className={classes.profilePicture}
             maw={400}
-            mt={{ base: 'xl', md: 0 }}
-            sx={({ colors: { whisper } }: MantineTheme) => ({
-              '& img': {
-                borderColor: `${whisper[4]} !important`,
-                borderRadius: '0.5rem',
-                borderStyle: 'solid !important',
-                borderWidth: '0.25rem !important',
-              },
-            })}>
+            mt={{ base: 'xl', md: 0 }}>
             <Image
               alt='Louw Swart'
               height={350}

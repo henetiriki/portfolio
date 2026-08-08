@@ -32,7 +32,7 @@ export const FixedBackground: FC = () => {
   return (
     <Box ref={pageTopRef}>
       <Container
-        sx={{
+        style={{
           minHeight: '100vh',
           minWidth: '100vw',
           overflow: 'hidden',

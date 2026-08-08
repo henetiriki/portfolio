@@ -1,19 +1,21 @@
 import { Flex } from '@mantine/core';
 import Image from 'next/image';
-import type { Sx } from '@mantine/core';
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
 
 type Wave = 'content-bottom' | 'content-top' | 'footer-bottom' | 'footer-top';
 
-export const WaveWrapper: FC<{ sx?: Sx; wave: Wave }> = ({ sx = {}, wave }) => (
+export const WaveWrapper: FC<{ style?: CSSProperties; wave: Wave }> = ({
+  style = {},
+  wave,
+}) => (
   <Flex
     h='10rem'
     justify='flex-start'
     lh={0}
     pos='relative'
-    sx={{
+    style={{
       overflow: 'hidden',
-      ...sx,
+      ...style,
     }}
     w='100%'>
     <Image

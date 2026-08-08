@@ -19,7 +19,9 @@ export const ErrorContent: FC<{ errorHeading: string; message: string }> = ({
         <Text>
           <Button
             color='shamrock'
-            leftIcon={<IconHandFinger size={21} style={{ rotate: '90deg' }} />}
+            leftSection={
+              <IconHandFinger size={21} style={{ rotate: '90deg' }} />
+            }
             onClick={() => router.push('/')}
             radius='lg'
             size='lg'

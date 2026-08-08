@@ -1,4 +1,4 @@
-import type { Tuple } from '@mantine/core';
+import type { MantineColorsTuple } from '@mantine/core';
 
 export type ExtendedCustomColor =
   | 'alizarin'
@@ -21,7 +21,7 @@ export type ExtendedCustomColor =
 
 export type ExtendedCustomColorOverrides = Record<
   ExtendedCustomColor,
-  Tuple<string, 10>
+  MantineColorsTuple
 >;
 
 export const colorOverrides: ExtendedCustomColorOverrides = {

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
 import { Navigation } from '@components/nav/Navigation';
 import { PortfolioStateProvider, usePortfolioState } from '@state/context';
-import { fireEvent, render, screen, waitFor } from '@utils/test/render';
+import { fireEvent, render, screen, waitFor, within } from '@utils/test/render';
 import type { FC, PropsWithChildren } from 'react';
 
 jest.mock('next/router', () => ({ useRouter: jest.fn() }));
@@ -54,13 +54,17 @@ describe('Navigation', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Open menu' }));
 
-    // { hidden: true } is needed here: once the modal drawer is open, Mantine
-    // correctly marks the rest of the page (including the desktop nav's own
-    // "Travel" link) aria-hidden, so only the drawer's copy is normally
-    // accessible — this assertion is about DOM presence, not a11y-tree state.
+    // Mantine v7's Drawer mounts its content asynchronously after the open
+    // transition, and no longer aria-hides background content while open
+    // (unlike v6) — so both the desktop nav's "Travel" link and the drawer's
+    // own copy are simultaneously present and accessible once the dialog
+    // has mounted.
+    const dialog = await screen.findByRole('dialog');
+
     expect(
-      screen.getAllByRole('link', { hidden: true, name: 'Travel' })
-    ).toHaveLength(2);
+      within(dialog).getByRole('link', { name: 'Travel' })
+    ).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: 'Travel' })).toHaveLength(2);
   });
 
   it('opens the mobile menu as an accessible dialog via the burger button', async () => {
@@ -72,15 +76,12 @@ describe('Navigation', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Open menu' }));
 
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
-    // the toggle button itself is background content while the drawer is
-    // open, so it's correctly excluded from the default a11y-tree query —
-    // confirming that also confirms its aria-label flipped to "Close menu"
+    expect(await screen.findByRole('dialog')).toBeInTheDocument();
+    // Mantine v7's Drawer no longer aria-hides background content while
+    // open (unlike v6), so the toggle button — now relabelled — stays in
+    // the default a11y-tree query.
     expect(
-      screen.queryByRole('button', { name: 'Close menu' })
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { hidden: true, name: 'Close menu' })
+      screen.getByRole('button', { name: 'Close menu' })
     ).toBeInTheDocument();
   });
 
@@ -153,9 +154,11 @@ describe('Navigation', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Open menu' }));
 
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    const dialog = await screen.findByRole('dialog');
 
-    await userEvent.click(screen.getByRole('link', { name: 'Experience' }));
+    await userEvent.click(
+      within(dialog).getByRole('link', { name: 'Experience' })
+    );
 
     expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
       behavior: 'smooth',

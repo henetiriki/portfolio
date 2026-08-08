@@ -535,7 +535,7 @@ export const jobs: Job[] = [
       <>
         <Space h='lg' />
         <Box
-          sx={{
+          style={{
             alignItems: 'center',
             display: 'flex',
             justifyContent: 'flex-start',

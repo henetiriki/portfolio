@@ -5,36 +5,17 @@ import {
   TextInput,
   Textarea,
   Title,
-  createStyles,
   useMantineTheme,
 } from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
 import { IconAt, IconMessage, IconSend, IconTag } from '@tabler/icons-react';
 import { useEffect, useMemo } from 'react';
 import { useMantineForm } from '@hooks';
-import type { MantineTheme } from '@mantine/core';
-import type { NotificationProps } from '@mantine/notifications';
+import classes from './ContactForm.module.css';
+import type { NotificationData } from '@mantine/notifications';
 import type { FC } from 'react';
 
-const useStyles = createStyles(
-  ({ colors: { whisper }, spacing: { xs }, white }: MantineTheme) => ({
-    input: {
-      '&:focus-within': {
-        borderColor: white,
-      },
-      backgroundColor: 'transparent',
-      borderColor: whisper,
-    },
-    label: {
-      marginBottom: xs,
-    },
-  })
-);
-
 export const ContactForm: FC = () => {
-  const {
-    classes: { input, label },
-  } = useStyles();
   const {
     colors: { blackRussian },
   } = useMantineTheme();
@@ -45,10 +26,10 @@ export const ContactForm: FC = () => {
     isSubmitting,
     submitForm,
   } = useMantineForm();
-  const defaultNotificationProps: Omit<NotificationProps, 'message'> = useMemo(
+  const defaultNotificationProps: Omit<NotificationData, 'message'> = useMemo(
     () => ({
       autoClose: 6000,
-      sx: { backgroundColor: blackRussian[6] },
+      style: { backgroundColor: blackRussian[6] },
       withBorder: true,
     }),
     [blackRussian]
@@ -87,9 +68,9 @@ export const ContactForm: FC = () => {
           gap='xl'
           justify='space-evenly'>
           <TextInput
-            classNames={{ input, label }}
-            icon={<IconTag size='0.75rem' />}
+            classNames={classes}
             label='Name'
+            leftSection={<IconTag size='0.75rem' />}
             mih={110}
             placeholder='Your name'
             radius='lg'
@@ -99,9 +80,9 @@ export const ContactForm: FC = () => {
             {...getInputProps('name')}
           />
           <TextInput
-            classNames={{ input, label }}
-            icon={<IconAt size='0.75rem' />}
+            classNames={classes}
             label='Email'
+            leftSection={<IconAt size='0.75rem' />}
             mih={110}
             placeholder='Your email'
             radius='lg'
@@ -114,9 +95,9 @@ export const ContactForm: FC = () => {
         </Flex>
         <Space h='xl' />
         <Textarea
-          classNames={{ input, label }}
-          icon={<IconMessage size='0.75rem' />}
+          classNames={classes}
           label='Message'
+          leftSection={<IconMessage size='0.75rem' />}
           mih={180}
           minRows={4}
           placeholder='Your message'
@@ -129,7 +110,7 @@ export const ContactForm: FC = () => {
         <Space h='xl' />
         <Button
           color='shamrock'
-          leftIcon={<IconSend size={21} />}
+          leftSection={<IconSend size={21} />}
           loading={isSubmitting}
           radius='lg'
           size='lg'
@@ -138,7 +119,7 @@ export const ContactForm: FC = () => {
           w={{ base: '100%', md: '25%', sm: '35%' }}>
           {isSubmitting ? 'Sending' : 'Send'}
         </Button>
-        <TextInput name='heuning' sx={{ display: 'none' }} />
+        <TextInput name='heuning' style={{ display: 'none' }} />
       </form>
     </>
   );

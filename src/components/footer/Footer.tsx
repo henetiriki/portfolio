@@ -9,8 +9,8 @@ import { socialLinks } from '@fixtures/footer';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
+import classes from './Footer.module.css';
 import type { SocialLink } from '@fixtures/types';
-import type { MantineTheme } from '@mantine/core';
 import type { FC, JSX } from 'react';
 
 const lastModified = process.env.NEXT_PUBLIC_LAST_MODIFIED;
@@ -27,7 +27,7 @@ export const Footer: FC = (): JSX.Element => {
 
   return (
     <footer>
-      <WaveWrapper sx={{ height: '5rem' }} wave='footer-top' />
+      <WaveWrapper style={{ height: '5rem' }} wave='footer-top' />
       <WaveWrapper wave='footer-bottom' />
       <FooterContainer bg='blackRussian'>
         <Logo />
@@ -36,19 +36,13 @@ export const Footer: FC = (): JSX.Element => {
           {menuItems.map(({ href, text }) => (
             <Anchor
               c={pathname === href ? 'white' : 'silver.1'}
+              className={classes.navLink}
               component={NextLink}
               fw={pathname === href ? '700' : '400'}
               fz='lg'
               href={href}
               key={href}
-              onClick={scrollToTop}
-              sx={{
-                '&:hover': {
-                  color: 'white',
-                  textDecoration: 'none',
-                  transition: 'all 0.2s',
-                },
-              }}>
+              onClick={scrollToTop}>
               {text}
             </Anchor>
           ))}
@@ -57,14 +51,10 @@ export const Footer: FC = (): JSX.Element => {
           {socialLinks.map(({ icon, title, url }: SocialLink) => (
             <Anchor
               c='white'
+              className={classes.socialLink}
               href={url}
               key={url}
               rel='noopener noreferrer'
-              sx={({ colors: { shamrock } }: MantineTheme) => ({
-                '&:hover': {
-                  color: shamrock[4],
-                },
-              })}
               target='_blank'
               title={title}>
               {icon}

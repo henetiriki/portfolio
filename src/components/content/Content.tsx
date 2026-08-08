@@ -15,7 +15,7 @@ export const Content: FC<
       <Container>{children}</Container>
     </Box>
     {waveBottom && (
-      <WaveWrapper sx={{ marginBottom: '8rem' }} wave='content-bottom' />
+      <WaveWrapper style={{ marginBottom: '8rem' }} wave='content-bottom' />
     )}
   </>
 );
