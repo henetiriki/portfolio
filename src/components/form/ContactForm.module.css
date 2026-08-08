@@ -7,6 +7,10 @@
   border-color: var(--mantine-color-white);
 }
 
+.input[data-error] {
+  border-color: var(--mantine-color-error);
+}
+
 .label {
   margin-bottom: var(--mantine-spacing-xs);
 }

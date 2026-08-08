@@ -28,6 +28,10 @@ describe('ContactForm', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('Please enter a valid email')).toBeInTheDocument();
     expect(screen.getByText('Please enter your message')).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Name/)).toHaveAttribute(
+      'data-error',
+      'true'
+    );
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
