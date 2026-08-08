@@ -1,5 +1,7 @@
 # Portfolio
 
+[![CI](https://github.com/henetiriki/portfolio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/henetiriki/portfolio/actions/workflows/ci.yml)
+
 Personal portfolio and CV site for Louw Swart — live at **[www.ouwl.house](https://www.ouwl.house)**.
 
 Four content pages (Home, Experience, Portfolio, Travel) plus a Contact page that emails the owner, an interactive Google Map of places travelled, and an opt-in PWA.
