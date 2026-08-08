@@ -9,7 +9,7 @@ import type {
   TripPaths,
 } from '@fixtures/travel/types';
 
-const { torchRed } = colorOverrides;
+const { ['torch-red']: torchRed } = colorOverrides;
 
 export const useRailTrips = (): TripPaths[] => {
   const {

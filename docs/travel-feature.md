@@ -24,7 +24,7 @@ The `/travel` page renders an interactive Google Map plotting places the site ow
    - Sets up `useIntersection({ threshold: 0.8 })` on a sentinel `<Box ref={ref} />` placed after the map — markers/polylines ("`dropMarkers`") only start rendering once 80% of the map is scrolled into view, deferring the (expensive) marker-drop/polyline-draw work until the user actually reaches the map.
    - Always renders the 9 `cities` as `Marker`s immediately (not gated by `dropMarkers`) since they're the primary content.
    - Once `dropMarkers` is true, renders `markerLocations` (airports/stations/ports) and `tripPolylines` (flights/cruises) as `Marker`/`Polyline` children, each flagged `endMarker`/`endTripPolyline` on the very last item in the very last group — these flags are what trigger the "all loaded" dispatches.
-   - Also calls `useRailTrips()` to fetch `/api/rail-trips`, decode it into two `TripPaths` groups (solid trips, dotted upcoming trips colored `torchRed`), cache the result in global state, and renders those as `Polyline`s too (flagged `endRailTripPolyline`).
+   - Also calls `useRailTrips()` to fetch `/api/rail-trips`, decode it into two `TripPaths` groups (solid trips, dotted upcoming trips colored `torch-red`), cache the result in global state, and renders those as `Polyline`s too (flagged `endRailTripPolyline`).
    - Wraps everything in `@googlemaps/react-wrapper`'s `<Wrapper apiKey={googleApiKey} libraries={['geometry']} render={render} />` — `render` (from `useMap()`) shows `MapLoader` while the Maps JS API script loads and `MapError` if it fails.
 3. **`Map`**:
    - Instantiates a single `google.maps.Map` on mount, and a single shared `google.maps.InfoWindow` that all markers push content into (only one info bubble open at a time).

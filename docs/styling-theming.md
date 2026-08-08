@@ -2,7 +2,7 @@
 
 ## Stack
 
-- **Mantine v7** is the component library. Styling is **CSS Modules + CSS variables**, not CSS-in-JS — v7 dropped Emotion entirely in favor of a build-time `postcss-preset-mantine` pipeline (`postcss.config.cjs`) that turns theme values into `--mantine-*` custom properties.
+- **Mantine v7** is the component library. Styling is **CSS Modules + CSS variables**, not CSS-in-JS — v7 dropped Emotion entirely in favor of static stylesheets, with `postcss-preset-mantine` (`postcss.config.cjs`) providing Mantine's build-time CSS syntax and `MantineProvider` exposing theme values as `--mantine-*` custom properties.
 - No `@mantine/next` (removed in v7 — there's no SSR style-injection step to wire up anymore, since styles ship as static `.css` files) and no `@emotion/*` packages.
 - Component-scoped styles live in a `Component.module.css` file next to the component, imported as `classes` and applied via `className={classes.foo}`. Simple, non-selector, non-responsive one-off styles use the plain `style` prop instead of a CSS module — see "Patterns worth knowing" below for when to use which.
 
@@ -22,9 +22,9 @@ export const theme = createTheme({
 });
 ```
 
-Applied once in `_app.tsx` via `<MantineProvider defaultColorScheme='dark' theme={theme}>`, alongside `import '@mantine/core/styles.css'` and `import '@mantine/notifications/styles.css'`. `_document.tsx` renders `<ColorSchemeScript defaultColorScheme='dark' />` (mandatory in v7, even for a single-scheme site like this one — it's what prevents a flash of the wrong theme before hydration) and spreads `mantineHtmlProps` onto `<Html>`. The site is dark-mode only — there's no light theme or theme toggle.
+Applied once in `_app.tsx` via `<MantineProvider forceColorScheme='dark' theme={theme}>`, alongside `import '@mantine/core/styles.css'` and `import '@mantine/notifications/styles.css'`. `_document.tsx` spreads `mantineHtmlProps` onto `<Html>` and renders `<ColorSchemeScript forceColorScheme='dark' />` before hydration. The site is dark-mode only, with no light theme or toggle, so `forceColorScheme` (not `defaultColorScheme`) is set on both: the script makes the initial server-rendered document dark before React hydrates, and the provider keeps the runtime scheme fixed rather than merely seeding an initial, switchable value.
 
-v6's `colorScheme` and `globalStyles` theme keys don't exist in v7. `colorScheme` moved to `MantineProvider`'s `defaultColorScheme` prop (above); the old `globalStyles` callback (letter-spacing on headings, base `html` font-size, `body` defaults) moved to a plain stylesheet, `src/styles/global.css`, imported once in `_app.tsx`. That file also has to explicitly set `body { background-color: transparent }` — v7's base stylesheet sets an opaque `background-color: var(--mantine-color-body)` on `body` by default (v6's normalize step didn't), which would otherwise paint in front of `FixedBackground`'s `position: fixed; z-index: -1` image layer and hide it.
+v6's `colorScheme` and `globalStyles` theme keys don't exist in v7. `colorScheme` moved to `MantineProvider`'s `forceColorScheme`/`defaultColorScheme` props (above); the old `globalStyles` callback (letter-spacing on headings, base `html` font-size, `body` defaults) moved to a plain stylesheet, `src/styles/global.css`, imported once in `_app.tsx`. That file also has to explicitly set `body { background-color: transparent }` — v7's base stylesheet sets an opaque `background-color: var(--mantine-color-body)` on `body` by default (v6's normalize step didn't), which would otherwise paint in front of `FixedBackground`'s `position: fixed; z-index: -1` image layer and hide it.
 
 Two Google Fonts are loaded as `<link>` tags in `_document.tsx` (not `next/font`): **Montserrat** (400/600/700) for headings, **Roboto** (400/700) for body text.
 
@@ -36,19 +36,19 @@ Two Google Fonts are loaded as `<link>` tags in `_document.tsx` (not `next/font`
 
 ## Color palette (`src/styles/colors.ts`)
 
-`colorOverrides` defines 17 custom Mantine color scales (each a 10-shade `MantineColorsTuple`, index `[0]` lightest → `[9]` darkest — v7 renamed the `Tuple<string, 10>` type), registered as `ExtendedCustomColor` via `mantine-custom-colors.d.ts` module augmentation so they're usable anywhere a Mantine color name is accepted (`c='shamrock'`, `bg='valhalla'`, `color='torchRed'`, or a raw `var(--mantine-color-shamrock-4)` in a CSS Module):
+`colorOverrides` defines 17 custom Mantine color scales (each a 10-shade `MantineColorsTuple`, index `[0]` lightest → `[9]` darkest — v7 renamed the `Tuple<string, 10>` type), registered as `ExtendedCustomColor` via `mantine-custom-colors.d.ts` module augmentation so they're usable anywhere a Mantine color name is accepted (`c='shamrock'`, `bg='valhalla'`, `color='torch-red'`, or a raw `var(--mantine-color-shamrock-4)` in a CSS Module):
 
-| Color                                                          | Rough hue       | Typical use                                                                                          |
-| -------------------------------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------- |
-| `whisper`                                                      | near-white/grey | primary color, default text/borders                                                                  |
-| `silver`, `matterhorn`                                         | greys           | secondary text                                                                                       |
-| `gunmetal`, `cinder`, `paynesGrey`, `valhalla`, `blackRussian` | dark blue-greys | backgrounds (`blackRussian` = header/footer/nav backgrounds, `valhalla` = `Content` card background) |
-| `pumpkin`                                                      | orange          | past-location map markers                                                                            |
-| `corn`                                                         | yellow          | flight polylines                                                                                     |
-| `pineGreen`, `mediumSeaGreen`                                  | greens          | airport markers / map landscape styling                                                              |
-| `shamrock`                                                     | bright green    | the site's accent color — links, buttons, active states                                              |
-| `viking`, `allports`                                           | teals/blues     | cruise polylines / port markers, map water styling                                                   |
-| `alizarin`, `torchRed`                                         | reds            | station markers / current-location marker & rail polylines / error notifications                     |
+| Color                                                            | Rough hue       | Typical use                                                                                           |
+| ---------------------------------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------------- |
+| `whisper`                                                        | near-white/grey | primary color, default text/borders                                                                   |
+| `silver`, `matterhorn`                                           | greys           | secondary text                                                                                        |
+| `gunmetal`, `cinder`, `paynes-grey`, `valhalla`, `black-russian` | dark blue-greys | backgrounds (`black-russian` = header/footer/nav backgrounds, `valhalla` = `Content` card background) |
+| `pumpkin`                                                        | orange          | past-location map markers                                                                             |
+| `corn`                                                           | yellow          | flight polylines                                                                                      |
+| `pine-green`, `medium-sea-green`                                 | greens          | airport markers / map landscape styling                                                               |
+| `shamrock`                                                       | bright green    | the site's accent color — links, buttons, active states                                               |
+| `viking`, `all-ports`                                            | teals/blues     | cruise polylines / port markers, map water styling                                                    |
+| `alizarin`, `torch-red`                                          | reds            | station markers / current-location marker & rail polylines / error notifications                      |
 
 `ExtendedCustomColorOverrides = Record<ExtendedCustomColor, MantineColorsTuple>` is the type backing this — see `mantine-custom-colors.d.ts` for the module augmentation that merges it into Mantine's own `MantineThemeColorsOverride`. At runtime, `MantineProvider` turns every shade into a `--mantine-color-<name>-<index>` CSS variable (e.g. `--mantine-color-shamrock-4`) — that's how CSS Modules reference the palette without any JS import.
 
@@ -76,7 +76,7 @@ module.exports = {
 };
 ```
 
-- `postcss-preset-mantine` — generates the `--mantine-*` CSS variables, `@mixin` support (`smaller-than`/`larger-than`/`hover`/`light`/`dark`/...), CSS nesting, and the `alpha()`/`lighten()`/`darken()` color functions (`color-mix()`-based — the v7 replacement for v6's `theme.fn.rgba()` etc.).
+- `postcss-preset-mantine` — provides `@mixin` support (`smaller-than`/`larger-than`/`hover`/`light`/`dark`/...), CSS nesting, and the `alpha()`/`lighten()`/`darken()` color functions (`color-mix()`-based — the v7 replacement for v6's `theme.fn.rgba()` etc.). Theme-derived `--mantine-*` variables are generated separately by `MantineProvider`.
 - `postcss-simple-vars` — provides Sass-like `$mantine-breakpoint-*` variables for use inside `@media` queries in CSS Modules. This exists because **CSS custom properties can't be referenced inside a media query's condition** — `@media (min-width: var(--x))` is syntactically accepted but never matches in any browser, since `var()` resolution doesn't apply inside media features. (Mantine's own base stylesheet does declare `--mantine-breakpoint-sm` etc. as real custom properties, but that's unrelated — they're not usable in `@media` either, which is exactly why this separate build-time-substituted `$var` mechanism exists.) `postcss-simple-vars` must be listed after `postcss-preset-mantine` so `@mixin smaller-than $mantine-breakpoint-sm`-style mixin arguments would resolve if used — though this codebase always uses the plain `@media (max-width: $mantine-breakpoint-sm)` form instead, matching Mantine's own documented pattern for this case.
 - `postcss-flexbugs-fixes` + `postcss-preset-env` — verbatim from Next's own default `postcss.config.json`, restoring what got disabled. `features: { 'custom-properties': false }` is also copied from Next's default, for the same reason Next disables it: statically downleveling `var()` for older browsers isn't safe to do automatically, and would corrupt Mantine's runtime-generated `--mantine-*` variables.
 

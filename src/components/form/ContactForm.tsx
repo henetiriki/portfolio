@@ -7,7 +7,7 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { Notifications, notifications } from '@mantine/notifications';
+import { notifications } from '@mantine/notifications';
 import { IconAt, IconMessage, IconSend, IconTag } from '@tabler/icons-react';
 import { useEffect, useMemo } from 'react';
 import { useMantineForm } from '@hooks';
@@ -17,7 +17,7 @@ import type { FC } from 'react';
 
 export const ContactForm: FC = () => {
   const {
-    colors: { blackRussian },
+    colors: { ['black-russian']: blackRussian },
   } = useMantineTheme();
   const {
     apiErrors,
@@ -39,7 +39,7 @@ export const ContactForm: FC = () => {
     apiErrors.map(apiError => {
       notifications.show({
         ...defaultNotificationProps,
-        color: 'torchRed',
+        color: 'torch-red',
         message: apiError,
         title: 'Oops!',
       });
@@ -59,7 +59,6 @@ export const ContactForm: FC = () => {
 
   return (
     <>
-      <Notifications position='bottom-center' />
       <Title order={2}>Send a message</Title>
       <Space h='md' />
       <form onSubmit={onSubmit(submitForm)}>
@@ -75,7 +74,7 @@ export const ContactForm: FC = () => {
             placeholder='Your name'
             radius='lg'
             size='lg'
-            w='100% '
+            w='100%'
             withAsterisk
             {...getInputProps('name')}
           />
@@ -88,7 +87,7 @@ export const ContactForm: FC = () => {
             radius='lg'
             size='lg'
             type='email'
-            w='100% '
+            w='100%'
             withAsterisk
             {...getInputProps('email')}
           />

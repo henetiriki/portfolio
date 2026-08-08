@@ -4,7 +4,7 @@ import { Head, Html, Main, NextScript } from 'next/document';
 const Document = () => (
   <Html lang='en' {...mantineHtmlProps}>
     <Head style={{ border: 0, height: '100%' }}>
-      <ColorSchemeScript defaultColorScheme='dark' />
+      <ColorSchemeScript forceColorScheme='dark' />
       <meta charSet='utf-8' />
       <meta content='IE=edge' httpEquiv='X-UA-Compatible' />
       <meta content='Louw Swart' name='author' />

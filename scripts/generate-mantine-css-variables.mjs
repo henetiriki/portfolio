@@ -34,6 +34,23 @@ if (
   throw new Error(`Could not find the colorOverrides object in ${sourcePath}`);
 }
 
+const getPropertyName = propertyName => {
+  if (ts.isIdentifier(propertyName) || ts.isStringLiteral(propertyName)) {
+    return propertyName.text;
+  }
+
+  if (
+    ts.isComputedPropertyName(propertyName) &&
+    ts.isStringLiteral(propertyName.expression)
+  ) {
+    return propertyName.expression.text;
+  }
+
+  throw new Error(
+    `Unsupported color name syntax: ${propertyName.getText(sourceFile)}`
+  );
+};
+
 const declarations = colorDeclaration.initializer.properties.flatMap(
   property => {
     if (
@@ -43,9 +60,7 @@ const declarations = colorDeclaration.initializer.properties.flatMap(
       return [];
     }
 
-    const colorName = property.name
-      .getText(sourceFile)
-      .replace(/^['"]|['"]$/g, '');
+    const colorName = getPropertyName(property.name);
 
     return property.initializer.elements.map((element, shade) => {
       if (!ts.isStringLiteral(element)) {

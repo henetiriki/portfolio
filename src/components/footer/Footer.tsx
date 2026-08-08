@@ -29,7 +29,7 @@ export const Footer: FC = (): JSX.Element => {
     <footer>
       <WaveWrapper style={{ height: '5rem' }} wave='footer-top' />
       <WaveWrapper wave='footer-bottom' />
-      <FooterContainer bg='blackRussian'>
+      <FooterContainer bg='black-russian'>
         <Logo />
         <Space mt='xl' />
         <FooterLinksContainer>
@@ -62,7 +62,7 @@ export const Footer: FC = (): JSX.Element => {
           ))}
         </FooterLinksContainer>
       </FooterContainer>
-      <FooterContainer bg='blackRussian.6'>
+      <FooterContainer bg='black-russian.6'>
         <Flex direction='row' justify='center'>
           <Text component='p' m='xs'>
             <Anchor

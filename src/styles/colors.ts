@@ -2,19 +2,19 @@ import type { MantineColorsTuple } from '@mantine/core';
 
 export type ExtendedCustomColor =
   | 'alizarin'
-  | 'allports'
-  | 'blackRussian'
+  | 'all-ports'
+  | 'black-russian'
   | 'cinder'
   | 'corn'
   | 'gunmetal'
   | 'matterhorn'
-  | 'mediumSeaGreen'
-  | 'paynesGrey'
-  | 'pineGreen'
+  | 'medium-sea-green'
+  | 'paynes-grey'
+  | 'pine-green'
   | 'pumpkin'
   | 'shamrock'
   | 'silver'
-  | 'torchRed'
+  | 'torch-red'
   | 'valhalla'
   | 'viking'
   | 'whisper';
@@ -86,7 +86,7 @@ export const colorOverrides: ExtendedCustomColorOverrides = {
     '#111212',
     '#0E0E0E',
   ],
-  paynesGrey: [
+  ['paynes-grey']: [
     '#AEB0B9',
     '#9A9CA7',
     '#818391',
@@ -110,7 +110,7 @@ export const colorOverrides: ExtendedCustomColorOverrides = {
     '#0F101A',
     '#0C0D15',
   ],
-  blackRussian: [
+  ['black-russian']: [
     '#9A9AA4',
     '#81818D',
     '#616271',
@@ -146,7 +146,7 @@ export const colorOverrides: ExtendedCustomColorOverrides = {
     '#65602A',
     '#514D22',
   ],
-  pineGreen: [
+  ['pine-green']: [
     '#97C8C3',
     '#7DBAB4',
     '#5CA9A1',
@@ -158,7 +158,7 @@ export const colorOverrides: ExtendedCustomColorOverrides = {
     '#00322D',
     '#002824',
   ],
-  mediumSeaGreen: [
+  ['medium-sea-green']: [
     '#A9EAC5',
     '#94E5B6',
     '#79DEA4',
@@ -194,7 +194,7 @@ export const colorOverrides: ExtendedCustomColorOverrides = {
     '#1C4551',
     '#163741',
   ],
-  allports: [
+  ['all-ports']: [
     '#A9C3CA',
     '#93B4BD',
     '#78A1AD',
@@ -218,7 +218,7 @@ export const colorOverrides: ExtendedCustomColorOverrides = {
     '#5D1016',
     '#4A0D12',
   ],
-  torchRed: [
+  ['torch-red']: [
     '#FDA5B1',
     '#FD8E9D',
     '#FC7284',

@@ -20,10 +20,6 @@
   width: 0;
 }
 
-.link.sm {
-  font-size: var(--mantine-font-size-sm);
-}
-
 .link.sm::before {
   bottom: 0.5rem;
 }

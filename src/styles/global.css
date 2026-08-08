@@ -4,7 +4,7 @@ html {
 
 body {
   background-color: transparent;
-  color: white;
+  color: var(--mantine-color-whisper-0);
   line-height: 1.5rem;
   min-height: 100%;
   overflow-x: hidden;
@@ -31,5 +31,5 @@ p.mantine-Text-root {
 }
 
 html:root[data-mantine-color-scheme='dark'] {
-  --mantine-color-error: var(--mantine-color-red-4);
+  --mantine-color-error: var(--mantine-color-torch-red-2);
 }

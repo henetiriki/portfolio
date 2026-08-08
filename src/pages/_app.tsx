@@ -1,5 +1,6 @@
 import { Box, MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
+import { Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -92,7 +93,7 @@ const Portfolio: NextPage<AppProps> = ({
         />
       </Head>
       <ErrorBoundary>
-        <MantineProvider defaultColorScheme='dark' theme={theme}>
+        <MantineProvider forceColorScheme='dark' theme={theme}>
           <Box
             style={{
               backgroundColor: 'rgba(12, 14, 39, 0.8)',
@@ -108,6 +109,7 @@ const Portfolio: NextPage<AppProps> = ({
               </Layout>
             </PortfolioStateProvider>
           </Box>
+          <Notifications position='bottom-center' />
         </MantineProvider>
       </ErrorBoundary>
       <Analytics />

@@ -20,12 +20,33 @@
   }
 }
 
-.drawer section {
+.drawerContent {
+  background-color: var(--mantine-color-black-russian-6);
   overflow: hidden;
 }
 
-.drawer section div {
-  background-color: var(--mantine-color-blackRussian-6);
+.drawerHeader,
+.drawerBody {
+  background-color: var(--mantine-color-black-russian-6);
+}
+
+.drawerHeader {
+  min-height: 3.375rem;
+  padding: 0;
+}
+
+.drawerClose {
+  color: var(--mantine-color-whisper-0);
+  height: 2.125rem;
+  position: absolute;
+  right: calc(var(--mantine-spacing-xl) + var(--mantine-spacing-md));
+  top: 1.3125rem;
+  width: 2.125rem;
+}
+
+.drawerClose svg {
+  height: 1.625rem;
+  width: 1.625rem;
 }
 
 .scrollToTop {

@@ -5,7 +5,15 @@ import type { FC } from 'react';
 
 export const Legend: FC = () => {
   const {
-    colors: { alizarin, allports, corn, pineGreen, pumpkin, torchRed, viking },
+    colors: {
+      alizarin,
+      ['all-ports']: allPorts,
+      corn,
+      ['pine-green']: pineGreen,
+      pumpkin,
+      ['torch-red']: torchRed,
+      viking,
+    },
   } = useMantineTheme();
 
   return (
@@ -21,7 +29,7 @@ export const Legend: FC = () => {
         <MarkerLegend color={pumpkin[4]}>past locations</MarkerLegend>
         <MarkerLegend color={pineGreen[4]}>airports</MarkerLegend>
         <MarkerLegend color={alizarin[4]}>stations</MarkerLegend>
-        <MarkerLegend color={allports[4]}>ports</MarkerLegend>
+        <MarkerLegend color={allPorts[4]}>ports</MarkerLegend>
         <PolylineLegend color={corn[4]} style='solid'>
           flights
         </PolylineLegend>

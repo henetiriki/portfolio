@@ -73,7 +73,7 @@ export const Navigation = () => {
     <>
       <Box left={0} pos='sticky' right={0} style={{ zIndex: 200 }} top={0}>
         <Box
-          bg={navBgTransparent ? 'transparent' : 'blackRussian'}
+          bg={navBgTransparent ? 'transparent' : 'black-russian'}
           component='header'
           px='xl'
           style={{
@@ -102,6 +102,7 @@ export const Navigation = () => {
                 className={classes.burger}
                 onClick={toggleDrawer}
                 opened={drawerOpened}
+                style={{ visibility: drawerOpened ? 'hidden' : undefined }}
               />
             </Group>
           </Container>
@@ -109,6 +110,13 @@ export const Navigation = () => {
 
         <Drawer
           className={classes.drawer}
+          classNames={{
+            body: classes.drawerBody,
+            close: classes.drawerClose,
+            content: classes.drawerContent,
+            header: classes.drawerHeader,
+          }}
+          closeButtonProps={{ 'aria-label': 'Close menu' }}
           onClose={closeDrawer}
           opened={drawerOpened}
           padding='md'

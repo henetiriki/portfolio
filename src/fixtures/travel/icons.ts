@@ -1,6 +1,12 @@
 import { colorOverrides } from '@styles';
 
-const { alizarin, allports, pineGreen, pumpkin, torchRed } = colorOverrides;
+const {
+  alizarin,
+  ['all-ports']: allPorts,
+  ['pine-green']: pineGreen,
+  pumpkin,
+  ['torch-red']: torchRed,
+} = colorOverrides;
 
 const sharedIconOpts: google.maps.Symbol = {
   fillOpacity: 0.95,
@@ -28,7 +34,7 @@ export const airportIcon: google.maps.Symbol = {
 
 export const portIcon: google.maps.Symbol = {
   ...sharedIconOpts,
-  fillColor: allports[4],
+  fillColor: allPorts[4],
   scale: 0.85,
 };
 

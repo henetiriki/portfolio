@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
 import { Navigation } from '@components/nav/Navigation';
 import { PortfolioStateProvider, usePortfolioState } from '@state/context';
-import { fireEvent, render, screen, waitFor, within } from '@utils/test/render';
+import { fireEvent, render, screen, within } from '@utils/test/render';
 import type { FC, PropsWithChildren } from 'react';
 
 jest.mock('next/router', () => ({ useRouter: jest.fn() }));
@@ -54,12 +54,10 @@ describe('Navigation', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Open menu' }));
 
-    // Mantine v7's Drawer mounts its content asynchronously after the open
-    // transition, and no longer aria-hides background content while open
-    // (unlike v6) — so both the desktop nav's "Travel" link and the drawer's
-    // own copy are simultaneously present and accessible once the dialog
-    // has mounted.
-    const dialog = await screen.findByRole('dialog');
+    // Mantine v7's Drawer no longer aria-hides background content while
+    // open (unlike v6) — so both the desktop nav's "Travel" link and the
+    // drawer's own copy are simultaneously present and accessible.
+    const dialog = screen.getByRole('dialog');
 
     expect(
       within(dialog).getByRole('link', { name: 'Travel' })
@@ -76,7 +74,7 @@ describe('Navigation', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Open menu' }));
 
-    expect(await screen.findByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
     // Mantine v7's Drawer no longer aria-hides background content while
     // open (unlike v6), so the toggle button — now relabelled — stays in
     // the default a11y-tree query.
@@ -154,7 +152,7 @@ describe('Navigation', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Open menu' }));
 
-    const dialog = await screen.findByRole('dialog');
+    const dialog = screen.getByRole('dialog');
 
     await userEvent.click(
       within(dialog).getByRole('link', { name: 'Experience' })
@@ -164,8 +162,6 @@ describe('Navigation', () => {
       behavior: 'smooth',
       block: 'start',
     });
-    await waitFor(() =>
-      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
-    );
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });
