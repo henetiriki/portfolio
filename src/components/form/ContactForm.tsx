@@ -95,6 +95,7 @@ export const ContactForm: FC = () => {
         </Flex>
         <Space h='xl' />
         <Textarea
+          autosize
           classNames={classes}
           label='Message'
           leftSection={<IconMessage size='0.75rem' />}
@@ -109,7 +110,7 @@ export const ContactForm: FC = () => {
         />
         <Space h='xl' />
         <Button
-          color='shamrock'
+          color='shamrock.4'
           leftSection={<IconSend size={21} />}
           loading={isSubmitting}
           radius='lg'

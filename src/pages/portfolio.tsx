@@ -83,12 +83,13 @@ const Portfolio: NextPage = (): JSX.Element => (
                         c='shamrock'
                         className={classes.titleLink}
                         href={url}
+                        inherit
                         rel='noopener noreferrer'
                         target='_blank'>
                         {title}
                       </Anchor>
                     )}
-                    {!url && <Text>{title}</Text>}
+                    {!url && title}
                   </Title>
                   <Text className={classes.cardText} component='p'>
                     {content}
@@ -96,7 +97,7 @@ const Portfolio: NextPage = (): JSX.Element => (
                   {action && (
                     <Button
                       className={classes.actionButton}
-                      color='shamrock'
+                      color='shamrock.4'
                       component={NextLink}
                       href={action.href}
                       leftSection={<IconMessage size={21} />}

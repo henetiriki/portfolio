@@ -10,20 +10,12 @@
   width: 100%;
 }
 
-/* $mantine-breakpoint-* is a postcss-simple-vars build-time substitution,
-   not a CSS custom property — var(--mantine-*) is invalid inside an @media
-   condition and would silently never match. */
 @media (min-width: $mantine-breakpoint-sm) {
   .card {
     width: calc(100% / 2.1);
   }
 }
 
-/* v6's `fn.largerThan(1080)` converts every breakpoint through em() (16px
-   base) even for a raw pixel number, not just named breakpoint tokens — so
-   this is 1080/16, not a literal `1080px` media query. Using px here would
-   stop tracking the user's browser default font-size (an accessibility
-   setting em-based breakpoints respect and px-based ones don't). */
 @media (min-width: 67.5em) {
   .card {
     width: calc(100% / 3.3);

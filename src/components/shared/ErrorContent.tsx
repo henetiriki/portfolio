@@ -18,7 +18,7 @@ export const ErrorContent: FC<{ errorHeading: string; message: string }> = ({
         <Space h='xl' />
         <Text>
           <Button
-            color='shamrock'
+            color='shamrock.4'
             leftSection={
               <IconHandFinger size={21} style={{ rotate: '90deg' }} />
             }

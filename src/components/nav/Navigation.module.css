@@ -2,10 +2,6 @@
   height: 100%;
 }
 
-/* $mantine-breakpoint-* here is a postcss-simple-vars build-time text
-   substitution (see postcss.config.cjs), not a CSS custom property — it
-   must stay as a literal value (48em) once compiled. `var(--mantine-*)`
-   cannot be used inside an @media condition; browsers just never match it. */
 @media (max-width: calc($mantine-breakpoint-sm - 0.1px)) {
   .desktopLinks {
     display: none;

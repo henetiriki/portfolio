@@ -46,9 +46,6 @@
   width: 30px;
 }
 
-/* $mantine-breakpoint-* is a postcss-simple-vars build-time substitution,
-   not a CSS custom property — var(--mantine-*) is invalid inside an @media
-   condition and would silently never match. */
 @media (max-width: calc($mantine-breakpoint-sm - 0.1px)) {
   .link {
     align-items: center;

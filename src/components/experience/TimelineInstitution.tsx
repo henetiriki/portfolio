@@ -7,12 +7,13 @@ export const TimelineInstitution: FC<Omit<Institution, 'location'>> = ({
   name,
   url,
 }) => (
-  <Text fz='1.25rem' mb={0}>
+  <Text fz='1.25rem' mb={0} mt={0}>
     {url && (
       <Anchor
         c='shamrock'
         className={classes.link}
         href={url}
+        inherit
         rel='noopener noreferrer'
         target='_blank'>
         {name}

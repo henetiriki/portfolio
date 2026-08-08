@@ -9,10 +9,13 @@
       "Bash(yarn test *)",
       "Bash(yarn prettier:check *)",
       "Bash(yarn npm audit *)",
+      "Bash(yarn npm info *)",
       "Bash(npm view *)",
       "mcp__Claude_Browser__read_console_messages",
       "mcp__Claude_Browser__preview_logs",
-      "mcp__Claude_Browser__read_network_requests"
+      "mcp__Claude_Browser__read_network_requests",
+      "mcp__Claude_Browser__read_page",
+      "mcp__Claude_Browser__get_page_text"
     ]
   }
 }

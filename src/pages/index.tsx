@@ -82,8 +82,8 @@ const Home: NextPage = (): JSX.Element => (
             {openSourceContrs.map(({ href, text }, idx) => (
               <li key={idx}>
                 <Anchor
+                  c='shamrock'
                   className={classes.openSourceLink}
-                  color='shamrock'
                   href={href}
                   rel='noopener noreferrer'
                   target='_blank'>

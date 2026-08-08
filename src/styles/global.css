@@ -3,11 +3,6 @@ html {
 }
 
 body {
-  /* Mantine v7's base stylesheet sets an opaque `background-color: var(--mantine-color-body)`
-     on body by default (v6's normalize.css didn't). FixedBackground relies on
-     a `position: fixed; z-index: -1` image to show through everything above
-     it — an opaque body background paints in front of that negative z-index
-     layer and hides it, so this has to stay transparent. */
   background-color: transparent;
   color: white;
   line-height: 1.5rem;
@@ -25,4 +20,16 @@ h4,
 h5,
 h6 {
   letter-spacing: -0.05rem;
+}
+
+img {
+  vertical-align: middle;
+}
+
+p.mantine-Text-root {
+  margin: 1em 0;
+}
+
+html:root[data-mantine-color-scheme='dark'] {
+  --mantine-color-error: var(--mantine-color-red-4);
 }
