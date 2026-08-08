@@ -54,7 +54,7 @@ Multiple errors can be returned together (except the honeypot short-circuit); th
 - Resolves `{ success: true }` on send, rejects `{ success: false, error }` on failure (and returns immediately after rejecting — no fallthrough). Errors are logged with `console.error`.
 - `api/contact.ts` wraps each `send(...)` call in its own `try`/`catch`, mapping a caught rejection to a `500` response with `error?.message || 'Unknown error'`.
 
-> **Fixed 2026-08-06**: this used to have two bugs — `send()`'s `Promise` executor was missing `return` after both `reject(...)` calls (so a detected bot still triggered `transporter.sendMail(...)`, and a send error could still resolve after already rejecting), and `api/contact.ts` called `send(...)` with a bare `await` and no `try`/`catch`, so a rejection would have surfaced as an unhandled promise rejection instead of a `500`. Both are fixed and covered by regression tests in `server/contact/__tests__/send.test.ts` (asserts `createTransport` is never called for a detected bot) and `pages/api/__tests__/contact.test.ts`.
+> **Fixed 2026-08-06**: this used to have two bugs — `send()`'s `Promise` executor was missing `return` after both `reject(...)` calls (so a detected bot still triggered `transporter.sendMail(...)`, and a send error could still resolve after already rejecting), and `api/contact.ts` called `send(...)` with a bare `await` and no `try`/`catch`, so a rejection would have surfaced as an unhandled promise rejection instead of a `500`. Both are fixed and covered by regression tests in `server/contact/__tests__/send.test.ts` (asserts `createTransport` is never called for a detected bot) and `src/__tests__/pages/api/contact.test.ts`.
 
 ## Environment variables used
 

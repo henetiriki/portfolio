@@ -1,6 +1,6 @@
 # Component Catalog
 
-All components are function components (except `ErrorBoundary`) written in TypeScript, styled with Mantine's `sx` prop or `createStyles`. Each feature folder exports through an `index.ts` barrel, imported via the `@components/*` alias.
+All components are function components (except `ErrorBoundary`) written in TypeScript, styled with Mantine v7's CSS Modules + CSS variables (see [Styling & Theming](styling-theming.md)). Each feature folder exports through an `index.ts` barrel, imported via the `@components/*` alias.
 
 ## `content/` — page chrome
 
@@ -20,25 +20,25 @@ All components are function components (except `ErrorBoundary`) written in TypeS
 
 ## `footer/`
 
-| Component                                  | Responsibility                                                                                                                                                                                                                                                                                                                       |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Footer`                                   | Wave dividers + primary nav links (`menuItems`) + social links (`socialLinks`, GitHub/LinkedIn/Instagram) + a copyright line and a "last built" timestamp sourced from `publicRuntimeConfig.lastModified` (computed at build/boot time in `next.config.js`, Pacific/Auckland timezone). Loaded via `next/dynamic` with `ssr: false`. |
-| `FooterContainer` / `FooterLinksContainer` | Layout-only wrappers (background color / flex arrangement) reused across the two footer bands.                                                                                                                                                                                                                                       |
+| Component                                  | Responsibility                                                                                                                                                                                                                                                                                                                            |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Footer`                                   | Wave dividers + primary nav links (`menuItems`) + social links (`socialLinks`, GitHub/LinkedIn/Instagram) + a copyright line and a "last built" timestamp sourced from `process.env.NEXT_PUBLIC_LAST_MODIFIED` (computed at build/boot time in `next.config.js`, Pacific/Auckland timezone). Loaded via `next/dynamic` with `ssr: false`. |
+| `FooterContainer` / `FooterLinksContainer` | Layout-only wrappers (background color / flex arrangement) reused across the two footer bands.                                                                                                                                                                                                                                            |
 
 ## `form/`
 
-| Component     | Responsibility                                                                                                                                                                                                                                                                                                  |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ContactForm` | Renders Name/Email/Message fields wired to `useMantineForm()`, plus a honeypot `TextInput name='heuning'` (hidden via `sx={{ display: 'none' }}`) for spam trapping (see [Contact Feature](contact-feature.md)). Shows Mantine `notifications` toasts for both submit success and any API-returned error codes. |
+| Component     | Responsibility                                                                                                                                                                                                                                                                                                     |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ContactForm` | Renders Name/Email/Message fields wired to `useMantineForm()`, plus a honeypot `TextInput name='heuning'` (hidden via `style={{ display: 'none' }}`) for spam trapping (see [Contact Feature](contact-feature.md)). Shows Mantine `notifications` toasts for both submit success and any API-returned error codes. |
 
 ## `shared/`
 
-| Component       | Responsibility                                                                                                                                                                                                                   |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ErrorBoundary` | Class component; catches render errors anywhere below it in the tree (wraps the whole app in `_app.tsx`) and renders a plain "Oops, something went wrong!" heading instead of crashing. Logs the error/errorInfo to the console. |
-| `ErrorContent`  | Shared body for `404`/`500`: heading + message + a "Shamrock button" that routes home.                                                                                                                                           |
-| `Logo`          | 40×40 `next/legacy/image` of `ouwl.png`, wrapped in a tooltip, linking home.                                                                                                                                                     |
-| `WaveWrapper`   | Renders one of the four wave SVGs (`content-top`, `content-bottom`, `footer-top`, `footer-bottom`) from `public/images/waves` as a full-width background-cover image inside a 10rem-tall flex box.                               |
+| Component       | Responsibility                                                                                                                                                                                                                           |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ErrorBoundary` | Class component; catches render errors anywhere below it in the tree (wraps the whole app in `_app.tsx`) and renders a plain "Oops, something went wrong!" heading instead of crashing. Logs the error/errorInfo to the console.         |
+| `ErrorContent`  | Shared body for `404`/`500`: heading + message + a "Shamrock button" that routes home.                                                                                                                                                   |
+| `Logo`          | 40×40 `next/image` of `ouwl.png`, wrapped in a tooltip, linking home.                                                                                                                                                                    |
+| `WaveWrapper`   | Renders one of the four wave SVGs (`content-top`, `content-bottom`, `footer-top`, `footer-bottom`) from `public/images/waves` as a full-width background-cover image inside a flex box (10rem tall by default, overridable via `style`). |
 
 ## `experience/` — timeline primitives (used only by `/experience`)
 

@@ -12,7 +12,7 @@ Next.js **Pages Router**. Every file in `src/pages` (excluding `api/`, `_app.tsx
 | `/travel`     | `pages/travel.tsx`     | Interactive Google Map of places visited/lived plus a legend; see [Travel Feature](travel-feature.md)                                |
 | `/contact`    | `pages/contact.tsx`    | Contact form that emails the site owner; see [Contact Feature](contact-feature.md)                                                   |
 
-Every content page follows the same `<Head>` pattern: a `fullTitle('Page Name')` title (`"Page Name // Louw Swart"`), a canonical `<link>` built from `publicRuntimeConfig.siteUrl`, and page-specific `description`/`keywords`/Twitter/OG meta tags keyed so Next.js can de-duplicate against `_app.tsx`'s defaults.
+Every content page follows the same `<Head>` pattern: a `fullTitle('Page Name')` title (`"Page Name // Louw Swart"`), a canonical `<link>` built from `process.env.NEXT_PUBLIC_SITE_URL`, and page-specific `description`/`keywords`/Twitter/OG meta tags keyed so Next.js can de-duplicate against `_app.tsx`'s defaults.
 
 ## Error pages
 

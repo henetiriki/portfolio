@@ -10,7 +10,7 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - [Components](components.md) — component catalog grouped by feature area
 - [Travel / Google Maps Feature](travel-feature.md) — how the interactive map, markers and polylines work
 - [Contact Feature](contact-feature.md) — form validation, spam handling, and the Nodemailer-based email flow
-- [Styling & Theming](styling-theming.md) — Mantine theme, custom color palette, Emotion usage
+- [Styling & Theming](styling-theming.md) — Mantine theme, custom color palette, CSS Modules setup
 - [PWA & SEO](pwa-seo.md) — manifest, service worker, meta tags, sitemap/robots
 - [Environment Variables](environment-variables.md) — every `process.env` value the app reads
 - [Development Workflow](development.md) — scripts, linting, formatting, git hooks
@@ -18,8 +18,8 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 
 ## At a glance
 
-- **Framework**: Next.js 14 (Pages Router) + React 18 + TypeScript, strict mode
-- **UI kit**: Mantine v6 (`@mantine/core`, `form`, `hooks`, `notifications`) styled via Emotion `sx`/`createStyles`
+- **Framework**: Next.js 15 (Pages Router) + React 18 + TypeScript, strict mode
+- **UI kit**: Mantine v7 (`@mantine/core`, `form`, `hooks`, `notifications`) styled via CSS Modules + CSS variables
 - **Purpose**: a single-person portfolio/CV site with four content pages (Home, Experience, Portfolio, Travel) and a Contact page that emails the owner
 - **Notable integrations**: Google Maps JS API (travel map), Vercel BotID (bot/spam protection on the contact form), Nodemailer over Gmail SMTP, Serwist (opt-in PWA/service worker), `next-sitemap`
 - **State**: one `useReducer`-backed React Context (`PortfolioState`) shared app-wide — no Redux/Zustand/query library

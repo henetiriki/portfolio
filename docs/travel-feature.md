@@ -45,4 +45,4 @@ The `/travel` page renders an interactive Google Map plotting places the site ow
 
 ## Environment dependency
 
-The Google Maps JS API key is read server-side from `GOOGLE_MAPS_API_KEY` and exposed to the client via `publicRuntimeConfig.googleApiKey` (see [Environment Variables](environment-variables.md)) — it is **not** prefixed `NEXT_PUBLIC_*`; Next.js's `publicRuntimeConfig` mechanism is used instead, which requires the custom `_app.tsx`/pages to call `getConfig()` rather than relying on build-time inlining.
+The Google Maps JS API key is read server-side from `GOOGLE_MAPS_API_KEY` and re-exposed to the client as `process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` via `next.config.js`'s `env` block (see [Environment Variables](environment-variables.md)) — the underlying var name was deliberately left unrenamed (it's also read server-side and already configured under that name in Vercel), so this bridges it to a build-time-inlined `NEXT_PUBLIC_*` name instead of Next's now-deprecated `publicRuntimeConfig`/`getConfig()` mechanism.
