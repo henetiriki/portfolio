@@ -1,5 +1,7 @@
 # Portfolio
 
+[![CI](https://github.com/henetiriki/portfolio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/henetiriki/portfolio/actions/workflows/ci.yml)
+
 Personal portfolio and CV site for Louw Swart — live at **[www.ouwl.house](https://www.ouwl.house)**.
 
 Four content pages (Home, Experience, Portfolio, Travel) plus a Contact page that emails the owner, an interactive Google Map of places travelled, and an opt-in PWA.
@@ -7,7 +9,7 @@ Four content pages (Home, Experience, Portfolio, Travel) plus a Contact page tha
 | Concern             | Choice                                                       |
 | ------------------- | ------------------------------------------------------------ |
 | **Framework**       | Next.js 15 (Pages Router) + React 19 + TypeScript (`strict`) |
-| **UI**              | Mantine v7, styled with CSS Modules + CSS variables          |
+| **UI**              | Mantine v8, styled with CSS Modules + CSS variables          |
 | **Hosting**         | Vercel (auto-deploys `main`)                                 |
 | **Package manager** | Yarn 4 (Berry)                                               |
 | **Node**            | `24.x` (pinned in [.nvmrc](.nvmrc))                          |

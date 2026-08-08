@@ -1,6 +1,6 @@
 # Component Catalog
 
-All components are function components (except `ErrorBoundary`) written in TypeScript, styled with Mantine v7's CSS Modules + CSS variables (see [Styling & Theming](styling-theming.md)). Each feature folder exports through an `index.ts` barrel, imported via the `@components/*` alias.
+All components are function components (except `ErrorBoundary`) written in TypeScript, styled with Mantine's CSS Modules + CSS variables (see [Styling & Theming](styling-theming.md)). Each feature folder exports through an `index.ts` barrel, imported via the `@components/*` alias.
 
 ## `content/` — page chrome
 
