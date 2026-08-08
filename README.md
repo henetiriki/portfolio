@@ -9,7 +9,7 @@ Four content pages (Home, Experience, Portfolio, Travel) plus a Contact page tha
 | Concern             | Choice                                                       |
 | ------------------- | ------------------------------------------------------------ |
 | **Framework**       | Next.js 15 (Pages Router) + React 19 + TypeScript (`strict`) |
-| **UI**              | Mantine v7, styled with CSS Modules + CSS variables          |
+| **UI**              | Mantine v8, styled with CSS Modules + CSS variables          |
 | **Hosting**         | Vercel (auto-deploys `main`)                                 |
 | **Package manager** | Yarn 4 (Berry)                                               |
 | **Node**            | `24.x` (pinned in [.nvmrc](.nvmrc))                          |
