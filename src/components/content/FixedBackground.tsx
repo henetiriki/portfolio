@@ -6,7 +6,7 @@ import { useIgImgId } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { blurDataURL } from '@utils/common';
 import classes from './FixedBackground.module.css';
-import type { FC, MutableRefObject } from 'react';
+import type { FC } from 'react';
 
 const imgHost = process.env.NEXT_PUBLIC_IMAGE_HOST;
 
@@ -17,7 +17,7 @@ export const FixedBackground: FC = () => {
       shared: { pageTopRef },
     },
   } = usePortfolioState();
-  const ref = useRef() as MutableRefObject<HTMLDivElement>;
+  const ref = useRef<HTMLDivElement>(null);
   const igImgId = useIgImgId();
   const { height, width } = useViewportSize();
 

@@ -10,7 +10,7 @@ describe('useScrollTo', () => {
   });
 
   it('does nothing when the ref has no current element', () => {
-    const ref = { current: null } as RefObject<HTMLDivElement>;
+    const ref = { current: null } as RefObject<HTMLDivElement | null>;
     const { result } = renderHook(() => useScrollTo(ref));
 
     expect(() => result.current.scrollToTop()).not.toThrow();
@@ -20,7 +20,7 @@ describe('useScrollTo', () => {
     const scrollIntoView = jest.fn();
     const ref = {
       current: { scrollIntoView } as unknown as HTMLDivElement,
-    } as RefObject<HTMLDivElement>;
+    } as RefObject<HTMLDivElement | null>;
     const { result } = renderHook(() => useScrollTo(ref));
 
     result.current.scrollToTop();
