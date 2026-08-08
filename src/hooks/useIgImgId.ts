@@ -6,7 +6,7 @@ import type { ImageId } from '@utils/common';
 
 export const useIgImgId = (): string | undefined => {
   const router = useRouter();
-  const routeRef = useRef<string>();
+  const routeRef = useRef<string | undefined>(undefined);
   const {
     dispatch,
     state: {

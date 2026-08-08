@@ -1,34 +1,76 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Portfolio
+
+Personal portfolio and CV site for Louw Swart — live at **[www.ouwl.house](https://www.ouwl.house)**.
+
+Four content pages (Home, Experience, Portfolio, Travel) plus a Contact page that emails the owner, an interactive Google Map of places travelled, and an opt-in PWA.
+
+| Concern             | Choice                                                       |
+| ------------------- | ------------------------------------------------------------ |
+| **Framework**       | Next.js 15 (Pages Router) + React 19 + TypeScript (`strict`) |
+| **UI**              | Mantine v7, styled with CSS Modules + CSS variables          |
+| **Hosting**         | Vercel (auto-deploys `main`)                                 |
+| **Package manager** | Yarn 4 (Berry)                                               |
+| **Node**            | `24.x` (pinned in [.nvmrc](.nvmrc))                          |
 
 ## Getting Started
 
-First, run the development server:
+Requires Node `24.x` and Corepack-enabled Yarn 4.
 
 ```bash
-npm run dev
-# or
+nvm use
+yarn install
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+The app needs environment variables to run — a Google Maps key, Gmail SMTP credentials for the contact form, and an image host. See [docs/environment-variables.md](docs/environment-variables.md) for the full list and which ones are required where.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Scripts
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+| Script                                      | Purpose                                                             |
+| ------------------------------------------- | ------------------------------------------------------------------- |
+| `yarn dev`                                  | Dev server with the Node inspector attached                         |
+| `yarn build`                                | Production build, then `next-sitemap` (sitemap + robots.txt)        |
+| `yarn start`                                | Serve a production build locally                                    |
+| `yarn test`                                 | Jest + React Testing Library                                        |
+| `yarn test:coverage`                        | Tests with coverage (80% global threshold)                          |
+| `yarn test:watch`                           | Tests in watch mode                                                 |
+| `yarn type-check`                           | `tsc --noEmit`                                                      |
+| `yarn eslint:check` / `eslint:write`        | Lint / lint and autofix                                             |
+| `yarn prettier:check` / `prettier:write`    | Format check / write                                                |
+| `yarn css-vars:generate` / `css-vars:check` | Regenerate / verify the WebStorm CSS-variable stub from `colors.ts` |
 
-## Learn More
+Set `WITH_PWA=true` to build with the Serwist service worker (this is on in production, off by default locally).
 
-To learn more about Next.js, take a look at the following resources:
+## Project Layout
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+  components/   Feature-grouped components (content, experience, footer, form, nav, shared, travel)
+  containers/   Layout
+  fixtures/     Static content and data authored as TypeScript/JSX
+  hooks/        Reusable hooks
+  pages/        Routes + pages/api endpoints
+  server/       Server-only contact-form logic
+  state/        Global Context + reducer
+  styles/       Mantine theme, colour palette, global CSS
+  utils/        Small helpers and test utilities
+docs/           Living documentation (see below)
+service-worker/ Serwist service worker source
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Tests live in `__tests__/` folders beside the code they cover — except page and API tests, which mirror into `src/__tests__/pages/` so Next doesn't treat them as routes.
 
-## Deploy on Vercel
+## Documentation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Full documentation lives in **[docs/](docs/README.md)** — architecture, routing, state, components, the travel and contact features, styling, PWA/SEO, environment variables, and the development workflow.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Two starting points:
+
+- **[Development Workflow](docs/development.md)** — scripts, linting, testing conventions, git hooks
+- **[Release Checklist](docs/release-checklist.md)** — how a change gets to production
+
+## Deploying
+
+There are no versions, tags, or release artefacts. A change ships by squash-merging a PR into `main`, which Vercel deploys automatically. [docs/roadmap.md](docs/roadmap.md) acts as the changelog. Follow the [release checklist](docs/release-checklist.md) — note that CI does not run a build, so `yarn build` is a manual pre-merge step.

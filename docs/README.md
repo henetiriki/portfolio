@@ -14,11 +14,12 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - [PWA & SEO](pwa-seo.md) — manifest, service worker, meta tags, sitemap/robots
 - [Environment Variables](environment-variables.md) — every `process.env` value the app reads
 - [Development Workflow](development.md) — scripts, linting, formatting, git hooks
+- [Release Checklist](release-checklist.md) — how a change gets from a feature branch to production
 - [Roadmap](roadmap.md) — planned work: test coverage, framework upgrades, and known bugs
 
 ## At a glance
 
-- **Framework**: Next.js 15 (Pages Router) + React 18 + TypeScript, strict mode
+- **Framework**: Next.js 15 (Pages Router) + React 19 + TypeScript, strict mode
 - **UI kit**: Mantine v7 (`@mantine/core`, `form`, `hooks`, `notifications`) styled via CSS Modules + CSS variables
 - **Purpose**: a single-person portfolio/CV site with four content pages (Home, Experience, Portfolio, Travel) and a Contact page that emails the owner
 - **Notable integrations**: Google Maps JS API (travel map), Vercel BotID (bot/spam protection on the contact form), Nodemailer over Gmail SMTP, Serwist (opt-in PWA/service worker), `next-sitemap`

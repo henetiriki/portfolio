@@ -1,7 +1,7 @@
 import type { RefObject } from 'react';
 
 export const useScrollTo = (
-  ref: RefObject<HTMLDivElement> | undefined
+  ref: RefObject<HTMLDivElement | null> | undefined
 ): { scrollToTop: () => void } => {
   const scrollToTop = () => {
     ref?.current?.scrollIntoView?.({

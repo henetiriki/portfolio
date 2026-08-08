@@ -7,7 +7,7 @@ export type Action =
       type: 'set-markers-loaded';
     }
   | {
-      payload: { pageTopRef: RefObject<HTMLDivElement> };
+      payload: { pageTopRef: RefObject<HTMLDivElement | null> };
       type: 'set-page-top-ref';
     }
   | {
@@ -33,7 +33,7 @@ export type Dispatch = (action: Action) => void;
 export type PortfolioState = {
   shared: {
     imgId?: string;
-    pageTopRef?: RefObject<HTMLDivElement> | undefined;
+    pageTopRef?: RefObject<HTMLDivElement | null> | undefined;
   };
   travel: {
     markersLoaded?: boolean;
