@@ -1,3 +1,7 @@
+.root {
+  z-index: 200;
+}
+
 .desktopLinks {
   height: 100%;
 

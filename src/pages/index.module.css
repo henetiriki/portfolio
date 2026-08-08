@@ -1,3 +1,15 @@
+.hero {
+  z-index: 1;
+}
+
+.about {
+  flex-basis: 50%;
+}
+
+.contributions {
+  list-style-type: none;
+}
+
 .subtitle span {
   color: var(--mantine-color-shamrock-4);
 }

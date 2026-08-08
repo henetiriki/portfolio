@@ -71,7 +71,7 @@ export const Navigation = () => {
 
   return (
     <>
-      <Box left={0} pos='sticky' right={0} style={{ zIndex: 200 }} top={0}>
+      <Box className={classes.root} left={0} pos='sticky' right={0} top={0}>
         <Box
           bd='none'
           bg={navBgTransparent ? 'transparent' : 'black-russian'}
