@@ -1,6 +1,7 @@
 .content {
   background-color: alpha(var(--mantine-color-white), 0.1);
-  border-radius: 0.5rem;
+  /*noinspection CssInvalidFunction*/
+  border-radius: rem(8px);
 }
 
 .content::before {

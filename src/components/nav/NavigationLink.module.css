@@ -1,7 +1,8 @@
 .link {
   align-items: center;
   color: var(--mantine-color-silver-1);
-  font-size: 0.875rem;
+  /*noinspection CssInvalidFunction*/
+  font-size: rem(14px);
   font-weight: 600;
   height: 100%;
   padding-left: var(--mantine-spacing-md);
@@ -12,14 +13,16 @@
   @mixin smaller-than $mantine-breakpoint-sm {
     align-items: center;
     display: flex;
-    height: 2.625rem;
+    /*noinspection CssInvalidFunction*/
+    height: rem(42px);
     width: 100%;
   }
 }
 
 .link::before {
   background-color: white;
-  bottom: -0.625rem;
+  /*noinspection CssInvalidFunction*/
+  bottom: rem(-10px);
   content: '';
   height: 2px;
   position: absolute;
@@ -28,7 +31,8 @@
 }
 
 .link.sm::before {
-  bottom: 0.5rem;
+  /*noinspection CssInvalidFunction*/
+  bottom: rem(8px);
 }
 
 .link:hover {
