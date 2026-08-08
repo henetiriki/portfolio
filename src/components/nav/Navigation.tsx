@@ -73,16 +73,13 @@ export const Navigation = () => {
     <>
       <Box left={0} pos='sticky' right={0} style={{ zIndex: 200 }} top={0}>
         <Box
+          bd='none'
           bg={navBgTransparent ? 'transparent' : 'black-russian'}
           component='header'
-          px='xl'
-          style={{
-            alignItems: 'center',
-            borderBottom: 'none',
-            height: rem(76),
-          }}>
-          <Container h={'100%'}>
-            <Group justify='space-between' style={{ height: '100%' }}>
+          h={rem(76)}
+          px='xl'>
+          <Container h='100%'>
+            <Group h='100%' justify='space-between'>
               <Logo />
               <Group className={classes.desktopLinks} gap={0}>
                 {menuItems.map(({ href, text }) => (

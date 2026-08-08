@@ -119,7 +119,7 @@ export const ContactForm: FC = () => {
           w={{ base: '100%', md: '25%', sm: '35%' }}>
           {isSubmitting ? 'Sending' : 'Send'}
         </Button>
-        <TextInput name='heuning' style={{ display: 'none' }} />
+        <TextInput display='none' name='heuning' />
       </form>
     </>
   );

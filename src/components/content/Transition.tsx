@@ -3,21 +3,14 @@ import type { FC, JSX } from 'react';
 
 export const Transition: FC = (): JSX.Element => (
   <Container
+    bg='rgba(12, 14, 39, 0.8)'
+    mih='100vh'
+    miw='100vw'
+    pos='fixed'
     style={{
-      backgroundColor: 'rgba(12, 14, 39, 0.8)',
-      minHeight: '100vh',
-      minWidth: '100vw',
       overflow: 'hidden',
-      position: 'fixed',
       zIndex: 200,
     }}>
-    <Loader
-      role='presentation'
-      style={{
-        left: '48vw',
-        position: 'absolute',
-        top: '50vh',
-      }}
-    />
+    <Loader left='48vw' pos='absolute' role='presentation' top='50vh' />
   </Container>
 );

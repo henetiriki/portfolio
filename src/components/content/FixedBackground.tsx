@@ -32,11 +32,11 @@ export const FixedBackground: FC = () => {
   return (
     <Box ref={pageTopRef}>
       <Container
+        mih='100vh'
+        miw='100vw'
+        pos='fixed'
         style={{
-          minHeight: '100vh',
-          minWidth: '100vw',
           overflow: 'hidden',
-          position: 'fixed',
           zIndex: -1,
         }}>
         {igImgId && (

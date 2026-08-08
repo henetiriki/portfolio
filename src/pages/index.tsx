@@ -15,15 +15,9 @@ const DynamicTypeAnimation = dynamic(
 
 const Home: NextPage = (): JSX.Element => (
   <>
-    <Container
-      style={{
-        height: '75vh',
-        paddingTop: '30vh',
-        textAlign: 'center',
-        zIndex: 1,
-      }}>
-      <Container style={{ textAlign: 'center' }}>
-        <Title order={1} style={{ textTransform: 'uppercase' }}>
+    <Container h='75vh' pt='30vh' style={{ zIndex: 1 }} ta='center'>
+      <Container ta='center'>
+        <Title order={1} tt='uppercase'>
           Louw Swart
         </Title>
         <Title className={classes.subtitle} order={4}>
@@ -76,9 +70,7 @@ const Home: NextPage = (): JSX.Element => (
             <b>sense of responsibility</b> - I like to <b>get things done</b>.
           </Text>
           <Title order={4}>Open Source Contributions</Title>
-          <Box
-            component='ul'
-            style={{ listStyleType: 'none', paddingLeft: '0.75rem' }}>
+          <Box component='ul' pl='0.75rem' style={{ listStyleType: 'none' }}>
             {openSourceContrs.map(({ href, text }, idx) => (
               <li key={idx}>
                 <Anchor

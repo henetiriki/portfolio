@@ -94,12 +94,7 @@ const Portfolio: NextPage<AppProps> = ({
       </Head>
       <ErrorBoundary>
         <MantineProvider forceColorScheme='dark' theme={theme}>
-          <Box
-            style={{
-              backgroundColor: 'rgba(12, 14, 39, 0.8)',
-              border: 0,
-              height: '100%',
-            }}>
+          <Box bd={0} bg='rgba(12, 14, 39, 0.8)' h='100%'>
             <PortfolioStateProvider>
               {isLoading && <DynamicTransition />}
               <DynamicFixedBackground />

@@ -1,4 +1,4 @@
-import { Box, Space, Text, Title } from '@mantine/core';
+import { Flex, Space, Text, Title } from '@mantine/core';
 import { IconGlobe, IconPlaneDeparture, IconPlus } from '@tabler/icons-react';
 import type { Job, School } from '@fixtures/types';
 
@@ -534,19 +534,13 @@ export const jobs: Job[] = [
     content: (
       <>
         <Space h='lg' />
-        <Box
-          style={{
-            alignItems: 'center',
-            display: 'flex',
-            justifyContent: 'flex-start',
-            width: '100%',
-          }}>
+        <Flex align='center' justify='flex-start' w='100%'>
           <IconPlaneDeparture size={25} />
           <Space w='md' />
           <IconPlus size={15} />
           <Space w='md' />
           <IconGlobe size={25} />
-        </Box>
+        </Flex>
       </>
     ),
     institution: {
