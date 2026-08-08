@@ -8,6 +8,13 @@
   padding-right: var(--mantine-spacing-md);
   text-decoration: none;
   text-transform: uppercase;
+
+  @mixin smaller-than $mantine-breakpoint-sm {
+    align-items: center;
+    display: flex;
+    height: 2.625rem;
+    width: 100%;
+  }
 }
 
 .link::before {
@@ -40,13 +47,4 @@
 
 .active::before {
   width: 30px;
-}
-
-@media (max-width: calc($mantine-breakpoint-sm - 0.1px)) {
-  .link {
-    align-items: center;
-    display: flex;
-    height: 2.625rem;
-    width: 100%;
-  }
 }

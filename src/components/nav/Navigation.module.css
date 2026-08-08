@@ -1,21 +1,19 @@
 .desktopLinks {
   height: 100%;
-}
 
-@media (max-width: calc($mantine-breakpoint-sm - 0.1px)) {
-  .desktopLinks {
+  @mixin smaller-than $mantine-breakpoint-sm {
     display: none;
   }
 }
 
-@media (min-width: $mantine-breakpoint-sm) {
-  .burger {
+.burger {
+  @mixin larger-than $mantine-breakpoint-sm {
     display: none;
   }
 }
 
-@media (min-width: $mantine-breakpoint-sm) {
-  .drawer {
+.drawer {
+  @mixin larger-than $mantine-breakpoint-sm {
     display: none;
   }
 }
