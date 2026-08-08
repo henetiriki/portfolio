@@ -1,0 +1,82 @@
+# Release Checklist
+
+Quick reference for shipping a change to production.
+
+**How releases work here:** there are no version numbers, tags, or build artefacts. `package.json` is `private: true` and its `version` (`0.1.0`) is never bumped or published. A "release" is simply **a pull request squash-merged into `main`**, which Vercel's Git integration deploys to production automatically. [docs/roadmap.md](roadmap.md) serves as the changelog — each completed item is written up there rather than in a `CHANGELOG.md`.
+
+> **"Release ready check"** — asking for one means: run everything under [Development](#development) and [Before Opening The PR](#before-opening-the-pr), including the full [documentation sweep](#documentation-sweep) in both directions, and report what passes, what fails, and anything that needs a human decision.
+
+## Development
+
+- [ ] Work on a `feature/*` branch off `main` (e.g. `feature/react-upgrade`)
+- [ ] Local Node matches [.nvmrc](../.nvmrc) (`24`) and `engines.node` — run `nvm use` before validating, since a mismatched local runtime can pass checks that CI would fail
+- [ ] New dependencies use the full `^major.minor.patch` range, matching every other entry in `package.json`
+
+## Before Opening The PR
+
+Run the same four checks CI runs, in the same order:
+
+```bash
+yarn eslint:check
+yarn type-check
+yarn prettier:check
+yarn test:coverage
+```
+
+- [ ] All four pass; coverage stays above the 80% global threshold in `jest.config.js`
+- [ ] **`yarn build` succeeds** — CI does _not_ run a build (see [Known gaps](#known-gaps)), so a build-only failure will otherwise reach `main` undetected
+- [ ] **`WITH_PWA=true yarn build` succeeds** and emits `public/sw.js` — `.env.production` sets `WITH_PWA=true`, so the service worker is only exercised in production-like builds
+- [ ] `yarn css-vars:check` passes if `src/styles/colors.ts` changed (this is **not** automated — see [Known gaps](#known-gaps))
+- [ ] Any new `process.env` value is added in **all three** places: the Vercel dashboard, the `env` block in `next.config.js` if the client needs it, and `.env.test` as a dummy — `next/jest` does not evaluate `next.config.js`'s `env` bridge, so tests read `.env.test` directly ([environment-variables.md](environment-variables.md))
+
+### Documentation sweep
+
+Docs here describe **what exists today**, so they are part of the change, not an afterthought. Check both directions:
+
+- [ ] **Code → docs**: every behaviour changed in this PR is reflected in the affected doc(s) under `docs/` — no doc still describes the old behaviour
+- [ ] **Docs → code**: claims in the docs you touched still hold against the implementation. Statements about automation are the usual offenders — e.g. `styling-theming.md` claimed `css-vars:check` was "wired into CI/pre-commit" when it is in neither. Re-read assertions about what CI runs, what hooks fire, and which files are generated, and verify rather than assume
+- [ ] Version numbers, file paths, script names and config keys quoted in docs match `package.json`, `next.config.js`, `ci.yml` and the actual tree
+- [ ] Cross-links between docs still resolve, and new docs are listed in [docs/README.md](README.md)
+- [ ] Root [README.md](../README.md) still accurate if the stack, scripts, or layout changed
+- [ ] [roadmap.md](roadmap.md) updated — completed work written up (it is the changelog), and any newly discovered issue added rather than left in a commit message
+
+## Pull Request
+
+- [ ] PR opened against `main`; CI (`.github/workflows/ci.yml`) is green
+- [ ] Vercel preview deployment builds successfully
+- [ ] Manual QA on the **preview URL**, not just localhost — it is the only pre-production environment where `WITH_PWA=true`, real env vars, and prerendered output all apply together
+
+## Merge & Deploy
+
+- [ ] **Squash merge** into `main` (keeps the `Title (#NNN)` history style)
+- [ ] Vercel auto-deploys `main` to production — no tag, no manual trigger, no deploy workflow
+- [ ] Vercel build completes without errors
+
+## After Deploy
+
+Verify on the live site (https://www.ouwl.house):
+
+- [ ] All five routes render: `/`, `/experience`, `/portfolio`, `/travel`, `/contact` — plus `/404`
+- [ ] Travel map loads once scrolled into view (markers and polylines drop in)
+- [ ] Footer's "Updated:" timestamp reflects the new build — it is computed at build time via `NEXT_PUBLIC_LAST_MODIFIED`, so a stale value means the deploy didn't rebuild
+- [ ] `https://www.ouwl.house/sitemap.xml` and `/robots.txt` regenerated (`next-sitemap` runs as the second half of `yarn build` and reads `siteUrl` from `HOST`)
+- [ ] Canonical `<link>` and `og:url` point at the real domain, not `undefined` or localhost
+- [ ] Service worker registers and `/_offline` serves when offline
+- [ ] Contact form submits — ⚠️ **this sends a real email** through Gmail SMTP, so treat it as a live test, not a smoke test
+
+## Known Gaps
+
+Worth knowing before relying on the automation:
+
+- **CI does not build.** `ci.yml` runs lint, type-check, format and tests only. Nothing catches a `next.config.js`, Serwist, or prerender failure until Vercel builds the deploy — which is why the two build commands above are manual pre-PR steps.
+- **`css-vars:check` is not automated.** `postinstall` regenerates `src/styles/mantine-custom-properties.css`, but nothing fails a build when the committed copy has drifted from `colors.ts`. Run it manually when touching colours.
+- **Production-mode QA collides with `next dev`.** `next build`/`next start` share the `.next` directory with a running dev server, which will overwrite prerendered HTML and make `next start` return 500s on routes it hasn't lazily compiled. Stop the dev server first.
+
+## Rollback
+
+There is no artefact to re-publish — roll back through Vercel:
+
+1. Open the project's **Deployments** tab in the Vercel dashboard.
+2. Find the last known-good production deployment.
+3. **Promote to Production** (instant; serves the previous build).
+4. Fix forward on a new `feature/*` branch — reverting the merge commit on `main` also works and will trigger a fresh deploy.

@@ -14,6 +14,7 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - [PWA & SEO](pwa-seo.md) — manifest, service worker, meta tags, sitemap/robots
 - [Environment Variables](environment-variables.md) — every `process.env` value the app reads
 - [Development Workflow](development.md) — scripts, linting, formatting, git hooks
+- [Release Checklist](release-checklist.md) — how a change gets from a feature branch to production
 - [Roadmap](roadmap.md) — planned work: test coverage, framework upgrades, and known bugs
 
 ## At a glance
