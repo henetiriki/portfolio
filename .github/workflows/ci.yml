@@ -17,6 +17,23 @@ jobs:
   test:
     name: Validate & build
     runs-on: ubuntu-latest
+    # Next production builds do not load .env.test. These non-secret dummy
+    # values keep next.config.js valid without exposing deployment credentials.
+    env:
+      CUSTOM_APP_DOMAIN: 'example.test'
+      GMAIL_APP_EMAIL: 'owner@example.test'
+      GMAIL_APP_PASSWORD: 'test-app-password'
+      GMAIL_SENDER_EMAIL: 'owner@example.test'
+      GOOGLE_MAPS_API_KEY: 'test-google-maps-api-key'
+      HOST: 'http://localhost:3000'
+      HOSTNAME: 'localhost:3000'
+      IMAGE_HOST: 'http://localhost:3000/images'
+      IMAGE_HOST_NAME: 'localhost'
+      IMAGE_HOST_PATH: 'images'
+      IMAGE_HOST_PROTOCOL: 'http'
+      ISTAGRAM_IMAGE_IDS: 'test-img-id'
+      PROTOCOL: 'https'
+      WITH_PWA: 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@v7

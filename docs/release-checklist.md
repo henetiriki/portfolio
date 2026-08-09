@@ -28,7 +28,7 @@ yarn test:coverage
 - [ ] `yarn tsc --pretty --noEmit --project service-worker/tsconfig.json` passes. The root `type-check` deliberately excludes this Web Worker project because its TypeScript libraries cannot be mixed with the application's DOM libraries.
 - [ ] **`yarn build` succeeds** — CI runs the production PWA branch, but this plain build still covers the separate no-PWA configuration path.
 - [ ] **`WITH_PWA=true yarn build` succeeds and emits a non-empty `public/sw.js`** — CI runs this production-like path and asserts the output; repeat it locally for a full release-ready check.
-- [ ] Any new `process.env` value is added in **all three** places: the Vercel dashboard, the `env` block in `next.config.js` if the client needs it, and `.env.test` as a dummy — `next/jest` does not evaluate `next.config.js`'s `env` bridge, so tests read `.env.test` directly ([environment-variables.md](environment-variables.md))
+- [ ] Any new `process.env` value is added in the Vercel dashboard, the `env` block in `next.config.js` if the client needs it, and `.env.test` as a dummy. If `next.config.js` requires it during a production build, also add a safe dummy to the CI job's `env` block because CI does not load `.env.test`; `next/jest` does load `.env.test` but does not evaluate the config's client `env` bridge ([environment-variables.md](environment-variables.md)).
 
 ### Documentation sweep
 

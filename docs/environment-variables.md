@@ -10,6 +10,8 @@ Note for tests: `next/jest` loads `.env.test` directly but does **not** evaluate
 
 `.env.test` (added alongside the Jest setup — see [Development Workflow](development.md#testing)) holds dummy values for every var `next.config.js` reads unconditionally at module load, purely so `next/jest` can load a valid config while running tests. Next.js loads `.env.test` instead of `.env.local` whenever `NODE_ENV=test`. None of its values are real credentials.
 
+GitHub's production-mode CI build does not load `.env.test`, so `.github/workflows/ci.yml` mirrors the same safe source-variable values at job scope. The PWA build step overrides only `WITH_PWA=true`. Keep those dummy workflow values aligned when adding any variable that `next.config.js` requires at build time; never put real deployment or SMTP credentials in the workflow.
+
 ## Committed defaults
 
 | File              | Variable   | Value          | Purpose                                                                                       |
