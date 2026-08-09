@@ -52,7 +52,7 @@ export const useIgImgId = (): string | undefined => {
           },
           type: 'set-ig-img-id',
         });
-      } catch (error: unknown) {
+      } catch {
         dispatch({
           payload: {
             imgId: 'B8S5LnGpGUn',

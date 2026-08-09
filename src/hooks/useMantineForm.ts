@@ -56,7 +56,7 @@ export const useMantineForm = (): {
       data.forEach((code: string) => errors.push(errorFromCode(code)));
 
       setApiErrors(errors);
-    } catch (error: unknown) {
+    } catch {
       setApiErrors([genericError]);
     } finally {
       setIsSubmitting(false);

@@ -1,6 +1,0 @@
-.yarn/
-.next/
-coverage/
-
-next-env.d.ts
-public/sw.js

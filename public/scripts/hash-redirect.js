@@ -1,3 +1,3 @@
 if (window.location.hash.includes('#!')) {
-  window.location.assign('/');
+  window.location.replace('/');
 }
