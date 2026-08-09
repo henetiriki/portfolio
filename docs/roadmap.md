@@ -32,11 +32,7 @@ Last reviewed: 2026-08-09.
 
 ## Performance, SEO & platform polish
 
-- [ ] **Fix the linked portfolio images' invalid `fill` containing block.** The dev server warns for `/images/portfolio/www.beautywithin.au.jpg` and `/images/portfolio/www.csarc.co.za.jpg` because each `Image fill` has a static-positioned `Anchor.imageLink` as its immediate parent. Give the link a positioned, full-size block containing box—likely `display: block; height: 100%; position: relative`. Confirm linked and unlinked cards keep identical dimensions, shimmer, crop, hover scaling and full-image click targets, and that the warnings disappear.
-
-- [ ] **Tighten image loading.** Portfolio cards become two and then three columns but declare `sizes='100vw'`; provide breakpoint-aware sizes so the browser does not select viewport-width files for one-third-width cards. Reserve priority/preload for the true LCP candidate rather than every decorative wave, and review whether the 40px logo needs it. Preserve the fixed background's intentional eager/LCP behaviour separately.
-
-- [ ] **Use Next's font and server-rendering paths where appropriate.** Replace the two render-blocking Google Fonts stylesheets in `_document.tsx` with `next/font` variables while preserving Mantine's heading/body configuration. Remove `ssr: false` from `Footer` and `ContactForm` if focused render tests prove them SSR-safe; retain it for genuinely browser-only code such as Google Maps and the fixed background.
+- [ ] **Review image preloading.** Portfolio image `sizes` now follows the card grid. Reserve priority/preload for the true LCP candidate rather than every decorative wave, and review whether the 40px logo needs it. Preserve the fixed background's intentional eager/LCP behaviour separately.
 
 - [ ] **Consolidate page SEO metadata and PWA presentation.** A shared SEO component should derive canonical URL, title, Open Graph, Twitter, description and image values from one page-level source rather than leaving homepage values on inner routes; remove obsolete keyword metadata. Align the manifest's white `background_color` with the dark theme to avoid a white install/splash flash, and decide whether `display: fullscreen` remains intentional or should become `standalone`.
 

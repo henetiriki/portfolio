@@ -1,17 +1,10 @@
-import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Content, Header } from '@components/content';
+import { ContactForm } from '@components/form';
 import { description } from '@fixtures/contact';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
-
-const DynamicContactForm = dynamic(
-  () => import('@components/form').then(mod => mod.ContactForm),
-  {
-    ssr: false,
-  }
-);
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
@@ -38,7 +31,7 @@ const Contact: NextPage = (): JSX.Element => (
         Get in touch<span>contact me to have a chat</span>
       </Header>
       <Content>
-        <DynamicContactForm />
+        <ContactForm />
       </Content>
     </>
   </>

@@ -13,6 +13,7 @@ import { Layout } from '@containers/layout';
 import { useLoading } from '@hooks';
 import { PortfolioStateProvider } from '@state/context';
 import { theme } from '@styles';
+import { bodyFont, headingFont } from '@styles/fonts';
 import '@styles/global.css';
 import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
@@ -51,6 +52,12 @@ const Portfolio: NextPage<AppProps> = ({
   return (
     <>
       <Head>
+        <style>{`
+          :root {
+            --portfolio-font-body: ${bodyFont.style.fontFamily};
+            --portfolio-font-heading: ${headingFont.style.fontFamily};
+          }
+        `}</style>
         <title key='pageTitle'>{fullTitle('Portfolio')}</title>
         <BotIdClient protect={protectedRoutes} />
         <meta content='width=device-width, initial-scale=1' name='viewport' />

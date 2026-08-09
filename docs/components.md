@@ -20,10 +20,10 @@ All components are function components (except `ErrorBoundary`) written in TypeS
 
 ## `footer/`
 
-| Component                                  | Responsibility                                                                                                                                                                                                                                                                                                                            |
-| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Footer`                                   | Wave dividers + primary nav links (`menuItems`) + social links (`socialLinks`, GitHub/LinkedIn/Instagram) + a copyright line and a "last built" timestamp sourced from `process.env.NEXT_PUBLIC_LAST_MODIFIED` (computed at build/boot time in `next.config.js`, Pacific/Auckland timezone). Loaded via `next/dynamic` with `ssr: false`. |
-| `FooterContainer` / `FooterLinksContainer` | Layout-only wrappers (background color / flex arrangement) reused across the two footer bands.                                                                                                                                                                                                                                            |
+| Component                                  | Responsibility                                                                                                                                                                                                                                                                                               |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Footer`                                   | Server-rendered wave dividers + primary nav links (`menuItems`) + social links (`socialLinks`, GitHub/LinkedIn/Instagram) + a copyright line and a "last built" timestamp sourced from `process.env.NEXT_PUBLIC_LAST_MODIFIED` (computed at build/boot time in `next.config.js`, Pacific/Auckland timezone). |
+| `FooterContainer` / `FooterLinksContainer` | Layout-only wrappers (background color / flex arrangement) reused across the two footer bands.                                                                                                                                                                                                               |
 
 ## `form/`
 
@@ -59,4 +59,4 @@ See [Travel Feature](travel-feature.md) for the full data/behavior spec. Compone
 
 ## `containers/layout`
 
-`Layout` is the only container: a flex column with a scrollable `<main>` and the dynamically-imported `Footer` beneath it.
+`Layout` is the only container: a flex column with a scrollable `<main>` and the statically imported, server-rendered `Footer` beneath it.

@@ -188,14 +188,6 @@ const Document = () => (
         media='(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)'
         rel='apple-touch-startup-image'
       />
-      <link
-        href='https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap'
-        rel='stylesheet'
-      />
-      <link
-        href='https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap'
-        rel='stylesheet'
-      />
       <script async src='/scripts/hash-redirect.js' type='text/javascript' />
     </Head>
     <body>

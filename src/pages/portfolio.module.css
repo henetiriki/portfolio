@@ -29,6 +29,12 @@
   }
 }
 
+.imageLink {
+  display: block;
+  height: 100%;
+  position: relative;
+}
+
 .imageLink img {
   transition: transform 0.25s ease;
 }

@@ -15,9 +15,12 @@ export const theme = createTheme({
     Loader: Loader.extend({ defaultProps: { type: 'dots' } }),
   },
   defaultRadius: 'sm', // see below — v9 changed the default to 'md'
-  fontFamily: 'Roboto, ...', // body text
+  fontFamily: 'var(--portfolio-font-body), ...', // Roboto body text
   fontSizes: { xs, sm, md, lg, xl },
-  headings: { fontFamily: 'Montserrat, ...', sizes: { h1..h6 } },
+  headings: {
+    fontFamily: 'var(--portfolio-font-heading), ...', // Montserrat
+    sizes: { h1..h6 },
+  },
   primaryColor: 'whisper',
   primaryShade: 4,
 });
@@ -29,7 +32,7 @@ v6's `colorScheme` and `globalStyles` theme keys don't exist in v7. `colorScheme
 
 **`defaultRadius: 'sm'` is set deliberately, not incidentally.** Mantine v9 changed its own default from `sm` (4px) to `md` (8px) — confirmed by diffing the shipped `default-theme.mjs` between 8.3.18 and 9.5.1. Every component that doesn't pass an explicit `radius` inherits it, so leaving it unset would have silently rounded the `Tooltip`, notification toasts and `Drawer` more than before. Pinning `sm` preserves the pre-v9 appearance. The buttons and inputs that pass `radius='lg'` (`ContactForm`, `portfolio.tsx`, `ErrorContent`) were never affected either way. **This is a design choice, not a technical constraint** — deleting the line adopts Mantine's newer, rounder default.
 
-Two Google Fonts are loaded as `<link>` tags in `_document.tsx` (not `next/font`): **Montserrat** (400/600/700) for headings, **Roboto** (400/700) for body text.
+`src/styles/fonts.ts` loads **Montserrat** (400/600/700) and **Roboto** (400/700) through `next/font/google`. Next downloads and self-hosts the files at build time instead of making the browser request render-blocking Google stylesheets. `_app.tsx` writes the generated family names to `--portfolio-font-heading` and `--portfolio-font-body` in the shared `<Head>`; the Mantine theme consumes those properties and retains the existing system-font fallbacks.
 
 ### How theme values become CSS variables
 

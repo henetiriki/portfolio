@@ -69,16 +69,17 @@ Relative parent imports (`../`) are disallowed by ESLint (`no-restricted-imports
 
 ## Request lifecycle
 
-1. `src/pages/_document.tsx` renders the static HTML shell: favicons, PWA manifest link, Apple splash-screen `<link>` tags for every device size, Google Fonts (`Montserrat` for headings, `Roboto` for body), and a `<script>` tag for `public/scripts/hash-redirect.js` (see [PWA & SEO](pwa-seo.md)).
+1. `src/pages/_document.tsx` renders the static HTML shell: favicons, PWA manifest link, Apple splash-screen `<link>` tags for every device size, and a `<script>` tag for `public/scripts/hash-redirect.js` (see [PWA & SEO](pwa-seo.md)).
 2. `src/pages/_app.tsx` (`Portfolio`) wraps every page:
    - Sets page-level `<Head>` meta (title, canonical, OG/Twitter tags) shared across all routes; individual pages override the `key`-matched tags for their own description/keywords.
+   - Loads self-hosted Roboto and Montserrat files through `next/font` and exposes their generated family names to the Mantine theme as root custom properties.
    - Registers `<BotIdClient protect={[{ method: 'POST', path: '/api/contact' }]} />` so BotID instruments the contact form's POST route client-side.
    - Wraps the tree in `MantineProvider` with the custom `theme` (see [Styling & Theming](styling-theming.md)).
    - Wraps in the local `ErrorBoundary` (class component) so a render error anywhere shows a minimal "Oops" message instead of a blank page.
    - Provides `PortfolioStateProvider` (the global Context) around everything below it.
    - Renders, in order: an optional route-transition overlay (`DynamicTransition`, driven by `useLoading`), the `DynamicFixedBackground` (full-bleed Instagram-photo background), `Navigation`, then `Layout` wrapping the actual page `<Component>`.
-   - `FixedBackground` and `Footer` are loaded via `next/dynamic` with `ssr: false` — they depend on browser-only viewport/state and are excluded from the server-rendered HTML.
-3. `Layout` (`src/containers/layout/Layout.tsx`) is a simple flex column: a scrollable `<main>` for page content, then the dynamically-imported `Footer`.
+   - `FixedBackground` and the route-transition overlay are loaded via `next/dynamic` with `ssr: false` because they depend on browser-only state or animation. Ordinary content remains server-renderable.
+3. `Layout` (`src/containers/layout/Layout.tsx`) is a simple flex column: a scrollable `<main>` for page content, then the server-rendered `Footer`.
 4. Each page component (`src/pages/*.tsx`) sets its own `<Head>` overrides and renders its content, typically wrapped in the shared `Header` and `Content` components from `@components/content` for consistent hero/section styling with wave-shaped SVG dividers (`WaveWrapper`).
 
 ## Data flow
