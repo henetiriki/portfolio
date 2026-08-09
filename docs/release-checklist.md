@@ -2,7 +2,7 @@
 
 Quick reference for shipping a change to production.
 
-**How releases work here:** there are no version numbers, tags, or build artefacts. `package.json` is `private: true` and its `version` (`0.1.0`) is never bumped or published. A "release" is simply **a pull request squash-merged into `main`**, which Vercel's Git integration deploys to production automatically. [docs/roadmap.md](roadmap.md) serves as the changelog — each completed item is written up there rather than in a `CHANGELOG.md`.
+**How releases work here:** there are no version numbers, tags, or build artefacts. `package.json` is `private: true` and its `version` (`0.1.0`) is never bumped or published. A "release" is simply **a pull request squash-merged into `main`**, which Vercel's Git integration deploys to production automatically. [Project History](project-history.md) is the concise release record; the [Roadmap](roadmap.md) contains unfinished work only.
 
 > **"Release ready check"** — asking for one means: run everything under [Development](#development) and [Before Opening The PR](#before-opening-the-pr), including the full [documentation sweep](#documentation-sweep) in both directions, and report what passes, what fails, and anything that needs a human decision.
 
@@ -39,7 +39,8 @@ Docs here describe **what exists today**, so they are part of the change, not an
 - [ ] Version numbers, file paths, script names and config keys quoted in docs match `package.json`, `next.config.js`, `ci.yml` and the actual tree
 - [ ] Cross-links between docs still resolve, and new docs are listed in [docs/README.md](README.md)
 - [ ] Root [README.md](../README.md) still accurate if the stack, scripts, or layout changed
-- [ ] [roadmap.md](roadmap.md) updated — completed work written up (it is the changelog), and any newly discovered issue added rather than left in a commit message
+- [ ] [Project History](project-history.md) updated with completed milestones when the change is significant enough to retain, and any newly discovered follow-up added to the [Roadmap](roadmap.md) rather than left in a commit message
+- [ ] [Engineering Decisions](decisions.md) updated only when the change establishes or revises a durable technical choice
 
 ## Pull Request
 

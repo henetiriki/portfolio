@@ -1,0 +1,37 @@
+# Project History
+
+This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
+
+## 2026-08-09 — Current platform and release hardening
+
+- Upgraded Next.js 15 to 16, Mantine 7 through 9, and the ESLint toolchain to ESLint 9. Next development uses Turbopack while production builds explicitly use webpack for stable Serwist support. Mantine's v9 radius change is pinned back to the previous `sm` design. See [Development Workflow](development.md) and [Styling & Theming](styling-theming.md).
+- Completed the React hook lint cleanup without suppressions. Navigation state is derived during render, deferred map work is observer-driven, Maps SDK objects have stable lifecycles, route-background state has one source of truth, and the obsolete Maps deep-comparison hook and `fast-equals` were removed.
+- Replaced `eslint-plugin-typescript-sort-keys` with `eslint-plugin-perfectionist`, moved the flat config to ESLint core's `defineConfig()`, and supplied genuinely missing forwarded peers through Yarn `packageExtensions`. Immutable installs and peer explanations are warning-free; the replacement interface and enum rules were proved with failing and autofixed fixtures. See [Development Workflow](development.md#linting--formatting).
+- Hardened the contact pipeline: method/body validation, bounded and safely rendered input, stable public errors, redacted logging, one bot check and transporter per request, and non-fatal courtesy-confirmation failure. See [Contact Feature](contact-feature.md).
+- Expanded the single free-plan-friendly CI job with service-worker type checking, generated CSS-variable validation, a production-like PWA build, service-worker output verification, concurrency cancellation, least-privilege permissions, Yarn caching and Next build caching. Safe dummy build variables are declared in the workflow rather than requiring repository secrets.
+- Fixed the route-loading state machine, restored form error borders and keyboard flow, brought the mobile menu back to production parity, and converted remaining Mantine migration patterns to documented v7+ APIs.
+- Verified the release line with linting, both TypeScript projects, formatting, generated CSS-variable integrity, full Jest coverage, standard and PWA builds, and targeted browser QA. The suite reached 100% branches/functions/lines; the lower statement percentage in the large station fixture remains a confirmed instrumentation artifact rather than uncovered behaviour.
+
+## 2026-08-08 — React 19 and the Mantine styling migration
+
+- Upgraded React 18 to 19 after auditing every React-consuming dependency and checking the transitive `react-transition-group` path. Runtime behaviour stayed unchanged; the source edits were limited to React 19's ref and type definitions.
+- Migrated Mantine 6 to 7, removing `@mantine/next` and Emotion in favour of CSS Modules, theme variables and Mantine's PostCSS preset. The initial pass was revisited after finding missing vendor-prefix processing, an incorrectly converted raw breakpoint and an unnecessary runtime custom-property pattern.
+- Completed page-by-page parity work for background layering, wave heights, image alignment, paragraph margins, component colour shades, inherited heading typography, footer fonts, validation colours/borders and textarea sizing. These lessons are retained in [Styling & Theming](styling-theming.md), beside the code patterns they constrain.
+- Replaced deprecated `next/config` runtime configuration with build-time `NEXT_PUBLIC_*` exposure while keeping server-only values private. See [Environment Variables](environment-variables.md).
+- Added generated Mantine custom-property declarations for WebStorm inspection without importing or committing the generated file.
+
+## 2026-08-07 — Framework, PWA, security and coverage foundations
+
+- Raised coverage to 100% branches/functions/lines and installed an 80% global regression floor. The testing pass covered pure utilities, hooks, contact delivery, components, the Maps layer and page routes. See [Development Workflow](development.md#testing).
+- Migrated `next/legacy/image` to `next/image`. The custom shimmer is passed directly as a data-image placeholder so Next does not apply an additional blur pipeline.
+- Replaced unmaintained `next-pwa` with Serwist while preserving the existing offline route and opt-in production behaviour. See [PWA & SEO](pwa-seo.md).
+- Upgraded Next.js 14 to 15, removed obsolete configuration, declared allowed image quality, and moved a types-only file out of `pages/api` after confirming that the Pages Router treated it as a broken endpoint.
+- Upgraded Nodemailer to address its security advisories and added Vercel Analytics plus Speed Insights for their distinct page-view and web-vitals roles.
+- Fixed a dead custom Maps comparator and a live-`Set` mutation in the Google Maps test mock. The latter had caused recursively registered listeners to fire within the same dispatch and exhaust the heap; the mock now snapshots listeners like real event systems.
+
+## 2026-08-06 — Runtime, testing and CI baseline
+
+- Upgraded the project to Node 24 and aligned the engine, local runtime file and type declarations.
+- Added Jest, React Testing Library and the first whole-project test harness, including the custom render helper and Google Maps SDK mock.
+- Added GitHub Actions validation for pull requests and pushes to `main`.
+- Fixed two travel-map regressions: marker sequencing no longer receives a zero multiplier, and viewport resizing no longer resets a user's chosen zoom. Both behaviours have regression coverage in the travel component tests.
