@@ -11,6 +11,7 @@ import { notifications } from '@mantine/notifications';
 import { IconAt, IconMessage, IconSend, IconTag } from '@tabler/icons-react';
 import { useEffect, useMemo } from 'react';
 import { useMantineForm } from '@hooks';
+import { CONTACT_FIELD_LIMITS } from '@utils/contactLimits';
 import classes from './ContactForm.module.css';
 import type { NotificationData } from '@mantine/notifications';
 import type { FC } from 'react';
@@ -70,6 +71,7 @@ export const ContactForm: FC = () => {
             classNames={classes}
             label='Name'
             leftSection={<IconTag size='0.75rem' />}
+            maxLength={CONTACT_FIELD_LIMITS.name}
             mih={110}
             placeholder='Your name'
             radius='lg'
@@ -82,6 +84,7 @@ export const ContactForm: FC = () => {
             classNames={classes}
             label='Email'
             leftSection={<IconAt size='0.75rem' />}
+            maxLength={CONTACT_FIELD_LIMITS.email}
             mih={110}
             placeholder='Your email'
             radius='lg'
@@ -98,6 +101,7 @@ export const ContactForm: FC = () => {
           classNames={classes}
           label='Message'
           leftSection={<IconMessage size='0.75rem' />}
+          maxLength={CONTACT_FIELD_LIMITS.message}
           mih={180}
           minRows={4}
           placeholder='Your message'
@@ -119,7 +123,14 @@ export const ContactForm: FC = () => {
           w={{ base: '100%', md: '25%', sm: '35%' }}>
           {isSubmitting ? 'Sending' : 'Send'}
         </Button>
-        <TextInput display='none' name='heuning' />
+        <TextInput
+          aria-hidden
+          autoComplete='off'
+          display='none'
+          name='heuning'
+          tabIndex={-1}
+          {...getInputProps('heuning')}
+        />
       </form>
     </>
   );

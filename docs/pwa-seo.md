@@ -26,10 +26,10 @@
 Distinct from crawler SEO — `botid` (Vercel BotID) is used to keep automated traffic away from the contact form specifically:
 
 - Client: `_app.tsx` renders `<BotIdClient protect={[{ method: 'POST', path: '/api/contact' }]} />`, instrumenting that one route.
-- Server: `send.ts` calls `checkBotId()` before sending mail and rejects (intended to short-circuit; see the caveat in [Contact Feature](contact-feature.md)) if the request is classified as a bot.
-- This is layered on top of, not instead of, the honeypot field + regex validation already in `server/contact/helpers.ts`.
+- Server: `api/contact.ts` calls `checkBotId()` once per accepted request before creating the SMTP transporter or sending either email. A rejected request never reaches the mail transport.
+- This is layered with server-side form validation and a secondary anti-automation signal. The signal's identifier and detection details are intentionally omitted; no single mechanism is treated as sufficient on its own.
 
 ## Misc head-adjacent behavior
 
-- `next.config.js` sets a fixed set of `securityHeaders` (HSTS, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `X-DNS-Prefetch-Control`, `Referrer-Policy`, `X-XSS-Protection`) on every route via `headers()`.
+- `next.config.js` sets a fixed set of `securityHeaders` (HSTS, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `X-DNS-Prefetch-Control`, `Referrer-Policy`, `X-XSS-Protection`) on every route via `headers()`. The deprecated `X-XSS-Protection` header and a staged CSP replacement are tracked in the [roadmap](roadmap.md#performance-seo--platform-polish).
 - `public/scripts/hash-redirect.js`, loaded async from `_document.tsx`, redirects to `/` whenever the URL hash contains `#!` — a leftover guard against old hashbang-style URLs (e.g. from a pre-Next.js single-page app) being indexed or bookmarked.

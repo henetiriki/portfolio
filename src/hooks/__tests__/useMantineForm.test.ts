@@ -15,6 +15,7 @@ describe('useMantineForm', () => {
 
     expect(result.current.form.values).toEqual({
       email: '',
+      heuning: '',
       message: '',
       name: '',
     });
@@ -38,7 +39,12 @@ describe('useMantineForm', () => {
     });
 
     expect(global.fetch).toHaveBeenCalledWith('/api/contact', {
-      body: JSON.stringify({ email: '', message: '', name: 'Jane' }),
+      body: JSON.stringify({
+        email: '',
+        heuning: '',
+        message: '',
+        name: 'Jane',
+      }),
       headers: { 'Content-Type': 'application/json' },
       method: 'POST',
     });

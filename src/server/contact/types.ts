@@ -8,6 +8,19 @@ export type ErrorType =
   | 'e_name_required'
   | 'e_spam';
 
+export type ContactApiErrorCode = ErrorType | 'e_generic';
+
+export type ContactApiErrorResponse = {
+  data: ContactApiErrorCode[];
+};
+
+export type ContactApiResponse =
+  ContactApiErrorResponse | ContactApiSuccessResponse;
+
+export type ContactApiSuccessResponse = {
+  data: 'Sent successfully';
+};
+
 export type SendResponse = {
   error?: Error;
   success: boolean;

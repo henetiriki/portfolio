@@ -27,9 +27,9 @@ All components are function components (except `ErrorBoundary`) written in TypeS
 
 ## `form/`
 
-| Component     | Responsibility                                                                                                                                                                                                                                                                                                     |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ContactForm` | Renders Name/Email/Message fields wired to `useMantineForm()`, plus a honeypot `TextInput name='heuning'` (hidden via `style={{ display: 'none' }}`) for spam trapping (see [Contact Feature](contact-feature.md)). Shows Mantine `notifications` toasts for both submit success and any API-returned error codes. |
+| Component     | Responsibility                                                                                                                                                                                                                                                                                                             |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ContactForm` | Renders Name/Email/Message fields wired to `useMantineForm()`, plus a secondary anti-automation signal whose implementation is intentionally omitted from public documentation (see [Contact Feature](contact-feature.md)). Shows Mantine `notifications` toasts for both submit success and any API-returned error codes. |
 
 ## `shared/`
 
