@@ -10,8 +10,6 @@ Last reviewed: 2026-08-09.
 
 - [ ] **Add a small browser-level regression suite.** Keep it deliberately narrower than the Jest/RTL suite: render every content route, exercise the mobile drawer and keyboard path, check contact-form tab order and validation borders with mocked responses, and run one axe pass per page template. Playwright is the likely fit. The suite should remain cheap enough for the existing single CI job and should target browser behaviours that DOM tests have previously missed rather than duplicate page snapshots.
 
-- [ ] **Add Dependabot configuration.** Configure `.github/dependabot.yml` for the npm/Yarn dependency graph and GitHub Actions. Keep this separate from CI validation because it creates operational pull requests rather than validating the current commit. No paid GitHub feature is required.
-
 ## Framework & dependency upgrades
 
 - [ ] **Adopt the native TypeScript 7 toolchain when ecosystem support is ready — blocked.** The project now uses TypeScript 6, the supported JavaScript-based bridge release, with its configuration deprecations already removed. The 2026-08-09 TypeScript `7.0.2` trial still failed before compilation because Yarn's built-in compatibility patch expected `lib/_tsc.js`, which the native Go distribution does not ship; `typescript-eslint@8.66` also requires TypeScript `<6.1.0`. Recheck only when Yarn supports the native distribution and TypeScript-ESLint supports its compiler API strategy; both conditions are required.
