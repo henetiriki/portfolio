@@ -26,11 +26,11 @@ Both error pages reuse `Header` + `ErrorContent` (`@components/shared`) and disp
 
 ## API routes (`src/pages/api`)
 
-| Route             | Method | Handler             | Behaviour                                                                                                                                                                                 |
-| ----------------- | ------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/api/contact`    | POST   | `api/contact.ts`    | Validates the submission, emails the owner, then emails a copy back to the sender. Returns `400` with an error-code array on validation failure, `500` on send failure, `200` on success. |
-| `/api/rail-trips` | GET    | `api/rail-trips.ts` | Returns the static `railTrips` fixture (`{ trips, upcomingTrips }`) as JSON                                                                                                               |
-| `/api/img-id`     | GET    | `api/img-id.ts`     | Picks and returns one random image id from `ISTAGRAM_IMAGE_IDS` (server env var, comma-separated)                                                                                         |
+| Route             | Method | Handler             | Behaviour                                                                                                                                                                                                          |
+| ----------------- | ------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/api/contact`    | POST   | `api/contact.ts`    | Enforces POST and the request shape, validates the submission, emails the owner, then emails a copy back to the sender. Returns a stable error-code array on every `400`/`405`/`500` failure and `200` on success. |
+| `/api/rail-trips` | GET    | `api/rail-trips.ts` | Returns the static `railTrips` fixture (`{ trips, upcomingTrips }`) as JSON                                                                                                                                        |
+| `/api/img-id`     | GET    | `api/img-id.ts`     | Picks and returns one random image id from `ISTAGRAM_IMAGE_IDS` (server env var, comma-separated)                                                                                                                  |
 
 ## Redirects (`next.config.js`)
 

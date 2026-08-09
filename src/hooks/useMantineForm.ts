@@ -6,6 +6,16 @@ import type { FormValues } from './types';
 import type { UseFormReturnType } from '@mantine/form';
 import type { JSX } from 'react';
 
+const isErrorPayload = (value: unknown): value is { data: string[] } => {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const { data } = value as { data?: unknown };
+
+  return Array.isArray(data) && data.every(code => typeof code === 'string');
+};
+
 export const useMantineForm = (): {
   apiErrors: JSX.Element[];
   form: UseFormReturnType<FormValues>;
@@ -49,13 +59,13 @@ export const useMantineForm = (): {
         return;
       }
 
-      const { data } = await response.json();
+      const payload: unknown = await response.json();
 
-      const errors: JSX.Element[] = [];
+      if (!isErrorPayload(payload)) {
+        throw new Error('Invalid contact API response');
+      }
 
-      data.forEach((code: string) => errors.push(errorFromCode(code)));
-
-      setApiErrors(errors);
+      setApiErrors(payload.data.map(errorFromCode));
     } catch {
       setApiErrors([genericError]);
     } finally {

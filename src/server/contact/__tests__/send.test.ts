@@ -22,6 +22,8 @@ describe('send', () => {
 
     await expect(send(message)).resolves.toEqual({ success: true });
     expect(sendMail).toHaveBeenCalledWith(message, expect.any(Function));
+    expect(console.error).not.toHaveBeenCalled();
+    expect(console.warn).not.toHaveBeenCalled();
   });
 
   it('rejects without sending mail when the request is classified as a bot', async () => {
@@ -34,6 +36,7 @@ describe('send', () => {
       success: false,
     });
     expect(createTransport).not.toHaveBeenCalled();
+    expect(console.warn).toHaveBeenCalledWith('Contact message rejected');
   });
 
   it('rejects with the send error and does not also resolve', async () => {
@@ -49,5 +52,11 @@ describe('send', () => {
       error: sendError,
       success: false,
     });
+    expect(console.error).toHaveBeenCalledWith(
+      'Contact message delivery failed'
+    );
+    expect(
+      JSON.stringify((console.error as jest.Mock).mock.calls)
+    ).not.toContain('smtp failure');
   });
 });

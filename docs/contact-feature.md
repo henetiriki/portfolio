@@ -8,7 +8,7 @@ The `/contact` page lets a visitor send a message that's emailed to the site own
 - **`ContactForm`** (`@components/form`) renders Name/Email/Message via Mantine `TextInput`/`Textarea`, wired through `useMantineForm()`. It also carries a secondary anti-automation signal; its identifier, detection rule and presentation are intentionally not documented here.
 - **`useMantineForm`** (`@hooks/useMantineForm.ts`):
   - Uses `@mantine/form`'s `useForm` with client-side validators: `isEmail` for email, `isNotEmpty` for name/message, `validateInputOnBlur: true`.
-  - `submitForm` POSTs JSON to `/api/contact`. On `response.ok`, marks `isSubmitted` and resets the form. On failure, reads `{ data: string[] }` (error codes) from the response body and maps each through `errorFromCode` (`@utils/contact.ts`) to a JSX message looked up in `@fixtures/contact`'s `errorMessages`, falling back to a generic error on network/parse failure.
+  - `submitForm` POSTs JSON to `/api/contact`. On `response.ok`, marks `isSubmitted` and resets the form. On failure, runtime-validates `{ data: string[] }` before mapping each code through `errorFromCode` (`@utils/contact.ts`) to a JSX message looked up in `@fixtures/contact`'s `errorMessages`; malformed/network responses fall back to the generic error.
   - After every submit attempt, resets `isSubmitted`/`apiErrors` after a 250ms delay (`finally` block) so the notification effects in `ContactForm` re-fire cleanly on a subsequent submit.
 - Notifications: `ContactForm` watches `apiErrors` and `isSubmitted` and shows Mantine `notifications.show(...)` toasts (bottom-center, 6s auto-close) — green "Thanks!" on success, red "Oops!" per error.
 - **BotID**: `_app.tsx` registers `<BotIdClient protect={[{ method: 'POST', path: '/api/contact' }]} />`, which instruments the page so the subsequent server-side `checkBotId()` call in `send.ts` can classify the request.
@@ -17,11 +17,12 @@ The `/contact` page lets a visitor send a message that's emailed to the site own
 
 Request flow in `api/contact.ts`:
 
-1. Read the submitted contact data from `req.body`.
-2. `validate(submission)` → array of `ErrorType` codes; if non-empty, respond `400 { data: errors }`.
-3. `send(buildMessage(submission))` — email to the owner; on failure respond `500`.
-4. `send(buildMessageCopy(submission))` — copy back to the sender; on failure respond `500`.
-5. Respond `200 { data: 'Sent successfully' }`.
+1. Reject methods other than `POST` with `405`, set `Allow: POST`, and return the generic public error code array.
+2. Runtime-check the request-body shape before destructuring it; malformed bodies receive the same generic array with `400`.
+3. `validate(submission)` → array of `ErrorType` codes; if non-empty, respond `400 { data: errors }`.
+4. `send(buildMessage(submission))` — email to the owner; on failure log a redacted server message and respond `500` with the generic array.
+5. `send(buildMessageCopy(submission))` — copy back to the sender; currently the same `500` behaviour if it fails.
+6. Respond `200 { data: 'Sent successfully' }`.
 
 ### Validation (`helpers.ts` → `validate`)
 
@@ -39,7 +40,7 @@ Request flow in `api/contact.ts`:
 
 Multiple field-validation errors can be returned together; the client renders one toast per code. The additional anti-automation checks are intentionally omitted from this table.
 
-> **Known hardening work:** the 2026-08-09 review found that the contact pipeline needs an end-to-end privacy, API-contract, retry-safety and defense-in-depth pass. Operational details of the anti-automation finding are deliberately omitted from public documentation; see the scoped [roadmap item](roadmap.md#security-reliability--accessibility).
+> **Known hardening work:** the first 2026-08-09 slice removed PII/transport leakage and added method, body-shape and response-contract guards. Field limits/template escaping, retry-safe two-message semantics, transport reuse and the defense-in-depth review remain. Operational details of the anti-automation finding are deliberately omitted from public documentation; see the scoped [roadmap item](roadmap.md#security-reliability--accessibility).
 
 ### Email construction
 
@@ -52,8 +53,8 @@ Multiple field-validation errors can be returned together; the client renders on
 
 - Calls `checkBotId()` (server-side BotID verification) before sending; if `verification.isBot`, logs and rejects with `{ success: false, error: 'Access denied' }` and returns immediately — `transporter.sendMail(...)` is never reached for a detected bot.
 - Uses `nodemailer.createTransport({ service: 'gmail', auth: { user: GMAIL_APP_EMAIL, pass: GMAIL_APP_PASSWORD } }, { from: GMAIL_SENDER_EMAIL })` — a Gmail App Password, not the account's normal password, is required (`GMAIL_APP_PASSWORD`).
-- Resolves `{ success: true }` on send, rejects `{ success: false, error }` on failure (and returns immediately after rejecting — no fallthrough). Errors are logged with `console.error`.
-- `api/contact.ts` wraps each `send(...)` call in its own `try`/`catch`, mapping a caught rejection to a `500` response with `error?.message || 'Unknown error'`.
+- Resolves `{ success: true }` on send and rejects `{ success: false, error }` on failure (with no fallthrough). Server logs use fixed, redacted messages and do not include the submission, message options, transport response or SMTP error detail.
+- `api/contact.ts` catches either send rejection and maps it to `500 { data: ['e_generic'] }`; raw transport errors never cross the API boundary.
 
 > **Fixed 2026-08-06**: this used to have two bugs — `send()`'s `Promise` executor was missing `return` after both `reject(...)` calls (so a detected bot still triggered `transporter.sendMail(...)`, and a send error could still resolve after already rejecting), and `api/contact.ts` called `send(...)` with a bare `await` and no `try`/`catch`, so a rejection would have surfaced as an unhandled promise rejection instead of a `500`. Both are fixed and covered by regression tests in `server/contact/__tests__/send.test.ts` (asserts `createTransport` is never called for a detected bot) and `src/__tests__/pages/api/contact.test.ts`.
 

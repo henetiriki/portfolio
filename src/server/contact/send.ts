@@ -1,7 +1,6 @@
 import { checkBotId } from 'botid/server';
 import nodeMailer from 'nodemailer';
 import type { SendResponse } from '@server/contact';
-import type { SentMessageInfo } from 'nodemailer';
 import type Mail from 'nodemailer/lib/mailer';
 
 const GMAIL_APP_EMAIL = process.env.GMAIL_APP_EMAIL;
@@ -13,9 +12,7 @@ export const send = async (message: Mail.Options): Promise<SendResponse> => {
 
   return new Promise((resolve, reject) => {
     if (verification.isBot) {
-      console.error(
-        `Message not sent: isBot ${verification.isBot}; message ${message}`
-      );
+      console.warn('Contact message rejected');
       reject({ error: new Error('Access denied'), success: false });
 
       return;
@@ -34,18 +31,14 @@ export const send = async (message: Mail.Options): Promise<SendResponse> => {
       }
     );
 
-    transporter.sendMail(
-      message,
-      (error: Error | null, info: SentMessageInfo) => {
-        if (error) {
-          console.error(`Message not sent: ${error}`);
-          reject({ error, success: false });
+    transporter.sendMail(message, (error: Error | null) => {
+      if (error) {
+        console.error('Contact message delivery failed');
+        reject({ error, success: false });
 
-          return;
-        }
-        console.error(`Message sent: ${JSON.stringify(info)}`);
-        resolve({ success: true });
+        return;
       }
-    );
+      resolve({ success: true });
+    });
   });
 };

@@ -12,6 +12,38 @@ const validSubmission: Submission = {
 };
 
 describe('contact API handler', () => {
+  it('rejects unsupported methods without validating or sending', async () => {
+    const { json, req, res, setHeader, status } = createMockApiContext(
+      validSubmission,
+      { method: 'GET' }
+    );
+
+    await handler(req, res);
+
+    expect(setHeader).toHaveBeenCalledWith('Allow', 'POST');
+    expect(status).toHaveBeenCalledWith(405);
+    expect(json).toHaveBeenCalledWith({ data: ['e_generic'] });
+    expect(send).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    undefined,
+    null,
+    [],
+    'not an object',
+    { email: 'jane@example.com', name: 'Jane' },
+    { ...validSubmission, email: 123 },
+    { ...validSubmission, heuning: 123 },
+  ])('rejects a malformed request body', async body => {
+    const { json, req, res, status } = createMockApiContext(body);
+
+    await handler(req, res);
+
+    expect(status).toHaveBeenCalledWith(400);
+    expect(json).toHaveBeenCalledWith({ data: ['e_generic'] });
+    expect(send).not.toHaveBeenCalled();
+  });
+
   it('responds 400 with validation errors and never calls send', async () => {
     const { json, req, res, status } = createMockApiContext({
       ...validSubmission,
@@ -25,7 +57,7 @@ describe('contact API handler', () => {
     expect(send).not.toHaveBeenCalled();
   });
 
-  it('responds 500 with the error message when the owner email fails to send', async () => {
+  it('returns a stable public error when the owner email fails to send', async () => {
     (send as jest.Mock).mockRejectedValueOnce({
       error: new Error('smtp down'),
       success: false,
@@ -37,21 +69,12 @@ describe('contact API handler', () => {
 
     expect(send).toHaveBeenCalledTimes(1);
     expect(status).toHaveBeenCalledWith(500);
-    expect(json).toHaveBeenCalledWith({ data: 'smtp down' });
+    expect(json).toHaveBeenCalledWith({ data: ['e_generic'] });
+    expect(console.error).toHaveBeenCalledWith('Contact email delivery failed');
+    expect(JSON.stringify(json.mock.calls)).not.toContain('smtp down');
   });
 
-  it('falls back to "Unknown error" when the rejection has no error message', async () => {
-    (send as jest.Mock).mockRejectedValueOnce({ success: false });
-
-    const { json, req, res, status } = createMockApiContext(validSubmission);
-
-    await handler(req, res);
-
-    expect(status).toHaveBeenCalledWith(500);
-    expect(json).toHaveBeenCalledWith({ data: 'Unknown error' });
-  });
-
-  it('responds 500 when the confirmation copy fails to send after the owner email succeeds', async () => {
+  it('returns the same stable public error when the confirmation copy fails', async () => {
     (send as jest.Mock)
       .mockResolvedValueOnce({ success: true })
       .mockRejectedValueOnce({
@@ -65,20 +88,8 @@ describe('contact API handler', () => {
 
     expect(send).toHaveBeenCalledTimes(2);
     expect(status).toHaveBeenCalledWith(500);
-    expect(json).toHaveBeenCalledWith({ data: 'copy failed' });
-  });
-
-  it('falls back to "Unknown error" when the confirmation copy rejection has no error message', async () => {
-    (send as jest.Mock)
-      .mockResolvedValueOnce({ success: true })
-      .mockRejectedValueOnce({ success: false });
-
-    const { json, req, res, status } = createMockApiContext(validSubmission);
-
-    await handler(req, res);
-
-    expect(status).toHaveBeenCalledWith(500);
-    expect(json).toHaveBeenCalledWith({ data: 'Unknown error' });
+    expect(json).toHaveBeenCalledWith({ data: ['e_generic'] });
+    expect(JSON.stringify(json.mock.calls)).not.toContain('copy failed');
   });
 
   it('responds 200 once both the owner email and confirmation copy send successfully', async () => {

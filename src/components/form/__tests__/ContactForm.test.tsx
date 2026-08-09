@@ -67,6 +67,25 @@ describe('ContactForm', () => {
     ).toBeInTheDocument();
   });
 
+  it('falls back to a generic error when the API response is malformed', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue({ data: 'unexpected' }),
+      ok: false,
+    });
+
+    render(<ContactForm />);
+    await userEvent.type(screen.getByLabelText(/^Name/), 'Jane');
+    await userEvent.type(screen.getByLabelText(/^Email/), 'jane@example.com');
+    await userEvent.type(screen.getByLabelText(/^Message/), 'Hello there!');
+    await userEvent.click(screen.getByRole('button', { name: 'Send' }));
+
+    expect(
+      await screen.findByText(
+        'Something unexpected happened - please try again later...'
+      )
+    ).toBeInTheDocument();
+  });
+
   it('shows the "Sending" label while the request is in flight', async () => {
     let resolveFetch: (value: { ok: boolean }) => void = () => {};
 
