@@ -9,7 +9,7 @@ import sortKeys from 'eslint-plugin-sort-keys';
 import typescriptSortKeys from 'eslint-plugin-typescript-sort-keys';
 import unusedImports from 'eslint-plugin-unused-imports';
 import globals from 'globals';
-import tsEslint from 'typescript-eslint';
+import { config, configs } from 'typescript-eslint';
 
 // Mirrors the glob `eslint-config-next` registers `react`, `react-hooks`,
 // `import` and `jsx-a11y` against. Note it excludes `.cjs`, which is why
@@ -24,13 +24,13 @@ const TS_FILES = ['**/*.ts', '**/*.tsx'];
 // rules and settings only, with the duplicate `plugins` key dropped — and
 // scoped to the same files the plugin was registered against, since applying
 // a rule to a file whose config never registered its plugin is also an error.
-const preset = (config, files) => {
-  const { plugins: _plugins, ...rest } = config;
+const preset = (sharedConfig, files) => {
+  const { plugins: _plugins, ...rest } = sharedConfig;
 
   return { ...rest, files };
 };
 
-export default tsEslint.config(
+export default config(
   {
     ignores: ['.yarn/', '.next/', 'coverage/', 'next-env.d.ts', 'public/sw.js'],
   },
@@ -41,7 +41,7 @@ export default tsEslint.config(
   preset(importPlugin.flatConfigs.recommended, WEB_FILES),
   preset(importPlugin.flatConfigs.typescript, WEB_FILES),
   security.configs.recommended,
-  ...tsEslint.configs.recommended.map(config => preset(config, TS_FILES)),
+  ...configs.recommended.map(sharedConfig => preset(sharedConfig, TS_FILES)),
   {
     languageOptions: {
       globals: {
