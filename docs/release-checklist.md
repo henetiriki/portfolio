@@ -14,7 +14,7 @@ Quick reference for shipping a change to production.
 
 ## Before Opening The PR
 
-Run the same four checks CI runs, in the same order:
+Run the fast application checks locally in the same order as CI:
 
 ```bash
 yarn eslint:check
@@ -24,17 +24,18 @@ yarn test:coverage
 ```
 
 - [ ] All four pass; coverage stays above the 80% global threshold in `jest.config.js`
-- [ ] **`yarn build` succeeds** — CI does _not_ run a build (see [Known gaps](#known-gaps)), so a build-only failure will otherwise reach `main` undetected
-- [ ] **`WITH_PWA=true yarn build` succeeds** and emits `public/sw.js` — `.env.production` sets `WITH_PWA=true`, so the service worker is only exercised in production-like builds
-- [ ] `yarn css-vars:check` passes if `src/styles/colors.ts` changed (this is **not** automated — see [Known gaps](#known-gaps))
-- [ ] Any new `process.env` value is added in **all three** places: the Vercel dashboard, the `env` block in `next.config.js` if the client needs it, and `.env.test` as a dummy — `next/jest` does not evaluate `next.config.js`'s `env` bridge, so tests read `.env.test` directly ([environment-variables.md](environment-variables.md))
+- [ ] `yarn css-vars:check` passes. CI runs this after `postinstall` as an integrity check for the generated, gitignored WebStorm stub; it is not a committed-file drift check.
+- [ ] `yarn tsc --pretty --noEmit --project service-worker/tsconfig.json` passes. The root `type-check` deliberately excludes this Web Worker project because its TypeScript libraries cannot be mixed with the application's DOM libraries.
+- [ ] **`yarn build` succeeds** — CI runs the production PWA branch, but this plain build still covers the separate no-PWA configuration path.
+- [ ] **`WITH_PWA=true yarn build` succeeds and emits a non-empty `public/sw.js`** — CI runs this production-like path and asserts the output; repeat it locally for a full release-ready check.
+- [ ] Any new `process.env` value is added in the Vercel dashboard, the `env` block in `next.config.js` if the client needs it, and `.env.test` as a dummy. If `next.config.js` requires it during a production build, also add a safe dummy to the CI job's `env` block because CI does not load `.env.test`; `next/jest` does load `.env.test` but does not evaluate the config's client `env` bridge ([environment-variables.md](environment-variables.md)).
 
 ### Documentation sweep
 
 Docs here describe **what exists today**, so they are part of the change, not an afterthought. Check both directions:
 
 - [ ] **Code → docs**: every behaviour changed in this PR is reflected in the affected doc(s) under `docs/` — no doc still describes the old behaviour
-- [ ] **Docs → code**: claims in the docs you touched still hold against the implementation. Statements about automation are the usual offenders — e.g. `styling-theming.md` claimed `css-vars:check` was "wired into CI/pre-commit" when it is in neither. Re-read assertions about what CI runs, what hooks fire, and which files are generated, and verify rather than assume
+- [ ] **Docs → code**: claims in the docs you touched still hold against the implementation. Statements about automation are the usual offenders — re-read assertions about what CI runs, what hooks fire, and which files are generated, and verify them against the workflow/config rather than assuming
 - [ ] Version numbers, file paths, script names and config keys quoted in docs match `package.json`, `next.config.js`, `ci.yml` and the actual tree
 - [ ] Cross-links between docs still resolve, and new docs are listed in [docs/README.md](README.md)
 - [ ] Root [README.md](../README.md) still accurate if the stack, scripts, or layout changed
@@ -68,9 +69,9 @@ Verify on the live site (https://www.ouwl.house):
 
 Worth knowing before relying on the automation:
 
-- **CI does not build.** `ci.yml` runs lint, type-check, format and tests only. Nothing catches a `next.config.js`, Serwist, or prerender failure until Vercel builds the deploy — which is why the two build commands above are manual pre-PR steps.
-- **`css-vars:check` is not automated.** `postinstall` regenerates `src/styles/mantine-custom-properties.css`, but nothing fails a build when the committed copy has drifted from `colors.ts`. Run it manually when touching colours.
-- **Dev and production use different bundlers.** `next dev` runs Turbopack; `next build` is pinned to webpack with `--webpack` because `@serwist/next` injects a webpack config that Next 16 refuses to build through Turbopack. A bundler-specific difference therefore cannot show up in local dev — the manual production build above is the only thing that would catch one. See [development.md](development.md#bundlers-turbopack-in-dev-webpack-in-builds).
+- **The no-PWA build remains manual.** CI runs `WITH_PWA=true yarn build`, which covers the real production/Serwist/prerender path, but `next.config.js` also has a separate branch when `WITH_PWA` is unset. Run plain `yarn build` locally so that branch does not silently decay.
+- **The CSS-variable stub has no committed baseline.** It is intentionally gitignored and regenerated during `postinstall`; CI's subsequent `css-vars:check` proves the current generated output matches `colors.ts`, not that a checked-in artefact is current. This is the intended model because the file exists only for local WebStorm analysis.
+- **Dev and production use different bundlers.** `next dev` runs Turbopack; `next build` is pinned to webpack with `--webpack` because `@serwist/next` injects a webpack config that Next 16 refuses to build through Turbopack. A bundler-specific difference therefore cannot show up in local dev; CI's PWA build now covers the production webpack path, while the manual plain build covers its no-PWA configuration branch. See [development.md](development.md#bundlers-turbopack-in-dev-webpack-in-builds).
 
 **Resolved as of Next.js 16** (kept here because it bit this project repeatedly on 14 and 15):
 
