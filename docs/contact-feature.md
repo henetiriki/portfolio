@@ -4,7 +4,7 @@ The `/contact` page lets a visitor send a message that's emailed to the site own
 
 ## Client side
 
-- **`pages/contact.tsx`** sets page meta and dynamically imports (`ssr: false`) `ContactForm`.
+- **`pages/contact.tsx`** sets page meta and renders `ContactForm` directly. The form has no render-time browser dependency, so it is included in the server-rendered page rather than deferred to the client.
 - **`ContactForm`** (`@components/form`) renders Name/Email/Message via Mantine `TextInput`/`Textarea`, wired through `useMantineForm()`. It also carries a secondary anti-automation signal; its identifier, detection rule and presentation are intentionally not documented here.
 - **`useMantineForm`** (`@hooks/useMantineForm.ts`):
   - Uses `@mantine/form`'s `useForm` with client-side validators: `isEmail` for email, `isNotEmpty` for name/message, `validateInputOnBlur: true`. The visible fields also carry the shared maximum lengths (name 100, email 254, message 5000) as browser constraints; the API independently enforces the same limits.

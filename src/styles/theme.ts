@@ -12,7 +12,7 @@ export const theme = createTheme({
   },
   defaultRadius: 'sm',
   fontFamily:
-    'Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
+    'var(--portfolio-font-body), -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
   fontSizes: {
     lg: rem(16),
     md: rem(14),
@@ -22,7 +22,7 @@ export const theme = createTheme({
   },
   headings: {
     fontFamily:
-      'Montserrat, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
+      'var(--portfolio-font-heading), -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
     sizes: {
       h1: {
         fontSize: rem(48),

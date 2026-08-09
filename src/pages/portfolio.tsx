@@ -14,6 +14,8 @@ import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+const portfolioImageSizes =
+  '(min-width: 67.5em) 18.75rem, (min-width: 48em) calc(47.62vw - 4.75rem), (min-width: 36em) calc(100vw - 10rem), calc(100vw - 5rem)';
 
 const Portfolio: NextPage = (): JSX.Element => (
   <>
@@ -59,7 +61,7 @@ const Portfolio: NextPage = (): JSX.Element => (
                         alt={title}
                         fill
                         placeholder={blurDataURL(350, 192)}
-                        sizes='100vw'
+                        sizes={portfolioImageSizes}
                         src={imageUrl}
                         style={{ objectFit: 'cover' }}
                       />
@@ -70,7 +72,7 @@ const Portfolio: NextPage = (): JSX.Element => (
                       alt={title}
                       fill
                       placeholder={blurDataURL(350, 192)}
-                      sizes='100vw'
+                      sizes={portfolioImageSizes}
                       src={imageUrl}
                       style={{ objectFit: 'cover' }}
                     />

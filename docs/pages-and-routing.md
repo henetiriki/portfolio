@@ -14,6 +14,8 @@ Next.js **Pages Router**. Every file in `src/pages` (excluding `api/`, `_app.tsx
 
 Every content page follows the same `<Head>` pattern: a `fullTitle('Page Name')` title (`"Page Name // Louw Swart"`), a canonical `<link>` built from `process.env.NEXT_PUBLIC_SITE_URL`, and page-specific `description`/`keywords`/Twitter/OG meta tags keyed so Next.js can de-duplicate against `_app.tsx`'s defaults.
 
+Portfolio cards use `next/image` with `fill`. Linked cards give the immediate `Anchor.imageLink` parent a full-height, positioned block containing box; the surrounding grid wrapper alone is not sufficient because `fill` positions against the image's immediate parent. Linked and unlinked images therefore keep the same card dimensions while avoiding Next's invalid-parent warning. Their `sizes` value follows the same single-, two- and three-column breakpoints as the CSS grid and accounts for the content padding/max-width, so Next does not select viewport-width files for card-width images.
+
 ## Error pages
 
 | Route  | File                 | Notes                                                                                                       |
