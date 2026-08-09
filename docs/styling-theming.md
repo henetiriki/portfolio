@@ -2,7 +2,7 @@
 
 ## Stack
 
-- **Mantine v8** is the component library. Styling is **CSS Modules + CSS variables**, not CSS-in-JS — v7 dropped Emotion entirely in favor of static stylesheets and v8 keeps that model, with `postcss-preset-mantine` (`postcss.config.cjs`) providing Mantine's build-time CSS syntax and `MantineProvider` exposing theme values as `--mantine-*` custom properties. Everything in this document was verified against v8; the v6 → v7 history is retained where it explains why a workaround exists.
+- **Mantine v9** is the component library. Styling is **CSS Modules + CSS variables**, not CSS-in-JS — v7 dropped Emotion entirely in favor of static stylesheets and v8/v9 keep that model, with `postcss-preset-mantine` (`postcss.config.cjs`) providing Mantine's build-time CSS syntax and `MantineProvider` exposing theme values as `--mantine-*` custom properties. Everything in this document was verified against v9; the v6 → v7 history is retained where it explains why a workaround exists.
 - No `@mantine/next` (removed in v7 — there's no SSR style-injection step to wire up anymore, since styles ship as static `.css` files) and no `@emotion/*` packages.
 - Component-scoped styles live in a `Component.module.css` file next to the component, imported as `classes` and applied via `className={classes.foo}`. Simple root styles use Mantine's first-class style props where one exists (`c`, `h`, `display`, etc.); unsupported values can stay in `style` when they are isolated or runtime-dependent, while cohesive static rules live in the component's CSS Module. See "Patterns worth knowing" below for when to use which.
 
@@ -14,6 +14,7 @@ export const theme = createTheme({
   components: {
     Loader: Loader.extend({ defaultProps: { type: 'dots' } }),
   },
+  defaultRadius: 'sm', // see below — v9 changed the default to 'md'
   fontFamily: 'Roboto, ...', // body text
   fontSizes: { xs, sm, md, lg, xl },
   headings: { fontFamily: 'Montserrat, ...', sizes: { h1..h6 } },
@@ -25,6 +26,8 @@ export const theme = createTheme({
 Applied once in `_app.tsx` via `<MantineProvider forceColorScheme='dark' theme={theme}>`, alongside `import '@mantine/core/styles.css'` and `import '@mantine/notifications/styles.css'`. `_document.tsx` spreads `mantineHtmlProps` onto `<Html>` and renders `<ColorSchemeScript forceColorScheme='dark' />` before hydration. The site is dark-mode only, with no light theme or toggle, so `forceColorScheme` (not `defaultColorScheme`) is set on both: the script makes the initial server-rendered document dark before React hydrates, and the provider keeps the runtime scheme fixed rather than merely seeding an initial, switchable value.
 
 v6's `colorScheme` and `globalStyles` theme keys don't exist in v7. `colorScheme` moved to `MantineProvider`'s `forceColorScheme`/`defaultColorScheme` props (above); the old `globalStyles` callback (letter-spacing on headings, base `html` font-size, `body` defaults) moved to a plain stylesheet, `src/styles/global.css`, imported once in `_app.tsx`. That file also has to explicitly set `body { background-color: transparent }` — v7's base stylesheet sets an opaque `background-color: var(--mantine-color-body)` on `body` by default (v6's normalize step didn't), which would otherwise paint in front of `FixedBackground`'s `position: fixed; z-index: -1` image layer and hide it.
+
+**`defaultRadius: 'sm'` is set deliberately, not incidentally.** Mantine v9 changed its own default from `sm` (4px) to `md` (8px) — confirmed by diffing the shipped `default-theme.mjs` between 8.3.18 and 9.5.1. Every component that doesn't pass an explicit `radius` inherits it, so leaving it unset would have silently rounded the `Tooltip`, notification toasts and `Drawer` more than before. Pinning `sm` preserves the pre-v9 appearance. The buttons and inputs that pass `radius='lg'` (`ContactForm`, `portfolio.tsx`, `ErrorContent`) were never affected either way. **This is a design choice, not a technical constraint** — deleting the line adopts Mantine's newer, rounder default.
 
 Two Google Fonts are loaded as `<link>` tags in `_document.tsx` (not `next/font`): **Montserrat** (400/600/700) for headings, **Roboto** (400/700) for body text.
 

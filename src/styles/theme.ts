@@ -10,6 +10,7 @@ export const theme = createTheme({
       },
     }),
   },
+  defaultRadius: 'sm',
   fontFamily:
     'Roboto, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
   fontSizes: {

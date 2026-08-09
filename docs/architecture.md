@@ -7,7 +7,7 @@
 | Framework       | Next.js `^15.5.23`, **Pages Router** (`src/pages`)                                         |
 | UI runtime      | React `^19` (`react`, `react-dom`)                                                         |
 | Language        | TypeScript `^5.9`, `strict: true`                                                          |
-| UI library      | Mantine v8 (`core`, `form`, `hooks`, `notifications`)                                      |
+| UI library      | Mantine v9 (`core`, `form`, `hooks`, `notifications`)                                      |
 | Styling         | CSS Modules + CSS variables (`postcss-preset-mantine`, `postcss-simple-vars`)              |
 | Icons           | `@tabler/icons-react`                                                                      |
 | Maps            | `@googlemaps/react-wrapper` + `@googlemaps/typescript-guards` (Google Maps JavaScript API) |
