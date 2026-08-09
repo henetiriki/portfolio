@@ -5,23 +5,27 @@ describe('randomItem', () => {
     jest.restoreAllMocks();
   });
 
-  it('resolves the only item in a single-element array', async () => {
-    await expect(randomItem(['only'])).resolves.toBe('only');
+  it('returns the only item in a single-element array', () => {
+    expect(randomItem(['only'])).toBe('only');
   });
 
-  it('picks the item at the Math.random()-derived index', async () => {
+  it('picks the item at the Math.random()-derived index', () => {
     jest.spyOn(Math, 'random').mockReturnValue(0.5);
 
-    await expect(randomItem(['a', 'b', 'c', 'd'])).resolves.toBe('c');
+    expect(randomItem(['a', 'b', 'c', 'd'])).toBe('c');
   });
 
-  it('removes the returned item from the source array', async () => {
+  it('does not mutate the source array', () => {
     const items = ['a', 'b', 'c'];
 
     jest.spyOn(Math, 'random').mockReturnValue(0);
-    const picked = await randomItem(items);
+    const picked = randomItem(items);
 
     expect(picked).toBe('a');
-    expect(items).toEqual(['b', 'c']);
+    expect(items).toEqual(['a', 'b', 'c']);
+  });
+
+  it('returns undefined for an empty array', () => {
+    expect(randomItem([])).toBeUndefined();
   });
 });

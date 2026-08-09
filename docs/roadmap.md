@@ -22,14 +22,6 @@ Last reviewed: 2026-08-09.
 
 - [ ] **Modernise the Google Maps integration.** Replace the archived `@googlemaps/react-wrapper` and deprecated classic `google.maps.Marker` as one coordinated migration; see [D007](decisions.md#d007--modernise-the-google-maps-wrapper-and-markers-together). Advanced Markers require a `mapId`, DOM-based content and new animation/cleanup approaches—there is no direct equivalent for the current symbol icons, `DROP`/`BOUNCE`, `setMap`, or zoom-scaled marker logic. Preserve wrapper loading/error states, the geometry library, map options, information windows, marker/polyline sequencing, zoom-responsive visuals and all focused tests. Audit `MarkerLegend` alongside the marker implementation.
 
-## Security, reliability & accessibility
-
-- [ ] **Harden shared data utilities and API edges.** Clear `fetcher`'s abort timer in `finally`, reject with typed `Error` objects, and define retry/backoff behaviour for network failures as well as non-OK responses. Make `randomItem` synchronous and non-mutating, with an explicit empty-input contract. `/api/img-id` must handle missing or empty `ISTAGRAM_IMAGE_IDS`; `/api/img-id` and `/api/rail-trips` also need method guards and explicit cache policy.
-
-- [ ] **Cancel delayed Maps work during cleanup.** `Marker` and `Polyline` currently discard the timer IDs from staggered `cancelableDelay` calls, allowing callbacks to attach SDK objects or dispatch loaded state after unmount. Capture and clear entrance, bounce and information-window timers; cancel `Map.zoomMap`'s recursive delay/listener chain; and prove cleanup with focused tests. Coordinate code that would be replaced wholesale with the Maps-modernisation item rather than refactoring it twice.
-
-- [ ] **Improve navigation accessibility, mobile-menu scale and scroll performance.** Increase the mobile drawer text substantially and add matching left padding while checking narrow-screen wrapping and touch targets. Render scroll-to-top as a native button or Mantine `ActionIcon`, with a visible focus state and adequate target size. Make the scroll listener passive and update state only when the 10px threshold changes. Honour `prefers-reduced-motion` for smooth scrolling and decorative type/map animations.
-
 ## Performance, SEO & platform polish
 
 - [ ] **Review image preloading.** Portfolio image `sizes` now follows the card grid. Reserve priority/preload for the true LCP candidate rather than every decorative wave, and review whether the 40px logo needs it. Preserve the fixed background's intentional eager/LCP behaviour separately.

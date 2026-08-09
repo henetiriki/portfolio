@@ -84,8 +84,8 @@ Relative parent imports (`../`) are disallowed by ESLint (`no-restricted-imports
 
 ## Data flow
 
-There is no external CMS or database. Content is authored directly as TypeScript/JSX fixtures under `src/fixtures/` (e.g. `experience.tsx` hard-codes the entire work history as JSX). The two exceptions that hit an API at runtime:
+There is no external CMS or database. Content is authored directly as TypeScript/JSX fixtures under `src/fixtures/` (e.g. `experience.tsx` hard-codes the entire work history as JSX). The three exceptions that hit an API at runtime:
 
-- `/api/rail-trips` serves static rail trip data (`@fixtures/travel/railTrips`) as JSON, consumed by `useRailTrips` — kept as an API route (rather than a direct import) presumably so it can be fetched lazily/client-side without shipping the data in the initial page bundle.
-- `/api/img-id` picks a random Instagram media ID from the `ISTAGRAM_IMAGE_IDS` env var, used by `FixedBackground` to rotate the background photo per route change.
+- `/api/rail-trips` serves static rail trip data (`@fixtures/travel/railTrips`) as edge-cacheable JSON, consumed by `useRailTrips` — kept as an API route (rather than a direct import) presumably so it can be fetched lazily/client-side without shipping the data in the initial page bundle.
+- `/api/img-id` picks a random Instagram media ID from the non-empty entries in `ISTAGRAM_IMAGE_IDS`, returns private/no-store responses, and degrades to a generic service error when no IDs are configured. `FixedBackground` uses it to rotate the background photo per route change.
 - `/api/contact` is the only route with a real side effect: it validates and emails a contact-form submission (see [Contact Feature](contact-feature.md)).

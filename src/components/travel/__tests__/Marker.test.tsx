@@ -1,3 +1,4 @@
+import { useReducedMotion } from '@mantine/hooks';
 import { Marker } from '@components/travel/Marker';
 import { PortfolioStateProvider, usePortfolioState } from '@state/context';
 import {
@@ -10,6 +11,11 @@ import {
 } from '@utils/test/googleMapsMock';
 import { act, render } from '@utils/test/render';
 import type { ComponentProps, FC } from 'react';
+
+jest.mock('@mantine/hooks', () => ({
+  ...jest.requireActual('@mantine/hooks'),
+  useReducedMotion: jest.fn(),
+}));
 
 installGoogleMapsMock();
 
@@ -55,6 +61,7 @@ const renderMarker = (props: Partial<ComponentProps<typeof Marker>> = {}) => {
 describe('Marker', () => {
   beforeEach(() => {
     resetGoogleMapsMock();
+    (useReducedMotion as jest.Mock).mockReturnValue(false);
     jest.useFakeTimers();
   });
 
@@ -73,6 +80,24 @@ describe('Marker', () => {
         icon: expect.objectContaining({ ...icon, anchor: { x: 10, y: 20 } }),
       })
     );
+  });
+
+  it('shows immediately without animation when reduced motion is preferred', () => {
+    (useReducedMotion as jest.Mock).mockReturnValue(true);
+    const { infoWindow, map } = renderMarker({ idx: 2, order: 3 });
+    const [marker] = MockMarker.instances;
+
+    expect(marker.setOptions).toHaveBeenCalledWith(
+      expect.objectContaining({ animation: null })
+    );
+    expect(marker.setMap).toHaveBeenCalledWith(map);
+
+    act(() => {
+      triggerMapsEvent(marker, 'click');
+    });
+
+    expect(marker.setAnimation).not.toHaveBeenCalled();
+    expect(infoWindow.open).toHaveBeenCalledWith(map, marker);
   });
 
   it('drops onto the map after an idx * order * 100ms stagger', () => {
@@ -141,6 +166,31 @@ describe('Marker', () => {
     act(() => {
       jest.advanceTimersByTime(2000);
     });
+    expect(marker.setAnimation).toHaveBeenCalledWith(null);
+  });
+
+  it('restarts the bounce reset timer when clicked again before it elapses', () => {
+    renderMarker({ idx: 1, order: 1 });
+
+    act(() => {
+      jest.advanceTimersByTime(100);
+    });
+
+    const [marker] = MockMarker.instances;
+
+    act(() => {
+      triggerMapsEvent(marker, 'click');
+      jest.advanceTimersByTime(1000);
+      triggerMapsEvent(marker, 'click');
+      jest.advanceTimersByTime(1999);
+    });
+
+    expect(marker.setAnimation).not.toHaveBeenCalledWith(null);
+
+    act(() => {
+      jest.advanceTimersByTime(1);
+    });
+
     expect(marker.setAnimation).toHaveBeenCalledWith(null);
   });
 
@@ -297,6 +347,61 @@ describe('Marker', () => {
     const [marker] = MockMarker.instances;
 
     expect(marker.setMap).not.toHaveBeenCalled();
+  });
+
+  it('cancels a pending staggered drop on unmount', () => {
+    const { unmount } = renderMarker({ endMarker: true, idx: 2, order: 1 });
+    const [marker] = MockMarker.instances;
+
+    unmount();
+
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
+
+    expect(marker.setMap).toHaveBeenCalledTimes(1);
+    expect(marker.setMap).toHaveBeenCalledWith(null);
+  });
+
+  it('cancels the pending bounce reset on unmount', () => {
+    const { unmount } = renderMarker({ idx: 1, order: 1 });
+
+    act(() => {
+      jest.advanceTimersByTime(100);
+    });
+
+    const [marker] = MockMarker.instances;
+
+    act(() => {
+      triggerMapsEvent(marker, 'click');
+    });
+
+    unmount();
+
+    act(() => {
+      jest.advanceTimersByTime(2000);
+    });
+
+    expect(marker.setAnimation).toHaveBeenCalledTimes(1);
+    expect(marker.setAnimation).toHaveBeenCalledWith('BOUNCE');
+  });
+
+  it('cancels the pending info-window close on unmount', () => {
+    const { infoWindow, unmount } = renderMarker({ idx: 1, order: 1 });
+
+    act(() => {
+      jest.advanceTimersByTime(100);
+      infoWindow.open();
+    });
+
+    unmount();
+    const closeCallsAfterUnmount = infoWindow.close.mock.calls.length;
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(infoWindow.close).toHaveBeenCalledTimes(closeCallsAfterUnmount);
   });
 
   it('removes the marker from the map on unmount', () => {

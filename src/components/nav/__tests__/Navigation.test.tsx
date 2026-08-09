@@ -32,6 +32,10 @@ const WithPageTopRef: FC<PropsWithChildren> = ({ children }) => {
 describe('Navigation', () => {
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue({ pathname: '/' });
+    Object.defineProperty(window, 'scrollY', {
+      configurable: true,
+      value: 0,
+    });
   });
 
   it('renders the logo and every menu item', () => {
@@ -99,6 +103,52 @@ describe('Navigation', () => {
     expect(
       screen.getByRole('button', { name: 'Scroll to top' })
     ).toBeInTheDocument();
+  });
+
+  it('uses the initial scroll position when it mounts', () => {
+    Object.defineProperty(window, 'scrollY', {
+      configurable: true,
+      value: 50,
+    });
+
+    render(
+      <PortfolioStateProvider>
+        <Navigation />
+      </PortfolioStateProvider>
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'Scroll to top' })
+    ).toBeInTheDocument();
+  });
+
+  it('registers its window scroll listener as passive and removes it on cleanup', () => {
+    const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
+    const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
+    const { unmount } = render(
+      <PortfolioStateProvider>
+        <Navigation />
+      </PortfolioStateProvider>
+    );
+    const scrollListenerCall = addEventListenerSpy.mock.calls.find(
+      ([eventName]) => eventName === 'scroll'
+    );
+
+    expect(scrollListenerCall).toEqual([
+      'scroll',
+      expect.any(Function),
+      { passive: true },
+    ]);
+
+    unmount();
+
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      'scroll',
+      scrollListenerCall?.[1]
+    );
+
+    addEventListenerSpy.mockRestore();
+    removeEventListenerSpy.mockRestore();
   });
 
   it('hides the scroll-to-top button again once scrolled back near the top', () => {
