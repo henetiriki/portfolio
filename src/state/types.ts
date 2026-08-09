@@ -26,7 +26,7 @@ export type Action =
       payload: never;
       type: 'reset-markers-polyline-loaded';
     }
-  | { payload: { imgId: string }; type: 'set-ig-img-id' };
+  | { payload: { imgId: string | undefined }; type: 'set-ig-img-id' };
 
 export type Dispatch = (action: Action) => void;
 

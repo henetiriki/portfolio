@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { usePortfolioState } from '@state/context';
 import { fetcher } from '@utils/common';
 import type { ImageId } from '@utils/common';
 
 export const useIgImgId = (): string | undefined => {
-  const router = useRouter();
+  const { asPath, events, isReady } = useRouter();
   const routeRef = useRef<string | undefined>(undefined);
   const {
     dispatch,
@@ -13,33 +13,31 @@ export const useIgImgId = (): string | undefined => {
       shared: { imgId },
     },
   } = usePortfolioState();
-  const [igImgId, setIgImgId] = useState<string | undefined>();
+  const track = useCallback(
+    (path: string) => {
+      if (path && !routeRef.current) {
+        // initial load - we don't want to reset the imgId
+        routeRef.current = path;
+      }
 
-  const onRouteChangeComplete = (asPath: string) => {
-    track(asPath);
-  };
+      if (path === routeRef.current) {
+        return;
+      }
 
-  const track = (path: string) => {
-    if (path && !routeRef.current) {
-      // initial load - we don't want to reset the igImgId
+      // Clear the shared image on route change so FixedBackground unmounts
+      // it immediately and restores the shimmer while the next id loads.
+      dispatch({ payload: { imgId: undefined }, type: 'set-ig-img-id' });
       routeRef.current = path;
-    }
+    },
+    [dispatch]
+  );
 
-    if (path === routeRef.current) {
-      return;
-    }
-
-    // ensure the image will be cleared on route change
-    // which triggers the shimmer on re-draw
-    setIgImgId(undefined);
-    routeRef.current = path;
-  };
-
-  useLayoutEffect(() => {
-    if (imgId) {
-      setIgImgId(imgId);
-    }
-  }, [imgId]);
+  const onRouteChangeComplete = useCallback(
+    (asPath: string) => {
+      track(asPath);
+    },
+    [track]
+  );
 
   useLayoutEffect(() => {
     const fetchNextImgId = async () => {
@@ -62,27 +60,24 @@ export const useIgImgId = (): string | undefined => {
       }
     };
 
-    if (!igImgId) {
+    if (!imgId) {
       fetchNextImgId();
     }
-  }, [dispatch, igImgId]);
+  }, [dispatch, imgId]);
 
   useEffect(() => {
-    const { asPath, isReady } = router;
-
     if (isReady) {
       track(asPath);
     }
-  }, [router]);
+  }, [asPath, isReady, track]);
 
   useEffect(() => {
-    router.events.on('routeChangeComplete', onRouteChangeComplete);
+    events.on('routeChangeComplete', onRouteChangeComplete);
 
     return () => {
-      router.events.off('routeChangeComplete', onRouteChangeComplete);
+      events.off('routeChangeComplete', onRouteChangeComplete);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [events, onRouteChangeComplete]);
 
-  return igImgId;
+  return imgId;
 };

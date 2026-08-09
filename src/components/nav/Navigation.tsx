@@ -28,10 +28,10 @@ export const Navigation = () => {
   const { pathname } = useRouter();
   const { scrollToTop } = useScrollTo(pageTopRef);
   const [scrollPosition, setScrollPosition] = useState(0);
-  const [scrollToTopVisible, setScrollToTopVisible] = useState(false);
-  const [navBgTransparent, setNavBgTransparent] = useState(true);
   const [drawerOpened, { close: closeDrawer, toggle: toggleDrawer }] =
     useDisclosure(false);
+  const navBgTransparent = !drawerOpened && scrollPosition <= 10;
+  const scrollToTopVisible = scrollPosition > 10;
 
   useEffect(() => {
     const onScrollPositionChange: EventListener = () => {
@@ -44,30 +44,6 @@ export const Navigation = () => {
       window.removeEventListener('scroll', onScrollPositionChange);
     };
   }, []);
-
-  useEffect(() => {
-    if (drawerOpened) {
-      if (navBgTransparent) {
-        setNavBgTransparent(false);
-      }
-
-      return;
-    }
-
-    if (scrollPosition > 10) {
-      if (navBgTransparent) {
-        setNavBgTransparent(false);
-        setScrollToTopVisible(true);
-      }
-
-      return;
-    }
-
-    if (!navBgTransparent) {
-      setNavBgTransparent(true);
-      setScrollToTopVisible(false);
-    }
-  }, [drawerOpened, navBgTransparent, scrollPosition]);
 
   return (
     <>

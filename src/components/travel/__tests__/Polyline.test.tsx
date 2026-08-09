@@ -202,6 +202,18 @@ describe('Polyline', () => {
     expect(polyline.set).not.toHaveBeenCalled();
   });
 
+  it('does not attach or draw the polyline when no map is provided', () => {
+    renderPolyline({ idx: 1, map: undefined, order: 1, paths: ['x'] });
+
+    act(() => {
+      jest.advanceTimersByTime(100);
+    });
+
+    const [polyline] = MockPolyline.instances;
+
+    expect(polyline.setMap).not.toHaveBeenCalled();
+  });
+
   it('removes the polyline from the map on unmount', () => {
     const { unmount } = renderPolyline({ idx: 1, order: 1, paths: ['x'] });
 

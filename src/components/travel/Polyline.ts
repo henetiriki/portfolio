@@ -1,110 +1,111 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { STROKE_WEIGHT_DEFAULT, sharedPolylineOpts } from '@fixtures/travel';
-import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { cancelableDelay } from '@utils/common';
 import { getZoomPolylineWeightExponent } from '@utils/travel';
-import type { FC, PropsWithRef } from 'react';
+import type { FC } from 'react';
 
 type BuildPathProps = {
   legs?: google.maps.LatLngLiteral[];
   paths?: string[];
 };
 
-export const Polyline: FC<
-  PropsWithRef<
-    google.maps.PolylineOptions & {
-      endRailTripPolyline?: boolean;
-      endTripPolyline?: boolean;
-      idx: number;
-      legs?: google.maps.LatLngLiteral[];
-      order?: number;
-      paths?: string[];
-    }
-  >
-> = options => {
+type PolylineProps = Pick<
+  google.maps.PolylineOptions,
+  | 'geodesic'
+  | 'icons'
+  | 'map'
+  | 'strokeColor'
+  | 'strokeOpacity'
+  | 'strokeWeight'
+> & {
+  endRailTripPolyline?: boolean;
+  endTripPolyline?: boolean;
+  idx: number;
+  legs?: google.maps.LatLngLiteral[];
+  order?: number;
+  paths?: string[];
+};
+
+const buildPath = ({ legs, paths }: BuildPathProps): google.maps.LatLng[] => {
+  if (legs) {
+    return legs.map(
+      (point: google.maps.LatLngLiteral) => new google.maps.LatLng(point)
+    );
+  }
+
+  if (paths) {
+    const [path] = paths;
+
+    return google.maps.geometry.encoding.decodePath(path);
+  }
+
+  return [];
+};
+
+export const Polyline: FC<PolylineProps> = ({
+  endRailTripPolyline,
+  endTripPolyline,
+  geodesic = sharedPolylineOpts.geodesic,
+  icons,
+  idx,
+  legs,
+  map,
+  order = 1,
+  paths,
+  strokeColor,
+  strokeOpacity = sharedPolylineOpts.strokeOpacity,
+  strokeWeight = sharedPolylineOpts.strokeWeight,
+}) => {
   const { dispatch } = usePortfolioState();
-  const [polyline, setPolyline] = useState<google.maps.Polyline>();
-  const [polylineReady, setPolylineReady] = useState(false);
-  const {
-    endRailTripPolyline,
-    endTripPolyline,
-    idx,
-    legs,
-    map,
-    order = 1,
-    paths,
-    ...polylineOpts
-  } = options;
+  const [polyline] = useState(() => new google.maps.Polyline());
 
-  const buildPath = useCallback<
-    (props: BuildPathProps) => google.maps.LatLng[]
-  >(({ legs, paths }) => {
-    if (legs) {
-      return legs.map(
-        (point: google.maps.LatLngLiteral) => new google.maps.LatLng(point)
-      );
-    }
-
-    if (paths) {
-      const [path] = paths;
-
-      return google.maps.geometry.encoding.decodePath(path);
-    }
-
-    return [];
-  }, []);
-
-  // Only ever called from the effect below once `map && polyline` are both
-  // already confirmed truthy, so it's safe to assert their presence here
-  // rather than re-guard against a state this closure can't actually be in.
-  const zoomEventListener = useCallback<() => google.maps.MapsEventListener>(
-    () =>
-      google.maps.event.addListener(map!, 'zoom_changed', () => {
-        const strokeWeight =
-          STROKE_WEIGHT_DEFAULT * getZoomPolylineWeightExponent(map!.getZoom());
-
-        if (polyline!.get('strokeWeight') !== strokeWeight) {
-          polyline!.set('strokeWeight', strokeWeight);
-        }
-      }),
-    [map, polyline]
+  useEffect(
+    () => () => {
+      polyline.setMap(null);
+    },
+    [polyline]
   );
 
   useEffect(() => {
-    if (!polyline) {
-      setPolyline(new google.maps.Polyline());
-    }
-
-    return () => {
-      polyline?.setMap(null);
-    };
-  }, [polyline]);
-
-  useDeepCompareEffectForMaps(() => {
-    if (polyline && !polylineReady) {
-      polyline.setOptions({
-        ...sharedPolylineOpts,
-        ...polylineOpts,
-        path: buildPath({ legs, paths }),
-      });
-      setPolylineReady(true);
-    }
-
-    return () => {
-      if (polylineReady) {
-        setPolylineReady(false);
-      }
-    };
-  }, [legs, paths, polyline, polylineOpts, polylineReady]);
+    polyline.setOptions({
+      geodesic,
+      icons,
+      path: buildPath({ legs, paths }),
+      strokeColor,
+      strokeOpacity,
+      strokeWeight,
+    });
+  }, [
+    geodesic,
+    icons,
+    legs,
+    paths,
+    polyline,
+    strokeColor,
+    strokeOpacity,
+    strokeWeight,
+  ]);
 
   useEffect(() => {
-    let eventListener: google.maps.MapsEventListener | undefined = undefined;
+    let eventListener: google.maps.MapsEventListener | undefined;
 
-    if (map && polyline && polylineReady) {
+    if (map) {
       cancelableDelay(idx * order * 100, () => {
         polyline.setMap(map);
-        eventListener = zoomEventListener();
+        eventListener = google.maps.event.addListener(
+          map,
+          'zoom_changed',
+          () => {
+            const nextStrokeWeight =
+              STROKE_WEIGHT_DEFAULT *
+              getZoomPolylineWeightExponent(map.getZoom());
+
+            if (polyline.get('strokeWeight') !== nextStrokeWeight) {
+              polyline.set('strokeWeight', nextStrokeWeight);
+            }
+          }
+        );
 
         if (endRailTripPolyline) {
           dispatch({
@@ -144,9 +145,7 @@ export const Polyline: FC<
     map,
     order,
     polyline,
-    polylineReady,
     dispatch,
-    zoomEventListener,
   ]);
 
   return null;

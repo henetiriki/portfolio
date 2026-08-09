@@ -155,22 +155,10 @@ export default config(
       'react/self-closing-comp': ['error', { component: true, html: true }],
       'react/sort-prop-types': 'error',
       'react-hooks/exhaustive-deps': 'error',
-      // The three rules below are new in eslint-plugin-react-hooks 7, which
-      // arrives with eslint-config-next 16. Each flags a long-standing
-      // pattern rather than anything this upgrade introduced:
-      //   set-state-in-effect - useIgImgId's route-change shimmer reset and
-      //                         useRailTrips' fetch gate
-      //   refs                - useDeepCompareMemoize reading/writing
-      //                         ref.current during render
-      //   immutability        - Map.tsx's self-recursive zoomMap callback
-      // Fixing them means restructuring hooks with real behavioural and
-      // visual-regression risk, which is out of scope for a dependency
-      // upgrade. Demoted to warnings so the signal stays visible rather than
-      // being switched off. Tracked in docs/roadmap.md.
-      'react-hooks/immutability': 'warn',
-      'react-hooks/refs': 'warn',
+      'react-hooks/immutability': 'error',
+      'react-hooks/refs': 'error',
       'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/set-state-in-effect': 'error',
     },
   },
   {

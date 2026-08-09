@@ -4715,7 +4715,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:^7.37.0":
+"eslint-plugin-react@npm:^7.37.0, eslint-plugin-react@npm:^7.37.5":
   version: 7.37.5
   resolution: "eslint-plugin-react@npm:7.37.5"
   dependencies:
@@ -5006,13 +5006,6 @@ __metadata:
   version: 3.1.3
   resolution: "fast-deep-equal@npm:3.1.3"
   checksum: 10/e21a9d8d84f53493b6aa15efc9cfd53dd5b714a1f23f67fb5dc8f574af80df889b3bce25dc081887c6d25457cce704e636395333abad896ccdec03abaf1f3f9d
-  languageName: node
-  linkType: hard
-
-"fast-equals@npm:^6.0.2":
-  version: 6.0.2
-  resolution: "fast-equals@npm:6.0.2"
-  checksum: 10/9c64927d4a2a3497728aa739a3f429ad0573944b7bea5d792a02475ca3e500306e417d8883ff1d35449c125561d7ea7aac2600a6c1ed18d2605c763da2d1a37f
   languageName: node
   linkType: hard
 
@@ -7538,13 +7531,14 @@ __metadata:
     eslint: "npm:^9.39.5"
     eslint-config-next: "npm:^16.3.0"
     eslint-config-prettier: "npm:^10.1.8"
+    eslint-plugin-import: "npm:^2.32.0"
     eslint-plugin-jsx-a11y: "npm:^6.10.2"
+    eslint-plugin-react: "npm:^7.37.5"
     eslint-plugin-security: "npm:^4.0.1"
     eslint-plugin-sort-destructure-keys: "npm:^3.0.0"
     eslint-plugin-sort-keys: "npm:^2.3.5"
     eslint-plugin-typescript-sort-keys: "npm:^3.3.0"
     eslint-plugin-unused-imports: "npm:^4.4.1"
-    fast-equals: "npm:^6.0.2"
     globals: "npm:^17.9.0"
     husky: "npm:^9.1.7"
     jest: "npm:^30.4.2"
@@ -7566,6 +7560,7 @@ __metadata:
     serwist: "npm:^9.5.12"
     sharp: "npm:^0.35.3"
     typescript: "npm:^5.9.3"
+    typescript-eslint: "npm:^8.66.0"
     webpack: "npm:^5"
   languageName: unknown
   linkType: soft
@@ -9338,7 +9333,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript-eslint@npm:^8.46.0":
+"typescript-eslint@npm:^8.46.0, typescript-eslint@npm:^8.66.0":
   version: 8.66.0
   resolution: "typescript-eslint@npm:8.66.0"
   dependencies:

@@ -1,14 +1,9 @@
-import { useIntersection } from '@mantine/hooks';
 import { MapWrapper } from '@components/travel/MapWrapper';
 import { cities } from '@fixtures/travel';
 import { useRailTrips } from '@hooks';
-import { render, screen } from '@utils/test/render';
+import { act, render, screen } from '@utils/test/render';
 import type { ComponentProps, PropsWithChildren } from 'react';
 
-jest.mock('@mantine/hooks', () => ({
-  ...jest.requireActual('@mantine/hooks'),
-  useIntersection: jest.fn(),
-}));
 jest.mock('../../../hooks', () => ({
   ...jest.requireActual('../../../hooks'),
   useRailTrips: jest.fn(),
@@ -36,12 +31,28 @@ jest.mock('../index', () => ({
   ),
 }));
 
+let intersectionCallback: IntersectionObserverCallback | undefined;
+
+const triggerIntersection = (isIntersecting: boolean) => {
+  act(() => {
+    intersectionCallback?.(
+      [{ isIntersecting } as IntersectionObserverEntry],
+      {} as IntersectionObserver
+    );
+  });
+};
+
 describe('MapWrapper', () => {
   beforeEach(() => {
-    (useIntersection as jest.Mock).mockReturnValue({
-      entry: undefined,
-      ref: jest.fn(),
-    });
+    intersectionCallback = undefined;
+    global.IntersectionObserver = jest.fn(callback => {
+      intersectionCallback = callback;
+
+      return {
+        disconnect: jest.fn(),
+        observe: jest.fn(),
+      };
+    }) as unknown as typeof IntersectionObserver;
     (useRailTrips as jest.Mock).mockReturnValue([]);
   });
 
@@ -58,12 +69,19 @@ describe('MapWrapper', () => {
   });
 
   it('drops additional markers and polylines once the sentinel intersects', () => {
-    (useIntersection as jest.Mock).mockReturnValue({
-      entry: { isIntersecting: true },
-      ref: jest.fn(),
-    });
-
     render(<MapWrapper />);
+    triggerIntersection(true);
+
+    expect(screen.getAllByTestId('marker').length).toBeGreaterThan(
+      cities.length
+    );
+    expect(screen.getAllByTestId('polyline').length).toBeGreaterThan(0);
+  });
+
+  it('keeps the deferred map layers mounted after the first intersection', () => {
+    render(<MapWrapper />);
+    triggerIntersection(true);
+    triggerIntersection(false);
 
     expect(screen.getAllByTestId('marker').length).toBeGreaterThan(
       cities.length
@@ -72,12 +90,8 @@ describe('MapWrapper', () => {
   });
 
   it('flags exactly one marker as the end marker once dropped', () => {
-    (useIntersection as jest.Mock).mockReturnValue({
-      entry: { isIntersecting: true },
-      ref: jest.fn(),
-    });
-
     render(<MapWrapper />);
+    triggerIntersection(true);
 
     const endMarkers = screen
       .getAllByTestId('marker')
@@ -87,12 +101,8 @@ describe('MapWrapper', () => {
   });
 
   it('never passes idx=0 to a marker (regression test for the staggering fix)', () => {
-    (useIntersection as jest.Mock).mockReturnValue({
-      entry: { isIntersecting: true },
-      ref: jest.fn(),
-    });
-
     render(<MapWrapper />);
+    triggerIntersection(true);
 
     const idxValues = screen
       .getAllByTestId('marker')
@@ -102,12 +112,8 @@ describe('MapWrapper', () => {
   });
 
   it('flags exactly one polyline as the end trip polyline once dropped', () => {
-    (useIntersection as jest.Mock).mockReturnValue({
-      entry: { isIntersecting: true },
-      ref: jest.fn(),
-    });
-
     render(<MapWrapper />);
+    triggerIntersection(true);
 
     const endTripPolylines = screen
       .getAllByTestId('polyline')
@@ -119,15 +125,12 @@ describe('MapWrapper', () => {
   });
 
   it('flags exactly one polyline as the end rail trip polyline when rail trips exist', () => {
-    (useIntersection as jest.Mock).mockReturnValue({
-      entry: { isIntersecting: true },
-      ref: jest.fn(),
-    });
     (useRailTrips as jest.Mock).mockReturnValue([
       { polylineOpts: {}, tripPaths: [['a'], ['b']] },
     ]);
 
     render(<MapWrapper />);
+    triggerIntersection(true);
 
     const endRailPolylines = screen
       .getAllByTestId('polyline')
