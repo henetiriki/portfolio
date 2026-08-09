@@ -32,6 +32,41 @@ The practical consequence: **dev and production are built by different bundlers*
 
 `next dev` writes to `.next/dev` while `next build` writes to `.next` — they no longer collide, so a production build can run with a dev server live.
 
+## Known dev-only console errors (Next.js 16)
+
+Two errors appear in the browser console under `yarn dev`. Both are upstream Next.js 16 bugs, neither is caused by this app, and neither can reach production. **Nothing has been changed to silence them** — they are recorded here so they aren't re-investigated, and so a regression hiding behind them would still be noticed.
+
+### `Refused to execute script from '.../_clientMiddlewareManifest.js'`
+
+> Refused to execute script from `http://localhost:3000/_next/static/development/_clientMiddlewareManifest.js` because its MIME type (`application/json`) is not executable, and strict MIME type checking is enabled.
+
+Next's dev bundler (`next/dist/server/lib/router-utils/setup-dev-bundler.js`) handles **two** manifest paths in a single branch and unconditionally sets a JSON content type on both:
+
+```js
+if (pathname.includes(devMiddlewareManifestPath) || pathname.includes(devTurbopackMiddlewareManifestPath)) {
+  res.setHeader('Content-Type', JSON_CONTENT_TYPE_HEADER);
+  res.end(JSON.stringify(serverFields.middleware?.matchers || []));
+}
+```
+
+One of those is `_devMiddlewareManifest.json` (correct); the other is `TURBOPACK_CLIENT_MIDDLEWARE_MANIFEST` = `_clientMiddlewareManifest.js`, which the dev renderer emits as a real `<script src="..." defer>` tag. So a `.js` script is served as `application/json`, and this app's `X-Content-Type-Options: nosniff` header (correctly) refuses to execute it.
+
+It is inert for three independent reasons:
+
+1. The served body is literally `[]` — no `__MIDDLEWARE_MATCHERS` assignment and no `__MIDDLEWARE_MATCHERS_CB` call. Executing it would be a no-op array literal.
+2. Nothing awaits it in dev. In `next/dist/client/page-loader.js`, `getMiddleware()`'s `<script>`-based path is gated on `NODE_ENV === 'production'`; the dev path `fetch()`es the `.json` sibling instead, and `fetch` is not subject to script MIME blocking.
+3. This project has no `middleware`/`proxy` file, so the matcher list is empty either way.
+
+It cannot reach production: production builds use webpack rather than Turbopack, and the built `.next/static/<buildId>/` contains only `_buildManifest.js` and `_ssgManifest.js` — no such file and no script tag for it.
+
+**The tempting fix is the wrong one.** The only lever is the `nosniff` header, which applies to `source: '/:path*'` in `next.config.js`. Next _merges_ header rules rather than letting a later rule unset an earlier one, so there is no way to carve out an exception — you would have to rewrite the source as a negative lookahead (`'/((?!_next/static/development).*)'`). That weakens a real security header, in production as well as dev, to hide dev-only noise from someone else's bug. Don't.
+
+**Re-check this when** either of two things changes: a `proxy.ts`/`middleware.ts` file is added (the matcher list stops being empty), or the production build moves off `--webpack` to Turbopack once `@serwist/next@10` ships stable (that script becomes load-bearing in production, where `getMiddleware()` genuinely awaits `__MIDDLEWARE_MATCHERS_CB` behind a timeout). The MIME bug itself is specific to the dev bundler's route handler — production serves static assets with the correct type — but that is the point at which the assumption is worth re-testing rather than assumed.
+
+### `TypeError: Cannot read properties of undefined (reading 'components')`
+
+Thrown at `handleStaticIndicator` inside Next's HMR websocket handler while processing an `isrManifest` message, and usually preceded by `[HMR] Invalid message: {"type":"isrManifest",...}`. Entirely within `next/dist/client`. HMR does not exist in production.
+
 ## Linting & formatting
 
 - **ESLint** (`.eslintrc.cjs`) extends `next/core-web-vitals`, `plugin:react/recommended`, `plugin:jsx-a11y/recommended`, `plugin:@typescript-eslint/recommended`, `plugin:import/recommended` + `import/typescript`, `plugin:security/recommended`, and `prettier` (to disable formatting-related rules). Notable custom rules:
