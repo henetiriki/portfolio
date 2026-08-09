@@ -22,6 +22,10 @@ updates:
       - dependency-name: '@types/node'
         update-types:
           - version-update:semver-major
+      # ESLint majors require a coordinated config and plugin compatibility pass.
+      - dependency-name: eslint
+        update-types:
+          - version-update:semver-major
     groups:
       production-dependencies:
         dependency-type: production
