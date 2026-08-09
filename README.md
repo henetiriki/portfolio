@@ -66,11 +66,13 @@ Tests live in `__tests__/` folders beside the code they cover — except page an
 
 Full documentation lives in **[docs/](docs/README.md)** — architecture, routing, state, components, the travel and contact features, styling, PWA/SEO, environment variables, and the development workflow.
 
-Two starting points:
+Useful starting points:
 
 - **[Development Workflow](docs/development.md)** — scripts, linting, testing conventions, git hooks
 - **[Release Checklist](docs/release-checklist.md)** — how a change gets to production
+- **[Roadmap](docs/roadmap.md)** — open work and known follow-ups
+- **[Project History](docs/project-history.md)** — concise record of completed milestones
 
 ## Deploying
 
-There are no versions, tags, or release artefacts. A change ships by squash-merging a PR into `main`, which Vercel deploys automatically. [docs/roadmap.md](docs/roadmap.md) acts as the changelog. Follow the [release checklist](docs/release-checklist.md) — CI runs a production-like PWA build, while the plain non-PWA `yarn build` remains a manual pre-merge check.
+There are no versions, tags, or release artefacts. A change ships by squash-merging a PR into `main`, which Vercel deploys automatically. [Project History](docs/project-history.md) is the concise release record, while the [Roadmap](docs/roadmap.md) contains open work only. Follow the [release checklist](docs/release-checklist.md) — CI runs a production-like PWA build, while the plain non-PWA `yarn build` remains a manual pre-merge check.

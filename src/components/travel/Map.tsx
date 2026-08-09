@@ -9,17 +9,13 @@ import {
   useState,
 } from 'react';
 import { MAP_MAX_MOBILE, aucklandPoint, mapOptions } from '@fixtures/travel';
-import { useDeepCompareEffectForMaps } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import { delay } from '@utils/common';
 import type { FC, PropsWithChildren } from 'react';
 
 const mapContainerStyle = { height: '65vh', width: '100%' };
 
-export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
-  children,
-  ...options
-}) => {
+export const Map: FC<PropsWithChildren> = ({ children }) => {
   const {
     state: {
       travel: { markersLoaded, railPolylinesLoaded, tripPolylinesLoaded },
@@ -31,17 +27,13 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
   const [map, setMap] = useState<google.maps.Map>();
   const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>();
 
-  // Only ever called once `map` is already confirmed truthy — either from
-  // the effect below (gated on `map && ...`) or recursively from its own
-  // listener closing over that same guarantee — so it's safe to assert its
-  // presence here rather than re-guard against a state this can't be in.
   const zoomMap = useCallback<(nextZoom: number, maxZoom: number) => void>(
-    async (nextZoom: number, maxZoom: number) => {
+    async function stepZoom(nextZoom: number, maxZoom: number) {
       if (nextZoom < maxZoom) {
         const tilesLoadedEventListener: google.maps.MapsEventListener =
           google.maps.event.addListener(map!, 'zoom_changed', () => {
             google.maps.event.removeListener(tilesLoadedEventListener);
-            zoomMap(map!.getZoom()! + 1, maxZoom);
+            stepZoom(map!.getZoom()! + 1, maxZoom);
           });
 
         await delay(80);
@@ -63,14 +55,13 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
     }
   }, [mapRef, map, infoWindow]);
 
-  useDeepCompareEffectForMaps(() => {
+  useEffect(() => {
     if (map && width) {
       const mapMaxMobile = width < MAP_MAX_MOBILE;
       const minZoom = mapMaxMobile ? 1 : 2;
 
       map.setOptions({
         ...mapOptions(),
-        ...options,
         minZoom,
         // Only force the starting zoom once, on initial setup — otherwise a
         // window resize after the map has loaded would snap it back to the
@@ -80,7 +71,7 @@ export const Map: FC<PropsWithChildren<google.maps.MapOptions>> = ({
 
       initialZoomSetRef.current = true;
     }
-  }, [map, options, width]);
+  }, [map, width]);
 
   useEffect(() => {
     if (map && markersLoaded && railPolylinesLoaded && tripPolylinesLoaded) {

@@ -15,7 +15,9 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - [Environment Variables](environment-variables.md) — every `process.env` value the app reads
 - [Development Workflow](development.md) — scripts, linting, formatting, git hooks
 - [Release Checklist](release-checklist.md) — how a change gets from a feature branch to production
-- [Roadmap](roadmap.md) — planned work: test coverage, framework upgrades, and known bugs
+- [Roadmap](roadmap.md) — open work, known issues, and planned upgrades
+- [Engineering Decisions](decisions.md) — durable technical choices and their rationale
+- [Project History](project-history.md) — concise record of completed milestones
 
 ## At a glance
 

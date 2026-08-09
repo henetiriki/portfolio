@@ -287,6 +287,18 @@ describe('Marker', () => {
     expect(marker.setMap).toHaveBeenCalledWith(expect.any(MockMap));
   });
 
+  it('does not attach or drop the marker when no map is provided', () => {
+    renderMarker({ idx: 1, map: undefined, order: 1 });
+
+    act(() => {
+      jest.advanceTimersByTime(100);
+    });
+
+    const [marker] = MockMarker.instances;
+
+    expect(marker.setMap).not.toHaveBeenCalled();
+  });
+
   it('removes the marker from the map on unmount', () => {
     const { unmount } = renderMarker({ idx: 1, order: 1 });
 

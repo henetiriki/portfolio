@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { sharedPolylineOpts } from '@fixtures/travel';
 import { usePortfolioState } from '@state/context';
 import { colorOverrides } from '@styles';
@@ -18,7 +18,7 @@ export const useRailTrips = (): TripPaths[] => {
       travel: { railTripPolylines = [] },
     },
   } = usePortfolioState();
-  const [fetching, setFetching] = useState(false);
+  const requestStartedRef = useRef(false);
 
   const fetchRailtrips = async (): Promise<TripPaths[]> => {
     const { trips, upcomingTrips } =
@@ -67,17 +67,16 @@ export const useRailTrips = (): TripPaths[] => {
   };
 
   useEffect(() => {
-    if (!railTripPolylines.length && !fetching) {
-      setFetching(true);
+    if (!railTripPolylines.length && !requestStartedRef.current) {
+      requestStartedRef.current = true;
       fetchRailtrips().then((railTripPolylines: TripPaths[]) => {
-        setFetching(false);
         dispatch({
           payload: { railTripPolylines },
           type: 'set-rail-trip-polylines',
         });
       });
     }
-  }, [railTripPolylines, fetching, dispatch]);
+  }, [railTripPolylines, dispatch]);
 
   return railTripPolylines;
 };

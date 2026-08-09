@@ -1,15 +1,16 @@
+import { defineConfig } from 'eslint/config';
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
 import prettier from 'eslint-config-prettier';
 import importPlugin from 'eslint-plugin-import';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
+import perfectionist from 'eslint-plugin-perfectionist';
 import react from 'eslint-plugin-react';
 import security from 'eslint-plugin-security';
 import sortDestructureKeys from 'eslint-plugin-sort-destructure-keys';
 import sortKeys from 'eslint-plugin-sort-keys';
-import typescriptSortKeys from 'eslint-plugin-typescript-sort-keys';
 import unusedImports from 'eslint-plugin-unused-imports';
 import globals from 'globals';
-import { config, configs } from 'typescript-eslint';
+import { configs } from 'typescript-eslint';
 
 // Mirrors the glob `eslint-config-next` registers `react`, `react-hooks`,
 // `import` and `jsx-a11y` against. Note it excludes `.cjs`, which is why
@@ -30,7 +31,7 @@ const preset = (sharedConfig, files) => {
   return { ...rest, files };
 };
 
-export default config(
+export default defineConfig(
   {
     ignores: ['.yarn/', '.next/', 'coverage/', 'next-env.d.ts', 'public/sw.js'],
   },
@@ -50,9 +51,9 @@ export default config(
       },
     },
     plugins: {
+      perfectionist,
       'sort-destructure-keys': sortDestructureKeys,
       'sort-keys': sortKeys,
-      'typescript-sort-keys': typescriptSortKeys,
       'unused-imports': unusedImports,
     },
     rules: {
@@ -155,22 +156,10 @@ export default config(
       'react/self-closing-comp': ['error', { component: true, html: true }],
       'react/sort-prop-types': 'error',
       'react-hooks/exhaustive-deps': 'error',
-      // The three rules below are new in eslint-plugin-react-hooks 7, which
-      // arrives with eslint-config-next 16. Each flags a long-standing
-      // pattern rather than anything this upgrade introduced:
-      //   set-state-in-effect - useIgImgId's route-change shimmer reset and
-      //                         useRailTrips' fetch gate
-      //   refs                - useDeepCompareMemoize reading/writing
-      //                         ref.current during render
-      //   immutability        - Map.tsx's self-recursive zoomMap callback
-      // Fixing them means restructuring hooks with real behavioural and
-      // visual-regression risk, which is out of scope for a dependency
-      // upgrade. Demoted to warnings so the signal stays visible rather than
-      // being switched off. Tracked in docs/roadmap.md.
-      'react-hooks/immutability': 'warn',
-      'react-hooks/refs': 'warn',
+      'react-hooks/immutability': 'error',
+      'react-hooks/refs': 'error',
       'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/set-state-in-effect': 'error',
     },
   },
   {
@@ -179,8 +168,14 @@ export default config(
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/member-ordering': 'warn',
       '@typescript-eslint/no-unused-vars': 'error',
-      'typescript-sort-keys/interface': 'error',
-      'typescript-sort-keys/string-enum': 'error',
+      'perfectionist/sort-enums': [
+        'error',
+        { ignoreCase: false, order: 'asc', type: 'alphabetical' },
+      ],
+      'perfectionist/sort-interfaces': [
+        'error',
+        { ignoreCase: false, order: 'asc', type: 'alphabetical' },
+      ],
     },
   },
   {

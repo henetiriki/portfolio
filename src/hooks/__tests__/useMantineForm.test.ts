@@ -81,6 +81,25 @@ describe('useMantineForm', () => {
     expect(result.current.apiErrors).toEqual([]);
   });
 
+  it.each([null, 'invalid error payload'])(
+    'falls back to a generic error for the malformed API payload %p',
+    async data => {
+      global.fetch = jest.fn().mockResolvedValue({
+        json: jest.fn().mockResolvedValue(data),
+        ok: false,
+      });
+
+      const { result } = renderHook(() => useMantineForm());
+
+      await act(async () => {
+        await result.current.submitForm(result.current.form.values);
+      });
+
+      expect(result.current.apiErrors).toHaveLength(1);
+      expect(result.current.isSubmitting).toBe(false);
+    }
+  );
+
   it('falls back to a generic error when the request itself fails', async () => {
     global.fetch = jest.fn().mockRejectedValue(new Error('network down'));
 

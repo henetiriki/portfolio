@@ -1,7 +1,6 @@
 import { Wrapper } from '@googlemaps/react-wrapper';
 import { Box } from '@mantine/core';
-import { useIntersection } from '@mantine/hooks';
-import { useEffect, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Map, Marker, Polyline } from '@components/travel';
 import { cities, markerLocations, tripPolylines } from '@fixtures/travel';
 import { useMap, useRailTrips } from '@hooks';
@@ -22,17 +21,35 @@ const googleApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
 
 export const MapWrapper: FC = () => {
   const { render } = useMap();
-  const { entry, ref } = useIntersection({
-    threshold: 0.8,
-  });
   const railTripPolylines = useRailTrips();
   const [dropMarkers, setDropMarkers] = useState(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
-  useEffect(() => {
-    if (!dropMarkers && entry?.isIntersecting) {
-      setDropMarkers(true);
-    }
-  }, [dropMarkers, entry]);
+  const intersectionRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      observerRef.current?.disconnect();
+      observerRef.current = null;
+
+      if (!node || dropMarkers) {
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry?.isIntersecting) {
+            setDropMarkers(true);
+            observer.disconnect();
+            observerRef.current = null;
+          }
+        },
+        { threshold: 0.8 }
+      );
+
+      observer.observe(node);
+      observerRef.current = observer;
+    },
+    [dropMarkers]
+  );
 
   return (
     <>
@@ -103,7 +120,7 @@ export const MapWrapper: FC = () => {
             )}
         </Map>
       </Wrapper>
-      <Box ref={ref} />
+      <Box ref={intersectionRef} />
     </>
   );
 };
