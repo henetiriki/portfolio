@@ -1,4 +1,4 @@
-import { useViewportSize } from '@mantine/hooks';
+import { useReducedMotion, useViewportSize } from '@mantine/hooks';
 import {
   Children,
   cloneElement,
@@ -10,10 +10,11 @@ import {
 } from 'react';
 import { MAP_MAX_MOBILE, aucklandPoint, mapOptions } from '@fixtures/travel';
 import { usePortfolioState } from '@state/context';
-import { delay } from '@utils/common';
+import { cancelableDelay } from '@utils/common';
 import type { FC, PropsWithChildren } from 'react';
 
 const mapContainerStyle = { height: '65vh', width: '100%' };
+const mapRevealZoom = 4;
 
 export const Map: FC<PropsWithChildren> = ({ children }) => {
   const {
@@ -23,22 +24,42 @@ export const Map: FC<PropsWithChildren> = ({ children }) => {
   } = usePortfolioState();
   const mapRef = useRef<HTMLDivElement>(null);
   const initialZoomSetRef = useRef(false);
+  const zoomEventListenerRef = useRef<google.maps.MapsEventListener | null>(
+    null
+  );
+  const zoomTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reduceMotion = useReducedMotion();
   const { width } = useViewportSize();
   const [map, setMap] = useState<google.maps.Map>();
   const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>();
 
+  const cancelZoom = useCallback(() => {
+    if (zoomTimerRef.current) {
+      clearTimeout(zoomTimerRef.current);
+      zoomTimerRef.current = null;
+    }
+
+    zoomEventListenerRef.current?.remove();
+    zoomEventListenerRef.current = null;
+  }, []);
+
   const zoomMap = useCallback<(nextZoom: number, maxZoom: number) => void>(
-    async function stepZoom(nextZoom: number, maxZoom: number) {
+    function stepZoom(nextZoom: number, maxZoom: number) {
       if (nextZoom < maxZoom) {
-        const tilesLoadedEventListener: google.maps.MapsEventListener =
-          google.maps.event.addListener(map!, 'zoom_changed', () => {
-            google.maps.event.removeListener(tilesLoadedEventListener);
+        zoomEventListenerRef.current = google.maps.event.addListener(
+          map!,
+          'zoom_changed',
+          () => {
+            zoomEventListenerRef.current?.remove();
+            zoomEventListenerRef.current = null;
             stepZoom(map!.getZoom()! + 1, maxZoom);
-          });
+          }
+        );
 
-        await delay(80);
-
-        map!.setZoom(nextZoom);
+        zoomTimerRef.current = cancelableDelay(80, () => {
+          zoomTimerRef.current = null;
+          map!.setZoom(nextZoom);
+        });
 
         return;
       }
@@ -75,10 +96,26 @@ export const Map: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     if (map && markersLoaded && railPolylinesLoaded && tripPolylinesLoaded) {
+      cancelZoom();
       map.panTo(aucklandPoint);
-      zoomMap(map.getZoom()! + 1, 5);
+
+      if (reduceMotion) {
+        map.setOptions({ scrollwheel: true, zoom: mapRevealZoom });
+      } else {
+        zoomMap(map.getZoom()! + 1, mapRevealZoom + 1);
+      }
     }
-  }, [map, markersLoaded, railPolylinesLoaded, tripPolylinesLoaded, zoomMap]);
+
+    return cancelZoom;
+  }, [
+    cancelZoom,
+    map,
+    markersLoaded,
+    railPolylinesLoaded,
+    reduceMotion,
+    tripPolylinesLoaded,
+    zoomMap,
+  ]);
 
   return (
     <>

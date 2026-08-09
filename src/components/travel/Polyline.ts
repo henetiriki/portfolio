@@ -1,3 +1,4 @@
+import { useReducedMotion } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
 import { STROKE_WEIGHT_DEFAULT, sharedPolylineOpts } from '@fixtures/travel';
 import { usePortfolioState } from '@state/context';
@@ -58,6 +59,7 @@ export const Polyline: FC<PolylineProps> = ({
   strokeWeight = sharedPolylineOpts.strokeWeight,
 }) => {
   const { dispatch } = usePortfolioState();
+  const reduceMotion = useReducedMotion();
   const [polyline] = useState(() => new google.maps.Polyline());
 
   useEffect(
@@ -89,40 +91,50 @@ export const Polyline: FC<PolylineProps> = ({
 
   useEffect(() => {
     let eventListener: google.maps.MapsEventListener | undefined;
+    const showPolyline = () => {
+      polyline.setMap(map!);
+      eventListener = google.maps.event.addListener(
+        map!,
+        'zoom_changed',
+        () => {
+          const nextStrokeWeight =
+            STROKE_WEIGHT_DEFAULT *
+            getZoomPolylineWeightExponent(map!.getZoom());
+
+          if (polyline.get('strokeWeight') !== nextStrokeWeight) {
+            polyline.set('strokeWeight', nextStrokeWeight);
+          }
+        }
+      );
+
+      if (endRailTripPolyline) {
+        dispatch({
+          payload: { railPolylinesLoaded: true },
+          type: 'set-rail-polylines-loaded',
+        });
+      }
+      if (endTripPolyline) {
+        dispatch({
+          payload: { tripPolylinesLoaded: true },
+          type: 'set-trip-polylines-loaded',
+        });
+      }
+    };
+    let entranceTimer: ReturnType<typeof setTimeout> | undefined;
 
     if (map) {
-      cancelableDelay(idx * order * 100, () => {
-        polyline.setMap(map);
-        eventListener = google.maps.event.addListener(
-          map,
-          'zoom_changed',
-          () => {
-            const nextStrokeWeight =
-              STROKE_WEIGHT_DEFAULT *
-              getZoomPolylineWeightExponent(map.getZoom());
-
-            if (polyline.get('strokeWeight') !== nextStrokeWeight) {
-              polyline.set('strokeWeight', nextStrokeWeight);
-            }
-          }
-        );
-
-        if (endRailTripPolyline) {
-          dispatch({
-            payload: { railPolylinesLoaded: true },
-            type: 'set-rail-polylines-loaded',
-          });
-        }
-        if (endTripPolyline) {
-          dispatch({
-            payload: { tripPolylinesLoaded: true },
-            type: 'set-trip-polylines-loaded',
-          });
-        }
-      });
+      if (reduceMotion) {
+        showPolyline();
+      } else {
+        entranceTimer = cancelableDelay(idx * order * 100, showPolyline);
+      }
     }
 
     return () => {
+      if (entranceTimer) {
+        clearTimeout(entranceTimer);
+      }
+
       eventListener?.remove();
 
       if (endRailTripPolyline) {
@@ -145,6 +157,7 @@ export const Polyline: FC<PolylineProps> = ({
     map,
     order,
     polyline,
+    reduceMotion,
     dispatch,
   ]);
 

@@ -35,6 +35,17 @@
   bottom: rem(8px);
 }
 
+.link.sm {
+  /*noinspection CssInvalidFunction*/
+  font-size: rem(24px);
+  /*noinspection CssInvalidFunction*/
+  height: rem(64px);
+  /*noinspection CssInvalidFunction*/
+  padding-left: rem(32px);
+  /*noinspection CssInvalidFunction*/
+  padding-right: rem(32px);
+}
+
 .link:hover {
   color: white;
   text-decoration: none;
@@ -51,4 +62,12 @@
 
 .active::before {
   width: 30px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link,
+  .link:hover,
+  .link::before {
+    transition: none;
+  }
 }

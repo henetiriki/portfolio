@@ -1,3 +1,4 @@
+import { useReducedMotion } from '@mantine/hooks';
 import { useEffect, useState } from 'react';
 import { usePortfolioState } from '@state/context';
 import { colorOverrides } from '@styles';
@@ -31,6 +32,7 @@ export const Marker: FC<MarkerProps> = ({
   title,
 }) => {
   const { dispatch } = usePortfolioState();
+  const reduceMotion = useReducedMotion();
   const [marker] = useState(() => new google.maps.Marker());
   const markerScale = icon.scale!;
 
@@ -43,7 +45,7 @@ export const Marker: FC<MarkerProps> = ({
 
   useEffect(() => {
     marker.setOptions({
-      animation: google.maps.Animation.DROP,
+      animation: reduceMotion ? null : google.maps.Animation.DROP,
       icon: {
         ...icon,
         anchor: new google.maps.Point(10, 20),
@@ -51,14 +53,22 @@ export const Marker: FC<MarkerProps> = ({
       position,
       title,
     });
-  }, [icon, marker, position, title]);
+  }, [icon, marker, position, reduceMotion, title]);
 
   useEffect(() => {
+    let bounceTimer: ReturnType<typeof setTimeout> | undefined;
     const eventListener = google.maps.event.addListener(marker, 'click', () => {
-      marker.setAnimation(google.maps.Animation.BOUNCE);
-      cancelableDelay(2000, () => {
-        marker.setAnimation(null);
-      });
+      if (!reduceMotion) {
+        marker.setAnimation(google.maps.Animation.BOUNCE);
+
+        if (bounceTimer) {
+          clearTimeout(bounceTimer);
+        }
+
+        bounceTimer = cancelableDelay(2000, () => {
+          marker.setAnimation(null);
+        });
+      }
       infoWindow?.setHeaderDisabled(true);
       infoWindow?.setContent(
         `<div>
@@ -70,10 +80,14 @@ export const Marker: FC<MarkerProps> = ({
     });
 
     return () => {
+      if (bounceTimer) {
+        clearTimeout(bounceTimer);
+      }
+
       eventListener.remove();
       infoWindow?.close();
     };
-  }, [description, infoWindow, map, marker, title]);
+  }, [description, infoWindow, map, marker, reduceMotion, title]);
 
   useEffect(() => {
     let infoWindowTimer: ReturnType<typeof setTimeout> | undefined;
@@ -91,6 +105,10 @@ export const Marker: FC<MarkerProps> = ({
       : undefined;
 
     return () => {
+      if (infoWindowTimer) {
+        clearTimeout(infoWindowTimer);
+      }
+
       eventListener?.remove();
     };
   }, [infoWindow]);
@@ -117,20 +135,31 @@ export const Marker: FC<MarkerProps> = ({
   }, [map, marker, markerScale]);
 
   useEffect(() => {
-    if (map) {
-      cancelableDelay(idx * order * 100, () => {
-        marker.setMap(map);
+    const showMarker = () => {
+      marker.setMap(map!);
 
-        if (endMarker) {
-          dispatch({
-            payload: { markersLoaded: true },
-            type: 'set-markers-loaded',
-          });
-        }
-      });
+      if (endMarker) {
+        dispatch({
+          payload: { markersLoaded: true },
+          type: 'set-markers-loaded',
+        });
+      }
+    };
+    let entranceTimer: ReturnType<typeof setTimeout> | undefined;
+
+    if (map) {
+      if (reduceMotion) {
+        showMarker();
+      } else {
+        entranceTimer = cancelableDelay(idx * order * 100, showMarker);
+      }
     }
 
     return () => {
+      if (entranceTimer) {
+        clearTimeout(entranceTimer);
+      }
+
       if (endMarker) {
         dispatch({
           payload: { markersLoaded: false },
@@ -138,7 +167,7 @@ export const Marker: FC<MarkerProps> = ({
         });
       }
     };
-  }, [endMarker, idx, map, marker, order, dispatch]);
+  }, [endMarker, idx, map, marker, order, reduceMotion, dispatch]);
 
   return null;
 };

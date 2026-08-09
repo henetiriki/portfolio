@@ -1,5 +1,7 @@
-export const randomItem = async <T>(items: T[]): Promise<T> => {
-  const [item] = items.splice(Math.floor(Math.random() * items.length), 1);
+export const randomItem = <T>(items: readonly T[]): T | undefined => {
+  if (!items.length) {
+    return undefined;
+  }
 
-  return item;
+  return items[Math.floor(Math.random() * items.length)];
 };

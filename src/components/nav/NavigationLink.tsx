@@ -16,7 +16,7 @@ export const NavigationLink: FC<
     component={NextLink}
     display='flex'
     href={href}
-    my={variant === 'md' ? undefined : '1rem'}
+    my={variant === 'md' ? undefined : '0.5rem'}
     onClick={onClickCb}>
     {children}
   </Anchor>

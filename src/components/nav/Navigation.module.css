@@ -52,12 +52,15 @@
 }
 
 .scrollToTop {
-  border-radius: 40px;
   cursor: pointer;
-  outline: none;
   z-index: 2;
 }
 
 .scrollToTop:hover {
   background-color: var(--mantine-color-shamrock-4);
+}
+
+.scrollToTop:focus-visible {
+  outline: 2px solid var(--mantine-color-shamrock-4);
+  outline-offset: 3px;
 }

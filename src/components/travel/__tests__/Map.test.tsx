@@ -1,4 +1,4 @@
-import { useViewportSize } from '@mantine/hooks';
+import { useReducedMotion, useViewportSize } from '@mantine/hooks';
 import { useEffect } from 'react';
 import { Map } from '@components/travel/Map';
 import { PortfolioStateProvider, usePortfolioState } from '@state/context';
@@ -13,6 +13,7 @@ import type { FC } from 'react';
 
 jest.mock('@mantine/hooks', () => ({
   ...jest.requireActual('@mantine/hooks'),
+  useReducedMotion: jest.fn(),
   useViewportSize: jest.fn(),
 }));
 
@@ -51,6 +52,7 @@ const ChildProbe: FC<{
 describe('Map', () => {
   beforeEach(() => {
     resetGoogleMapsMock();
+    (useReducedMotion as jest.Mock).mockReturnValue(false);
     (useViewportSize as jest.Mock).mockReturnValue({
       height: 800,
       width: 1024,
@@ -165,7 +167,7 @@ describe('Map', () => {
     const [map] = MockMap.instances;
 
     // desktop viewport sets the initial zoom to 2 on mount, so the
-    // post-load reveal climbs 2 -> 3 -> 4 before reaching the target of 5,
+    // post-load reveal climbs 2 -> 3 -> 4 before reaching its target,
     // pausing 80ms between each step (see zoomMap in Map.tsx)
     await act(async () => {
       await jest.advanceTimersByTimeAsync(80);
@@ -180,6 +182,72 @@ describe('Map', () => {
     expect(map.setOptions).toHaveBeenCalledWith(
       expect.objectContaining({ scrollwheel: true })
     );
+  });
+
+  it('reveals the loaded map immediately when reduced motion is preferred', async () => {
+    (useReducedMotion as jest.Mock).mockReturnValue(true);
+
+    render(
+      <PortfolioStateProvider>
+        <Map />
+        <DispatchAllLoaded />
+      </PortfolioStateProvider>
+    );
+
+    const [map] = MockMap.instances;
+
+    expect(map.setOptions).toHaveBeenCalledWith({
+      scrollwheel: true,
+      zoom: 4,
+    });
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    expect(map.setZoom).not.toHaveBeenCalled();
+  });
+
+  it('cancels a pending zoom step on unmount', async () => {
+    const { unmount } = render(
+      <PortfolioStateProvider>
+        <Map />
+        <DispatchAllLoaded />
+      </PortfolioStateProvider>
+    );
+    const [map] = MockMap.instances;
+
+    unmount();
+
+    await act(async () => {
+      await jest.advanceTimersByTimeAsync(80);
+    });
+
+    expect(map.setZoom).not.toHaveBeenCalled();
+  });
+
+  it('cancels the next recursive zoom step on unmount', async () => {
+    const { unmount } = render(
+      <PortfolioStateProvider>
+        <Map />
+        <DispatchAllLoaded />
+      </PortfolioStateProvider>
+    );
+    const [map] = MockMap.instances;
+
+    await act(async () => {
+      await jest.advanceTimersByTimeAsync(80);
+    });
+
+    expect(map.setZoom).toHaveBeenCalledTimes(1);
+
+    unmount();
+
+    await act(async () => {
+      await jest.advanceTimersByTimeAsync(80);
+    });
+
+    expect(map.setZoom).toHaveBeenCalledTimes(1);
   });
 
   it('clones children with the map and info window once both exist', () => {

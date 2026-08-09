@@ -1,8 +1,18 @@
+import { useReducedMotion } from '@mantine/hooks';
 import { openSourceContrs } from '@fixtures/home';
 import Home from '@pages/index';
 import { render, screen } from '@utils/test/render';
 
+jest.mock('@mantine/hooks', () => ({
+  ...jest.requireActual('@mantine/hooks'),
+  useReducedMotion: jest.fn(),
+}));
+
 describe('Home page', () => {
+  beforeEach(() => {
+    (useReducedMotion as jest.Mock).mockReturnValue(false);
+  });
+
   it('renders the name heading', async () => {
     render(<Home />);
 
@@ -25,5 +35,13 @@ describe('Home page', () => {
     });
 
     expect(await screen.findByText('ex-flight attendant turned programmer'));
+  });
+
+  it('renders a static role tagline when reduced motion is preferred', () => {
+    (useReducedMotion as jest.Mock).mockReturnValue(true);
+
+    render(<Home />);
+
+    expect(screen.getByText('front-end engineer')).toBeInTheDocument();
   });
 });

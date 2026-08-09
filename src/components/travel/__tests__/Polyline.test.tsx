@@ -1,3 +1,4 @@
+import { useReducedMotion } from '@mantine/hooks';
 import { Polyline } from '@components/travel/Polyline';
 import { PortfolioStateProvider, usePortfolioState } from '@state/context';
 import {
@@ -8,6 +9,11 @@ import {
 } from '@utils/test/googleMapsMock';
 import { act, render } from '@utils/test/render';
 import type { ComponentProps, FC } from 'react';
+
+jest.mock('@mantine/hooks', () => ({
+  ...jest.requireActual('@mantine/hooks'),
+  useReducedMotion: jest.fn(),
+}));
 
 installGoogleMapsMock();
 
@@ -50,6 +56,7 @@ const renderPolyline = (
 describe('Polyline', () => {
   beforeEach(() => {
     resetGoogleMapsMock();
+    (useReducedMotion as jest.Mock).mockReturnValue(false);
     jest.useFakeTimers();
   });
 
@@ -122,6 +129,14 @@ describe('Polyline', () => {
       jest.advanceTimersByTime(1);
     });
     expect(polyline.setMap).toHaveBeenCalledWith(expect.any(MockMap));
+  });
+
+  it('draws immediately when reduced motion is preferred', () => {
+    (useReducedMotion as jest.Mock).mockReturnValue(true);
+    const { map } = renderPolyline({ idx: 2, order: 3, paths: ['x'] });
+    const [polyline] = MockPolyline.instances;
+
+    expect(polyline.setMap).toHaveBeenCalledWith(map);
   });
 
   it('dispatches railPolylinesLoaded once the end rail polyline has dropped', async () => {
@@ -212,6 +227,25 @@ describe('Polyline', () => {
     const [polyline] = MockPolyline.instances;
 
     expect(polyline.setMap).not.toHaveBeenCalled();
+  });
+
+  it('cancels a pending staggered draw on unmount', () => {
+    const { unmount } = renderPolyline({
+      endTripPolyline: true,
+      idx: 2,
+      order: 1,
+      paths: ['x'],
+    });
+    const [polyline] = MockPolyline.instances;
+
+    unmount();
+
+    act(() => {
+      jest.advanceTimersByTime(200);
+    });
+
+    expect(polyline.setMap).toHaveBeenCalledTimes(1);
+    expect(polyline.setMap).toHaveBeenCalledWith(null);
   });
 
   it('removes the polyline from the map on unmount', () => {

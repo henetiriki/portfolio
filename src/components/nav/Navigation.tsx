@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   Box,
   Burger,
   Container,
@@ -10,14 +11,13 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { IconArrowMoveUp } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavigationLink } from '@components/nav/NavigationLink';
 import { Logo } from '@components/shared';
 import { menuItems } from '@fixtures/nav';
 import { useScrollTo } from '@hooks';
 import { usePortfolioState } from '@state/context';
 import classes from './Navigation.module.css';
-import type { MouseEvent } from 'react';
 
 export const Navigation = () => {
   const {
@@ -27,18 +27,26 @@ export const Navigation = () => {
   } = usePortfolioState();
   const { pathname } = useRouter();
   const { scrollToTop } = useScrollTo(pageTopRef);
-  const [scrollPosition, setScrollPosition] = useState(0);
+  const scrolledPastThresholdRef = useRef(false);
+  const [scrolledPastThreshold, setScrolledPastThreshold] = useState(false);
   const [drawerOpened, { close: closeDrawer, toggle: toggleDrawer }] =
     useDisclosure(false);
-  const navBgTransparent = !drawerOpened && scrollPosition <= 10;
-  const scrollToTopVisible = scrollPosition > 10;
+  const navBgTransparent = !drawerOpened && !scrolledPastThreshold;
 
   useEffect(() => {
-    const onScrollPositionChange: EventListener = () => {
-      setScrollPosition(window.scrollY);
+    const onScrollPositionChange = () => {
+      const nextScrolledPastThreshold = window.scrollY > 10;
+
+      if (scrolledPastThresholdRef.current !== nextScrolledPastThreshold) {
+        scrolledPastThresholdRef.current = nextScrolledPastThreshold;
+        setScrolledPastThreshold(nextScrolledPastThreshold);
+      }
     };
 
-    window.addEventListener('scroll', onScrollPositionChange);
+    onScrollPositionChange();
+    window.addEventListener('scroll', onScrollPositionChange, {
+      passive: true,
+    });
 
     return () => {
       window.removeEventListener('scroll', onScrollPositionChange);
@@ -101,7 +109,7 @@ export const Navigation = () => {
                 <NavigationLink
                   href={href}
                   onClickCb={() => {
-                    toggleDrawer();
+                    closeDrawer();
                     scrollToTop();
                   }}
                   pathname={pathname}
@@ -113,24 +121,20 @@ export const Navigation = () => {
           </ScrollArea>
         </Drawer>
       </Box>
-      {scrollToTopVisible && (
-        <Box
+      {scrolledPastThreshold && (
+        <ActionIcon
           aria-label='Scroll to top'
-          bg='matterhorn'
           bottom={20}
           className={classes.scrollToTop}
-          component='a'
-          onClick={(event: MouseEvent<HTMLAnchorElement>) => {
-            event.preventDefault();
-            scrollToTop();
-          }}
-          p='10px 8px 5px'
+          color='matterhorn.4'
+          onClick={scrollToTop}
           pos='fixed'
+          radius='xl'
           right={30}
-          role='button'
-          ta='center'>
-          <IconArrowMoveUp size={15} />
-        </Box>
+          size={44}
+          variant='filled'>
+          <IconArrowMoveUp size={20} />
+        </ActionIcon>
       )}
     </>
   );
