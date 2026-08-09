@@ -24,7 +24,7 @@ const createRouterEvents = () => {
 };
 
 describe('useLoading', () => {
-  it('starts as false and flips on routeChangeStart/Complete/Error', () => {
+  it('starts idle, starts loading deterministically and stops on completion', () => {
     const events = createRouterEvents();
 
     (useRouter as jest.Mock).mockReturnValue({ events });
@@ -36,34 +36,56 @@ describe('useLoading', () => {
     act(() => events.emit('routeChangeStart'));
     expect(result.current).toBe(true);
 
+    act(() => events.emit('routeChangeStart'));
+    expect(result.current).toBe(true);
+
     act(() => events.emit('routeChangeComplete'));
+    expect(result.current).toBe(false);
+  });
+
+  it('always clears loading on a route error', () => {
+    const events = createRouterEvents();
+
+    (useRouter as jest.Mock).mockReturnValue({ events });
+
+    const { result } = renderHook(() => useLoading());
+
+    act(() => events.emit('routeChangeError'));
+    expect(result.current).toBe(false);
+
+    act(() => events.emit('routeChangeStart'));
+    expect(result.current).toBe(true);
+
+    act(() => events.emit('routeChangeError'));
     expect(result.current).toBe(false);
 
     act(() => events.emit('routeChangeError'));
-    expect(result.current).toBe(true);
+    expect(result.current).toBe(false);
   });
 
   it('unsubscribes from all router events on unmount', () => {
     const events = createRouterEvents();
     const offSpy = jest.spyOn(events, 'off');
+    const onSpy = jest.spyOn(events, 'on');
 
     (useRouter as jest.Mock).mockReturnValue({ events });
 
     const { unmount } = renderHook(() => useLoading());
 
+    const startListener = onSpy.mock.calls.find(
+      ([event]) => event === 'routeChangeStart'
+    )?.[1];
+    const stopListener = onSpy.mock.calls.find(
+      ([event]) => event === 'routeChangeComplete'
+    )?.[1];
+
     unmount();
 
-    expect(offSpy).toHaveBeenCalledWith(
-      'routeChangeStart',
-      expect.any(Function)
-    );
-    expect(offSpy).toHaveBeenCalledWith(
-      'routeChangeComplete',
-      expect.any(Function)
-    );
-    expect(offSpy).toHaveBeenCalledWith(
-      'routeChangeError',
-      expect.any(Function)
-    );
+    expect(startListener).toEqual(expect.any(Function));
+    expect(stopListener).toEqual(expect.any(Function));
+    expect(onSpy).toHaveBeenCalledWith('routeChangeError', stopListener);
+    expect(offSpy).toHaveBeenCalledWith('routeChangeStart', startListener);
+    expect(offSpy).toHaveBeenCalledWith('routeChangeComplete', stopListener);
+    expect(offSpy).toHaveBeenCalledWith('routeChangeError', stopListener);
   });
 });
