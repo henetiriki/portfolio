@@ -85,7 +85,7 @@
     "prop-types": "^15.8.1",
     "react-type-animation": "^3.2.0",
     "serwist": "^9.5.12",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.2",
     "typescript-eslint": "^8.66.0",
     "webpack": "^5"
   },
