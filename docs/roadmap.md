@@ -24,8 +24,4 @@ Last reviewed: 2026-08-09.
 
 ## Performance, SEO & platform polish
 
-- [ ] **Review image preloading.** Portfolio image `sizes` now follows the card grid. Reserve priority/preload for the true LCP candidate rather than every decorative wave, and review whether the 40px logo needs it. Preserve the fixed background's intentional eager/LCP behaviour separately.
-
-- [ ] **Consolidate page SEO metadata and PWA presentation.** A shared SEO component should derive canonical URL, title, Open Graph, Twitter, description and image values from one page-level source rather than leaving homepage values on inner routes; remove obsolete keyword metadata. Align the manifest's white `background_color` with the dark theme to avoid a white install/splash flash, and decide whether `display: fullscreen` remains intentional or should become `standalone`.
-
 - [ ] **Modernise security and package metadata deliberately.** Remove the deprecated `X-XSS-Protection` header and introduce Content Security Policy in Report-Only first because Maps, BotID, Vercel telemetry and remote images all need an allowlist. Remove application-level `sideEffects: false` or at least mark CSS as side-effectful so tree-shaking cannot discard stylesheet imports. Drop the stale `engines.npm` constraint—the project declares Yarn and Node 24 ships a different npm major—or keep it aligned with the actual runtime.

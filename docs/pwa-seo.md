@@ -2,15 +2,16 @@
 
 ## Progressive Web App
 
-- `public/manifest.json` declares the app name ("Louw Swart // Portfolio"), `theme_color` (`#080a20`, matching `black-russian`), `display: fullscreen`, maskable icons (192/512), and three `shortcuts` (Experience, Travel, Contact) for the OS-level app icon long-press menu. Linked from `_document.tsx` via `<link rel='manifest'>`.
+- `public/manifest.json` declares the app name ("Louw Swart // Portfolio"), matching dark `theme_color` and `background_color` values (`#080a20`, matching `black-russian`), `display: standalone`, maskable icons (192/512), and three `shortcuts` (Experience, Travel, Contact) for the OS-level app icon long-press menu. `standalone` is intentional: the portfolio benefits from an installed app window without treating ordinary page content as an immersive fullscreen experience, and the dark background avoids a white flash while the app launches. The manifest is linked from `_document.tsx` via `<link rel='manifest'>`.
 - `_document.tsx` also declares a full matrix of `apple-touch-startup-image` `<link>` tags (one per iOS device size/orientation/pixel-ratio combination) pointing at pre-generated splash images in `public/images/manifest-icons/`, plus standard favicons and an `apple-touch-icon`.
 - **Service worker / offline support is opt-in**, not always-on: `next.config.js` only wraps the config with [Serwist](https://serwist.pages.dev/) when `WITH_PWA=true` at build time (migrated from `next-pwa` 2026-08-07; see [D004](decisions.md#d004--keep-pwa-generation-opt-in-and-production-builds-on-webpack) for the retained rationale). Since `@serwist/next` is ESM-only, `next.config.js` exports an async function and dynamically `import()`s it only in that branch. The service worker's source lives at `service-worker/index.ts` (its own `tsconfig.json`, excluded from the root one — `webworker` and `dom` libs can't mix in one `tsc` run) and uses Serwist's `defaultCache` for next-pwa-parity runtime caching. CI type-checks that dedicated project separately, performs a production-like PWA build, and verifies that it emits a non-empty `public/sw.js` (gitignored — a build artifact, not source) with `pages/_offline.tsx` precached and served as the fallback for uncached routes while offline.
 - `mobile-web-app-capable` / `apple-mobile-web-app-capable` meta tags are set unconditionally, independent of whether the service worker build is active.
 
 ## SEO / meta tags
 
-- **Per-page `<Head>`**: every content page sets a `fullTitle('Page Name')` title (`utils/head.ts` → `"{Page Name} // Louw Swart"`), a canonical `<link>` (`{siteUrl}{path}`), and page-specific `description`/`keywords`/`twitter:description`/`og:description`. `_app.tsx` supplies the shared defaults (twitter card type, `og:type`, `og:site_name`, `og:image`, `twitter:image`, `twitter:creator`) that individual pages inherit unless overridden by a matching `key`.
-- `experience.tsx` builds its `description`/`keywords` dynamically from the `jobs` fixture via `getExperienceDescription`/`getExperienceKeywords` (`@utils/experience.ts`) rather than a hard-coded string, so the meta content tracks the actual work history list.
+- **Shared per-page metadata**: every content route renders `Seo` (`components/shared/Seo.tsx`) once with its title, path and description. `getSeoMetadata()` turns that one page-level source into the full title (`"{Page Name} // Louw Swart"`), canonical URL, description, Open Graph and Twitter title/URL/description/image values. This prevents inner routes from inheriting homepage social metadata during direct loads or client navigation. The shared portfolio image is the default, while the component accepts a page-specific image when one is added later.
+- `_app.tsx` owns only genuinely app-wide head content: the viewport and generated font custom properties. Search and social metadata belongs to each route. Obsolete keyword metadata has been removed rather than duplicated in the shared component.
+- `experience.tsx` uses one concise description for ordinary, Open Graph and Twitter metadata rather than expanding every employer and role into an oversized social preview.
 - **Error pages** (`404.tsx`, `500.tsx`) set `<meta name='robots' content='noindex, nofollow'>` to keep them out of search results.
 - `_document.tsx` sets a global `author`/`application-name` and links a Mastodon `rel='me'` tag (`https://mastodon.nz/@henetiriki`) for Mastodon profile verification.
 
@@ -30,6 +31,8 @@ Distinct from crawler SEO — `botid` (Vercel BotID) is used to keep automated t
 - This is layered with server-side form validation and a secondary anti-automation signal. The signal's identifier and detection details are intentionally omitted; no single mechanism is treated as sufficient on its own.
 
 ## Misc head-adjacent behavior
+
+- Image preloading is restricted to `FixedBackground`, the deliberate full-viewport LCP image. Decorative wave SVGs and the 40px navigation logo use normal image loading, avoiding unnecessary high-priority requests; portfolio cards retain grid-accurate `sizes` without being preloaded.
 
 - `next.config.js` sets a fixed set of `securityHeaders` (HSTS, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `X-DNS-Prefetch-Control`, `Referrer-Policy`, `X-XSS-Protection`) on every route via `headers()`. The deprecated `X-XSS-Protection` header and a staged CSP replacement are tracked in the [roadmap](roadmap.md#performance-seo--platform-polish).
 - `public/scripts/hash-redirect.js`, loaded async from `_document.tsx`, redirects to `/` whenever the URL hash contains `#!` — a leftover guard against old hashbang-style URLs (e.g. from a pre-Next.js single-page app) being indexed or bookmarked.

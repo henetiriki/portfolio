@@ -1,10 +1,9 @@
 import { Title } from '@mantine/core';
 import dynamic from 'next/dynamic';
-import Head from 'next/head';
 import { Content, Header } from '@components/content';
+import { Seo } from '@components/shared';
 import { Legend, MapLoader } from '@components/travel';
 import { description } from '@fixtures/travel';
-import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
@@ -16,35 +15,9 @@ const DynamicMapWrapper = dynamic(
   }
 );
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-
 const Travel: NextPage = (): JSX.Element => (
   <>
-    <Head>
-      <title key='pageTitle'>{fullTitle('Travel')}</title>
-      <link href={`${siteUrl}/travel`} key='canonical' rel='canonical' />
-      <meta
-        content='“You have brains in your head. You have feet in your shoes. You can
-            steer yourself any direction you choose.” - Dr. Seuss'
-        key='pageDescription'
-        name='description'
-      />
-      <meta
-        content='planes trains ferries cruise ships'
-        key='pageKeywords'
-        name='keywords'
-      />
-      <meta
-        content={description}
-        key='twitterDescription'
-        name='twitter:description'
-      />
-      <meta
-        content={description}
-        key='ogDescription'
-        property='og:description'
-      />
-    </Head>
+    <Seo description={description} path='/travel' title='Travel' />
     <>
       <Header>
         Places I’ve been

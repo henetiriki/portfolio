@@ -1,44 +1,23 @@
 import { Anchor, Box, Button, Space, Text, Title } from '@mantine/core';
 import { IconMessage } from '@tabler/icons-react';
-import Head from 'next/head';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { Content, Header } from '@components/content';
+import { Seo } from '@components/shared';
 import { description, portfolioItems } from '@fixtures/portfolio';
 import { blurDataURL } from '@utils/common';
-import { fullTitle } from '@utils/head';
 import classes from './portfolio.module.css';
 
 import type { PortfolioItem } from '@fixtures/types';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 const portfolioImageSizes =
   '(min-width: 67.5em) 18.75rem, (min-width: 48em) calc(47.62vw - 4.75rem), (min-width: 36em) calc(100vw - 10rem), calc(100vw - 5rem)';
 
 const Portfolio: NextPage = (): JSX.Element => (
   <>
-    <Head>
-      <title key='pageTitle'>{fullTitle('Portfolio')}</title>
-      <link href={`${siteUrl}/portfolio`} key='canonical' rel='canonical' />
-      <meta content={description} key='pageDescription' name='description' />
-      <meta
-        content='portfolio freelance squarespace'
-        key='pageKeywords'
-        name='keywords'
-      />
-      <meta
-        content={description}
-        key='twitterDescription'
-        name='twitter:description'
-      />
-      <meta
-        content={description}
-        key='ogDescription'
-        property='og:description'
-      />
-    </Head>
+    <Seo description={description} path='/portfolio' title='Portfolio' />
     <>
       <Header>
         Portfolio<span>freelance work I’ve done</span>

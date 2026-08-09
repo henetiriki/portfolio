@@ -15,7 +15,6 @@ import { PortfolioStateProvider } from '@state/context';
 import { theme } from '@styles';
 import { bodyFont, headingFont } from '@styles/fonts';
 import '@styles/global.css';
-import { fullTitle } from '@utils/head';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import type { JSX } from 'react';
@@ -33,8 +32,6 @@ const DynamicTransition = dynamic(
     ssr: false,
   }
 );
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 
 const protectedRoutes = [
   {
@@ -58,46 +55,8 @@ const Portfolio: NextPage<AppProps> = ({
             --portfolio-font-heading: ${headingFont.style.fontFamily};
           }
         `}</style>
-        <title key='pageTitle'>{fullTitle('Portfolio')}</title>
         <BotIdClient protect={protectedRoutes} />
         <meta content='width=device-width, initial-scale=1' name='viewport' />
-        <link href={siteUrl} key='canonical' rel='canonical' />
-        <meta
-          content='Online Portfolio and CV for Louw Swart - Front-end Engineer based in Wellington, New Zealand, using Javascript frameworks such as React, Next.js and Node.js'
-          key='pageDescription'
-          name='description'
-        />
-        <meta
-          content='louw swart portfolio cv javascript ui developer front-end engineer traveller photographer agile javascript node.js next.js open source react'
-          key='pageKeywords'
-          name='keywords'
-        />
-        <meta content='summary' name='twitter:card' />
-        <meta content='https://www.ouwl.house' name='twitter:url' />
-        <meta content='Louw Swart // Portfolio' name='twitter:title' />
-        <meta
-          content='Online Portfolio and CV for Louw Swart'
-          key='twitterDescription'
-          name='twitter:description'
-        />
-        <meta
-          content='https://www.ouwl.house/images/og-images/portfolio.png'
-          name='twitter:image'
-        />
-        <meta content='@henetiriki' name='twitter:creator' />
-        <meta content='website' property='og:type' />
-        <meta content='Louw Swart // Portfolio' property='og:title' />
-        <meta
-          content='Online Portfolio and CV for Louw Swart'
-          key='ogDescription'
-          property='og:description'
-        />
-        <meta content='Louw Swart // Portfolio' property='og:site_name' />
-        <meta content='https://www.ouwl.house' property='og:url' />
-        <meta
-          content='https://www.ouwl.house/images/og-images/portfolio.png'
-          property='og:image'
-        />
       </Head>
       <ErrorBoundary>
         <MantineProvider forceColorScheme='dark' theme={theme}>
