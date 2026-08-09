@@ -6,9 +6,16 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
-    name: Lint, type-check & test
+    name: Validate & build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -17,6 +24,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v7
         with:
+          cache: 'yarn'
+          cache-dependency-path: 'yarn.lock'
           node-version-file: '.nvmrc'
 
       - name: Enable Corepack
@@ -25,14 +34,28 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Check generated CSS variables
+        run: yarn css-vars:check
+
       - name: Lint
         run: yarn eslint:check
 
-      - name: Type-check
+      - name: Type-check application
         run: yarn type-check
+
+      - name: Type-check service worker
+        run: yarn tsc --pretty --noEmit --project service-worker/tsconfig.json
 
       - name: Check formatting
         run: yarn prettier:check
 
       - name: Test with coverage
         run: yarn test:coverage
+
+      - name: Build production PWA
+        env:
+          WITH_PWA: 'true'
+        run: yarn build
+
+      - name: Verify service worker output
+        run: test -s public/sw.js

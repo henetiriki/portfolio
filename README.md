@@ -73,4 +73,4 @@ Two starting points:
 
 ## Deploying
 
-There are no versions, tags, or release artefacts. A change ships by squash-merging a PR into `main`, which Vercel deploys automatically. [docs/roadmap.md](docs/roadmap.md) acts as the changelog. Follow the [release checklist](docs/release-checklist.md) — note that CI does not run a build, so `yarn build` is a manual pre-merge step.
+There are no versions, tags, or release artefacts. A change ships by squash-merging a PR into `main`, which Vercel deploys automatically. [docs/roadmap.md](docs/roadmap.md) acts as the changelog. Follow the [release checklist](docs/release-checklist.md) — CI runs a production-like PWA build, while the plain non-PWA `yarn build` remains a manual pre-merge check.
