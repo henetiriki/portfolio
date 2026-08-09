@@ -23,7 +23,6 @@ export const WaveWrapper: FC<{ style?: MantineStyleProp; wave: Wave }> = ({
     <Image
       alt=''
       fill
-      priority
       sizes='100vw'
       src={`/images/waves/${wave}-haikei.svg`}
       style={{ objectFit: 'cover' }}

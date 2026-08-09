@@ -27,7 +27,7 @@ GitHub's production-mode CI build does not load `.env.test`, so `.github/workflo
 
 | Variable              | Consumed by                                              | Purpose                                                                                                   |
 | --------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `HOST`                | `next.config.js` → `env.NEXT_PUBLIC_SITE_URL`            | Canonical URL, OG/Twitter `og:url`-adjacent links, sitemap base URL                                       |
+| `HOST`                | `next.config.js` → `env.NEXT_PUBLIC_SITE_URL`            | Canonical and Open Graph/Twitter URLs, social-image base URL, sitemap base URL                            |
 | `IMAGE_HOST`          | `next.config.js` → `env.NEXT_PUBLIC_IMAGE_HOST`          | Base URL `FixedBackground` prefixes onto the random Instagram `imgId` to build the photo URL              |
 | `IMAGE_HOST_NAME`     | `next.config.js` `images.remotePatterns[0].hostname`     | Hostname Next/Image is allowed to optimize/serve images from                                              |
 | `IMAGE_HOST_PATH`     | `next.config.js` `images.remotePatterns[0].pathname`     | Allowed path prefix under `IMAGE_HOST_NAME`                                                               |

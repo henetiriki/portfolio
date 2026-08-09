@@ -1,5 +1,4 @@
 import { IconBriefcase, IconSchool } from '@tabler/icons-react';
-import Head from 'next/head';
 import { Content, Header } from '@components/content';
 import {
   Timeline,
@@ -12,44 +11,18 @@ import {
   TimelineTitle,
   VideoContainer,
 } from '@components/experience';
-import { description, jobs, schools } from '@fixtures/experience';
-import {
-  getExperienceDescription,
-  getExperienceKeywords,
-} from '@utils/experience';
-import { fullTitle } from '@utils/head';
+import { Seo } from '@components/shared';
+import { jobs, schools } from '@fixtures/experience';
 import type { Job, School } from '@fixtures/types';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+const seoDescription =
+  'Work and education history for Louw Swart, covering front-end and full-stack roles across banking, government, media and ecommerce.';
 
 const Experience: NextPage = (): JSX.Element => (
   <>
-    <Head>
-      <title key='pageTitle'>{fullTitle('Experience')}</title>
-      <link href={`${siteUrl}/experience`} key='canonical' rel='canonical' />
-      <meta
-        content={`Companies & Roles: ${getExperienceDescription(jobs)}`}
-        key='pageDescription'
-        name='description'
-      />
-      <meta
-        content={getExperienceKeywords(jobs)}
-        key='pageKeywords'
-        name='keywords'
-      />
-      <meta
-        content={description}
-        key='twitterDescription'
-        name='twitter:description'
-      />
-      <meta
-        content={description}
-        key='ogDescription'
-        property='og:description'
-      />
-    </Head>
+    <Seo description={seoDescription} path='/experience' title='Experience' />
     <>
       <Header>
         Experience<span>where I’ve worked so far</span>

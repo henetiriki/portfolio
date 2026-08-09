@@ -3,6 +3,7 @@ import { useReducedMotion } from '@mantine/hooks';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { Content } from '@components/content';
+import { Seo } from '@components/shared';
 import { openSourceContrs } from '@fixtures/home';
 import { blurDataURL } from '@utils/common';
 import classes from './index.module.css';
@@ -14,11 +15,15 @@ const DynamicTypeAnimation = dynamic(
   { ssr: false }
 );
 
+const description =
+  'Online portfolio and CV for Louw Swart, a front-end engineer based in Wellington, New Zealand, working with React, Next.js and Node.js.';
+
 const Home: NextPage = (): JSX.Element => {
   const reduceMotion = useReducedMotion();
 
   return (
     <>
+      <Seo description={description} path='/' title='Portfolio' />
       <Container className={classes.hero} h='75vh' pt='30vh' ta='center'>
         <Container ta='center'>
           <Title order={1} tt='uppercase'>
