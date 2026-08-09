@@ -22,6 +22,12 @@
 - `robotsTxtOptions.policies`: blocks every Baidu spider variant (`Baiduspider`, `baiduspider`, `Baiduspider+`, `-video`, `-image`) site-wide, disallows `/static` for all other user agents, and otherwise allows everything.
 - The generated `public/robots.txt` is checked into git (not gitignored, unlike `sitemap.xml`/`sw.js`) — it's committed output rather than a purely ephemeral build artifact, so a `/static` route disallow or Baidu block can be reviewed/diffed directly. This is the reason the recent "Add /static to robots.txt ignore" commit shows up as a plain file diff.
 
+## AI-agent discovery (`llms.txt`)
+
+- `public/llms.txt` is served directly at `/llms.txt` as a concise Markdown overview of the portfolio and its five canonical content routes. Keeping it as a static public asset avoids sending Lighthouse and other clients through the comparatively large custom 404 response.
+- The file follows the emerging `llms.txt` convention with a required H1, a short blockquote summary and described links. It is a discovery aid, not an access-control or model-training permission mechanism; crawler policy remains in `robots.txt`.
+- Only already-public portfolio information is included. Private contact details and anti-automation implementation details do not belong in this file.
+
 ## Bot protection (BotID)
 
 Distinct from crawler SEO — `botid` (Vercel BotID) is used to keep automated traffic away from the contact form specifically:

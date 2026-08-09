@@ -1,0 +1,11 @@
+# Louw Swart Portfolio
+
+> Personal portfolio and CV for Louw Swart, a front-end engineer with experience in React, Next.js, Angular and full-stack development.
+
+## Main pages
+
+- [Home](https://www.ouwl.house/): Professional overview, background and interests.
+- [Experience](https://www.ouwl.house/experience): Employment and education history.
+- [Portfolio](https://www.ouwl.house/portfolio): Selected freelance website projects.
+- [Travel](https://www.ouwl.house/travel): Interactive travel history.
+- [Contact](https://www.ouwl.house/contact): Public contact form.

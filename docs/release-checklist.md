@@ -62,6 +62,7 @@ Verify on the live site (https://www.ouwl.house):
 - [ ] Travel map loads once scrolled into view (markers and polylines drop in)
 - [ ] Footer's "Updated:" timestamp reflects the new build — it is computed at build time via `NEXT_PUBLIC_LAST_MODIFIED`, so a stale value means the deploy didn't rebuild
 - [ ] `https://www.ouwl.house/sitemap.xml` and `/robots.txt` regenerated (`next-sitemap` runs as the second half of `yarn build` and reads `siteUrl` from `HOST`)
+- [ ] `https://www.ouwl.house/llms.txt` returns the static Markdown file with a `200` response and an H1, rather than the custom 404 page
 - [ ] Every content route has its own title, description, canonical, `og:url` and social title; URLs point at the real domain, not `undefined` or localhost
 - [ ] Installed PWA launches with a dark splash/background in a standalone window
 - [ ] Service worker registers and `/_offline` serves when offline
