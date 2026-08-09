@@ -30,6 +30,7 @@ export const useMantineForm = (): {
   const form: UseFormReturnType<FormValues> = useForm<FormValues>({
     initialValues: {
       email: '',
+      heuning: '',
       message: '',
       name: '',
     },

@@ -6,5 +6,5 @@ export type WindowSize = {
 export type FormValueKey = 'email' | 'heuning' | 'message' | 'name';
 
 export type FormValues = {
-  [key in FormValueKey]?: string;
+  [key in FormValueKey]: string;
 };

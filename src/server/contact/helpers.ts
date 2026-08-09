@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import path from 'path';
+import { CONTACT_FIELD_LIMITS } from '@utils/contactLimits';
 import type { ErrorType, Submission } from '@server/contact';
 import type Mail from 'nodemailer/lib/mailer';
 
@@ -41,11 +42,37 @@ const formatValue = (value: string, args: string[]) =>
     typeof args[number] !== 'undefined' ? args[number] : match
   );
 
+const escapeHtml = (value: string) =>
+  value.replace(/[&<>'"]/g, character => {
+    switch (character) {
+      case '&':
+        return '&amp;';
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '"':
+        return '&quot;';
+      default:
+        return '&#39;';
+    }
+  });
+
 const containsDisallowedChars = (value: string) => DISALLOWED_CHARS.test(value);
 
 const containsUrl = (value: string) => URL_REGEX.test(value);
 
-const isValidEmail = (email: string) => EMAIL_REGEX.test(email);
+const isValidEmail = (email: string) =>
+  !/[\r\n]/.test(email) && EMAIL_REGEX.test(email);
+
+export const isWithinContactFieldLimits = ({
+  email,
+  message,
+  name,
+}: Submission) =>
+  email.length <= CONTACT_FIELD_LIMITS.email &&
+  message.length <= CONTACT_FIELD_LIMITS.message &&
+  name.length <= CONTACT_FIELD_LIMITS.name;
 
 export const validate = ({
   email,
@@ -62,9 +89,9 @@ export const validate = ({
     return errors;
   }
 
-  if (!name) {
+  if (!name.trim()) {
     errors.push('e_name_required');
-  } else if (containsDisallowedChars(name)) {
+  } else if (containsDisallowedChars(name) || /[\r\n]/.test(name)) {
     errors.push('e_name_disallowed_chars');
   } else if (containsUrl(name)) {
     hasUrl = true;
@@ -74,7 +101,7 @@ export const validate = ({
   } else if (!isValidEmail(email)) {
     errors.push('e_email_invalid');
   }
-  if (!message) {
+  if (!message.trim()) {
     errors.push('e_message_required');
   } else if (containsDisallowedChars(message)) {
     errors.push('e_message_disallowed_chars');
@@ -95,11 +122,11 @@ export const buildMessage = ({
   name,
 }: Submission): Mail.Options => ({
   html: formatValue(`${CONTENT}`, [
-    name,
-    email,
-    message.replace(/\n/g, '<br>'),
+    escapeHtml(name),
+    escapeHtml(email),
+    escapeHtml(message).replace(/\r\n?|\n/g, '<br>'),
   ]), // html body
-  replyTo: `${name} <${email}>`, // sender address
+  replyTo: { address: email, name }, // sender address
   subject: formatValue(SUBJECT, [name]), // Subject line
   to: GMAIL_SENDER_EMAIL, // list of receivers
 });
@@ -108,7 +135,7 @@ export const buildMessageCopy = ({
   email,
   name,
 }: Submission): Mail.Options => ({
-  html: formatValue(`${CONTENT_COPY}`, [name]), // html body
+  html: formatValue(`${CONTENT_COPY}`, [escapeHtml(name)]), // html body
   subject: `${SUBJECT_COPY}`, // Subject line
-  to: `${name} <${email}>`, // list of receivers
+  to: { address: email, name }, // list of receivers
 });

@@ -26,7 +26,7 @@
 Distinct from crawler SEO — `botid` (Vercel BotID) is used to keep automated traffic away from the contact form specifically:
 
 - Client: `_app.tsx` renders `<BotIdClient protect={[{ method: 'POST', path: '/api/contact' }]} />`, instrumenting that one route.
-- Server: `send.ts` calls `checkBotId()` before sending mail and rejects (intended to short-circuit; see the caveat in [Contact Feature](contact-feature.md)) if the request is classified as a bot.
+- Server: `api/contact.ts` calls `checkBotId()` once per accepted request before creating the SMTP transporter or sending either email. A rejected request never reaches the mail transport.
 - This is layered with server-side form validation and a secondary anti-automation signal. The signal's identifier and detection details are intentionally omitted; no single mechanism is treated as sufficient on its own.
 
 ## Misc head-adjacent behavior

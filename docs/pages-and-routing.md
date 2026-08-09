@@ -26,11 +26,11 @@ Both error pages reuse `Header` + `ErrorContent` (`@components/shared`) and disp
 
 ## API routes (`src/pages/api`)
 
-| Route             | Method | Handler             | Behaviour                                                                                                                                                                                                          |
-| ----------------- | ------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/api/contact`    | POST   | `api/contact.ts`    | Enforces POST and the request shape, validates the submission, emails the owner, then emails a copy back to the sender. Returns a stable error-code array on every `400`/`405`/`500` failure and `200` on success. |
-| `/api/rail-trips` | GET    | `api/rail-trips.ts` | Returns the static `railTrips` fixture (`{ trips, upcomingTrips }`) as JSON                                                                                                                                        |
-| `/api/img-id`     | GET    | `api/img-id.ts`     | Picks and returns one random image id from `ISTAGRAM_IMAGE_IDS` (server env var, comma-separated)                                                                                                                  |
+| Route             | Method | Handler             | Behaviour                                                                                                                                                                                                                                                                                                               |
+| ----------------- | ------ | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/api/contact`    | POST   | `api/contact.ts`    | Enforces POST, request shape and field limits; validates and verifies the submission; emails the owner; then attempts a courtesy copy to the sender. Owner-delivery failures return the stable generic error array; a courtesy-copy failure is logged but remains a `200` so retrying cannot duplicate the owner email. |
+| `/api/rail-trips` | GET    | `api/rail-trips.ts` | Returns the static `railTrips` fixture (`{ trips, upcomingTrips }`) as JSON                                                                                                                                                                                                                                             |
+| `/api/img-id`     | GET    | `api/img-id.ts`     | Picks and returns one random image id from `ISTAGRAM_IMAGE_IDS` (server env var, comma-separated)                                                                                                                                                                                                                       |
 
 ## Redirects (`next.config.js`)
 

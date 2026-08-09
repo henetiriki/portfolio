@@ -1,6 +1,9 @@
 import {
   buildMessage,
   buildMessageCopy,
+  createContactTransporter,
+  isContactRequestAllowed,
+  isWithinContactFieldLimits,
   send,
   validate,
 } from '@server/contact';
@@ -48,19 +51,47 @@ const handler = async (
 
   const submission = req.body;
 
+  if (!isWithinContactFieldLimits(submission)) {
+    return respondWithError(res, 400);
+  }
+
   const errors = validate(submission);
 
   if (errors.length) {
     return res.status(400).json({ data: errors });
   }
 
+  let requestAllowed: boolean;
+
   try {
-    await send(buildMessage(submission));
-    await send(buildMessageCopy(submission));
+    requestAllowed = await isContactRequestAllowed();
   } catch {
-    console.error('Contact email delivery failed');
+    console.error('Contact request verification failed');
 
     return respondWithError(res, 500);
+  }
+
+  if (!requestAllowed) {
+    console.warn('Contact message rejected');
+
+    return respondWithError(res, 400);
+  }
+
+  let transporter: ReturnType<typeof createContactTransporter>;
+
+  try {
+    transporter = createContactTransporter();
+    await send(transporter, buildMessage(submission));
+  } catch {
+    console.error('Contact owner email delivery failed');
+
+    return respondWithError(res, 500);
+  }
+
+  try {
+    await send(transporter, buildMessageCopy(submission));
+  } catch {
+    console.warn('Contact confirmation email delivery failed');
   }
 
   res.status(200).json({ data: 'Sent successfully' });
