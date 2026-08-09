@@ -70,7 +70,11 @@ Worth knowing before relying on the automation:
 
 - **CI does not build.** `ci.yml` runs lint, type-check, format and tests only. Nothing catches a `next.config.js`, Serwist, or prerender failure until Vercel builds the deploy — which is why the two build commands above are manual pre-PR steps.
 - **`css-vars:check` is not automated.** `postinstall` regenerates `src/styles/mantine-custom-properties.css`, but nothing fails a build when the committed copy has drifted from `colors.ts`. Run it manually when touching colours.
-- **Production-mode QA collides with `next dev`.** `next build`/`next start` share the `.next` directory with a running dev server, which will overwrite prerendered HTML and make `next start` return 500s on routes it hasn't lazily compiled. Stop the dev server first.
+- **Dev and production use different bundlers.** `next dev` runs Turbopack; `next build` is pinned to webpack with `--webpack` because `@serwist/next` injects a webpack config that Next 16 refuses to build through Turbopack. A bundler-specific difference therefore cannot show up in local dev — the manual production build above is the only thing that would catch one. See [development.md](development.md#bundlers-turbopack-in-dev-webpack-in-builds).
+
+**Resolved as of Next.js 16** (kept here because it bit this project repeatedly on 14 and 15):
+
+- ~~**Production-mode QA collides with `next dev`.**~~ `next dev` now writes to `.next/dev` and `next build` to `.next`, so they no longer share prerendered output — verified by running a full production build with a dev server live and confirming it kept serving. Next 16 also takes a lockfile preventing two `next dev` (or two `next build`) instances on the same project. The old failure mode was `Cannot find module './chunks/vendor-chunks/next.js'` plus 500s on uncompiled routes, fixed with `yarn clean && yarn dev`.
 
 ## Rollback
 

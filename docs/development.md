@@ -9,18 +9,63 @@
 
 | Script                              | Command                                                    | Purpose                                                                               |
 | ----------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `dev`                               | `NODE_OPTIONS='--inspect --trace-warnings' next dev`       | Local dev server with the Node inspector attached and full warning traces             |
-| `build`                             | `next build && next-sitemap`                               | Production build, followed by sitemap/robots generation                               |
+| `dev`                               | `NODE_OPTIONS='--inspect --trace-warnings' next dev`       | Local dev server (Turbopack) with the Node inspector attached and full warning traces |
+| `build`                             | `next build --webpack && next-sitemap`                     | Production build (webpack — see below), followed by sitemap/robots generation         |
 | `start`                             | `next start`                                               | Serve a production build                                                              |
 | `clean`                             | `rm -rf .next`                                             | Wipe the build cache                                                                  |
-| `lint:check` / `lint:write`         | `next lint` [`--fix`]                                      | Next.js's own ESLint integration                                                      |
-| `eslint:check` / `eslint:write`     | `eslint .` [`--fix`]                                       | Direct ESLint invocation (same config, run outside the Next.js CLI wrapper)           |
+| `eslint:check` / `eslint:write`     | `eslint .` [`--fix`]                                       | Lint / lint and autofix                                                               |
 | `prettier:check` / `prettier:write` | `prettier . --check/--write --ignore-path .prettierignore` | Formatting                                                                            |
 | `type-check`                        | `tsc --pretty --noEmit`                                    | TypeScript type checking without emitting output                                      |
 | `prepare`                           | `husky install`                                            | Installs git hooks (runs automatically on `yarn install` via the `prepare` lifecycle) |
 | `test`                              | `jest`                                                     | Runs the Jest suite once                                                              |
 | `test:watch`                        | `jest --watch`                                             | Jest in watch mode                                                                    |
 | `test:coverage`                     | `jest --coverage`                                          | Jest with a coverage report                                                           |
+
+## Bundlers: Turbopack in dev, webpack in builds
+
+Next.js 16 made Turbopack the default for **both** `next dev` and `next build`. This project deliberately splits them:
+
+- **`next dev` uses Turbopack** (the default — no flag). Verified to run this project's full PostCSS pipeline correctly: `postcss-simple-vars` substitutes `$mantine-breakpoint-*` to literal `em` values, CSS Modules hash as normal, and autoprefixer still emits vendor prefixes.
+- **`next build` uses webpack** via an explicit `--webpack` flag. This is not a preference — Next 16 **hard-fails a Turbopack build when a webpack config is present**, and `@serwist/next` injects one. The PWA build (`WITH_PWA=true`, what production runs) would otherwise not build at all. `@serwist/next@10`, which may change this, is preview-only; revisit when it ships stable.
+
+The practical consequence: **dev and production are built by different bundlers**, so a bundler-specific difference can in principle reach production without showing up locally. Keep the pre-PR production build in the [release checklist](release-checklist.md) as the thing that catches it.
+
+`next dev` writes to `.next/dev` while `next build` writes to `.next` — they no longer collide, so a production build can run with a dev server live.
+
+## Known dev-only console errors (Next.js 16)
+
+Two errors appear in the browser console under `yarn dev`. Both are upstream Next.js 16 bugs, neither is caused by this app, and neither can reach production. **Nothing has been changed to silence them** — they are recorded here so they aren't re-investigated, and so a regression hiding behind them would still be noticed.
+
+### `Refused to execute script from '.../_clientMiddlewareManifest.js'`
+
+> Refused to execute script from `http://localhost:3000/_next/static/development/_clientMiddlewareManifest.js` because its MIME type (`application/json`) is not executable, and strict MIME type checking is enabled.
+
+Next's dev bundler (`next/dist/server/lib/router-utils/setup-dev-bundler.js`) handles **two** manifest paths in a single branch and unconditionally sets a JSON content type on both:
+
+```js
+if (pathname.includes(devMiddlewareManifestPath) || pathname.includes(devTurbopackMiddlewareManifestPath)) {
+  res.setHeader('Content-Type', JSON_CONTENT_TYPE_HEADER);
+  res.end(JSON.stringify(serverFields.middleware?.matchers || []));
+}
+```
+
+One of those is `_devMiddlewareManifest.json` (correct); the other is `TURBOPACK_CLIENT_MIDDLEWARE_MANIFEST` = `_clientMiddlewareManifest.js`, which the dev renderer emits as a real `<script src="..." defer>` tag. So a `.js` script is served as `application/json`, and this app's `X-Content-Type-Options: nosniff` header (correctly) refuses to execute it.
+
+It is inert for three independent reasons:
+
+1. The served body is literally `[]` — no `__MIDDLEWARE_MATCHERS` assignment and no `__MIDDLEWARE_MATCHERS_CB` call. Executing it would be a no-op array literal.
+2. Nothing awaits it in dev. In `next/dist/client/page-loader.js`, `getMiddleware()`'s `<script>`-based path is gated on `NODE_ENV === 'production'`; the dev path `fetch()`es the `.json` sibling instead, and `fetch` is not subject to script MIME blocking.
+3. This project has no `middleware`/`proxy` file, so the matcher list is empty either way.
+
+It cannot reach production: production builds use webpack rather than Turbopack, and the built `.next/static/<buildId>/` contains only `_buildManifest.js` and `_ssgManifest.js` — no such file and no script tag for it.
+
+**The tempting fix is the wrong one.** The only lever is the `nosniff` header, which applies to `source: '/:path*'` in `next.config.js`. Next _merges_ header rules rather than letting a later rule unset an earlier one, so there is no way to carve out an exception — you would have to rewrite the source as a negative lookahead (`'/((?!_next/static/development).*)'`). That weakens a real security header, in production as well as dev, to hide dev-only noise from someone else's bug. Don't.
+
+**Re-check this when** either of two things changes: a `proxy.ts`/`middleware.ts` file is added (the matcher list stops being empty), or the production build moves off `--webpack` to Turbopack once `@serwist/next@10` ships stable (that script becomes load-bearing in production, where `getMiddleware()` genuinely awaits `__MIDDLEWARE_MATCHERS_CB` behind a timeout). The MIME bug itself is specific to the dev bundler's route handler — production serves static assets with the correct type — but that is the point at which the assumption is worth re-testing rather than assumed.
+
+### `TypeError: Cannot read properties of undefined (reading 'components')`
+
+Thrown at `handleStaticIndicator` inside Next's HMR websocket handler while processing an `isrManifest` message, and usually preceded by `[HMR] Invalid message: {"type":"isrManifest",...}`. Entirely within `next/dist/client`. HMR does not exist in production.
 
 ## Linting & formatting
 
@@ -31,7 +76,8 @@
   - `react/function-component-definition` is turned **off** — both arrow-function and `function` component styles are allowed (in practice, arrow functions assigned to `const` are used consistently).
   - `plugin:security/recommended` flags patterns like dynamic object property access (`array[index]`) — several files carry `// eslint-disable-next-line security/detect-object-injection` comments where indexed access is intentional and safe (e.g. `reducer.ts`, `useRailTrips.ts`).
 - **Prettier** (`.prettierrc.json`): single quotes (incl. JSX), no semicolon omission (`semi: true`), 80-char print width, trailing commas (`es5`), `bracketSameLine: true` (closing `>` of multi-line JSX tags stays on the last prop's line — visible throughout the component files).
-- `.eslintignore` / `.prettierignore` both exclude `.yarn/`, `.next/`, and Serwist's generated `public/sw.js`.
+- `.eslintignore` / `.prettierignore` both exclude `.yarn/`, `.next/`, Serwist's generated `public/sw.js`, and Next's generated `next-env.d.ts` — all files that are regenerated by tooling and must not be hand-edited to satisfy a linter.
+- There is no `next lint`: Next.js 16 removed that command, and `next build` no longer lints as a side effect. `eslint:check` (which CI runs) and `lint-staged` (which the pre-commit hook runs) are what enforce linting. Both invoke the ESLint CLI directly against the same `.eslintrc.cjs`.
 
 ## Git hooks
 

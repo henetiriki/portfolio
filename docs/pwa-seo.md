@@ -16,7 +16,7 @@
 
 ## Sitemap & robots (`next-sitemap`)
 
-- `next-sitemap.config.js` runs as part of `yarn build` (`"build": "next build && next-sitemap"`), generating `public/sitemap.xml` and `public/robots.txt` from `siteUrl: process.env.HOST`.
+- `next-sitemap.config.js` runs as part of `yarn build` (`"build": "next build --webpack && next-sitemap"`), generating `public/sitemap.xml` and `public/robots.txt` from `siteUrl: process.env.HOST`.
 - `generateIndexSitemap: false` — a single flat `sitemap.xml`, no sitemap index, appropriate for a handful of routes.
 - `robotsTxtOptions.policies`: blocks every Baidu spider variant (`Baiduspider`, `baiduspider`, `Baiduspider+`, `-video`, `-image`) site-wide, disallows `/static` for all other user agents, and otherwise allows everything.
 - The generated `public/robots.txt` is checked into git (not gitignored, unlike `sitemap.xml`/`sw.js`) — it's committed output rather than a purely ephemeral build artifact, so a `/static` route disallow or Baidu block can be reviewed/diffed directly. This is the reason the recent "Add /static to robots.txt ignore" commit shows up as a plain file diff.
