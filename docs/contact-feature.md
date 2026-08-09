@@ -5,7 +5,7 @@ The `/contact` page lets a visitor send a message that's emailed to the site own
 ## Client side
 
 - **`pages/contact.tsx`** sets page meta and dynamically imports (`ssr: false`) `ContactForm`.
-- **`ContactForm`** (`@components/form`) renders Name/Email/Message via Mantine `TextInput`/`Textarea`, wired through `useMantineForm()`. It also renders a hidden `TextInput name='heuning'` — a honeypot field styled `display: none`, invisible to humans but often auto-filled by bots — Afrikaans for "honey", matching the "honeypot" concept.
+- **`ContactForm`** (`@components/form`) renders Name/Email/Message via Mantine `TextInput`/`Textarea`, wired through `useMantineForm()`. It also carries a secondary anti-automation signal; its identifier, detection rule and presentation are intentionally not documented here.
 - **`useMantineForm`** (`@hooks/useMantineForm.ts`):
   - Uses `@mantine/form`'s `useForm` with client-side validators: `isEmail` for email, `isNotEmpty` for name/message, `validateInputOnBlur: true`.
   - `submitForm` POSTs JSON to `/api/contact`. On `response.ok`, marks `isSubmitted` and resets the form. On failure, reads `{ data: string[] }` (error codes) from the response body and maps each through `errorFromCode` (`@utils/contact.ts`) to a JSX message looked up in `@fixtures/contact`'s `errorMessages`, falling back to a generic error on network/parse failure.
@@ -17,7 +17,7 @@ The `/contact` page lets a visitor send a message that's emailed to the site own
 
 Request flow in `api/contact.ts`:
 
-1. Read `Submission` (`{ name, email, message, heuning? }`) from `req.body`.
+1. Read the submitted contact data from `req.body`.
 2. `validate(submission)` → array of `ErrorType` codes; if non-empty, respond `400 { data: errors }`.
 3. `send(buildMessage(submission))` — email to the owner; on failure respond `500`.
 4. `send(buildMessageCopy(submission))` — copy back to the sender; on failure respond `500`.
@@ -27,7 +27,6 @@ Request flow in `api/contact.ts`:
 
 | Check                                                         | Error code                                                   |
 | ------------------------------------------------------------- | ------------------------------------------------------------ |
-| Honeypot field (`heuning`) is non-empty                       | `e_spam` — short-circuits immediately, no other checks run   |
 | `name` missing                                                | `e_name_required`                                            |
 | `name` contains a disallowed character (`< > ^ \| % ( ) & +`) | `e_name_disallowed_chars`                                    |
 | `name` contains a URL                                         | flags `hasUrl` (see below)                                   |
@@ -38,7 +37,9 @@ Request flow in `api/contact.ts`:
 | `message` contains a URL                                      | flags `hasUrl`                                               |
 | any field flagged `hasUrl`                                    | `e_contains_url` (appended once, after the per-field checks) |
 
-Multiple errors can be returned together (except the honeypot short-circuit); the client renders one toast per code.
+Multiple field-validation errors can be returned together; the client renders one toast per code. The additional anti-automation checks are intentionally omitted from this table.
+
+> **Known hardening work:** the 2026-08-09 review found that the contact pipeline needs an end-to-end privacy, API-contract, retry-safety and defense-in-depth pass. Operational details of the anti-automation finding are deliberately omitted from public documentation; see the scoped [roadmap item](roadmap.md#security-reliability--accessibility).
 
 ### Email construction
 
