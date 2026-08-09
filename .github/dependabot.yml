@@ -1,0 +1,48 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Africa/Johannesburg
+    open-pull-requests-limit: 5
+    ignore:
+      # TypeScript 7 remains blocked by Yarn and typescript-eslint support.
+      - dependency-name: typescript
+        update-types:
+          - version-update:semver-major
+      # Babel 8 remains blocked by Jest's Babel 7 dependency chain.
+      - dependency-name: '@babel/core'
+        update-types:
+          - version-update:semver-major
+      # Keep Node types on the deployed runtime major; update both together.
+      - dependency-name: '@types/node'
+        update-types:
+          - version-update:semver-major
+    groups:
+      production-dependencies:
+        dependency-type: production
+        update-types:
+          - minor
+          - patch
+      development-dependencies:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Africa/Johannesburg
+    open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns:
+          - '*'

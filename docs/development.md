@@ -98,6 +98,17 @@ Thrown at `handleStaticIndicator` inside Next's HMR websocket handler while proc
 
 So every commit auto-fixes lint issues and reformats staged files of the listed types (including this `/docs` folder's Markdown) before the commit completes.
 
+## Dependency update automation
+
+`.github/dependabot.yml` enables GitHub-hosted weekly version checks for both dependency surfaces:
+
+- The `npm` ecosystem covers this repository's root `package.json` and Yarn 4 lockfile. Minor and patch updates are grouped into separate production- and development-dependency pull requests; major updates remain individual so their migrations and compatibility constraints can be reviewed in isolation. At most five version-update pull requests may remain open for this ecosystem.
+- Roadmap blockers are enforced in the configuration rather than left for manual PR closure: routine version updates ignore majors for `typescript` while TypeScript 7 is ecosystem-blocked, `@babel/core` while Jest remains on Babel 7, and `@types/node` until the deployed Node runtime moves to its next planned major. Supported updates within the current major lines continue normally. GitHub does not apply `ignore.update-types` to security updates, so an advisory can still surface instead of being silently hidden. Remove each routine-update ignore only as part of completing its corresponding roadmap upgrade.
+- The `github-actions` ecosystem scans `.github/workflows` from the repository root and groups available Action updates into one pull request, also with a five-PR limit.
+- Both checks run on Mondays at 06:00 `Africa/Johannesburg`. Dependabot creates operational pull requests; it is not another CI validation step. Each generated pull request goes through the existing `CI` workflow like any other change.
+
+Dependabot version updates are configured entirely in the repository and do not require a paid GitHub plan. Repository-level Dependabot alerts and security-update settings remain separate GitHub settings; this file does not imply that either setting has been enabled.
+
 ## Testing
 
 Jest + React Testing Library were set up 2026-08-06, followed by a full tiered coverage pass (see [Project History](project-history.md)). As of 2026-08-09, coverage is **100% branches/functions/lines, 97.51% statements** — the one statement gap (`fixtures/travel/stations.ts`) is a confirmed coverage-tool instrumentation artifact, not a real gap. A global `coverageThreshold` in `jest.config.js` (80% branches/functions/lines/statements) fails `test:coverage` if coverage regresses below that floor — well under current coverage, so it's a regression guard rather than a target to hit. It's a local/CI check only; it isn't yet wired to block PR merges (that needs a GitHub branch-protection rule, and ideally diff/patch coverage on top of this whole-project number — see [Roadmap](roadmap.md#testing--automation)).
