@@ -6,7 +6,7 @@ Four content pages (Home, Experience, Portfolio, Travel) plus a Contact page tha
 
 | Concern             | Choice                                                       |
 | ------------------- | ------------------------------------------------------------ |
-| **Framework**       | Next.js 15 (Pages Router) + React 19 + TypeScript (`strict`) |
+| **Framework**       | Next.js 16 (Pages Router) + React 19 + TypeScript (`strict`) |
 | **UI**              | Mantine v9, styled with CSS Modules + CSS variables          |
 | **Hosting**         | Vercel (auto-deploys `main`)                                 |
 | **Package manager** | Yarn 4 (Berry)                                               |
@@ -28,18 +28,18 @@ The app needs environment variables to run — a Google Maps key, Gmail SMTP cre
 
 ## Scripts
 
-| Script                                      | Purpose                                                             |
-| ------------------------------------------- | ------------------------------------------------------------------- |
-| `yarn dev`                                  | Dev server with the Node inspector attached                         |
-| `yarn build`                                | Production build, then `next-sitemap` (sitemap + robots.txt)        |
-| `yarn start`                                | Serve a production build locally                                    |
-| `yarn test`                                 | Jest + React Testing Library                                        |
-| `yarn test:coverage`                        | Tests with coverage (80% global threshold)                          |
-| `yarn test:watch`                           | Tests in watch mode                                                 |
-| `yarn type-check`                           | `tsc --noEmit`                                                      |
-| `yarn eslint:check` / `eslint:write`        | Lint / lint and autofix                                             |
-| `yarn prettier:check` / `prettier:write`    | Format check / write                                                |
-| `yarn css-vars:generate` / `css-vars:check` | Regenerate / verify the WebStorm CSS-variable stub from `colors.ts` |
+| Script                                      | Purpose                                                                |
+| ------------------------------------------- | ---------------------------------------------------------------------- |
+| `yarn dev`                                  | Dev server (Turbopack) with the Node inspector attached                |
+| `yarn build`                                | Production build (webpack), then `next-sitemap` (sitemap + robots.txt) |
+| `yarn start`                                | Serve a production build locally                                       |
+| `yarn test`                                 | Jest + React Testing Library                                           |
+| `yarn test:coverage`                        | Tests with coverage (80% global threshold)                             |
+| `yarn test:watch`                           | Tests in watch mode                                                    |
+| `yarn type-check`                           | `tsc --noEmit`                                                         |
+| `yarn eslint:check` / `eslint:write`        | Lint / lint and autofix                                                |
+| `yarn prettier:check` / `prettier:write`    | Format check / write                                                   |
+| `yarn css-vars:generate` / `css-vars:check` | Regenerate / verify the WebStorm CSS-variable stub from `colors.ts`    |
 
 Set `WITH_PWA=true` to build with the Serwist service worker (this is on in production, off by default locally).
 

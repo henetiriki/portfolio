@@ -9,18 +9,28 @@
 
 | Script                              | Command                                                    | Purpose                                                                               |
 | ----------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `dev`                               | `NODE_OPTIONS='--inspect --trace-warnings' next dev`       | Local dev server with the Node inspector attached and full warning traces             |
-| `build`                             | `next build && next-sitemap`                               | Production build, followed by sitemap/robots generation                               |
+| `dev`                               | `NODE_OPTIONS='--inspect --trace-warnings' next dev`       | Local dev server (Turbopack) with the Node inspector attached and full warning traces |
+| `build`                             | `next build --webpack && next-sitemap`                     | Production build (webpack — see below), followed by sitemap/robots generation         |
 | `start`                             | `next start`                                               | Serve a production build                                                              |
 | `clean`                             | `rm -rf .next`                                             | Wipe the build cache                                                                  |
-| `lint:check` / `lint:write`         | `next lint` [`--fix`]                                      | Next.js's own ESLint integration                                                      |
-| `eslint:check` / `eslint:write`     | `eslint .` [`--fix`]                                       | Direct ESLint invocation (same config, run outside the Next.js CLI wrapper)           |
+| `eslint:check` / `eslint:write`     | `eslint .` [`--fix`]                                       | Lint / lint and autofix                                                               |
 | `prettier:check` / `prettier:write` | `prettier . --check/--write --ignore-path .prettierignore` | Formatting                                                                            |
 | `type-check`                        | `tsc --pretty --noEmit`                                    | TypeScript type checking without emitting output                                      |
 | `prepare`                           | `husky install`                                            | Installs git hooks (runs automatically on `yarn install` via the `prepare` lifecycle) |
 | `test`                              | `jest`                                                     | Runs the Jest suite once                                                              |
 | `test:watch`                        | `jest --watch`                                             | Jest in watch mode                                                                    |
 | `test:coverage`                     | `jest --coverage`                                          | Jest with a coverage report                                                           |
+
+## Bundlers: Turbopack in dev, webpack in builds
+
+Next.js 16 made Turbopack the default for **both** `next dev` and `next build`. This project deliberately splits them:
+
+- **`next dev` uses Turbopack** (the default — no flag). Verified to run this project's full PostCSS pipeline correctly: `postcss-simple-vars` substitutes `$mantine-breakpoint-*` to literal `em` values, CSS Modules hash as normal, and autoprefixer still emits vendor prefixes.
+- **`next build` uses webpack** via an explicit `--webpack` flag. This is not a preference — Next 16 **hard-fails a Turbopack build when a webpack config is present**, and `@serwist/next` injects one. The PWA build (`WITH_PWA=true`, what production runs) would otherwise not build at all. `@serwist/next@10`, which may change this, is preview-only; revisit when it ships stable.
+
+The practical consequence: **dev and production are built by different bundlers**, so a bundler-specific difference can in principle reach production without showing up locally. Keep the pre-PR production build in the [release checklist](release-checklist.md) as the thing that catches it.
+
+`next dev` writes to `.next/dev` while `next build` writes to `.next` — they no longer collide, so a production build can run with a dev server live.
 
 ## Linting & formatting
 
@@ -31,7 +41,8 @@
   - `react/function-component-definition` is turned **off** — both arrow-function and `function` component styles are allowed (in practice, arrow functions assigned to `const` are used consistently).
   - `plugin:security/recommended` flags patterns like dynamic object property access (`array[index]`) — several files carry `// eslint-disable-next-line security/detect-object-injection` comments where indexed access is intentional and safe (e.g. `reducer.ts`, `useRailTrips.ts`).
 - **Prettier** (`.prettierrc.json`): single quotes (incl. JSX), no semicolon omission (`semi: true`), 80-char print width, trailing commas (`es5`), `bracketSameLine: true` (closing `>` of multi-line JSX tags stays on the last prop's line — visible throughout the component files).
-- `.eslintignore` / `.prettierignore` both exclude `.yarn/`, `.next/`, and Serwist's generated `public/sw.js`.
+- `.eslintignore` / `.prettierignore` both exclude `.yarn/`, `.next/`, Serwist's generated `public/sw.js`, and Next's generated `next-env.d.ts` — all files that are regenerated by tooling and must not be hand-edited to satisfy a linter.
+- There is no `next lint`: Next.js 16 removed that command, and `next build` no longer lints as a side effect. `eslint:check` (which CI runs) and `lint-staged` (which the pre-commit hook runs) are what enforce linting. Both invoke the ESLint CLI directly against the same `.eslintrc.cjs`.
 
 ## Git hooks
 

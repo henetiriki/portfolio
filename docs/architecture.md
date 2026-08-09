@@ -4,7 +4,7 @@
 
 | Concern         | Choice                                                                                     |
 | --------------- | ------------------------------------------------------------------------------------------ |
-| Framework       | Next.js `^15.5.23`, **Pages Router** (`src/pages`)                                         |
+| Framework       | Next.js `^16.3.0`, **Pages Router** (`src/pages`)                                          |
 | UI runtime      | React `^19` (`react`, `react-dom`)                                                         |
 | Language        | TypeScript `^5.9`, `strict: true`                                                          |
 | UI library      | Mantine v9 (`core`, `form`, `hooks`, `notifications`)                                      |
