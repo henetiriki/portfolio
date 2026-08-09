@@ -136,7 +136,11 @@ Console output is muted globally during test runs: `jest.setup.ts` spies on `con
 
 ## TypeScript
 
-`tsconfig.json`: `strict: true`, `target: es2015`, `moduleResolution: node`, `jsx: preserve` (Next.js handles the actual JSX transform), `isolatedModules: true`, `incremental: true`. No `paths` beyond the aliases listed in [Architecture](architecture.md).
+The project uses TypeScript 6, the final JavaScript-based bridge release before the native TypeScript 7 toolchain. The root `tsconfig.json` uses `strict: true`, `target: es2015`, `module: esnext`, `moduleResolution: bundler`, `jsx: react-jsx`, `isolatedModules: true` and `incremental: true`.
+
+TypeScript 6 deprecates `baseUrl`, so every alias target under `compilerOptions.paths` is explicitly relative to the config (`./src/...`). It also changes the default global `types` set from every visible `@types` package to none; the root project therefore declares only `google.maps`, `jest` and `node`. Do not replace that list with `"*"`, which would restore the slower and less predictable pre-6 behavior.
+
+The service worker remains a separate TypeScript project because its `webworker` library cannot be mixed with the application's DOM libraries. Its module resolution is also `bundler`, replacing the deprecated `node`/`node10` mode, and CI checks it independently.
 
 ## Local environment setup
 

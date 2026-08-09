@@ -3,7 +3,7 @@
     "target": "es2015",
     "lib": ["esnext", "webworker"],
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": true,
     "skipLibCheck": true,
     "noEmit": true,

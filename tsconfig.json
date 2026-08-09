@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "target": "es2015",
-    "baseUrl": ".",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -13,20 +12,21 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "paths": {
-      "@components/*": ["src/components/*"],
-      "@containers/*": ["src/containers/*"],
-      "@fixtures/*": ["src/fixtures/*"],
-      "@hooks": ["src/hooks"],
-      "@pages/*": ["src/pages/*"],
-      "@server/*": ["src/server/*"],
-      "@state/*": ["src/state/*"],
-      "@styles": ["src/styles"],
-      "@styles/*": ["src/styles/*"],
-      "@utils/*": ["src/utils/*"]
+      "@components/*": ["./src/components/*"],
+      "@containers/*": ["./src/containers/*"],
+      "@fixtures/*": ["./src/fixtures/*"],
+      "@hooks": ["./src/hooks"],
+      "@pages/*": ["./src/pages/*"],
+      "@server/*": ["./src/server/*"],
+      "@state/*": ["./src/state/*"],
+      "@styles": ["./src/styles"],
+      "@styles/*": ["./src/styles/*"],
+      "@utils/*": ["./src/utils/*"]
     },
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
+    "types": ["google.maps", "jest", "node"],
     "incremental": true
   },
   "include": [
