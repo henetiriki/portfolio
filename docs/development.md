@@ -140,7 +140,7 @@ Console output is muted globally during test runs: `jest.setup.ts` spies on `con
 
 ## Local environment setup
 
-1. Ensure Node 20 and Corepack-enabled Yarn 4 are active (`corepack enable` if Yarn isn't already resolving to 4.8.1).
+1. Ensure Node 24 and Corepack-enabled Yarn 4 are active (`corepack enable` if Yarn isn't already resolving to 4.8.1).
 2. `yarn install` (also runs `husky install` via `prepare`).
 3. Populate `.env.local` (gitignored) with the secrets listed in [Environment Variables](environment-variables.md) — the contact form (`GMAIL_*`), the travel map (`GOOGLE_MAPS_API_KEY`), and image hosting (`IMAGE_HOST*`) won't function without them; the rest of the site renders fine without them.
 4. `yarn dev` and open `http://localhost:3000`.
