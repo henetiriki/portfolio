@@ -1,9 +1,8 @@
-import { Wrapper } from '@googlemaps/react-wrapper';
 import { Box } from '@mantine/core';
 import { useCallback, useRef, useState } from 'react';
-import { Map, Marker, Polyline } from '@components/travel';
+import { Map, MapError, MapLoader, Marker, Polyline } from '@components/travel';
 import { cities, markerLocations, tripPolylines } from '@fixtures/travel';
-import { useMap, useRailTrips } from '@hooks';
+import { useGoogleMaps, useRailTrips } from '@hooks';
 import type {
   City,
   Location,
@@ -13,14 +12,8 @@ import type {
 } from '@fixtures/travel/types';
 import type { FC } from 'react';
 
-// Always set in every real environment (dev/test/.env.local/Vercel) — see
-// docs/environment-variables.md. Asserted rather than defaulted so a missing
-// key fails loudly (Google Maps rejecting an empty apiKey) instead of
-// silently rendering a broken map.
-const googleApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
-
 export const MapWrapper: FC = () => {
-  const { render } = useMap();
+  const mapStatus = useGoogleMaps();
   const railTripPolylines = useRailTrips();
   const [dropMarkers, setDropMarkers] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -53,7 +46,9 @@ export const MapWrapper: FC = () => {
 
   return (
     <>
-      <Wrapper apiKey={googleApiKey} libraries={['geometry']} render={render}>
+      {mapStatus === 'loading' && <MapLoader />}
+      {mapStatus === 'failure' && <MapError />}
+      {mapStatus === 'success' && (
         <Map>
           {cities.map(
             ({ description, icon, position, title }: City, idx: number) => (
@@ -119,7 +114,7 @@ export const MapWrapper: FC = () => {
                 ))
             )}
         </Map>
-      </Wrapper>
+      )}
       <Box ref={intersectionRef} />
     </>
   );

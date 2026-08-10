@@ -25,14 +25,14 @@ GitHub's production-mode CI build does not load `.env.test`, so `.github/workflo
 
 ### Public (re-exposed to the client as `NEXT_PUBLIC_*` via `next.config.js`'s `env` key)
 
-| Variable              | Consumed by                                              | Purpose                                                                                                   |
-| --------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `HOST`                | `next.config.js` → `env.NEXT_PUBLIC_SITE_URL`            | Canonical and Open Graph/Twitter URLs, social-image base URL, sitemap base URL                            |
-| `IMAGE_HOST`          | `next.config.js` → `env.NEXT_PUBLIC_IMAGE_HOST`          | Base URL `FixedBackground` prefixes onto the random Instagram `imgId` to build the photo URL              |
-| `IMAGE_HOST_NAME`     | `next.config.js` `images.remotePatterns[0].hostname`     | Hostname Next/Image is allowed to optimize/serve images from                                              |
-| `IMAGE_HOST_PATH`     | `next.config.js` `images.remotePatterns[0].pathname`     | Allowed path prefix under `IMAGE_HOST_NAME`                                                               |
-| `IMAGE_HOST_PROTOCOL` | `next.config.js` `images.remotePatterns[0].protocol`     | `http`/`https` for the remote image host                                                                  |
-| `GOOGLE_MAPS_API_KEY` | `next.config.js` → `env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps JavaScript API key used by `MapWrapper`'s `Wrapper` — see [Travel Feature](travel-feature.md) |
+| Variable              | Consumed by                                              | Purpose                                                                                                                       |
+| --------------------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `HOST`                | `next.config.js` → `env.NEXT_PUBLIC_SITE_URL`            | Canonical and Open Graph/Twitter URLs, social-image base URL, sitemap base URL                                                |
+| `IMAGE_HOST`          | `next.config.js` → `env.NEXT_PUBLIC_IMAGE_HOST`          | Base URL `FixedBackground` prefixes onto the random Instagram `imgId` to build the photo URL                                  |
+| `IMAGE_HOST_NAME`     | `next.config.js` `images.remotePatterns[0].hostname`     | Hostname Next/Image is allowed to optimize/serve images from                                                                  |
+| `IMAGE_HOST_PATH`     | `next.config.js` `images.remotePatterns[0].pathname`     | Allowed path prefix under `IMAGE_HOST_NAME`                                                                                   |
+| `IMAGE_HOST_PROTOCOL` | `next.config.js` `images.remotePatterns[0].protocol`     | `http`/`https` for the remote image host                                                                                      |
+| `GOOGLE_MAPS_API_KEY` | `next.config.js` → `env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps JavaScript API key used by the shared `@googlemaps/js-api-loader` setup — see [Travel Feature](travel-feature.md) |
 
 ### Server-only (read directly via `process.env` in `src/server/` and API routes)
 

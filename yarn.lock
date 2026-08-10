@@ -1299,21 +1299,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@googlemaps/js-api-loader@npm:^1.16.6":
-  version: 1.16.10
-  resolution: "@googlemaps/js-api-loader@npm:1.16.10"
-  checksum: 10/57ff883a40ba455e497f231d3b735f39b77bb32ab647808f9fad7225279eebe3c73d13abe5ca182ebc3deb48f3f3a21c1e9c2ad5b6884ec638793f239e881ad8
-  languageName: node
-  linkType: hard
-
-"@googlemaps/react-wrapper@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@googlemaps/react-wrapper@npm:1.2.0"
+"@googlemaps/js-api-loader@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "@googlemaps/js-api-loader@npm:2.1.1"
   dependencies:
-    "@googlemaps/js-api-loader": "npm:^1.16.6"
-  peerDependencies:
-    react: ">=16.8.0"
-  checksum: 10/d59130be308e53ee93bfb4e473ee96ef384abd5b9b31cdf0557084091415663f81f4401e57d7328b7f9666aa835657700f55c545c8e36294203764950f74c492
+    "@types/google.maps": "npm:^3.53.1"
+  checksum: 10/beb8dac6eed7be668ba6d5efe9e2f6085898fe7597c667eba0f9ab204d1620885d737881cb7a76d1adc6ea5aeaab9b6bfbadf2f6442ac435783c783c6401407e
   languageName: node
   linkType: hard
 
@@ -2498,7 +2489,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/google.maps@npm:^3.65.4":
+"@types/google.maps@npm:^3.53.1, @types/google.maps@npm:^3.65.4":
   version: 3.65.5
   resolution: "@types/google.maps@npm:3.65.5"
   checksum: 10/55c28f6ab3802090c8fcb73d197134216e96b90de71739a3d2347b26ae482e03a8fe92890fa55f3cd36bcf7715e3d77092b20e9d313fabfdb8de33fb867a6389
@@ -7382,7 +7373,7 @@ __metadata:
   resolution: "portfolio@workspace:."
   dependencies:
     "@babel/core": "npm:^7"
-    "@googlemaps/react-wrapper": "npm:^1.2.0"
+    "@googlemaps/js-api-loader": "npm:^2.1.1"
     "@googlemaps/typescript-guards": "npm:^2.0.3"
     "@mantine/core": "npm:^9.5.1"
     "@mantine/form": "npm:^9.5.1"

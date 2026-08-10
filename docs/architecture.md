@@ -10,7 +10,7 @@
 | UI library      | Mantine v9 (`core`, `form`, `hooks`, `notifications`)                                      |
 | Styling         | CSS Modules + CSS variables (`postcss-preset-mantine`, `postcss-simple-vars`)              |
 | Icons           | `@tabler/icons-react`                                                                      |
-| Maps            | `@googlemaps/react-wrapper` + `@googlemaps/typescript-guards` (Google Maps JavaScript API) |
+| Maps            | `@googlemaps/js-api-loader` + `@googlemaps/typescript-guards` (Google Maps JavaScript API) |
 | Email           | `nodemailer` over Gmail SMTP                                                               |
 | Bot protection  | `botid` (Vercel BotID) client + server checks                                              |
 | PWA             | Serwist (only enabled when `WITH_PWA=true`)                                                |
