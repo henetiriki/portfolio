@@ -1,6 +1,5 @@
 import { useReducedMotion } from '@mantine/hooks';
 import { Polyline } from '@components/travel/Polyline';
-import { PortfolioStateProvider, usePortfolioState } from '@state/context';
 import {
   MockMap,
   MockPolyline,
@@ -8,7 +7,7 @@ import {
   resetGoogleMapsMock,
 } from '@utils/test/googleMapsMock';
 import { act, render } from '@utils/test/render';
-import type { ComponentProps, FC } from 'react';
+import type { ComponentProps } from 'react';
 
 jest.mock('@mantine/hooks', () => ({
   ...jest.requireActual('@mantine/hooks'),
@@ -17,40 +16,23 @@ jest.mock('@mantine/hooks', () => ({
 
 installGoogleMapsMock();
 
-const PolylinesLoadedProbe: FC = () => {
-  const {
-    state: {
-      travel: { railPolylinesLoaded, tripPolylinesLoaded },
-    },
-  } = usePortfolioState();
-
-  return (
-    <div>
-      railPolylinesLoaded: {String(railPolylinesLoaded)}, tripPolylinesLoaded:{' '}
-      {String(tripPolylinesLoaded)}
-    </div>
-  );
-};
-
 const renderPolyline = (
   props: Partial<ComponentProps<typeof Polyline>> = {}
 ) => {
   const map = new MockMap(document.createElement('div'), {});
+  const polylineProps: ComponentProps<typeof Polyline> = {
+    idx: 1,
+    layerId: 'polyline-1',
+    map: map as unknown as google.maps.Map,
+    onRendered: jest.fn(),
+    order: 1,
+    strokeColor: '#fff',
+    ...props,
+  };
 
-  const utils = render(
-    <PortfolioStateProvider>
-      <Polyline
-        idx={1}
-        map={map as unknown as google.maps.Map}
-        order={1}
-        strokeColor='#fff'
-        {...props}
-      />
-      <PolylinesLoadedProbe />
-    </PortfolioStateProvider>
-  );
+  const utils = render(<Polyline {...polylineProps} />);
 
-  return { map, ...utils };
+  return { map, onRendered: polylineProps.onRendered, ...utils };
 };
 
 describe('Polyline', () => {
@@ -116,7 +98,7 @@ describe('Polyline', () => {
   });
 
   it('drops onto the map after an idx * order * 100ms stagger', () => {
-    renderPolyline({ idx: 2, order: 3, paths: ['x'] });
+    const { onRendered } = renderPolyline({ idx: 2, order: 3, paths: ['x'] });
 
     const [polyline] = MockPolyline.instances;
 
@@ -124,60 +106,54 @@ describe('Polyline', () => {
       jest.advanceTimersByTime(599);
     });
     expect(polyline.setMap).not.toHaveBeenCalled();
+    expect(onRendered).not.toHaveBeenCalled();
 
     act(() => {
       jest.advanceTimersByTime(1);
     });
     expect(polyline.setMap).toHaveBeenCalledWith(expect.any(MockMap));
+    expect(onRendered).toHaveBeenCalledWith('polyline-1');
   });
 
   it('draws immediately when reduced motion is preferred', () => {
     (useReducedMotion as jest.Mock).mockReturnValue(true);
-    const { map } = renderPolyline({ idx: 2, order: 3, paths: ['x'] });
+    const { map, onRendered } = renderPolyline({
+      idx: 2,
+      order: 3,
+      paths: ['x'],
+    });
     const [polyline] = MockPolyline.instances;
 
     expect(polyline.setMap).toHaveBeenCalledWith(map);
+    expect(onRendered).toHaveBeenCalledWith('polyline-1');
   });
 
-  it('dispatches railPolylinesLoaded once the end rail polyline has dropped', async () => {
-    const { findByText } = renderPolyline({
-      endRailTripPolyline: true,
-      idx: 1,
-      order: 1,
-      paths: ['x'],
-    });
+  it('reports rendering only once if its map assignment changes', () => {
+    (useReducedMotion as jest.Mock).mockReturnValue(true);
+    const firstMap = new MockMap(document.createElement('div'), {});
+    const secondMap = new MockMap(document.createElement('div'), {});
+    const onRendered = jest.fn();
+    const { rerender } = render(
+      <Polyline
+        idx={1}
+        layerId='polyline-1'
+        map={firstMap as unknown as google.maps.Map}
+        onRendered={onRendered}
+        paths={['x']}
+      />
+    );
 
-    act(() => {
-      jest.advanceTimersByTime(100);
-    });
+    rerender(
+      <Polyline
+        idx={1}
+        layerId='polyline-1'
+        map={secondMap as unknown as google.maps.Map}
+        onRendered={onRendered}
+        paths={['x']}
+      />
+    );
 
-    expect(await findByText(/railPolylinesLoaded: true/)).toBeInTheDocument();
-  });
-
-  it('dispatches tripPolylinesLoaded once the end trip polyline has dropped', async () => {
-    const { findByText } = renderPolyline({
-      endTripPolyline: true,
-      idx: 1,
-      order: 1,
-      paths: ['x'],
-    });
-
-    act(() => {
-      jest.advanceTimersByTime(100);
-    });
-
-    expect(await findByText(/tripPolylinesLoaded: true/)).toBeInTheDocument();
-  });
-
-  it('does not dispatch either loaded flag for a non-end polyline', () => {
-    const { queryByText } = renderPolyline({ idx: 1, order: 1, paths: ['x'] });
-
-    act(() => {
-      jest.advanceTimersByTime(100);
-    });
-
-    expect(queryByText('railPolylinesLoaded: true')).not.toBeInTheDocument();
-    expect(queryByText('tripPolylinesLoaded: true')).not.toBeInTheDocument();
+    expect(onRendered).toHaveBeenCalledTimes(1);
   });
 
   it('rescales the stroke weight in response to zoom changes', () => {
@@ -230,8 +206,7 @@ describe('Polyline', () => {
   });
 
   it('cancels a pending staggered draw on unmount', () => {
-    const { unmount } = renderPolyline({
-      endTripPolyline: true,
+    const { onRendered, unmount } = renderPolyline({
       idx: 2,
       order: 1,
       paths: ['x'],
@@ -246,6 +221,7 @@ describe('Polyline', () => {
 
     expect(polyline.setMap).toHaveBeenCalledTimes(1);
     expect(polyline.setMap).toHaveBeenCalledWith(null);
+    expect(onRendered).not.toHaveBeenCalled();
   });
 
   it('removes the polyline from the map on unmount', () => {

@@ -9,7 +9,6 @@ import {
   useState,
 } from 'react';
 import { MAP_MAX_MOBILE, currentCityPoint, mapOptions } from '@fixtures/travel';
-import { usePortfolioState } from '@state/context';
 import classes from './Map.module.css';
 import type { FC, PropsWithChildren } from 'react';
 
@@ -32,12 +31,12 @@ const interpolateLongitude = (
   return start + shortestDistance * progress;
 };
 
-export const Map: FC<PropsWithChildren> = ({ children }) => {
-  const {
-    state: {
-      travel: { markersLoaded, railPolylinesLoaded, tripPolylinesLoaded },
-    },
-  } = usePortfolioState();
+type MapProps = PropsWithChildren<{
+  layersRendered: boolean;
+  onReady: () => void;
+}>;
+
+export const Map: FC<MapProps> = ({ children, layersRendered, onReady }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const initialZoomSetRef = useRef(false);
   const revealAnimationFrameRef = useRef<number | null>(null);
@@ -45,6 +44,7 @@ export const Map: FC<PropsWithChildren> = ({ children }) => {
   const { width } = useViewportSize();
   const [map, setMap] = useState<google.maps.Map>();
   const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>();
+  const [mapRendered, setMapRendered] = useState(false);
 
   const cancelReveal = useCallback(() => {
     if (revealAnimationFrameRef.current !== null) {
@@ -105,6 +105,25 @@ export const Map: FC<PropsWithChildren> = ({ children }) => {
   }, [mapRef, map, infoWindow]);
 
   useEffect(() => {
+    if (!map) {
+      return;
+    }
+
+    const listener = google.maps.event.addListenerOnce(
+      map,
+      'tilesloaded',
+      () => {
+        setMapRendered(true);
+        onReady();
+      }
+    );
+
+    return () => {
+      listener.remove();
+    };
+  }, [map, onReady]);
+
+  useEffect(() => {
     if (map && width) {
       const mapMaxMobile = width < MAP_MAX_MOBILE;
       const minZoom = mapMaxMobile ? 1 : 2;
@@ -122,7 +141,7 @@ export const Map: FC<PropsWithChildren> = ({ children }) => {
   }, [map, width]);
 
   useEffect(() => {
-    if (map && markersLoaded && railPolylinesLoaded && tripPolylinesLoaded) {
+    if (map && mapRendered && layersRendered) {
       cancelReveal();
 
       if (reduceMotion) {
@@ -134,21 +153,13 @@ export const Map: FC<PropsWithChildren> = ({ children }) => {
     }
 
     return cancelReveal;
-  }, [
-    cancelReveal,
-    map,
-    markersLoaded,
-    railPolylinesLoaded,
-    reduceMotion,
-    revealMap,
-    tripPolylinesLoaded,
-  ]);
+  }, [cancelReveal, layersRendered, map, mapRendered, reduceMotion, revealMap]);
 
   return (
     <>
       <div className={classes.map} id='map' ref={mapRef} />
       {Children.map(children, child => {
-        if (map && infoWindow && isValidElement(child)) {
+        if (map && infoWindow && mapRendered && isValidElement(child)) {
           // set the map prop on the child component
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore

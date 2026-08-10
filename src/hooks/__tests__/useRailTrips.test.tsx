@@ -1,6 +1,6 @@
 import { useRailTrips } from '@hooks';
 import { PortfolioStateProvider } from '@state/context';
-import { renderHook, waitFor } from '@utils/test/render';
+import { act, renderHook, waitFor } from '@utils/test/render';
 import type { FC, PropsWithChildren } from 'react';
 
 const wrapper: FC<PropsWithChildren> = ({ children }) => (
@@ -19,11 +19,16 @@ describe('useRailTrips', () => {
 
     const { result } = renderHook(() => useRailTrips(), { wrapper });
 
-    expect(result.current).toEqual([]);
+    expect(result.current).toEqual({
+      railTripPolylines: [],
+      settled: false,
+    });
 
-    await waitFor(() => expect(result.current).toHaveLength(1));
+    await waitFor(() => expect(result.current.settled).toBe(true));
 
-    expect(result.current[0].tripPaths).toEqual([['encoded-trip-1']]);
+    expect(result.current.railTripPolylines[0].tripPaths).toEqual([
+      ['encoded-trip-1'],
+    ]);
     expect(global.fetch).toHaveBeenCalledWith(
       '/api/rail-trips',
       expect.objectContaining({ signal: expect.any(AbortSignal) })
@@ -41,10 +46,16 @@ describe('useRailTrips', () => {
 
     const { result } = renderHook(() => useRailTrips(), { wrapper });
 
-    await waitFor(() => expect(result.current).toHaveLength(2));
+    await waitFor(() =>
+      expect(result.current.railTripPolylines).toHaveLength(2)
+    );
 
-    expect(result.current[0].tripPaths).toEqual([['past-trip']]);
-    expect(result.current[1].tripPaths).toEqual([['future-trip']]);
+    expect(result.current.railTripPolylines[0].tripPaths).toEqual([
+      ['past-trip'],
+    ]);
+    expect(result.current.railTripPolylines[1].tripPaths).toEqual([
+      ['future-trip'],
+    ]);
   });
 
   it('does not fetch again once rail trips are cached', async () => {
@@ -60,10 +71,31 @@ describe('useRailTrips', () => {
       wrapper,
     });
 
-    await waitFor(() => expect(result.current).toHaveLength(1));
+    await waitFor(() => expect(result.current.settled).toBe(true));
 
     rerender();
 
     expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('settles with no rail layers when all fetch attempts fail', async () => {
+    jest.useFakeTimers();
+    global.fetch = jest.fn().mockRejectedValue(new Error('offline'));
+
+    const { result } = renderHook(() => useRailTrips(), { wrapper });
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    expect(result.current).toEqual({
+      railTripPolylines: [],
+      settled: true,
+    });
+    expect(console.error).toHaveBeenCalledWith(
+      'Unable to load rail-trip map data'
+    );
+
+    jest.useRealTimers();
   });
 });

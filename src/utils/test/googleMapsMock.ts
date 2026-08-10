@@ -23,6 +23,21 @@ const addListener = (target: object, eventName: string, handler: Handler) => {
   };
 };
 
+const addListenerOnce = (
+  target: object,
+  eventName: string,
+  handler: Handler
+) => {
+  const handleEvent = (...args: any[]) => {
+    listener.remove();
+    handler(...args);
+  };
+
+  const listener = addListener(target, eventName, handleEvent);
+
+  return listener;
+};
+
 const removeListener = (listener: { remove: () => void }) => {
   listener.remove();
 };
@@ -233,7 +248,7 @@ export const installGoogleMapsMock = () => {
       LatLngBounds: MockLatLngBounds,
       Map: MockMap,
       Polyline: MockPolyline,
-      event: { addListener, removeListener },
+      event: { addListener, addListenerOnce, removeListener },
       geometry: { encoding: { decodePath } },
       marker: { AdvancedMarkerElement: MockAdvancedMarkerElement },
     },

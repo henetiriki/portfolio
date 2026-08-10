@@ -12,16 +12,6 @@ export const reducer = (
   const { shared, travel } = state;
 
   switch (type) {
-    case 'set-markers-loaded':
-      const { markersLoaded } = payload;
-
-      return {
-        ...state,
-        travel: {
-          ...travel,
-          markersLoaded,
-        },
-      };
     case 'set-page-top-ref':
       const { pageTopRef } = payload;
 
@@ -30,16 +20,6 @@ export const reducer = (
         shared: {
           ...shared,
           pageTopRef,
-        },
-      };
-    case 'set-rail-polylines-loaded':
-      const { railPolylinesLoaded } = payload;
-
-      return {
-        ...state,
-        travel: {
-          ...travel,
-          railPolylinesLoaded,
         },
       };
     case 'set-rail-trip-polylines':
@@ -52,26 +32,6 @@ export const reducer = (
           railTripPolylines,
         },
       };
-    case 'set-trip-polylines-loaded':
-      const { tripPolylinesLoaded } = payload;
-
-      return {
-        ...state,
-        travel: {
-          ...travel,
-          tripPolylinesLoaded,
-        },
-      };
-    case 'reset-markers-polyline-loaded': {
-      const { railTripPolylines = [] } = travel;
-
-      return {
-        ...state,
-        travel: {
-          railTripPolylines: [...railTripPolylines],
-        },
-      };
-    }
     case 'set-ig-img-id':
       const { imgId } = payload;
 

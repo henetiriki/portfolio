@@ -1,8 +1,8 @@
 import { MapWrapper } from '@components/travel/MapWrapper';
 import { cities } from '@fixtures/travel';
 import { useGoogleMaps, useRailTrips } from '@hooks';
-import { act, render, screen } from '@utils/test/render';
-import type { ComponentProps, PropsWithChildren } from 'react';
+import { act, fireEvent, render, screen } from '@utils/test/render';
+import type { PropsWithChildren } from 'react';
 
 jest.mock('../../../hooks', () => ({
   ...jest.requireActual('../../../hooks'),
@@ -10,22 +10,51 @@ jest.mock('../../../hooks', () => ({
   useRailTrips: jest.fn(),
 }));
 jest.mock('../index', () => ({
-  Map: ({ children }: PropsWithChildren) => <div>{children}</div>,
+  Map: ({
+    children,
+    layersRendered,
+    onReady,
+  }: PropsWithChildren<{
+    layersRendered: boolean;
+    onReady: () => void;
+  }>) => (
+    <div data-layers-rendered={String(layersRendered)} data-testid='map'>
+      <button data-testid='map-ready' onClick={onReady} type='button' />
+      {children}
+    </div>
+  ),
   MapError: () => <div>Map failed</div>,
   MapLoader: () => <div>Map loading</div>,
-  Marker: (props: ComponentProps<'div'> & Record<string, unknown>) => (
-    <div
-      data-endmarker={String(!!props.endMarker)}
-      data-idx={props.idx as number}
+  Marker: ({
+    idx,
+    layerId,
+    onRendered,
+  }: {
+    idx: number;
+    layerId: string;
+    onRendered: (layerId: string) => void;
+  }) => (
+    <button
+      data-idx={idx}
       data-testid='marker'
+      onClick={() => onRendered(layerId)}
+      type='button'
     />
   ),
-  Polyline: (props: ComponentProps<'div'> & Record<string, unknown>) => (
-    <div
-      data-endrailtrippolyline={String(!!props.endRailTripPolyline)}
-      data-endtrippolyline={String(!!props.endTripPolyline)}
-      data-idx={props.idx as number}
+  Polyline: ({
+    idx,
+    layerId,
+    onRendered,
+  }: {
+    idx: number;
+    layerId: string;
+    onRendered: (layerId: string) => void;
+  }) => (
+    <button
+      data-idx={idx}
       data-testid='polyline'
+      onClick={() => onRendered(layerId)}
+      type='button'
     />
   ),
 }));
@@ -41,6 +70,20 @@ const triggerIntersection = (isIntersecting: boolean) => {
   });
 };
 
+const reportMapReady = () => {
+  fireEvent.click(screen.getByTestId('map-ready'));
+};
+
+const startLayers = () => {
+  triggerIntersection(true);
+  reportMapReady();
+};
+
+const getLayers = () => [
+  ...screen.getAllByTestId('marker'),
+  ...screen.getAllByTestId('polyline'),
+];
+
 describe('MapWrapper', () => {
   beforeEach(() => {
     intersectionCallback = undefined;
@@ -53,42 +96,52 @@ describe('MapWrapper', () => {
       };
     }) as unknown as typeof IntersectionObserver;
     (useGoogleMaps as jest.Mock).mockReturnValue('success');
-    (useRailTrips as jest.Mock).mockReturnValue([]);
+    (useRailTrips as jest.Mock).mockReturnValue({
+      railTripPolylines: [],
+      settled: true,
+    });
   });
 
-  it('shows the loader and keeps the intersection sentinel active while loading', () => {
+  it('shows the loader without observing a map that does not exist yet', () => {
     (useGoogleMaps as jest.Mock).mockReturnValue('loading');
 
     render(<MapWrapper />);
 
     expect(screen.getByText('Map loading')).toBeInTheDocument();
     expect(screen.queryAllByTestId('marker')).toHaveLength(0);
-    expect(global.IntersectionObserver).toHaveBeenCalledTimes(1);
+    expect(global.IntersectionObserver).not.toHaveBeenCalled();
   });
 
-  it('shows the map error without rendering map content after a load failure', () => {
+  it('shows the map error without observing or rendering map content', () => {
     (useGoogleMaps as jest.Mock).mockReturnValue('failure');
 
     render(<MapWrapper />);
 
     expect(screen.getByText('Map failed')).toBeInTheDocument();
     expect(screen.queryAllByTestId('marker')).toHaveLength(0);
+    expect(global.IntersectionObserver).not.toHaveBeenCalled();
   });
 
-  it('always renders exactly one marker per city, even before the map has intersected', () => {
+  it('waits for base-map readiness after the map becomes visible', () => {
     render(<MapWrapper />);
 
-    expect(screen.getAllByTestId('marker')).toHaveLength(cities.length);
+    triggerIntersection(true);
+    expect(screen.queryAllByTestId('marker')).toHaveLength(0);
+
+    reportMapReady();
+
+    expect(screen.getAllByTestId('marker').length).toBeGreaterThan(
+      cities.length
+    );
+    expect(screen.getAllByTestId('polyline').length).toBeGreaterThan(0);
   });
 
-  it('renders no polylines and no extra markers before the sentinel intersects', () => {
+  it('waits for viewport visibility after the base map becomes ready', () => {
     render(<MapWrapper />);
 
-    expect(screen.queryAllByTestId('polyline')).toHaveLength(0);
-  });
+    reportMapReady();
+    expect(screen.queryAllByTestId('marker')).toHaveLength(0);
 
-  it('drops additional markers and polylines once the sentinel intersects', () => {
-    render(<MapWrapper />);
     triggerIntersection(true);
 
     expect(screen.getAllByTestId('marker').length).toBeGreaterThan(
@@ -97,9 +150,9 @@ describe('MapWrapper', () => {
     expect(screen.getAllByTestId('polyline').length).toBeGreaterThan(0);
   });
 
-  it('keeps the deferred map layers mounted after the first intersection', () => {
+  it('keeps the map layers mounted after the first intersection', () => {
     render(<MapWrapper />);
-    triggerIntersection(true);
+    startLayers();
     triggerIntersection(false);
 
     expect(screen.getAllByTestId('marker').length).toBeGreaterThan(
@@ -108,20 +161,9 @@ describe('MapWrapper', () => {
     expect(screen.getAllByTestId('polyline').length).toBeGreaterThan(0);
   });
 
-  it('flags exactly one marker as the end marker once dropped', () => {
+  it('never passes idx=0 to a marker', () => {
     render(<MapWrapper />);
-    triggerIntersection(true);
-
-    const endMarkers = screen
-      .getAllByTestId('marker')
-      .filter(marker => marker.getAttribute('data-endmarker') === 'true');
-
-    expect(endMarkers).toHaveLength(1);
-  });
-
-  it('never passes idx=0 to a marker (regression test for the staggering fix)', () => {
-    render(<MapWrapper />);
-    triggerIntersection(true);
+    startLayers();
 
     const idxValues = screen
       .getAllByTestId('marker')
@@ -130,33 +172,67 @@ describe('MapWrapper', () => {
     expect(idxValues).not.toContain('0');
   });
 
-  it('flags exactly one polyline as the end trip polyline once dropped', () => {
+  it('reports completion only after every expected layer reports rendering', () => {
     render(<MapWrapper />);
-    triggerIntersection(true);
+    startLayers();
 
-    const endTripPolylines = screen
-      .getAllByTestId('polyline')
-      .filter(
-        polyline => polyline.getAttribute('data-endtrippolyline') === 'true'
-      );
+    const map = screen.getByTestId('map');
+    const layers = getLayers();
 
-    expect(endTripPolylines).toHaveLength(1);
+    layers.slice(0, -1).forEach(layer => fireEvent.click(layer));
+    fireEvent.click(layers[0]);
+
+    expect(map).toHaveAttribute('data-layers-rendered', 'false');
+
+    fireEvent.click(layers.at(-1)!);
+
+    expect(map).toHaveAttribute('data-layers-rendered', 'true');
   });
 
-  it('flags exactly one polyline as the end rail trip polyline when rail trips exist', () => {
-    (useRailTrips as jest.Mock).mockReturnValue([
-      { polylineOpts: {}, tripPaths: [['a'], ['b']] },
-    ]);
+  it('includes asynchronously supplied rail lines in completion tracking', () => {
+    (useRailTrips as jest.Mock).mockReturnValue({
+      railTripPolylines: [{ polylineOpts: {}, tripPaths: [['a'], ['b']] }],
+      settled: true,
+    });
 
     render(<MapWrapper />);
-    triggerIntersection(true);
+    startLayers();
 
-    const endRailPolylines = screen
-      .getAllByTestId('polyline')
-      .filter(
-        polyline => polyline.getAttribute('data-endrailtrippolyline') === 'true'
-      );
+    const map = screen.getByTestId('map');
+    const layers = getLayers();
 
-    expect(endRailPolylines).toHaveLength(1);
+    layers.slice(0, -1).forEach(layer => fireEvent.click(layer));
+    expect(map).toHaveAttribute('data-layers-rendered', 'false');
+
+    fireEvent.click(layers.at(-1)!);
+    expect(map).toHaveAttribute('data-layers-rendered', 'true');
+  });
+
+  it('does not finish before the rail-trip request has settled', () => {
+    (useRailTrips as jest.Mock).mockReturnValue({
+      railTripPolylines: [],
+      settled: false,
+    });
+
+    const { rerender } = render(<MapWrapper />);
+
+    startLayers();
+    getLayers().forEach(layer => fireEvent.click(layer));
+
+    expect(screen.getByTestId('map')).toHaveAttribute(
+      'data-layers-rendered',
+      'false'
+    );
+
+    (useRailTrips as jest.Mock).mockReturnValue({
+      railTripPolylines: [],
+      settled: true,
+    });
+    rerender(<MapWrapper />);
+
+    expect(screen.getByTestId('map')).toHaveAttribute(
+      'data-layers-rendered',
+      'true'
+    );
   });
 });

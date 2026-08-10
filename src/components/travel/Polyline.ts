@@ -1,7 +1,6 @@
 import { useReducedMotion } from '@mantine/hooks';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { STROKE_WEIGHT_DEFAULT, sharedPolylineOpts } from '@fixtures/travel';
-import { usePortfolioState } from '@state/context';
 import { cancelableDelay } from '@utils/common';
 import { getZoomPolylineWeightExponent } from '@utils/travel';
 import type { FC } from 'react';
@@ -20,10 +19,10 @@ type PolylineProps = Pick<
   | 'strokeOpacity'
   | 'strokeWeight'
 > & {
-  endRailTripPolyline?: boolean;
-  endTripPolyline?: boolean;
   idx: number;
+  layerId: string;
   legs?: google.maps.LatLngLiteral[];
+  onRendered: (layerId: string) => void;
   order?: number;
   paths?: string[];
 };
@@ -45,22 +44,34 @@ const buildPath = ({ legs, paths }: BuildPathProps): google.maps.LatLng[] => {
 };
 
 export const Polyline: FC<PolylineProps> = ({
-  endRailTripPolyline,
-  endTripPolyline,
   geodesic = sharedPolylineOpts.geodesic,
   icons,
   idx,
+  layerId,
   legs,
   map,
+  onRendered,
   order = 1,
   paths,
   strokeColor,
   strokeOpacity = sharedPolylineOpts.strokeOpacity,
   strokeWeight = sharedPolylineOpts.strokeWeight,
 }) => {
-  const { dispatch } = usePortfolioState();
   const reduceMotion = useReducedMotion();
   const [polyline] = useState(() => new google.maps.Polyline());
+  const renderedRef = useRef(false);
+  const onRenderedRef = useRef(onRendered);
+
+  useEffect(() => {
+    onRenderedRef.current = onRendered;
+  }, [onRendered]);
+
+  const reportRendered = useCallback(() => {
+    if (!renderedRef.current) {
+      renderedRef.current = true;
+      onRenderedRef.current(layerId);
+    }
+  }, [layerId]);
 
   useEffect(
     () => () => {
@@ -106,19 +117,7 @@ export const Polyline: FC<PolylineProps> = ({
           }
         }
       );
-
-      if (endRailTripPolyline) {
-        dispatch({
-          payload: { railPolylinesLoaded: true },
-          type: 'set-rail-polylines-loaded',
-        });
-      }
-      if (endTripPolyline) {
-        dispatch({
-          payload: { tripPolylinesLoaded: true },
-          type: 'set-trip-polylines-loaded',
-        });
-      }
+      reportRendered();
     };
     let entranceTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -136,30 +135,8 @@ export const Polyline: FC<PolylineProps> = ({
       }
 
       eventListener?.remove();
-
-      if (endRailTripPolyline) {
-        dispatch({
-          payload: { railPolylinesLoaded: false },
-          type: 'set-rail-polylines-loaded',
-        });
-      }
-      if (endTripPolyline) {
-        dispatch({
-          payload: { tripPolylinesLoaded: false },
-          type: 'set-trip-polylines-loaded',
-        });
-      }
     };
-  }, [
-    endRailTripPolyline,
-    endTripPolyline,
-    idx,
-    map,
-    order,
-    polyline,
-    reduceMotion,
-    dispatch,
-  ]);
+  }, [idx, map, order, polyline, reduceMotion, reportRendered]);
 
   return null;
 };

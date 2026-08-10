@@ -1,5 +1,5 @@
 import { Box } from '@mantine/core';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Map, MapError, MapLoader, Marker, Polyline } from '@components/travel';
 import { cities, markerLocations, tripPolylines } from '@fixtures/travel';
 import { useGoogleMaps, useRailTrips } from '@hooks';
@@ -12,25 +12,89 @@ import type {
 } from '@fixtures/travel/types';
 import type { FC } from 'react';
 
+type LayerType = 'city' | 'marker' | 'rail' | 'trip';
+
+const getLayerId = (type: LayerType, order: number, idx: number): string =>
+  `${type}-${order}-${idx}`;
+
+const staticLayerIds = [
+  ...cities.map((_city, idx) => getLayerId('city', 0, idx)),
+  ...markerLocations.flatMap(({ locations }, order) =>
+    locations.map((_location, idx) => getLayerId('marker', order, idx))
+  ),
+  ...tripPolylines.flatMap(({ trips }, order) =>
+    trips.map((_trip, idx) => getLayerId('trip', order, idx))
+  ),
+];
+
 export const MapWrapper: FC = () => {
   const mapStatus = useGoogleMaps();
-  const railTripPolylines = useRailTrips();
-  const [dropMarkers, setDropMarkers] = useState(false);
+  const { railTripPolylines, settled: railTripsSettled } = useRailTrips();
+  const [layersVisible, setLayersVisible] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
+  const [layersRendered, setLayersRendered] = useState(false);
+  const completedLayerIdsRef = useRef(new Set<string>());
   const observerRef = useRef<IntersectionObserver | null>(null);
+
+  const railLayerIds = useMemo(
+    () =>
+      railTripPolylines.flatMap(({ tripPaths }, order) =>
+        tripPaths.map((_paths, idx) => getLayerId('rail', order, idx))
+      ),
+    [railTripPolylines]
+  );
+  const expectedLayerIds = useMemo(
+    () => [...staticLayerIds, ...railLayerIds],
+    [railLayerIds]
+  );
+  const layersStarted = layersVisible && mapReady;
+
+  const finishLayersIfComplete = useCallback(() => {
+    if (!layersStarted || !railTripsSettled) {
+      return;
+    }
+
+    const completedLayerIds = completedLayerIdsRef.current;
+
+    if (expectedLayerIds.every(layerId => completedLayerIds.has(layerId))) {
+      setLayersRendered(true);
+    }
+  }, [expectedLayerIds, layersStarted, railTripsSettled]);
+
+  const handleLayerRendered = useCallback(
+    (layerId: string) => {
+      completedLayerIdsRef.current.add(layerId);
+      finishLayersIfComplete();
+    },
+    [finishLayersIfComplete]
+  );
+
+  useEffect(() => {
+    finishLayersIfComplete();
+  }, [
+    expectedLayerIds,
+    finishLayersIfComplete,
+    layersStarted,
+    railTripsSettled,
+  ]);
+
+  const handleMapReady = useCallback(() => {
+    setMapReady(true);
+  }, []);
 
   const intersectionRef = useCallback(
     (node: HTMLDivElement | null) => {
       observerRef.current?.disconnect();
       observerRef.current = null;
 
-      if (!node || dropMarkers) {
+      if (!node || layersVisible) {
         return;
       }
 
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry?.isIntersecting) {
-            setDropMarkers(true);
+            setLayersVisible(true);
             observer.disconnect();
             observerRef.current = null;
           }
@@ -41,7 +105,7 @@ export const MapWrapper: FC = () => {
       observer.observe(node);
       observerRef.current = observer;
     },
-    [dropMarkers]
+    [layersVisible]
   );
 
   return (
@@ -49,73 +113,89 @@ export const MapWrapper: FC = () => {
       {mapStatus === 'loading' && <MapLoader />}
       {mapStatus === 'failure' && <MapError />}
       {mapStatus === 'success' && (
-        <Map>
-          {cities.map(
-            ({ description, icon, position, title }: City, idx: number) => (
-              <Marker
-                description={description}
-                icon={icon}
-                idx={idx + 1}
-                key={title}
-                position={position}
-                title={title}
-              />
-            )
-          )}
-          {dropMarkers &&
-            markerLocations.map(
-              ({ icon, locations }: MarkerLocations, order: number) =>
-                locations.map((location: Location, idx: number) => (
-                  <Marker
-                    {...location}
-                    endMarker={
-                      order === markerLocations.length - 1 &&
-                      idx === locations.length - 1
+        <Box ref={intersectionRef}>
+          <Map layersRendered={layersRendered} onReady={handleMapReady}>
+            {layersStarted &&
+              cities.map(
+                ({ description, icon, position, title }: City, idx: number) => {
+                  const layerId = getLayerId('city', 0, idx);
+
+                  return (
+                    <Marker
+                      description={description}
+                      icon={icon}
+                      idx={idx + 1}
+                      key={layerId}
+                      layerId={layerId}
+                      onRendered={handleLayerRendered}
+                      position={position}
+                      title={title}
+                    />
+                  );
+                }
+              )}
+            {layersStarted &&
+              markerLocations.map(
+                ({ icon, locations }: MarkerLocations, order: number) =>
+                  locations.map((location: Location, idx: number) => {
+                    const layerId = getLayerId('marker', order, idx);
+
+                    return (
+                      <Marker
+                        {...location}
+                        icon={icon}
+                        idx={idx + 1}
+                        key={layerId}
+                        layerId={layerId}
+                        onRendered={handleLayerRendered}
+                        order={order + 1}
+                      />
+                    );
+                  })
+              )}
+            {layersStarted &&
+              tripPolylines.map(
+                ({ polylineOpts, trips }: TripPolylines, order: number) =>
+                  trips.map(
+                    (legs: google.maps.LatLngLiteral[], idx: number) => {
+                      const layerId = getLayerId('trip', order, idx);
+
+                      return (
+                        <Polyline
+                          idx={idx + 1}
+                          legs={legs}
+                          {...polylineOpts}
+                          key={layerId}
+                          layerId={layerId}
+                          onRendered={handleLayerRendered}
+                          order={order + 1}
+                        />
+                      );
                     }
-                    icon={icon}
-                    idx={idx + 1}
-                    key={`${order}${idx}`}
-                    order={order + 1}
-                  />
-                ))
-            )}
-          {dropMarkers &&
-            tripPolylines.map(
-              ({ polylineOpts, trips }: TripPolylines, order: number) =>
-                trips.map((legs: google.maps.LatLngLiteral[], idx: number) => (
-                  <Polyline
-                    endTripPolyline={
-                      order === tripPolylines.length - 1 &&
-                      idx === trips.length - 1
-                    }
-                    idx={idx + 1}
-                    legs={legs}
-                    {...polylineOpts}
-                    key={`${order}${idx}`}
-                    order={order + 1}
-                  />
-                ))
-            )}
-          {dropMarkers &&
-            railTripPolylines.map(
-              ({ polylineOpts, tripPaths }: TripPaths, order: number) =>
-                tripPaths.map((paths: string[], idx: number) => (
-                  <Polyline
-                    endRailTripPolyline={
-                      order === railTripPolylines.length - 1 &&
-                      idx === tripPaths.length - 1
-                    }
-                    idx={railTripPolylines.length + idx + 1}
-                    paths={paths}
-                    {...polylineOpts}
-                    key={`${railTripPolylines.length + order}${idx}`}
-                    order={railTripPolylines.length + order + 1}
-                  />
-                ))
-            )}
-        </Map>
+                  )
+              )}
+            {layersStarted &&
+              railTripPolylines.map(
+                ({ polylineOpts, tripPaths }: TripPaths, order: number) =>
+                  tripPaths.map((paths: string[], idx: number) => {
+                    const layerId = getLayerId('rail', order, idx);
+
+                    return (
+                      <Polyline
+                        idx={railTripPolylines.length + idx + 1}
+                        paths={paths}
+                        {...polylineOpts}
+                        key={layerId}
+                        layerId={layerId}
+                        onRendered={handleLayerRendered}
+                        order={railTripPolylines.length + order + 1}
+                      />
+                    );
+                  })
+              )}
+          </Map>
+        </Box>
       )}
-      <Box ref={intersectionRef} />
     </>
   );
 };

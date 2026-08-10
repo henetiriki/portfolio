@@ -1,16 +1,15 @@
 import { useReducedMotion, useViewportSize } from '@mantine/hooks';
-import { useEffect } from 'react';
 import { Map } from '@components/travel/Map';
 import { currentCityPoint } from '@fixtures/travel';
-import { PortfolioStateProvider, usePortfolioState } from '@state/context';
 import {
   MockInfoWindow,
   MockMap,
   installGoogleMapsMock,
   resetGoogleMapsMock,
+  triggerMapsEvent,
 } from '@utils/test/googleMapsMock';
 import { act, render } from '@utils/test/render';
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 
 jest.mock('@mantine/hooks', () => ({
   ...jest.requireActual('@mantine/hooks'),
@@ -20,27 +19,6 @@ jest.mock('@mantine/hooks', () => ({
 
 installGoogleMapsMock();
 
-const DispatchAllLoaded: FC = () => {
-  const { dispatch } = usePortfolioState();
-
-  useEffect(() => {
-    dispatch({
-      payload: { markersLoaded: true },
-      type: 'set-markers-loaded',
-    });
-    dispatch({
-      payload: { railPolylinesLoaded: true },
-      type: 'set-rail-polylines-loaded',
-    });
-    dispatch({
-      payload: { tripPolylinesLoaded: true },
-      type: 'set-trip-polylines-loaded',
-    });
-  }, [dispatch]);
-
-  return null;
-};
-
 const ChildProbe: FC<{
   infoWindow?: google.maps.InfoWindow;
   map?: google.maps.Map;
@@ -49,6 +27,17 @@ const ChildProbe: FC<{
     childHasMap: {String(!!map)}, childHasInfoWindow: {String(!!infoWindow)}
   </div>
 );
+
+const renderMap = (
+  layersRendered: boolean = false,
+  children?: ReactNode,
+  onReady: () => void = jest.fn()
+) =>
+  render(
+    <Map layersRendered={layersRendered} onReady={onReady}>
+      {children}
+    </Map>
+  );
 
 describe('Map', () => {
   beforeEach(() => {
@@ -66,22 +55,14 @@ describe('Map', () => {
   });
 
   it('creates a single map and info window once the container mounts', () => {
-    render(
-      <PortfolioStateProvider>
-        <Map />
-      </PortfolioStateProvider>
-    );
+    renderMap();
 
     expect(MockMap.instances).toHaveLength(1);
     expect(MockInfoWindow.instances).toHaveLength(1);
   });
 
   it('sets the cloud Map ID at construction without embedded styles', () => {
-    render(
-      <PortfolioStateProvider>
-        <Map />
-      </PortfolioStateProvider>
-    );
+    renderMap();
 
     const [map] = MockMap.instances;
 
@@ -97,11 +78,7 @@ describe('Map', () => {
       width: 1024,
     });
 
-    render(
-      <PortfolioStateProvider>
-        <Map />
-      </PortfolioStateProvider>
-    );
+    renderMap();
 
     const [map] = MockMap.instances;
 
@@ -113,11 +90,7 @@ describe('Map', () => {
   it('uses the mobile minZoom/zoom for a narrow viewport', () => {
     (useViewportSize as jest.Mock).mockReturnValue({ height: 800, width: 500 });
 
-    render(
-      <PortfolioStateProvider>
-        <Map />
-      </PortfolioStateProvider>
-    );
+    renderMap();
 
     const [map] = MockMap.instances;
 
@@ -132,21 +105,14 @@ describe('Map', () => {
       width: 1024,
     });
 
-    const { rerender } = render(
-      <PortfolioStateProvider>
-        <Map />
-      </PortfolioStateProvider>
-    );
+    const onReady = jest.fn();
+    const { rerender } = renderMap(false, undefined, onReady);
 
     const [map] = MockMap.instances;
 
     map.setOptions.mockClear();
     (useViewportSize as jest.Mock).mockReturnValue({ height: 800, width: 500 });
-    rerender(
-      <PortfolioStateProvider>
-        <Map />
-      </PortfolioStateProvider>
-    );
+    rerender(<Map layersRendered={false} onReady={onReady} />);
 
     expect(map.setOptions).toHaveBeenCalledTimes(1);
 
@@ -156,15 +122,44 @@ describe('Map', () => {
     expect(resizeOptions).not.toHaveProperty('zoom');
   });
 
-  it('smoothly reveals the current city once everything has loaded', async () => {
-    render(
-      <PortfolioStateProvider>
-        <Map />
-        <DispatchAllLoaded />
-      </PortfolioStateProvider>
-    );
+  it('reports readiness once after the first visible tiles have loaded', () => {
+    const onReady = jest.fn();
 
+    renderMap(false, undefined, onReady);
     const [map] = MockMap.instances;
+
+    expect(onReady).not.toHaveBeenCalled();
+
+    act(() => {
+      triggerMapsEvent(map, 'tilesloaded');
+      triggerMapsEvent(map, 'tilesloaded');
+    });
+
+    expect(onReady).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not reveal the map until its layers have rendered', async () => {
+    renderMap();
+    const [map] = MockMap.instances;
+
+    act(() => {
+      triggerMapsEvent(map, 'tilesloaded');
+    });
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    expect(map.moveCamera).not.toHaveBeenCalled();
+  });
+
+  it('smoothly reveals the current city once everything has loaded', async () => {
+    renderMap(true);
+    const [map] = MockMap.instances;
+
+    act(() => {
+      triggerMapsEvent(map, 'tilesloaded');
+    });
 
     await act(async () => {
       await jest.advanceTimersByTimeAsync(1000);
@@ -192,14 +187,12 @@ describe('Map', () => {
   it('reveals the loaded map immediately when reduced motion is preferred', async () => {
     (useReducedMotion as jest.Mock).mockReturnValue(true);
 
-    render(
-      <PortfolioStateProvider>
-        <Map />
-        <DispatchAllLoaded />
-      </PortfolioStateProvider>
-    );
-
+    renderMap(true);
     const [map] = MockMap.instances;
+
+    act(() => {
+      triggerMapsEvent(map, 'tilesloaded');
+    });
 
     expect(map.moveCamera).toHaveBeenCalledWith({
       center: currentCityPoint,
@@ -219,14 +212,12 @@ describe('Map', () => {
       .spyOn(MockMap.prototype, 'getCenter')
       .mockReturnValue(undefined as never);
 
-    render(
-      <PortfolioStateProvider>
-        <Map />
-        <DispatchAllLoaded />
-      </PortfolioStateProvider>
-    );
-
+    renderMap(true);
     const [map] = MockMap.instances;
+
+    act(() => {
+      triggerMapsEvent(map, 'tilesloaded');
+    });
 
     await act(async () => {
       await jest.runAllTimersAsync();
@@ -237,13 +228,12 @@ describe('Map', () => {
   });
 
   it('cancels a pending reveal on unmount', async () => {
-    const { unmount } = render(
-      <PortfolioStateProvider>
-        <Map />
-        <DispatchAllLoaded />
-      </PortfolioStateProvider>
-    );
+    const { unmount } = renderMap(true);
     const [map] = MockMap.instances;
+
+    act(() => {
+      triggerMapsEvent(map, 'tilesloaded');
+    });
 
     unmount();
 
@@ -255,13 +245,12 @@ describe('Map', () => {
   });
 
   it('cancels an in-progress reveal on unmount', async () => {
-    const { unmount } = render(
-      <PortfolioStateProvider>
-        <Map />
-        <DispatchAllLoaded />
-      </PortfolioStateProvider>
-    );
+    const { unmount } = renderMap(true);
     const [map] = MockMap.instances;
+
+    act(() => {
+      triggerMapsEvent(map, 'tilesloaded');
+    });
 
     await act(async () => {
       await jest.advanceTimersByTimeAsync(400);
@@ -280,17 +269,33 @@ describe('Map', () => {
     expect(map.moveCamera).toHaveBeenCalledTimes(cameraUpdates);
   });
 
-  it('clones children with the map and info window once both exist', () => {
-    const { getByText } = render(
-      <PortfolioStateProvider>
-        <Map>
-          <ChildProbe />
-        </Map>
-      </PortfolioStateProvider>
-    );
+  it('clones children only after the base map has rendered', () => {
+    const { getByText, queryByText } = renderMap(false, <ChildProbe />);
+    const [map] = MockMap.instances;
+
+    expect(
+      queryByText('childHasMap: true, childHasInfoWindow: true')
+    ).not.toBeInTheDocument();
+
+    act(() => {
+      triggerMapsEvent(map, 'tilesloaded');
+    });
 
     expect(
       getByText('childHasMap: true, childHasInfoWindow: true')
     ).toBeInTheDocument();
+  });
+
+  it('removes the initial tile listener on unmount', () => {
+    const onReady = jest.fn();
+    const { unmount } = renderMap(false, undefined, onReady);
+    const [map] = MockMap.instances;
+
+    unmount();
+    act(() => {
+      triggerMapsEvent(map, 'tilesloaded');
+    });
+
+    expect(onReady).not.toHaveBeenCalled();
   });
 });
