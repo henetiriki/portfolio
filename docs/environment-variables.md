@@ -33,7 +33,7 @@ GitHub's production-mode CI build does not load `.env.test`, so `.github/workflo
 | `IMAGE_HOST_PATH`     | `next.config.js` `images.remotePatterns[0].pathname`     | Allowed path prefix under `IMAGE_HOST_NAME`                                                                                   |
 | `IMAGE_HOST_PROTOCOL` | `next.config.js` `images.remotePatterns[0].protocol`     | `http`/`https` for the remote image host                                                                                      |
 | `GOOGLE_MAPS_API_KEY` | `next.config.js` → `env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps JavaScript API key used by the shared `@googlemaps/js-api-loader` setup — see [Travel Feature](travel-feature.md) |
-| `GOOGLE_MAPS_MAP_ID`  | `next.config.js` → `env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID`  | Public raster Map ID selecting the cloud configuration/style used by `/travel`                                                |
+| `GOOGLE_MAPS_MAP_ID`  | `next.config.js` → `env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID`  | Public vector Map ID selecting the cloud configuration/style and renderer used by `/travel`                                   |
 
 Unlike the API key, a Map ID is a public browser identifier rather than a credential, but this project still supplies its real value through local/deployment environment configuration. It must be available when `google.maps.Map` is constructed and selects the published cloud style associated in Google Maps Management.
 

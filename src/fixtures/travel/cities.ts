@@ -86,15 +86,45 @@ const auckland: City = {
   title: `Auckland, ${newZealand}`,
 };
 
+const eastbourne: City = {
+  description: lived,
+  icon: previousCityIcon,
+  position: {
+    lat: -41.300614,
+    lng: 174.892839,
+  },
+  title: `Eastbourne, Lower Hutt, ${newZealand}`,
+};
+
+const wellington: City = {
+  description: lived,
+  icon: previousCityIcon,
+  position: {
+    lat: -41.30368,
+    lng: 174.763941,
+  },
+  title: `Wellington, ${newZealand}`,
+};
+
 const silverstream: City = {
-  current: true,
-  description: 'I currently live in this area...',
-  icon: currentCityIcon,
+  description: lived,
+  icon: previousCityIcon,
   position: {
     lat: -41.1497301,
     lng: 175.005017,
   },
-  title: `Silverstream, Wellington, ${newZealand}`,
+  title: `Silverstream, Upper Hutt, ${newZealand}`,
+};
+
+const mosselBay: City = {
+  current: true,
+  description: 'I currently live in this area...',
+  icon: currentCityIcon,
+  position: {
+    lat: -34.181985,
+    lng: 22.145697,
+  },
+  title: `Mossel Bay, ${southAfrica}`,
 };
 
 export const cities: City[] = [
@@ -106,5 +136,16 @@ export const cities: City[] = [
   capeTown,
   hamilton,
   auckland,
+  eastbourne,
+  wellington,
   silverstream,
+  mosselBay,
 ];
+
+const currentCities = cities.filter(city => city.current);
+
+if (currentCities.length !== 1) {
+  throw new Error('Travel fixtures must contain exactly one current city');
+}
+
+export const currentCityPoint = currentCities[0].position;

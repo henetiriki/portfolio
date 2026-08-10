@@ -2,21 +2,21 @@
 
 ## Tech stack
 
-| Concern         | Choice                                                                                     |
-| --------------- | ------------------------------------------------------------------------------------------ |
-| Framework       | Next.js `^16.3.0`, **Pages Router** (`src/pages`)                                          |
-| UI runtime      | React `^19` (`react`, `react-dom`)                                                         |
-| Language        | TypeScript `^6.0`, `strict: true`                                                          |
-| UI library      | Mantine v9 (`core`, `form`, `hooks`, `notifications`)                                      |
-| Styling         | CSS Modules + CSS variables (`postcss-preset-mantine`, `postcss-simple-vars`)              |
-| Icons           | `@tabler/icons-react`                                                                      |
-| Maps            | `@googlemaps/js-api-loader` + `@googlemaps/typescript-guards` (Google Maps JavaScript API) |
-| Email           | `nodemailer` over Gmail SMTP                                                               |
-| Bot protection  | `botid` (Vercel BotID) client + server checks                                              |
-| PWA             | Serwist (only enabled when `WITH_PWA=true`)                                                |
-| Sitemap/robots  | `next-sitemap` (runs as a `build` step)                                                    |
-| Package manager | Yarn 4 (Berry), Node `24.x`                                                                |
-| Lint/format     | ESLint (`next/core-web-vitals` + a large custom ruleset), Prettier, Husky + lint-staged    |
+| Concern         | Choice                                                                                  |
+| --------------- | --------------------------------------------------------------------------------------- |
+| Framework       | Next.js `^16.3.0`, **Pages Router** (`src/pages`)                                       |
+| UI runtime      | React `^19` (`react`, `react-dom`)                                                      |
+| Language        | TypeScript `^6.0`, `strict: true`                                                       |
+| UI library      | Mantine v9 (`core`, `form`, `hooks`, `notifications`)                                   |
+| Styling         | CSS Modules + CSS variables (`postcss-preset-mantine`, `postcss-simple-vars`)           |
+| Icons           | `@tabler/icons-react`                                                                   |
+| Maps            | `@googlemaps/js-api-loader` (Google Maps JavaScript API)                                |
+| Email           | `nodemailer` over Gmail SMTP                                                            |
+| Bot protection  | `botid` (Vercel BotID) client + server checks                                           |
+| PWA             | Serwist (only enabled when `WITH_PWA=true`)                                             |
+| Sitemap/robots  | `next-sitemap` (runs as a `build` step)                                                 |
+| Package manager | Yarn 4 (Berry), Node `24.x`                                                             |
+| Lint/format     | ESLint (`next/core-web-vitals` + a large custom ruleset), Prettier, Husky + lint-staged |
 
 ## Directory layout
 

@@ -1,19 +1,18 @@
 import { Flex, Space, Title, useMantineTheme } from '@mantine/core';
 import { MarkerLegend } from '@components/travel/MarkerLegend';
 import { PolylineLegend } from '@components/travel/PolylineLegend';
+import {
+  airportIcon,
+  currentCityIcon,
+  portIcon,
+  previousCityIcon,
+  stationIcon,
+} from '@fixtures/travel/icons';
 import type { FC } from 'react';
 
 export const Legend: FC = () => {
   const {
-    colors: {
-      alizarin,
-      ['all-ports']: allPorts,
-      corn,
-      ['pine-green']: pineGreen,
-      pumpkin,
-      ['torch-red']: torchRed,
-      viking,
-    },
+    colors: { corn, ['torch-red']: torchRed, viking },
   } = useMantineTheme();
 
   return (
@@ -25,11 +24,11 @@ export const Legend: FC = () => {
         direction={{ base: 'column', md: 'row' }}
         justify='start'
         wrap='wrap'>
-        <MarkerLegend color={torchRed[4]}>current location</MarkerLegend>
-        <MarkerLegend color={pumpkin[4]}>past locations</MarkerLegend>
-        <MarkerLegend color={pineGreen[4]}>airports</MarkerLegend>
-        <MarkerLegend color={alizarin[4]}>stations</MarkerLegend>
-        <MarkerLegend color={allPorts[4]}>ports</MarkerLegend>
+        <MarkerLegend icon={currentCityIcon}>current location</MarkerLegend>
+        <MarkerLegend icon={previousCityIcon}>past locations</MarkerLegend>
+        <MarkerLegend icon={airportIcon}>airports</MarkerLegend>
+        <MarkerLegend icon={stationIcon}>stations</MarkerLegend>
+        <MarkerLegend icon={portIcon}>ports</MarkerLegend>
         <PolylineLegend color={corn[4]} style='solid'>
           flights
         </PolylineLegend>

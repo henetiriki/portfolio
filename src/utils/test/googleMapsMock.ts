@@ -87,7 +87,26 @@ export class MockMap {
 
   panTo = jest.fn();
 
+  moveCamera = jest.fn((options: google.maps.CameraOptions) => {
+    if (options.center) {
+      this.centerValue = new MockLatLng(
+        options.center as google.maps.LatLngLiteral
+      );
+    }
+
+    if (typeof options.zoom === 'number') {
+      this.zoomValue = options.zoom;
+      triggerMapsEvent(this, 'zoom_changed');
+    }
+  });
+
   setOptions = jest.fn((options: Record<string, unknown>) => {
+    if (options.center) {
+      this.centerValue = new MockLatLng(
+        options.center as google.maps.LatLngLiteral
+      );
+    }
+
     if (typeof options.zoom === 'number') {
       this.zoomValue = options.zoom;
     }
@@ -100,11 +119,20 @@ export class MockMap {
 
   private zoomValue = 0;
 
+  private centerValue: MockLatLng;
+
   constructor(
     public element: HTMLElement,
     public options: Record<string, unknown>
   ) {
+    this.centerValue = new MockLatLng(
+      options.center as google.maps.LatLngLiteral
+    );
     MockMap.instances.push(this);
+  }
+
+  getCenter(): MockLatLng {
+    return this.centerValue;
   }
 
   getZoom(): number {
@@ -117,6 +145,7 @@ export class MockInfoWindow {
 
   close = jest.fn(() => {
     this.isOpen = false;
+    triggerMapsEvent(this, 'close');
   });
 
   isOpen = false;
@@ -128,7 +157,11 @@ export class MockInfoWindow {
 
   setContent = jest.fn();
 
+  setHeaderContent = jest.fn();
+
   setHeaderDisabled = jest.fn();
+
+  setOptions = jest.fn();
 
   constructor() {
     MockInfoWindow.instances.push(this);

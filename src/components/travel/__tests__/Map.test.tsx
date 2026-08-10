@@ -1,6 +1,7 @@
 import { useReducedMotion, useViewportSize } from '@mantine/hooks';
 import { useEffect } from 'react';
 import { Map } from '@components/travel/Map';
+import { currentCityPoint } from '@fixtures/travel';
 import { PortfolioStateProvider, usePortfolioState } from '@state/context';
 import {
   MockInfoWindow,
@@ -155,7 +156,7 @@ describe('Map', () => {
     expect(resizeOptions).not.toHaveProperty('zoom');
   });
 
-  it('pans to Auckland once everything has loaded', () => {
+  it('smoothly reveals the current city once everything has loaded', async () => {
     render(
       <PortfolioStateProvider>
         <Map />
@@ -165,35 +166,24 @@ describe('Map', () => {
 
     const [map] = MockMap.instances;
 
-    expect(map.panTo).toHaveBeenCalledWith({
-      lat: -36.847639,
-      lng: 174.762473,
-    });
-  });
-
-  it('steps the zoom up one level at a time once loaded, then re-enables scroll zoom at the target', async () => {
-    render(
-      <PortfolioStateProvider>
-        <Map />
-        <DispatchAllLoaded />
-      </PortfolioStateProvider>
-    );
-
-    const [map] = MockMap.instances;
-
-    // desktop viewport sets the initial zoom to 2 on mount, so the
-    // post-load reveal climbs 2 -> 3 -> 4 before reaching its target,
-    // pausing 80ms between each step (see zoomMap in Map.tsx)
     await act(async () => {
-      await jest.advanceTimersByTimeAsync(80);
+      await jest.advanceTimersByTimeAsync(1000);
     });
-    expect(map.setZoom).toHaveBeenNthCalledWith(1, 3);
+
+    expect(map.moveCamera).toHaveBeenCalled();
+    const midpoint = map.moveCamera.mock.calls.at(-1)?.[0];
+
+    expect(midpoint?.zoom).toBeGreaterThan(2);
+    expect(midpoint?.zoom).toBeLessThan(4);
 
     await act(async () => {
-      await jest.advanceTimersByTimeAsync(80);
+      await jest.advanceTimersByTimeAsync(1000);
     });
-    expect(map.setZoom).toHaveBeenNthCalledWith(2, 4);
 
+    expect(map.moveCamera).toHaveBeenLastCalledWith({
+      center: currentCityPoint,
+      zoom: 4,
+    });
     expect(map.setOptions).toHaveBeenCalledWith(
       expect.objectContaining({ scrollwheel: true })
     );
@@ -211,19 +201,20 @@ describe('Map', () => {
 
     const [map] = MockMap.instances;
 
-    expect(map.setOptions).toHaveBeenCalledWith({
-      scrollwheel: true,
+    expect(map.moveCamera).toHaveBeenCalledWith({
+      center: currentCityPoint,
       zoom: 4,
     });
+    expect(map.setOptions).toHaveBeenCalledWith({ scrollwheel: true });
 
     await act(async () => {
       await jest.runAllTimersAsync();
     });
 
-    expect(map.setZoom).not.toHaveBeenCalled();
+    expect(map.moveCamera).toHaveBeenCalledTimes(1);
   });
 
-  it('cancels a pending zoom step on unmount', async () => {
+  it('cancels a pending reveal on unmount', async () => {
     const { unmount } = render(
       <PortfolioStateProvider>
         <Map />
@@ -235,13 +226,13 @@ describe('Map', () => {
     unmount();
 
     await act(async () => {
-      await jest.advanceTimersByTimeAsync(80);
+      await jest.advanceTimersByTimeAsync(2000);
     });
 
-    expect(map.setZoom).not.toHaveBeenCalled();
+    expect(map.moveCamera).not.toHaveBeenCalled();
   });
 
-  it('cancels the next recursive zoom step on unmount', async () => {
+  it('cancels an in-progress reveal on unmount', async () => {
     const { unmount } = render(
       <PortfolioStateProvider>
         <Map />
@@ -251,18 +242,20 @@ describe('Map', () => {
     const [map] = MockMap.instances;
 
     await act(async () => {
-      await jest.advanceTimersByTimeAsync(80);
+      await jest.advanceTimersByTimeAsync(400);
     });
 
-    expect(map.setZoom).toHaveBeenCalledTimes(1);
+    const cameraUpdates = map.moveCamera.mock.calls.length;
+
+    expect(cameraUpdates).toBeGreaterThan(0);
 
     unmount();
 
     await act(async () => {
-      await jest.advanceTimersByTimeAsync(80);
+      await jest.advanceTimersByTimeAsync(2000);
     });
 
-    expect(map.setZoom).toHaveBeenCalledTimes(1);
+    expect(map.moveCamera).toHaveBeenCalledTimes(cameraUpdates);
   });
 
   it('clones children with the map and info window once both exist', () => {

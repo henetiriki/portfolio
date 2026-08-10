@@ -118,7 +118,6 @@ const baseConfig = withBotId({
       },
     ];
   },
-  transpilePackages: ['@googlemaps/typescript-guards'],
 });
 
 // @serwist/next is ESM-only (no CJS build), so it can't be `require()`d from

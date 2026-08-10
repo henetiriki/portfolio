@@ -8,13 +8,29 @@ import {
   useRef,
   useState,
 } from 'react';
-import { MAP_MAX_MOBILE, aucklandPoint, mapOptions } from '@fixtures/travel';
+import { MAP_MAX_MOBILE, currentCityPoint, mapOptions } from '@fixtures/travel';
 import { usePortfolioState } from '@state/context';
-import { cancelableDelay } from '@utils/common';
+import classes from './Map.module.css';
 import type { FC, PropsWithChildren } from 'react';
 
-const mapContainerStyle = { height: '65vh', width: '100%' };
+const mapRevealDuration = 2000;
 const mapRevealZoom = 4;
+
+const easeInOutCubic = (progress: number): number =>
+  progress < 0.5 ? 4 * progress ** 3 : 1 - (-2 * progress + 2) ** 3 / 2;
+
+const interpolate = (start: number, end: number, progress: number): number =>
+  start + (end - start) * progress;
+
+const interpolateLongitude = (
+  start: number,
+  end: number,
+  progress: number
+): number => {
+  const shortestDistance = ((end - start + 540) % 360) - 180;
+
+  return start + shortestDistance * progress;
+};
 
 export const Map: FC<PropsWithChildren> = ({ children }) => {
   const {
@@ -24,50 +40,62 @@ export const Map: FC<PropsWithChildren> = ({ children }) => {
   } = usePortfolioState();
   const mapRef = useRef<HTMLDivElement>(null);
   const initialZoomSetRef = useRef(false);
-  const zoomEventListenerRef = useRef<google.maps.MapsEventListener | null>(
-    null
-  );
-  const zoomTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const revealAnimationFrameRef = useRef<number | null>(null);
   const reduceMotion = useReducedMotion();
   const { width } = useViewportSize();
   const [map, setMap] = useState<google.maps.Map>();
   const [infoWindow, setInfoWindow] = useState<google.maps.InfoWindow>();
 
-  const cancelZoom = useCallback(() => {
-    if (zoomTimerRef.current) {
-      clearTimeout(zoomTimerRef.current);
-      zoomTimerRef.current = null;
+  const cancelReveal = useCallback(() => {
+    if (revealAnimationFrameRef.current !== null) {
+      cancelAnimationFrame(revealAnimationFrameRef.current);
+      revealAnimationFrameRef.current = null;
     }
-
-    zoomEventListenerRef.current?.remove();
-    zoomEventListenerRef.current = null;
   }, []);
 
-  const zoomMap = useCallback<(nextZoom: number, maxZoom: number) => void>(
-    function stepZoom(nextZoom: number, maxZoom: number) {
-      if (nextZoom < maxZoom) {
-        zoomEventListenerRef.current = google.maps.event.addListener(
-          map!,
-          'zoom_changed',
-          () => {
-            zoomEventListenerRef.current?.remove();
-            zoomEventListenerRef.current = null;
-            stepZoom(map!.getZoom()! + 1, maxZoom);
-          }
-        );
+  const revealMap = useCallback(() => {
+    const startCenter = map?.getCenter();
+    const startZoom = map?.getZoom();
 
-        zoomTimerRef.current = cancelableDelay(80, () => {
-          zoomTimerRef.current = null;
-          map!.setZoom(nextZoom);
-        });
+    if (!map || !startCenter || startZoom === undefined) {
+      return;
+    }
 
-        return;
+    const startLat = startCenter.lat();
+    const startLng = startCenter.lng();
+    const startedAt = performance.now();
+
+    const animate = (timestamp: number) => {
+      const progress = Math.min((timestamp - startedAt) / mapRevealDuration, 1);
+      const easedProgress = easeInOutCubic(progress);
+      const animationComplete = progress === 1;
+
+      map.moveCamera({
+        center: animationComplete
+          ? currentCityPoint
+          : {
+              lat: interpolate(startLat, currentCityPoint.lat, easedProgress),
+              lng: interpolateLongitude(
+                startLng,
+                currentCityPoint.lng,
+                easedProgress
+              ),
+            },
+        zoom: animationComplete
+          ? mapRevealZoom
+          : interpolate(startZoom, mapRevealZoom, easedProgress),
+      });
+
+      if (!animationComplete) {
+        revealAnimationFrameRef.current = requestAnimationFrame(animate);
+      } else {
+        revealAnimationFrameRef.current = null;
+        map.setOptions({ scrollwheel: true });
       }
+    };
 
-      map!.setOptions({ scrollwheel: true });
-    },
-    [map]
-  );
+    revealAnimationFrameRef.current = requestAnimationFrame(animate);
+  }, [map]);
 
   useEffect(() => {
     if (mapRef.current && !map && !infoWindow) {
@@ -95,30 +123,30 @@ export const Map: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     if (map && markersLoaded && railPolylinesLoaded && tripPolylinesLoaded) {
-      cancelZoom();
-      map.panTo(aucklandPoint);
+      cancelReveal();
 
       if (reduceMotion) {
-        map.setOptions({ scrollwheel: true, zoom: mapRevealZoom });
+        map.moveCamera({ center: currentCityPoint, zoom: mapRevealZoom });
+        map.setOptions({ scrollwheel: true });
       } else {
-        zoomMap(map.getZoom()! + 1, mapRevealZoom + 1);
+        revealMap();
       }
     }
 
-    return cancelZoom;
+    return cancelReveal;
   }, [
-    cancelZoom,
+    cancelReveal,
     map,
     markersLoaded,
     railPolylinesLoaded,
     reduceMotion,
+    revealMap,
     tripPolylinesLoaded,
-    zoomMap,
   ]);
 
   return (
     <>
-      <div id='map' ref={mapRef} style={mapContainerStyle} />
+      <div className={classes.map} id='map' ref={mapRef} />
       {Children.map(children, child => {
         if (map && infoWindow && isValidElement(child)) {
           // set the map prop on the child component
