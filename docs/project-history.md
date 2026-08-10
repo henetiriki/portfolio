@@ -2,6 +2,10 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-10 — Package metadata cleanup
+
+- Removed the application-level `sideEffects: false` declaration so bundlers cannot treat CSS and other necessary imports as safely discardable, and removed the stale npm engine constraint because Yarn 4 is the declared package manager. The Node engine remains the deployment/runtime contract.
+
 ## 2026-08-10 — Google Maps modernisation, phases 1–4
 
 - Replaced the archived `@googlemaps/react-wrapper` with Google's maintained `@googlemaps/js-api-loader` v2 functional API. A shared retryable singleton loads the Maps, geometry and marker libraries on demand, while `useGoogleMaps()` preserves the existing loading/error/success UI.

@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Node `24.x` (pinned in `.nvmrc` as `24`), npm `^10` (per `package.json#engines`, though the project uses Yarn day-to-day)
+- Node `24.x` (pinned in `.nvmrc` as `24` and `package.json#engines`)
 - Yarn `4.18.0` via Corepack (`packageManager: "yarn@4.18.0"` in `package.json`, binary vendored at `.yarn/releases/yarn-4.18.0.cjs`, config in `.yarnrc.yml`)
 
 ## Scripts (`package.json`)

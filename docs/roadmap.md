@@ -22,4 +22,4 @@ Last reviewed: 2026-08-10.
 
 ## Performance, SEO & platform polish
 
-- [ ] **Modernise security and package metadata deliberately.** Remove the deprecated `X-XSS-Protection` header and introduce Content Security Policy in Report-Only first because Maps, BotID, Vercel telemetry and remote images all need an allowlist. Remove application-level `sideEffects: false` or at least mark CSS as side-effectful so tree-shaking cannot discard stylesheet imports. Drop the stale `engines.npm` constraint—the project declares Yarn and Node 24 ships a different npm major—or keep it aligned with the actual runtime.
+- [ ] **Modernise security headers deliberately.** Remove the deprecated `X-XSS-Protection` header and introduce Content Security Policy in Report-Only first because Maps, BotID, Vercel telemetry and remote images all need an allowlist.
