@@ -18,6 +18,7 @@ const customJestConfig = {
     '!src/utils/test/**',
   ],
   coveragePathIgnorePatterns: ['<rootDir>/node_modules/'],
+  coverageReporters: ['text', 'lcov'],
   coverageThreshold: {
     global: {
       branches: 80,

@@ -6,9 +6,9 @@ Last reviewed: 2026-08-10.
 
 ## Testing & automation
 
-- [ ] **Block merges on coverage and add diff/patch coverage.** Jest's global 80% threshold already protects the whole project, but it cannot enforce coverage only on changed lines. Choose Codecov/Coveralls (a private-repository token and external account) or a self-hosted diff-coverage action, then require the CI check through a `main` branch-protection rule if the repository plan supports it. This combines repository configuration with workflow work; neither should be implied by a green job alone.
+- [ ] **Finish Codecov merge enforcement in GitHub.** CI now uploads Jest's explicit LCOV report to Codecov through short-lived GitHub OIDC authentication, with a strict 100% patch target and source-line annotations. After installing the Codecov GitHub App and obtaining the first successful pull-request report, require both `CI / Validate & build` and `codecov/patch` in the `main` branch-protection rule. The repository configuration is complete, but reporting alone does not block a merge until that external rule is enabled.
 
-- [ ] **Add an in-GitHub code-coverage viewer.** Install a free-plan-compatible GitHub App or workflow-backed integration that surfaces Jest coverage on pull requests and source lines. Prefer the same provider selected for diff/patch coverage so one upload powers both views instead of introducing duplicate reporting services.
+- [x] **Add an in-GitHub code-coverage viewer.** Codecov uses the same LCOV upload to provide a concise patch-only pull-request comment, the `codecov/patch` status and GitHub Checks annotations on uncovered source lines. The private-repository Developer plan's project status is intentionally disabled; Jest's existing 80% whole-project threshold remains the CI regression floor.
 
 - [ ] **Add a small browser-level regression suite.** Keep it deliberately narrower than the Jest/RTL suite: render every content route, exercise the mobile drawer and keyboard path, check contact-form tab order and validation borders with mocked responses, and run one axe pass per page template. Playwright is the likely fit. The suite should remain cheap enough for the existing single CI job and should target browser behaviours that DOM tests have previously missed rather than duplicate page snapshots.
 
