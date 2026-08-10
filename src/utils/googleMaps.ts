@@ -19,6 +19,7 @@ export const loadGoogleMaps = (): Promise<void> => {
     loadPromise = Promise.all([
       importLibrary('maps'),
       importLibrary('geometry'),
+      importLibrary('marker'),
     ])
       .then(() => undefined)
       .catch(error => {

@@ -18,7 +18,7 @@ describe('loadGoogleMaps', () => {
     mockSetOptions.mockReset();
   });
 
-  it('configures Google once and loads the maps and geometry libraries', async () => {
+  it('configures Google once and loads the maps, geometry and marker libraries', async () => {
     mockImportLibrary.mockResolvedValue({});
     const { loadGoogleMaps } = await importLoader();
 
@@ -31,6 +31,7 @@ describe('loadGoogleMaps', () => {
     });
     expect(mockImportLibrary).toHaveBeenNthCalledWith(1, 'maps');
     expect(mockImportLibrary).toHaveBeenNthCalledWith(2, 'geometry');
+    expect(mockImportLibrary).toHaveBeenNthCalledWith(3, 'marker');
   });
 
   it('deduplicates concurrent and subsequent load requests', async () => {
@@ -41,7 +42,7 @@ describe('loadGoogleMaps', () => {
     await loadGoogleMaps();
 
     expect(mockSetOptions).toHaveBeenCalledTimes(1);
-    expect(mockImportLibrary).toHaveBeenCalledTimes(2);
+    expect(mockImportLibrary).toHaveBeenCalledTimes(3);
   });
 
   it('allows a failed load to be retried without resetting options', async () => {
@@ -53,6 +54,6 @@ describe('loadGoogleMaps', () => {
     await expect(loadGoogleMaps()).resolves.toBeUndefined();
 
     expect(mockSetOptions).toHaveBeenCalledTimes(1);
-    expect(mockImportLibrary).toHaveBeenCalledTimes(4);
+    expect(mockImportLibrary).toHaveBeenCalledTimes(6);
   });
 });

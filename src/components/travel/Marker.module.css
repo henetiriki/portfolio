@@ -1,0 +1,52 @@
+.visual {
+  display: block;
+  height: 24px;
+  transform-origin: 41.6667% 83.3333%;
+  width: 24px;
+  will-change: transform;
+}
+
+.graphic {
+  display: block;
+  height: 100%;
+  overflow: visible;
+  width: 100%;
+}
+
+.drop {
+  animation: marker-drop 500ms cubic-bezier(0.2, 0.8, 0.4, 1);
+}
+
+.bounce {
+  animation: marker-bounce 500ms ease-in-out infinite;
+}
+
+@keyframes marker-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-200px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes marker-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drop,
+  .bounce {
+    animation: none;
+  }
+}

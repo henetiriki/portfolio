@@ -4,13 +4,18 @@ export interface Location {
   title: string;
 }
 
+export type MarkerIcon = {
+  color: string;
+  scale: number;
+};
+
 export interface City extends Location {
   current?: boolean;
-  icon: google.maps.Symbol;
+  icon: MarkerIcon;
 }
 
 export interface MarkerLocations {
-  icon: google.maps.Symbol;
+  icon: MarkerIcon;
   locations: Location[];
 }
 
