@@ -2,8 +2,6 @@ import { Flex, Space, Text, Title } from '@mantine/core';
 import { IconGlobe, IconPlaneDeparture, IconPlus } from '@tabler/icons-react';
 import type { Job, School } from '@fixtures/types';
 
-export const description = 'Work and education history';
-
 export const jobs: Job[] = [
   {
     content: (

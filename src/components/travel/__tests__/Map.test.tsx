@@ -214,6 +214,28 @@ describe('Map', () => {
     expect(map.moveCamera).toHaveBeenCalledTimes(1);
   });
 
+  it('does not reveal a map whose starting camera state is unavailable', async () => {
+    const getCenter = jest
+      .spyOn(MockMap.prototype, 'getCenter')
+      .mockReturnValue(undefined as never);
+
+    render(
+      <PortfolioStateProvider>
+        <Map />
+        <DispatchAllLoaded />
+      </PortfolioStateProvider>
+    );
+
+    const [map] = MockMap.instances;
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    expect(map.moveCamera).not.toHaveBeenCalled();
+    getCenter.mockRestore();
+  });
+
   it('cancels a pending reveal on unmount', async () => {
     const { unmount } = render(
       <PortfolioStateProvider>

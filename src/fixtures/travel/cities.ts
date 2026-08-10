@@ -142,10 +142,16 @@ export const cities: City[] = [
   mosselBay,
 ];
 
-const currentCities = cities.filter(city => city.current);
+export const getCurrentCityPoint = (
+  cityFixtures: City[]
+): google.maps.LatLngLiteral => {
+  const currentCities = cityFixtures.filter(city => city.current);
 
-if (currentCities.length !== 1) {
-  throw new Error('Travel fixtures must contain exactly one current city');
-}
+  if (currentCities.length !== 1) {
+    throw new Error('Travel fixtures must contain exactly one current city');
+  }
 
-export const currentCityPoint = currentCities[0].position;
+  return currentCities[0].position;
+};
+
+export const currentCityPoint = getCurrentCityPoint(cities);
