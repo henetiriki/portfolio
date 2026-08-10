@@ -22,13 +22,27 @@
 .infoWindowTitle {
   color: var(--mantine-color-shamrock-4);
   font-size: 1rem;
-  margin: 0.25rem 0 0;
+  margin: 0;
 }
 
 .infoWindowDescription {
   color: var(--mantine-color-cinder-4);
   font-size: 0.85rem;
   margin: 0.25rem 0;
+}
+
+:global(.gm-style-iw-chr > .gm-ui-hover-effect) {
+  color: var(--mantine-color-cinder-4) !important;
+}
+
+:global(.gm-style-iw-chr > .gm-ui-hover-effect > span) {
+  background-color: var(--mantine-color-cinder-4) !important;
+}
+
+:global(.gm-style-iw-chr > .gm-style-iw-ch) {
+  align-items: center;
+  display: flex;
+  padding-top: 0;
 }
 
 .drop {
