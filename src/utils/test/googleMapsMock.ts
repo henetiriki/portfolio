@@ -82,13 +82,6 @@ class MockLatLngBounds {
   ) {}
 }
 
-class MockPoint {
-  constructor(
-    public x: number,
-    public y: number
-  ) {}
-}
-
 export class MockMap {
   static instances: MockMap[] = [];
 
@@ -142,29 +135,25 @@ export class MockInfoWindow {
   }
 }
 
-export class MockMarker {
-  static instances: MockMarker[] = [];
+export class MockAdvancedMarkerElement extends HTMLElement {
+  static instances: MockAdvancedMarkerElement[] = [];
 
-  getIcon = jest.fn(() => this.iconValue);
+  anchorLeft?: string;
 
-  setAnimation = jest.fn();
+  anchorTop?: string;
 
-  setIcon = jest.fn((icon: unknown) => {
-    this.iconValue = icon;
-  });
+  gmpClickable?: boolean;
 
-  setMap = jest.fn();
+  map?: MockMap | null;
 
-  setOptions = jest.fn((options: { icon?: unknown }) => {
-    if ('icon' in options) {
-      this.iconValue = options.icon;
-    }
-  });
+  position?: google.maps.LatLngLiteral;
 
-  private iconValue: unknown = null;
+  title = '';
 
-  constructor() {
-    MockMarker.instances.push(this);
+  constructor(options: google.maps.marker.AdvancedMarkerElementOptions = {}) {
+    super();
+    Object.assign(this, options);
+    MockAdvancedMarkerElement.instances.push(this);
   }
 }
 
@@ -200,18 +189,20 @@ const decodePath = jest.fn(() => [
 ]);
 
 export const installGoogleMapsMock = () => {
+  if (!customElements.get('mock-advanced-marker')) {
+    customElements.define('mock-advanced-marker', MockAdvancedMarkerElement);
+  }
+
   (global as { google?: unknown }).google = {
     maps: {
-      Animation: { BOUNCE: 'BOUNCE', DROP: 'DROP' },
       InfoWindow: MockInfoWindow,
       LatLng: MockLatLng,
       LatLngBounds: MockLatLngBounds,
       Map: MockMap,
-      Marker: MockMarker,
-      Point: MockPoint,
       Polyline: MockPolyline,
       event: { addListener, removeListener },
       geometry: { encoding: { decodePath } },
+      marker: { AdvancedMarkerElement: MockAdvancedMarkerElement },
     },
   } as unknown as typeof globalThis & { google: typeof google };
 };
@@ -219,7 +210,7 @@ export const installGoogleMapsMock = () => {
 export const resetGoogleMapsMock = () => {
   MockMap.instances = [];
   MockInfoWindow.instances = [];
-  MockMarker.instances = [];
+  MockAdvancedMarkerElement.instances = [];
   MockPolyline.instances = [];
   decodePath.mockClear();
 };

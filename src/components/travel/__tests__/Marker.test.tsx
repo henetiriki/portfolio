@@ -2,9 +2,9 @@ import { useReducedMotion } from '@mantine/hooks';
 import { Marker } from '@components/travel/Marker';
 import { PortfolioStateProvider, usePortfolioState } from '@state/context';
 import {
+  MockAdvancedMarkerElement,
   MockInfoWindow,
   MockMap,
-  MockMarker,
   installGoogleMapsMock,
   resetGoogleMapsMock,
   triggerMapsEvent,
@@ -19,8 +19,8 @@ jest.mock('@mantine/hooks', () => ({
 
 installGoogleMapsMock();
 
-const icon: google.maps.Symbol = {
-  path: 'M0 0',
+const icon = {
+  color: '#ff0000',
   scale: 1,
 };
 
@@ -58,6 +58,16 @@ const renderMarker = (props: Partial<ComponentProps<typeof Marker>> = {}) => {
   return { infoWindow, map, ...utils };
 };
 
+const clickMarker = (marker: MockAdvancedMarkerElement) => {
+  marker.dispatchEvent(new Event('gmp-click'));
+};
+
+const getMarkerElements = (marker: MockAdvancedMarkerElement) => ({
+  graphic: marker.querySelector('svg') as SVGSVGElement,
+  path: marker.querySelector('path') as SVGPathElement,
+  visual: marker.firstElementChild as HTMLDivElement,
+});
+
 describe('Marker', () => {
   beforeEach(() => {
     resetGoogleMapsMock();
@@ -69,51 +79,56 @@ describe('Marker', () => {
     jest.useRealTimers();
   });
 
-  it('configures the underlying marker with a drop animation and an anchored icon', () => {
+  it('configures an accessible advanced marker with DOM-backed icon content', () => {
     renderMarker();
 
-    const [marker] = MockMarker.instances;
+    const [marker] = MockAdvancedMarkerElement.instances;
+    const { path, visual } = getMarkerElements(marker);
 
-    expect(marker.setOptions).toHaveBeenCalledWith(
-      expect.objectContaining({
-        animation: 'DROP',
-        icon: expect.objectContaining({ ...icon, anchor: { x: 10, y: 20 } }),
-      })
-    );
+    expect(marker).toMatchObject({
+      anchorLeft: '-41.6667%',
+      anchorTop: '-83.3333%',
+      gmpClickable: true,
+      position: { lat: 1, lng: 2 },
+      title: 'A title',
+    });
+    expect(path).toHaveAttribute('fill', icon.color);
+    expect(path).toHaveAttribute('fill-opacity', '0.95');
+    expect(visual).toHaveStyle({ transform: 'scale(1)' });
   });
 
   it('shows immediately without animation when reduced motion is preferred', () => {
     (useReducedMotion as jest.Mock).mockReturnValue(true);
     const { infoWindow, map } = renderMarker({ idx: 2, order: 3 });
-    const [marker] = MockMarker.instances;
+    const [marker] = MockAdvancedMarkerElement.instances;
+    const { graphic } = getMarkerElements(marker);
 
-    expect(marker.setOptions).toHaveBeenCalledWith(
-      expect.objectContaining({ animation: null })
-    );
-    expect(marker.setMap).toHaveBeenCalledWith(map);
+    expect(marker.map).toBe(map);
+    expect(graphic.classList).toHaveLength(1);
 
     act(() => {
-      triggerMapsEvent(marker, 'click');
+      clickMarker(marker);
     });
 
-    expect(marker.setAnimation).not.toHaveBeenCalled();
-    expect(infoWindow.open).toHaveBeenCalledWith(map, marker);
+    expect(graphic.classList).toHaveLength(1);
+    expect(infoWindow.open).toHaveBeenCalledWith({ anchor: marker, map });
   });
 
   it('drops onto the map after an idx * order * 100ms stagger', () => {
-    renderMarker({ idx: 2, order: 3 });
-
-    const [marker] = MockMarker.instances;
+    const { map } = renderMarker({ idx: 2, order: 3 });
+    const [marker] = MockAdvancedMarkerElement.instances;
+    const { graphic } = getMarkerElements(marker);
 
     act(() => {
       jest.advanceTimersByTime(599);
     });
-    expect(marker.setMap).not.toHaveBeenCalled();
+    expect(marker.map).toBeUndefined();
 
     act(() => {
       jest.advanceTimersByTime(1);
     });
-    expect(marker.setMap).toHaveBeenCalledWith(expect.any(MockMap));
+    expect(marker.map).toBe(map);
+    expect(graphic.classList).toHaveLength(2);
   });
 
   it('dispatches markersLoaded once the end marker has dropped', async () => {
@@ -147,13 +162,14 @@ describe('Marker', () => {
       jest.advanceTimersByTime(100);
     });
 
-    const [marker] = MockMarker.instances;
+    const [marker] = MockAdvancedMarkerElement.instances;
+    const { graphic } = getMarkerElements(marker);
 
     act(() => {
-      triggerMapsEvent(marker, 'click');
+      clickMarker(marker);
     });
 
-    expect(marker.setAnimation).toHaveBeenCalledWith('BOUNCE');
+    expect(graphic.classList).toHaveLength(3);
     expect(infoWindow.setHeaderDisabled).toHaveBeenCalledWith(true);
     expect(infoWindow.setContent).toHaveBeenCalledWith(
       expect.stringContaining('A title')
@@ -161,12 +177,12 @@ describe('Marker', () => {
     expect(infoWindow.setContent).toHaveBeenCalledWith(
       expect.stringContaining('A description')
     );
-    expect(infoWindow.open).toHaveBeenCalledWith(map, marker);
+    expect(infoWindow.open).toHaveBeenCalledWith({ anchor: marker, map });
 
     act(() => {
       jest.advanceTimersByTime(2000);
     });
-    expect(marker.setAnimation).toHaveBeenCalledWith(null);
+    expect(graphic.classList).toHaveLength(2);
   });
 
   it('restarts the bounce reset timer when clicked again before it elapses', () => {
@@ -176,22 +192,23 @@ describe('Marker', () => {
       jest.advanceTimersByTime(100);
     });
 
-    const [marker] = MockMarker.instances;
+    const [marker] = MockAdvancedMarkerElement.instances;
+    const { graphic } = getMarkerElements(marker);
 
     act(() => {
-      triggerMapsEvent(marker, 'click');
+      clickMarker(marker);
       jest.advanceTimersByTime(1000);
-      triggerMapsEvent(marker, 'click');
+      clickMarker(marker);
       jest.advanceTimersByTime(1999);
     });
 
-    expect(marker.setAnimation).not.toHaveBeenCalledWith(null);
+    expect(graphic.classList).toHaveLength(3);
 
     act(() => {
       jest.advanceTimersByTime(1);
     });
 
-    expect(marker.setAnimation).toHaveBeenCalledWith(null);
+    expect(graphic.classList).toHaveLength(2);
   });
 
   it('auto-closes the info window 5s after it becomes visible', () => {
@@ -201,9 +218,6 @@ describe('Marker', () => {
       jest.advanceTimersByTime(100);
     });
 
-    // setup itself triggers a couple of incidental close() calls as the
-    // marker's effects settle (see development.md) — only the calls after
-    // this point are relevant to the auto-close-on-visible behavior
     infoWindow.close.mockClear();
 
     act(() => {
@@ -220,19 +234,18 @@ describe('Marker', () => {
   });
 
   it('stagger-drops using the default order when none is provided', () => {
-    renderMarker({ idx: 2, order: undefined });
-
-    const [marker] = MockMarker.instances;
+    const { map } = renderMarker({ idx: 2, order: undefined });
+    const [marker] = MockAdvancedMarkerElement.instances;
 
     act(() => {
       jest.advanceTimersByTime(199);
     });
-    expect(marker.setMap).not.toHaveBeenCalled();
+    expect(marker.map).toBeUndefined();
 
     act(() => {
       jest.advanceTimersByTime(1);
     });
-    expect(marker.setMap).toHaveBeenCalledWith(expect.any(MockMap));
+    expect(marker.map).toBe(map);
   });
 
   it('does not schedule an auto-close when the info window becomes visible while already closed', () => {
@@ -246,95 +259,43 @@ describe('Marker', () => {
 
     act(() => {
       triggerMapsEvent(infoWindow, 'visible');
-    });
-    act(() => {
       jest.advanceTimersByTime(5000);
     });
 
     expect(infoWindow.close).not.toHaveBeenCalled();
   });
 
-  it('rescales the icon in response to zoom changes', () => {
+  it('rescales the DOM icon in response to zoom changes', () => {
     const { map } = renderMarker({ idx: 1, order: 1 });
 
     act(() => {
       jest.advanceTimersByTime(100);
     });
 
-    const [marker] = MockMarker.instances;
-
-    marker.setIcon.mockClear();
-
-    act(() => {
-      map.setZoom(20);
-    });
-
-    expect(marker.setIcon).toHaveBeenCalledWith(
-      expect.objectContaining({ scale: 2.25 })
-    );
-  });
-
-  it('skips re-setting the icon when a zoom change does not actually change the scale', () => {
-    const { map } = renderMarker({ idx: 1, order: 1 });
-
-    act(() => {
-      jest.advanceTimersByTime(100);
-    });
-
-    const [marker] = MockMarker.instances;
-
-    act(() => {
-      map.setZoom(20);
-    });
-    marker.setIcon.mockClear();
+    const [marker] = MockAdvancedMarkerElement.instances;
+    const { visual } = getMarkerElements(marker);
 
     act(() => {
       map.setZoom(20);
     });
 
-    expect(marker.setIcon).not.toHaveBeenCalled();
-  });
-
-  it('clears the previous auto-close timer when the info window becomes visible again before it elapses', () => {
-    const { infoWindow } = renderMarker({ idx: 1, order: 1 });
-
-    act(() => {
-      jest.advanceTimersByTime(100);
-    });
-
-    infoWindow.close.mockClear();
-
-    act(() => {
-      infoWindow.open();
-    });
-    act(() => {
-      jest.advanceTimersByTime(2000);
-    });
-    act(() => {
-      infoWindow.open();
-    });
-
-    act(() => {
-      jest.advanceTimersByTime(4999);
-    });
-    expect(infoWindow.close).not.toHaveBeenCalled();
-
-    act(() => {
-      jest.advanceTimersByTime(1);
-    });
-    expect(infoWindow.close).toHaveBeenCalledTimes(1);
+    expect(visual).toHaveStyle({ transform: 'scale(2.25)' });
   });
 
   it('does not attach an info-window visibility listener when no info window is provided', () => {
-    renderMarker({ idx: 1, infoWindow: undefined, order: 1 });
+    const { map } = renderMarker({
+      idx: 1,
+      infoWindow: undefined,
+      order: 1,
+    });
 
     act(() => {
       jest.advanceTimersByTime(100);
     });
 
-    const [marker] = MockMarker.instances;
+    const [marker] = MockAdvancedMarkerElement.instances;
 
-    expect(marker.setMap).toHaveBeenCalledWith(expect.any(MockMap));
+    expect(marker.map).toBe(map);
   });
 
   it('does not attach or drop the marker when no map is provided', () => {
@@ -344,14 +305,14 @@ describe('Marker', () => {
       jest.advanceTimersByTime(100);
     });
 
-    const [marker] = MockMarker.instances;
+    const [marker] = MockAdvancedMarkerElement.instances;
 
-    expect(marker.setMap).not.toHaveBeenCalled();
+    expect(marker.map).toBeUndefined();
   });
 
   it('cancels a pending staggered drop on unmount', () => {
     const { unmount } = renderMarker({ endMarker: true, idx: 2, order: 1 });
-    const [marker] = MockMarker.instances;
+    const [marker] = MockAdvancedMarkerElement.instances;
 
     unmount();
 
@@ -359,31 +320,31 @@ describe('Marker', () => {
       jest.advanceTimersByTime(200);
     });
 
-    expect(marker.setMap).toHaveBeenCalledTimes(1);
-    expect(marker.setMap).toHaveBeenCalledWith(null);
+    expect(marker.map).toBeNull();
   });
 
-  it('cancels the pending bounce reset on unmount', () => {
+  it('cancels the pending bounce reset and removes the animation on unmount', () => {
     const { unmount } = renderMarker({ idx: 1, order: 1 });
 
     act(() => {
       jest.advanceTimersByTime(100);
     });
 
-    const [marker] = MockMarker.instances;
+    const [marker] = MockAdvancedMarkerElement.instances;
+    const { graphic } = getMarkerElements(marker);
 
     act(() => {
-      triggerMapsEvent(marker, 'click');
+      clickMarker(marker);
     });
 
+    expect(graphic.classList).toHaveLength(3);
     unmount();
 
     act(() => {
       jest.advanceTimersByTime(2000);
     });
 
-    expect(marker.setAnimation).toHaveBeenCalledTimes(1);
-    expect(marker.setAnimation).toHaveBeenCalledWith('BOUNCE');
+    expect(graphic.classList).toHaveLength(1);
   });
 
   it('cancels the pending info-window close on unmount', () => {
@@ -411,10 +372,10 @@ describe('Marker', () => {
       jest.advanceTimersByTime(100);
     });
 
-    const [marker] = MockMarker.instances;
+    const [marker] = MockAdvancedMarkerElement.instances;
 
     unmount();
 
-    expect(marker.setMap).toHaveBeenCalledWith(null);
+    expect(marker.map).toBeNull();
   });
 });

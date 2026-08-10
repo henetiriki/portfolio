@@ -2,10 +2,11 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
-## 2026-08-10 — Google Maps modernisation, phases 1–2
+## 2026-08-10 — Google Maps modernisation, phases 1–3
 
-- Replaced the archived `@googlemaps/react-wrapper` with Google's maintained `@googlemaps/js-api-loader` v2 functional API. A shared retryable singleton now loads the Maps and geometry libraries on demand, while `useGoogleMaps()` preserves the existing loading/error/success UI and leaves map options, classic markers, polylines and reveal sequencing unchanged. The remaining Advanced Marker work is tracked in the [Roadmap](roadmap.md#framework--dependency-upgrades).
-- Added the public raster Map ID at `google.maps.Map` construction and moved visual styling to its associated published cloud style, removing the incompatible embedded JSON. Responsive zoom remains a later mutable option, while classic markers and polylines stay unchanged for the next focused phase.
+- Replaced the archived `@googlemaps/react-wrapper` with Google's maintained `@googlemaps/js-api-loader` v2 functional API. A shared retryable singleton loads the Maps, geometry and marker libraries on demand, while `useGoogleMaps()` preserves the existing loading/error/success UI.
+- Added the public raster Map ID at `google.maps.Map` construction and moved visual styling to its associated published cloud style, removing the incompatible embedded JSON. Responsive zoom remains a later mutable option and the raster renderer remains intentional.
+- Replaced deprecated classic markers and `google.maps.Symbol` icons with accessible `AdvancedMarkerElement` custom elements and DOM-backed SVG pins. CSS recreates drop/bounce motion, the current InfoWindow anchoring API preserves marker details, DOM transforms retain zoom-responsive scaling, and all timers/listeners/map assignments clean up on unmount. Reduced-motion behaviour and the focused SDK mock/tests were migrated with the runtime implementation; final compatibility and legend auditing remains in the [Roadmap](roadmap.md#framework--dependency-upgrades).
 - Made only the header-adjacent `content-top` wave eager after runtime LCP detection identified it as the page's largest paint candidate. Lower content/footer waves remain lazy, and the decorative SVG is not promoted to a head preload.
 
 ## 2026-08-09 — Current platform and release hardening
