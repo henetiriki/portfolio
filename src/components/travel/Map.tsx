@@ -10,9 +10,9 @@ import {
 } from 'react';
 import { MAP_MAX_MOBILE, currentCityPoint, mapOptions } from '@fixtures/travel';
 import { usePortfolioState } from '@state/context';
+import classes from './Map.module.css';
 import type { FC, PropsWithChildren } from 'react';
 
-const mapContainerStyle = { height: '65vh', width: '100%' };
 const mapRevealDuration = 2000;
 const mapRevealZoom = 4;
 
@@ -146,7 +146,7 @@ export const Map: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <>
-      <div id='map' ref={mapRef} style={mapContainerStyle} />
+      <div className={classes.map} id='map' ref={mapRef} />
       {Children.map(children, child => {
         if (map && infoWindow && isValidElement(child)) {
           // set the map prop on the child component

@@ -1,0 +1,18 @@
+.map {
+  height: 65vh;
+  width: 100%;
+}
+
+.map :global(.gm-style-iw-chr > .gm-ui-hover-effect) {
+  color: var(--mantine-color-cinder-4) !important;
+}
+
+.map :global(.gm-style-iw-chr > .gm-ui-hover-effect > span) {
+  background-color: var(--mantine-color-cinder-4) !important;
+}
+
+.map :global(.gm-style-iw-chr > .gm-style-iw-ch) {
+  align-items: center;
+  display: flex;
+  padding-top: 0;
+}

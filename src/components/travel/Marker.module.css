@@ -31,20 +31,6 @@
   margin: 0.25rem 0;
 }
 
-:global(.gm-style-iw-chr > .gm-ui-hover-effect) {
-  color: var(--mantine-color-cinder-4) !important;
-}
-
-:global(.gm-style-iw-chr > .gm-ui-hover-effect > span) {
-  background-color: var(--mantine-color-cinder-4) !important;
-}
-
-:global(.gm-style-iw-chr > .gm-style-iw-ch) {
-  align-items: center;
-  display: flex;
-  padding-top: 0;
-}
-
 .drop {
   animation: marker-drop 300ms linear forwards;
 }
