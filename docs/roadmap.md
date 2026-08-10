@@ -8,6 +8,8 @@ Last reviewed: 2026-08-10.
 
 - [ ] **Block merges on coverage and add diff/patch coverage.** Jest's global 80% threshold already protects the whole project, but it cannot enforce coverage only on changed lines. Choose Codecov/Coveralls (a private-repository token and external account) or a self-hosted diff-coverage action, then require the CI check through a `main` branch-protection rule if the repository plan supports it. This combines repository configuration with workflow work; neither should be implied by a green job alone.
 
+- [ ] **Add an in-GitHub code-coverage viewer.** Install a free-plan-compatible GitHub App or workflow-backed integration that surfaces Jest coverage on pull requests and source lines. Prefer the same provider selected for diff/patch coverage so one upload powers both views instead of introducing duplicate reporting services.
+
 - [ ] **Add a small browser-level regression suite.** Keep it deliberately narrower than the Jest/RTL suite: render every content route, exercise the mobile drawer and keyboard path, check contact-form tab order and validation borders with mocked responses, and run one axe pass per page template. Playwright is the likely fit. The suite should remain cheap enough for the existing single CI job and should target browser behaviours that DOM tests have previously missed rather than duplicate page snapshots.
 
 ## Framework & dependency upgrades
@@ -18,7 +20,7 @@ Last reviewed: 2026-08-10.
 
 - [ ] **Upgrade Node.js 24 to 26 on or after 2026-10-28.** The project follows Active LTS releases, and Node 26 does not reach that status until then. Confirm Vercel support first, then update `engines.node`, `.nvmrc` and `@types/node` together and validate installation, native dependencies, the full suite and both build modes on the new runtime. See [D002](decisions.md#d002--track-active-lts-nodejs-releases).
 
-- [ ] **Complete the phased Google Maps modernisation.** The archived React wrapper has been replaced with Google's maintained v2 loader. Next, provision/configure a Map ID and cloud style, then migrate deprecated classic `google.maps.Marker` instances to Advanced Markers before final cleanup; see [D007](decisions.md#d007--modernise-google-maps-in-coordinated-phases). Advanced Markers use DOM-based content and new animation/cleanup approaches — there is no direct equivalent for the current symbol icons, `DROP`/`BOUNCE`, `setMap`, or zoom-scaled marker logic. Preserve loading/error states, geometry decoding, map options, information windows, marker/polyline sequencing, zoom-responsive visuals and all focused tests. Audit `MarkerLegend` alongside the marker implementation.
+- [ ] **Complete the phased Google Maps modernisation.** The maintained loader and raster Map ID/cloud style phases are complete. Next, migrate deprecated classic `google.maps.Marker` instances to Advanced Markers before final cleanup; see [D007](decisions.md#d007--modernise-google-maps-in-coordinated-phases). Advanced Markers use DOM-based content and new animation/cleanup approaches — there is no direct equivalent for the current symbol icons, `DROP`/`BOUNCE`, `setMap`, or zoom-scaled marker logic. Preserve loading/error states, geometry decoding, map options, information windows, marker/polyline sequencing, zoom-responsive visuals and all focused tests. Audit `MarkerLegend` alongside the marker implementation; treat any future raster-to-vector switch as a separate, optional renderer change after marker parity.
 
 ## Performance, SEO & platform polish
 

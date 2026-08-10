@@ -25,6 +25,7 @@ jobs:
       GMAIL_APP_PASSWORD: 'test-app-password'
       GMAIL_SENDER_EMAIL: 'owner@example.test'
       GOOGLE_MAPS_API_KEY: 'test-google-maps-api-key'
+      GOOGLE_MAPS_MAP_ID: 'test-google-maps-map-id'
       HOST: 'http://localhost:3000'
       HOSTNAME: 'localhost:3000'
       IMAGE_HOST: 'http://localhost:3000/images'
