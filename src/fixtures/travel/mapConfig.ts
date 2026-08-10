@@ -1,20 +1,14 @@
-import { colorOverrides } from '@styles';
-
 export const MAP_MAX_MOBILE = 768;
 export const STROKE_WEIGHT_DEFAULT = 1.25;
 
-const {
-  gunmetal,
-  ['medium-sea-green']: mediumSeaGreen,
-  ['paynes-grey']: paynesGrey,
-  whisper,
-} = colorOverrides;
+const googleMapsMapId = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID as string;
 
 export const mapOptions = (): google.maps.MapOptions => ({
   center: {
     lat: 0.0,
     lng: 32.0,
   },
+  mapId: googleMapsMapId,
   mapTypeId: 'roadmap',
   restriction: {
     latLngBounds: new google.maps.LatLngBounds(
@@ -24,140 +18,4 @@ export const mapOptions = (): google.maps.MapOptions => ({
     strictBounds: true,
   },
   scrollwheel: false,
-  styles: [
-    {
-      elementType: 'geometry',
-      featureType: 'water',
-      stylers: [
-        {
-          color: paynesGrey[4],
-        },
-      ],
-    },
-    {
-      elementType: 'geometry',
-      featureType: 'landscape',
-      stylers: [
-        {
-          color: mediumSeaGreen[4],
-        },
-      ],
-    },
-    {
-      featureType: 'poi',
-      stylers: [
-        {
-          color: mediumSeaGreen[4],
-        },
-        {
-          lightness: -7,
-        },
-      ],
-    },
-    {
-      elementType: 'geometry',
-      featureType: 'road.highway',
-      stylers: [
-        {
-          color: mediumSeaGreen[4],
-        },
-        {
-          lightness: -28,
-        },
-      ],
-    },
-    {
-      elementType: 'geometry',
-      featureType: 'road.arterial',
-      stylers: [
-        {
-          color: mediumSeaGreen[4],
-        },
-        {
-          visibility: 'on',
-        },
-        {
-          lightness: -15,
-        },
-      ],
-    },
-    {
-      elementType: 'geometry',
-      featureType: 'road.local',
-      stylers: [
-        {
-          color: mediumSeaGreen[4],
-        },
-        {
-          lightness: -18,
-        },
-      ],
-    },
-    {
-      elementType: 'labels.text.fill',
-      stylers: [
-        {
-          color: whisper[0],
-        },
-      ],
-    },
-    {
-      elementType: 'labels.text.stroke',
-      stylers: [
-        {
-          visibility: 'off',
-        },
-      ],
-    },
-    {
-      elementType: 'geometry',
-      featureType: 'transit',
-      stylers: [
-        {
-          color: mediumSeaGreen[4],
-        },
-        {
-          lightness: -34,
-        },
-      ],
-    },
-    {
-      elementType: 'geometry',
-      featureType: 'administrative',
-      stylers: [
-        {
-          visibility: 'on',
-        },
-        {
-          color: gunmetal[4],
-        },
-        {
-          weight: 0.8,
-        },
-      ],
-    },
-    {
-      featureType: 'poi.park',
-      stylers: [
-        {
-          color: mediumSeaGreen[4],
-        },
-      ],
-    },
-    {
-      elementType: 'geometry.stroke',
-      featureType: 'road',
-      stylers: [
-        {
-          color: gunmetal[4],
-        },
-        {
-          weight: 0.3,
-        },
-        {
-          lightness: 10,
-        },
-      ],
-    },
-  ],
 });

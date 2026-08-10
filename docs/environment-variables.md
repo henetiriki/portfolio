@@ -2,7 +2,7 @@
 
 All values are read via `process.env`, either directly in server-only modules under `src/server/` (and API routes), or — for values client code needs — via `next.config.js`'s `env` key, which re-exposes them under `NEXT_PUBLIC_*` names. Client code then reads them as plain `process.env.NEXT_PUBLIC_*` (see e.g. `pages/index.tsx`, `FixedBackground.tsx`).
 
-This replaced `publicRuntimeConfig`/`serverRuntimeConfig` (`next/config`) 2026-08-08 — that API was removed entirely in Next.js 16, which this project now runs (see [Project History](project-history.md#2026-08-08--react-19-and-the-mantine-styling-migration)), so the migration was a prerequisite rather than a cleanup. The underlying env var names (`HOST`, `IMAGE_HOST`, `GOOGLE_MAPS_API_KEY`) were deliberately left unchanged rather than renamed to `NEXT_PUBLIC_*` directly, since they're also read server-side and are already configured under those names in Vercel — `next.config.js`'s `env` block bridges them to a `NEXT_PUBLIC_*` name without requiring any hosting-platform config change. One value, `lastModified`, isn't a raw env var at all — it's computed once at config-load time from the current date — so it can only be exposed via this `env` bridge, not by renaming a `.env` entry.
+This replaced `publicRuntimeConfig`/`serverRuntimeConfig` (`next/config`) 2026-08-08 — that API was removed entirely in Next.js 16, which this project now runs (see [Project History](project-history.md#2026-08-08--react-19-and-the-mantine-styling-migration)), so the migration was a prerequisite rather than a cleanup. Source environment names are kept without a `NEXT_PUBLIC_*` prefix and `next.config.js` bridges the client-facing subset to build-time-inlined public names. One value, `lastModified`, isn't a raw env var at all — it's computed once at config-load time from the current date — so it can only be exposed via this bridge.
 
 Note for tests: `next/jest` loads `.env.test` directly but does **not** evaluate `next.config.js`'s `env` key (that bridging only happens in the real Next.js dev/build/start pipeline), so `.env.test` additionally defines the `NEXT_PUBLIC_*` names directly as dummy values — see the file itself.
 
@@ -33,6 +33,9 @@ GitHub's production-mode CI build does not load `.env.test`, so `.github/workflo
 | `IMAGE_HOST_PATH`     | `next.config.js` `images.remotePatterns[0].pathname`     | Allowed path prefix under `IMAGE_HOST_NAME`                                                                                   |
 | `IMAGE_HOST_PROTOCOL` | `next.config.js` `images.remotePatterns[0].protocol`     | `http`/`https` for the remote image host                                                                                      |
 | `GOOGLE_MAPS_API_KEY` | `next.config.js` → `env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Google Maps JavaScript API key used by the shared `@googlemaps/js-api-loader` setup — see [Travel Feature](travel-feature.md) |
+| `GOOGLE_MAPS_MAP_ID`  | `next.config.js` → `env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID`  | Public raster Map ID selecting the cloud configuration/style used by `/travel`                                                |
+
+Unlike the API key, a Map ID is a public browser identifier rather than a credential, but this project still supplies its real value through local/deployment environment configuration. It must be available when `google.maps.Map` is constructed and selects the published cloud style associated in Google Maps Management.
 
 ### Server-only (read directly via `process.env` in `src/server/` and API routes)
 

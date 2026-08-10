@@ -75,6 +75,21 @@ describe('Map', () => {
     expect(MockInfoWindow.instances).toHaveLength(1);
   });
 
+  it('sets the cloud Map ID at construction without embedded styles', () => {
+    render(
+      <PortfolioStateProvider>
+        <Map />
+      </PortfolioStateProvider>
+    );
+
+    const [map] = MockMap.instances;
+
+    expect(map.options).toEqual(
+      expect.objectContaining({ mapId: 'test-google-maps-map-id' })
+    );
+    expect(map.options).not.toHaveProperty('styles');
+  });
+
   it('uses the desktop minZoom/zoom for a wide viewport', () => {
     (useViewportSize as jest.Mock).mockReturnValue({
       height: 800,

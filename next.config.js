@@ -52,12 +52,12 @@ const securityHeaders = [
 const baseConfig = withBotId({
   // Replaces the old publicRuntimeConfig: next/config's runtime config is
   // deprecated and removed entirely in Next.js 16. These are re-exposed under
-  // NEXT_PUBLIC_* names (rather than renaming the underlying env vars, which
-  // are also read server-side and configured in Vercel under their current
-  // names) so client code can read them as plain `process.env.NEXT_PUBLIC_*`
-  // — see docs/environment-variables.md.
+  // NEXT_PUBLIC_* names so client code can read them as plain
+  // `process.env.NEXT_PUBLIC_*`. Some source names are also used server-side
+  // or retained in deployment config. See docs/environment-variables.md.
   env: {
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
+    NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID: process.env.GOOGLE_MAPS_MAP_ID,
     NEXT_PUBLIC_IMAGE_HOST: process.env.IMAGE_HOST,
     NEXT_PUBLIC_LAST_MODIFIED: lastModified,
     NEXT_PUBLIC_SITE_URL: process.env.HOST,

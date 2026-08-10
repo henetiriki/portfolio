@@ -71,7 +71,7 @@ export const Map: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     if (mapRef.current && !map && !infoWindow) {
-      setMap(new google.maps.Map(mapRef.current, {}));
+      setMap(new google.maps.Map(mapRef.current, mapOptions()));
       setInfoWindow(new google.maps.InfoWindow());
     }
   }, [mapRef, map, infoWindow]);
@@ -82,7 +82,6 @@ export const Map: FC<PropsWithChildren> = ({ children }) => {
       const minZoom = mapMaxMobile ? 1 : 2;
 
       map.setOptions({
-        ...mapOptions(),
         minZoom,
         // Only force the starting zoom once, on initial setup — otherwise a
         // window resize after the map has loaded would snap it back to the
