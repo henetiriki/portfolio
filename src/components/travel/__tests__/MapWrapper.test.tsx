@@ -1,19 +1,18 @@
 import { MapWrapper } from '@components/travel/MapWrapper';
 import { cities } from '@fixtures/travel';
-import { useRailTrips } from '@hooks';
+import { useGoogleMaps, useRailTrips } from '@hooks';
 import { act, render, screen } from '@utils/test/render';
 import type { ComponentProps, PropsWithChildren } from 'react';
 
 jest.mock('../../../hooks', () => ({
   ...jest.requireActual('../../../hooks'),
+  useGoogleMaps: jest.fn(),
   useRailTrips: jest.fn(),
-}));
-jest.mock('@googlemaps/react-wrapper', () => ({
-  ...jest.requireActual('@googlemaps/react-wrapper'),
-  Wrapper: ({ children }: PropsWithChildren) => <>{children}</>,
 }));
 jest.mock('../index', () => ({
   Map: ({ children }: PropsWithChildren) => <div>{children}</div>,
+  MapError: () => <div>Map failed</div>,
+  MapLoader: () => <div>Map loading</div>,
   Marker: (props: ComponentProps<'div'> & Record<string, unknown>) => (
     <div
       data-endmarker={String(!!props.endMarker)}
@@ -53,7 +52,27 @@ describe('MapWrapper', () => {
         observe: jest.fn(),
       };
     }) as unknown as typeof IntersectionObserver;
+    (useGoogleMaps as jest.Mock).mockReturnValue('success');
     (useRailTrips as jest.Mock).mockReturnValue([]);
+  });
+
+  it('shows the loader and keeps the intersection sentinel active while loading', () => {
+    (useGoogleMaps as jest.Mock).mockReturnValue('loading');
+
+    render(<MapWrapper />);
+
+    expect(screen.getByText('Map loading')).toBeInTheDocument();
+    expect(screen.queryAllByTestId('marker')).toHaveLength(0);
+    expect(global.IntersectionObserver).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows the map error without rendering map content after a load failure', () => {
+    (useGoogleMaps as jest.Mock).mockReturnValue('failure');
+
+    render(<MapWrapper />);
+
+    expect(screen.getByText('Map failed')).toBeInTheDocument();
+    expect(screen.queryAllByTestId('marker')).toHaveLength(0);
   });
 
   it('always renders exactly one marker per city, even before the map has intersected', () => {

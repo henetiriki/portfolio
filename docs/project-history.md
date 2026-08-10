@@ -2,6 +2,10 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-10 — Google Maps modernisation, phase 1
+
+- Replaced the archived `@googlemaps/react-wrapper` with Google's maintained `@googlemaps/js-api-loader` v2 functional API. A shared retryable singleton now loads the Maps and geometry libraries on demand, while `useGoogleMaps()` preserves the existing loading/error/success UI and leaves map options, classic markers, polylines and reveal sequencing unchanged. The remaining Map ID/cloud-style and Advanced Marker phases are tracked in the [Roadmap](roadmap.md#framework--dependency-upgrades).
+
 ## 2026-08-09 — Current platform and release hardening
 
 - Upgraded Next.js 15 to 16, Mantine 7 through 9, and the ESLint toolchain to ESLint 9. Next development uses Turbopack while production builds explicitly use webpack for stable Serwist support. Mantine's v9 radius change is pinned back to the previous `sm` design. See [Development Workflow](development.md) and [Styling & Theming](styling-theming.md).

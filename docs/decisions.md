@@ -56,11 +56,11 @@ Contact submissions contain personal data and trigger external email side effect
 
 The endpoint validates the method and request shape at runtime, enforces bounded fields, safely renders message content and returns a stable generic public error schema. Owner delivery is required; courtesy-confirmation failure is non-fatal so a client retry cannot duplicate an already delivered owner email. Bot verification and the secondary signal remain defense in depth, with sensitive mechanics deliberately undocumented. See [Contact Feature](contact-feature.md).
 
-## D007 — Modernise the Google Maps wrapper and markers together
+## D007 — Modernise Google Maps in coordinated phases
 
-- **Status:** Accepted plan; not yet implemented
+- **Status:** Accepted; in progress
 - **Decided:** 2026-08-09
 
 `@googlemaps/react-wrapper` is archived and classic `google.maps.Marker` is deprecated, but Advanced Markers are not a constructor-level substitution. They change map setup, icon rendering, animation, cleanup and zoom behaviour.
 
-Treat the wrapper replacement and marker migration as one coordinated change rather than refactoring the imperative layer twice. Preserve loading/error states, geometry decoding, marker and polyline sequencing, information windows, zoom-responsive visuals and reduced-motion behaviour. The detailed scope and current constraints live in [Travel / Google Maps Feature](travel-feature.md) and the [Roadmap](roadmap.md#framework--dependency-upgrades).
+Keep one coordinated migration plan, but deliver it as small parity-preserving releases: maintained loader first; Map ID and cloud style second; Advanced Markers and their changed rendering/animation lifecycle third; final cleanup last. This gives each infrastructure boundary a focused test and manual-QA surface without prematurely rewriting the imperative marker layer. Preserve loading/error states, geometry decoding, marker and polyline sequencing, information windows, zoom-responsive visuals and reduced-motion behaviour throughout. The detailed phases and current constraints live in [Travel / Google Maps Feature](travel-feature.md#modernisation-phases) and the [Roadmap](roadmap.md#framework--dependency-upgrades).

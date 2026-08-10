@@ -2,7 +2,7 @@
 
 Open work only. Completed milestones are recorded in [Project History](project-history.md), durable rationale in [Engineering Decisions](decisions.md), and current behaviour in the topical documentation. Items are grouped by area rather than strict priority; each should normally be delivered as its own scoped change unless a dependency is called out explicitly.
 
-Last reviewed: 2026-08-09.
+Last reviewed: 2026-08-10.
 
 ## Testing & automation
 
@@ -18,7 +18,7 @@ Last reviewed: 2026-08-09.
 
 - [ ] **Upgrade Node.js 24 to 26 on or after 2026-10-28.** The project follows Active LTS releases, and Node 26 does not reach that status until then. Confirm Vercel support first, then update `engines.node`, `.nvmrc` and `@types/node` together and validate installation, native dependencies, the full suite and both build modes on the new runtime. See [D002](decisions.md#d002--track-active-lts-nodejs-releases).
 
-- [ ] **Modernise the Google Maps integration.** Replace the archived `@googlemaps/react-wrapper` and deprecated classic `google.maps.Marker` as one coordinated migration; see [D007](decisions.md#d007--modernise-the-google-maps-wrapper-and-markers-together). Advanced Markers require a `mapId`, DOM-based content and new animation/cleanup approaches — there is no direct equivalent for the current symbol icons, `DROP`/`BOUNCE`, `setMap`, or zoom-scaled marker logic. Preserve wrapper loading/error states, the geometry library, map options, information windows, marker/polyline sequencing, zoom-responsive visuals and all focused tests. Audit `MarkerLegend` alongside the marker implementation.
+- [ ] **Complete the phased Google Maps modernisation.** The archived React wrapper has been replaced with Google's maintained v2 loader. Next, provision/configure a Map ID and cloud style, then migrate deprecated classic `google.maps.Marker` instances to Advanced Markers before final cleanup; see [D007](decisions.md#d007--modernise-google-maps-in-coordinated-phases). Advanced Markers use DOM-based content and new animation/cleanup approaches — there is no direct equivalent for the current symbol icons, `DROP`/`BOUNCE`, `setMap`, or zoom-scaled marker logic. Preserve loading/error states, geometry decoding, map options, information windows, marker/polyline sequencing, zoom-responsive visuals and all focused tests. Audit `MarkerLegend` alongside the marker implementation.
 
 ## Performance, SEO & platform polish
 
