@@ -7,6 +7,7 @@ describe('WaveWrapper', () => {
     const img = container.querySelector('img');
 
     expect(img?.getAttribute('src')).toContain('content-top');
+    expect(img).toHaveAttribute('loading', 'eager');
   });
 
   it('renders a different image for a different wave', () => {
@@ -14,6 +15,7 @@ describe('WaveWrapper', () => {
     const img = container.querySelector('img');
 
     expect(img?.getAttribute('src')).toContain('footer-bottom');
+    expect(img).toHaveAttribute('loading', 'lazy');
   });
 
   it('lets a caller override its default height', () => {
