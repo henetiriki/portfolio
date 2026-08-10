@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { sharedPolylineOpts } from '@fixtures/travel';
 import { usePortfolioState } from '@state/context';
 import { colorOverrides } from '@styles';
@@ -11,14 +11,23 @@ import type {
 
 const { ['torch-red']: torchRed } = colorOverrides;
 
-export const useRailTrips = (): TripPaths[] => {
+type RailTripResult = {
+  railTripPolylines: TripPaths[];
+  settled: boolean;
+};
+
+export const useRailTrips = (): RailTripResult => {
   const {
     dispatch,
     state: {
-      travel: { railTripPolylines = [] },
+      travel: { railTripPolylines: cachedRailTripPolylines },
     },
   } = usePortfolioState();
   const requestStartedRef = useRef(false);
+  const railTripPolylines = useMemo(
+    () => cachedRailTripPolylines ?? [],
+    [cachedRailTripPolylines]
+  );
 
   const fetchRailtrips = async (): Promise<TripPaths[]> => {
     const { trips, upcomingTrips } =
@@ -67,16 +76,27 @@ export const useRailTrips = (): TripPaths[] => {
   };
 
   useEffect(() => {
-    if (!railTripPolylines.length && !requestStartedRef.current) {
+    if (cachedRailTripPolylines === undefined && !requestStartedRef.current) {
       requestStartedRef.current = true;
-      fetchRailtrips().then((railTripPolylines: TripPaths[]) => {
-        dispatch({
-          payload: { railTripPolylines },
-          type: 'set-rail-trip-polylines',
+      fetchRailtrips()
+        .then((railTripPolylines: TripPaths[]) => {
+          dispatch({
+            payload: { railTripPolylines },
+            type: 'set-rail-trip-polylines',
+          });
+        })
+        .catch(() => {
+          console.error('Unable to load rail-trip map data');
+          dispatch({
+            payload: { railTripPolylines: [] },
+            type: 'set-rail-trip-polylines',
+          });
         });
-      });
     }
-  }, [railTripPolylines, dispatch]);
+  }, [cachedRailTripPolylines, dispatch]);
 
-  return railTripPolylines;
+  return {
+    railTripPolylines,
+    settled: cachedRailTripPolylines !== undefined,
+  };
 };

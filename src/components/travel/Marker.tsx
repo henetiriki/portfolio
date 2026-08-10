@@ -1,7 +1,6 @@
 import { useReducedMotion } from '@mantine/hooks';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { markerIconPath } from '@fixtures/travel/icons';
-import { usePortfolioState } from '@state/context';
 import { cancelableDelay } from '@utils/common';
 import { getZoomMarkerWeightExponent } from '@utils/travel';
 import classes from './Marker.module.css';
@@ -12,11 +11,12 @@ const svgNamespace = 'http://www.w3.org/2000/svg';
 
 type MarkerProps = {
   description: string;
-  endMarker?: boolean;
   icon: MarkerIcon;
   idx: number;
   infoWindow?: google.maps.InfoWindow;
+  layerId: string;
   map?: google.maps.Map;
+  onRendered: (layerId: string) => void;
   order?: number;
   position: google.maps.LatLngLiteral;
   title: string;
@@ -84,21 +84,34 @@ const createInfoWindowElements = (description: string, title: string) => {
 
 export const Marker: FC<MarkerProps> = ({
   description,
-  endMarker,
   icon,
   idx,
   infoWindow,
+  layerId,
   map,
+  onRendered,
   order = 1,
   position,
   title,
 }) => {
-  const { dispatch } = usePortfolioState();
   const reduceMotion = useReducedMotion();
   const [{ graphic, marker, motion, setMap, setOptions, setScale }] =
     useState(createMarkerElements);
   const renderedScaleRef = useRef(icon.scale);
+  const renderedRef = useRef(false);
+  const onRenderedRef = useRef(onRendered);
   const markerScale = icon.scale;
+
+  useEffect(() => {
+    onRenderedRef.current = onRendered;
+  }, [onRendered]);
+
+  const reportRendered = useCallback(() => {
+    if (!renderedRef.current) {
+      renderedRef.current = true;
+      onRenderedRef.current(layerId);
+    }
+  }, [layerId]);
 
   useEffect(
     () => () => {
@@ -108,8 +121,13 @@ export const Marker: FC<MarkerProps> = ({
   );
 
   useEffect(() => {
-    const handleAnimationEnd = () => {
+    const handleAnimationEnd = (event: AnimationEvent) => {
+      if (event.target !== motion) {
+        return;
+      }
+
       motion.classList.remove(classes.drop);
+      reportRendered();
     };
 
     motion.addEventListener('animationend', handleAnimationEnd);
@@ -117,7 +135,7 @@ export const Marker: FC<MarkerProps> = ({
     return () => {
       motion.removeEventListener('animationend', handleAnimationEnd);
     };
-  }, [motion]);
+  }, [motion, reportRendered]);
 
   useEffect(() => {
     setOptions(icon.color, position, markerScale, title);
@@ -224,11 +242,8 @@ export const Marker: FC<MarkerProps> = ({
       }
       setMap(map!);
 
-      if (endMarker) {
-        dispatch({
-          payload: { markersLoaded: true },
-          type: 'set-markers-loaded',
-        });
+      if (reduceMotion) {
+        reportRendered();
       }
     };
     let entranceTimer: ReturnType<typeof setTimeout> | undefined;
@@ -247,15 +262,8 @@ export const Marker: FC<MarkerProps> = ({
       }
 
       motion.classList.remove(classes.drop);
-
-      if (endMarker) {
-        dispatch({
-          payload: { markersLoaded: false },
-          type: 'set-markers-loaded',
-        });
-      }
     };
-  }, [endMarker, idx, map, motion, order, reduceMotion, setMap, dispatch]);
+  }, [idx, map, motion, order, reduceMotion, reportRendered, setMap]);
 
   return null;
 };

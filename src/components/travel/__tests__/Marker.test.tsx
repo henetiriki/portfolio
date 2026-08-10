@@ -1,6 +1,5 @@
 import { useReducedMotion } from '@mantine/hooks';
 import { Marker } from '@components/travel/Marker';
-import { PortfolioStateProvider, usePortfolioState } from '@state/context';
 import {
   MockAdvancedMarkerElement,
   MockInfoWindow,
@@ -10,7 +9,7 @@ import {
   triggerMapsEvent,
 } from '@utils/test/googleMapsMock';
 import { act, render } from '@utils/test/render';
-import type { ComponentProps, FC } from 'react';
+import type { ComponentProps } from 'react';
 
 jest.mock('@mantine/hooks', () => ({
   ...jest.requireActual('@mantine/hooks'),
@@ -24,38 +23,26 @@ const icon = {
   scale: 1,
 };
 
-const MarkersLoadedProbe: FC = () => {
-  const {
-    state: {
-      travel: { markersLoaded },
-    },
-  } = usePortfolioState();
-
-  return <div>markersLoaded: {String(markersLoaded)}</div>;
-};
-
 const renderMarker = (props: Partial<ComponentProps<typeof Marker>> = {}) => {
   const map = new MockMap(document.createElement('div'), {});
   const infoWindow = new MockInfoWindow();
+  const markerProps: ComponentProps<typeof Marker> = {
+    description: 'A description',
+    icon,
+    idx: 1,
+    infoWindow: infoWindow as unknown as google.maps.InfoWindow,
+    layerId: 'marker-1',
+    map: map as unknown as google.maps.Map,
+    onRendered: jest.fn(),
+    order: 1,
+    position: { lat: 1, lng: 2 },
+    title: 'A title',
+    ...props,
+  };
 
-  const utils = render(
-    <PortfolioStateProvider>
-      <Marker
-        description='A description'
-        icon={icon}
-        idx={1}
-        infoWindow={infoWindow as unknown as google.maps.InfoWindow}
-        map={map as unknown as google.maps.Map}
-        order={1}
-        position={{ lat: 1, lng: 2 }}
-        title='A title'
-        {...props}
-      />
-      <MarkersLoadedProbe />
-    </PortfolioStateProvider>
-  );
+  const utils = render(<Marker {...markerProps} />);
 
-  return { infoWindow, map, ...utils };
+  return { infoWindow, map, onRendered: markerProps.onRendered, ...utils };
 };
 
 const clickMarker = (marker: MockAdvancedMarkerElement) => {
@@ -100,13 +87,14 @@ describe('Marker', () => {
 
   it('shows immediately without animation when reduced motion is preferred', () => {
     (useReducedMotion as jest.Mock).mockReturnValue(true);
-    const { infoWindow, map } = renderMarker({ idx: 2, order: 3 });
+    const { infoWindow, map, onRendered } = renderMarker({ idx: 2, order: 3 });
     const [marker] = MockAdvancedMarkerElement.instances;
     const { graphic, motion } = getMarkerElements(marker);
 
     expect(marker.map).toBe(map);
     expect(graphic.classList).toHaveLength(1);
     expect(motion.classList).toHaveLength(1);
+    expect(onRendered).toHaveBeenCalledWith('marker-1');
 
     act(() => {
       clickMarker(marker);
@@ -121,7 +109,7 @@ describe('Marker', () => {
   });
 
   it('drops onto the map after an idx * order * 100ms stagger', () => {
-    const { map } = renderMarker({ idx: 2, order: 3 });
+    const { map, onRendered } = renderMarker({ idx: 2, order: 3 });
     const [marker] = MockAdvancedMarkerElement.instances;
     const { motion } = getMarkerElements(marker);
 
@@ -135,36 +123,34 @@ describe('Marker', () => {
     });
     expect(marker.map).toBe(map);
     expect(motion.classList).toHaveLength(2);
+    expect(onRendered).not.toHaveBeenCalled();
 
     act(() => {
       motion.dispatchEvent(new Event('animationend'));
     });
 
     expect(motion.classList).toHaveLength(1);
+    expect(onRendered).toHaveBeenCalledWith('marker-1');
   });
 
-  it('dispatches markersLoaded once the end marker has dropped', async () => {
-    const { findByText } = renderMarker({ endMarker: true, idx: 1, order: 1 });
+  it('ignores child animations and reports its own drop only once', () => {
+    const { onRendered } = renderMarker();
+    const [marker] = MockAdvancedMarkerElement.instances;
+    const { graphic, motion } = getMarkerElements(marker);
 
     act(() => {
       jest.advanceTimersByTime(100);
+      graphic.dispatchEvent(new Event('animationend', { bubbles: true }));
     });
 
-    expect(await findByText('markersLoaded: true')).toBeInTheDocument();
-  });
-
-  it('does not dispatch markersLoaded for a non-end marker', () => {
-    const { queryByText } = renderMarker({
-      endMarker: false,
-      idx: 1,
-      order: 1,
-    });
+    expect(onRendered).not.toHaveBeenCalled();
 
     act(() => {
-      jest.advanceTimersByTime(100);
+      motion.dispatchEvent(new Event('animationend'));
+      motion.dispatchEvent(new Event('animationend'));
     });
 
-    expect(queryByText('markersLoaded: true')).not.toBeInTheDocument();
+    expect(onRendered).toHaveBeenCalledTimes(1);
   });
 
   it('bounces and opens the info window on click, then stops bouncing after 2s', () => {
@@ -370,7 +356,7 @@ describe('Marker', () => {
   });
 
   it('cancels a pending staggered drop on unmount', () => {
-    const { unmount } = renderMarker({ endMarker: true, idx: 2, order: 1 });
+    const { onRendered, unmount } = renderMarker({ idx: 2, order: 1 });
     const [marker] = MockAdvancedMarkerElement.instances;
 
     unmount();
@@ -380,6 +366,7 @@ describe('Marker', () => {
     });
 
     expect(marker.map).toBeNull();
+    expect(onRendered).not.toHaveBeenCalled();
   });
 
   it('cancels the pending bounce reset and removes the animation on unmount', () => {

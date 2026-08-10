@@ -17,10 +17,7 @@ type PortfolioState = {
     pageTopRef?: RefObject<HTMLDivElement>;           // ref to the very top of the page, for scroll-to-top
   };
   travel: {
-    markersLoaded?: boolean;
-    railPolylinesLoaded?: boolean;
     railTripPolylines?: TripPaths[];                  // fetched rail-trip paths, cached so they aren't refetched
-    tripPolylinesLoaded?: boolean;
   };
 };
 ```
@@ -29,15 +26,13 @@ type PortfolioState = {
 
 ## Actions
 
-| Type                            | Payload                   | Dispatched from                    | Purpose                                                                                                                                        |
-| ------------------------------- | ------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `set-page-top-ref`              | `{ pageTopRef }`          | `FixedBackground` (on mount, once) | Registers the scroll-to-top target used by `Navigation`/`Footer`                                                                               |
-| `set-ig-img-id`                 | `{ imgId }`               | `useIgImgId`, `404.tsx`, `500.tsx` | Sets the background photo id                                                                                                                   |
-| `set-markers-loaded`            | `{ markersLoaded }`       | `Marker` (travel)                  | Signals all city/location markers have finished animating in                                                                                   |
-| `set-rail-polylines-loaded`     | `{ railPolylinesLoaded }` | `Polyline` (travel)                | Signals all rail polylines have finished drawing                                                                                               |
-| `set-trip-polylines-loaded`     | `{ tripPolylinesLoaded }` | `Polyline` (travel)                | Signals all flight/cruise polylines have finished drawing                                                                                      |
-| `set-rail-trip-polylines`       | `{ railTripPolylines }`   | `useRailTrips`                     | Caches the fetched rail trip paths so `/api/rail-trips` is only called once                                                                    |
-| `reset-markers-polyline-loaded` | none                      | travel map on re-mount             | Resets the three `*Loaded` flags while preserving `railTripPolylines` (avoids re-fetching) so the map's pan/zoom "reveal" animation can replay |
+| Type                      | Payload                 | Dispatched from                    | Purpose                                                                       |
+| ------------------------- | ----------------------- | ---------------------------------- | ----------------------------------------------------------------------------- |
+| `set-page-top-ref`        | `{ pageTopRef }`        | `FixedBackground` (on mount, once) | Registers the scroll-to-top target used by `Navigation`/`Footer`              |
+| `set-ig-img-id`           | `{ imgId }`             | `useIgImgId`, `404.tsx`, `500.tsx` | Sets the background photo id                                                  |
+| `set-rail-trip-polylines` | `{ railTripPolylines }` | `useRailTrips`                     | Caches fetched rail paths (including an empty settled result) for the session |
+
+Travel layer readiness is deliberately local to `MapWrapper`, where the expected layer IDs and completion set exist. Keeping those short-lived sequencing details out of global context avoids re-rendering unrelated consumers for every marker or line.
 
 ## Usage pattern
 
