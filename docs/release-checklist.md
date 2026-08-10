@@ -24,6 +24,7 @@ yarn test:coverage
 ```
 
 - [ ] All four pass; coverage stays above the 80% global threshold in `jest.config.js`
+- [ ] The pull request's `codecov/patch` check passes at 100%; inspect any GitHub Checks annotations rather than treating the aggregate Jest percentage as coverage of the changed lines
 - [ ] `yarn css-vars:check` passes. CI runs this after `postinstall` as an integrity check for the generated, gitignored WebStorm stub; it is not a committed-file drift check.
 - [ ] `yarn tsc --pretty --noEmit --project service-worker/tsconfig.json` passes. The root `type-check` deliberately excludes this Web Worker project because its TypeScript libraries cannot be mixed with the application's DOM libraries.
 - [ ] **`yarn build` succeeds** — CI runs the production PWA branch, but this plain build still covers the separate no-PWA configuration path.

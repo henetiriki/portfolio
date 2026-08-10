@@ -2,6 +2,10 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-10 — Codecov patch coverage
+
+- Added private-repository Codecov reporting without a stored upload secret: the existing Jest LCOV output is uploaded through GitHub OIDC, while a repository configuration requires 100% coverage of changed coverable lines and supplies concise pull-request comments plus source annotations. Jest's existing 80% global threshold remains the whole-project guard because Codecov project status is not part of the private free tier. GitHub branch protection still needs the first successful `codecov/patch` status before it can be selected as a required check.
+
 ## 2026-08-10 — Package metadata cleanup
 
 - Removed the application-level `sideEffects: false` declaration so bundlers cannot treat CSS and other necessary imports as safely discardable, and removed the stale npm engine constraint because Yarn 4 is the declared package manager. The Node engine remains the deployment/runtime contract.

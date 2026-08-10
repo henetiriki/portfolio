@@ -1,0 +1,15 @@
+coverage:
+  status:
+    project: off
+    patch:
+      default:
+        target: 100%
+        threshold: 0%
+
+comment:
+  hide_project_coverage: true
+  layout: 'condensed_header, condensed_files, condensed_footer'
+  require_changes: false
+
+github_checks:
+  annotations: true
