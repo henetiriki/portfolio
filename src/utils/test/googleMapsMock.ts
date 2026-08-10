@@ -117,6 +117,7 @@ export class MockInfoWindow {
 
   close = jest.fn(() => {
     this.isOpen = false;
+    triggerMapsEvent(this, 'close');
   });
 
   isOpen = false;
@@ -128,7 +129,11 @@ export class MockInfoWindow {
 
   setContent = jest.fn();
 
+  setHeaderContent = jest.fn();
+
   setHeaderDisabled = jest.fn();
+
+  setOptions = jest.fn();
 
   constructor() {
     MockInfoWindow.instances.push(this);

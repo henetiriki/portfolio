@@ -20,8 +20,6 @@ Last reviewed: 2026-08-10.
 
 - [ ] **Upgrade Node.js 24 to 26 on or after 2026-10-28.** The project follows Active LTS releases, and Node 26 does not reach that status until then. Confirm Vercel support first, then update `engines.node`, `.nvmrc` and `@types/node` together and validate installation, native dependencies, the full suite and both build modes on the new runtime. See [D002](decisions.md#d002--track-active-lts-nodejs-releases).
 
-- [ ] **Complete the phased Google Maps modernisation.** The maintained loader, raster Map ID/cloud style and Advanced Marker phases are complete. Finish with the compatibility-code, `MarkerLegend`, documentation and focused-test audit described in [D007](decisions.md#d007--modernise-google-maps-in-coordinated-phases). Confirm the DOM marker visual and CSS drop/bounce remain at parity after production QA, then remove any phase-only scaffolding discovered by that audit. Treat any future raster-to-vector switch as a separate, optional renderer change rather than folding it into cleanup.
-
 ## Performance, SEO & platform polish
 
 - [ ] **Modernise security and package metadata deliberately.** Remove the deprecated `X-XSS-Protection` header and introduce Content Security Policy in Report-Only first because Maps, BotID, Vercel telemetry and remote images all need an allowlist. Remove application-level `sideEffects: false` or at least mark CSS as side-effectful so tree-shaking cannot discard stylesheet imports. Drop the stale `engines.npm` constraint—the project declares Yarn and Node 24 ships a different npm major—or keep it aligned with the actual runtime.

@@ -1,0 +1,15 @@
+.iconSlot {
+  align-items: center;
+  display: inline-flex;
+  height: 1.5rem;
+  justify-content: center;
+  vertical-align: middle;
+  width: 1.5rem;
+}
+
+.icon {
+  display: block;
+  height: 1.5rem;
+  transform-origin: 41.6667% 83.3333%;
+  width: 1.5rem;
+}

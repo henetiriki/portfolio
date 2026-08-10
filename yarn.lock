@@ -1308,13 +1308,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@googlemaps/typescript-guards@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "@googlemaps/typescript-guards@npm:2.0.3"
-  checksum: 10/81a6acf2ed2260b8adf0263c70c40a9400501cddfa4eda4ac9d0ce4440e7030787680708f61b59b0cefb86f6e555eabd8ea38853785eae7e4244274865528e53
-  languageName: node
-  linkType: hard
-
 "@humanfs/core@npm:^0.19.2":
   version: 0.19.2
   resolution: "@humanfs/core@npm:0.19.2"
@@ -7374,7 +7367,6 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7"
     "@googlemaps/js-api-loader": "npm:^2.1.1"
-    "@googlemaps/typescript-guards": "npm:^2.0.3"
     "@mantine/core": "npm:^9.5.1"
     "@mantine/form": "npm:^9.5.1"
     "@mantine/hooks": "npm:^9.5.1"

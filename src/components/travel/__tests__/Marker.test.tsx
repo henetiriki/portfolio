@@ -64,6 +64,7 @@ const clickMarker = (marker: MockAdvancedMarkerElement) => {
 
 const getMarkerElements = (marker: MockAdvancedMarkerElement) => ({
   graphic: marker.querySelector('svg') as SVGSVGElement,
+  motion: marker.querySelector('svg')?.parentElement as HTMLDivElement,
   path: marker.querySelector('path') as SVGPathElement,
   visual: marker.firstElementChild as HTMLDivElement,
 });
@@ -101,23 +102,28 @@ describe('Marker', () => {
     (useReducedMotion as jest.Mock).mockReturnValue(true);
     const { infoWindow, map } = renderMarker({ idx: 2, order: 3 });
     const [marker] = MockAdvancedMarkerElement.instances;
-    const { graphic } = getMarkerElements(marker);
+    const { graphic, motion } = getMarkerElements(marker);
 
     expect(marker.map).toBe(map);
     expect(graphic.classList).toHaveLength(1);
+    expect(motion.classList).toHaveLength(1);
 
     act(() => {
       clickMarker(marker);
     });
 
     expect(graphic.classList).toHaveLength(1);
-    expect(infoWindow.open).toHaveBeenCalledWith({ anchor: marker, map });
+    expect(infoWindow.open).toHaveBeenCalledWith({
+      anchor: marker,
+      map,
+      shouldFocus: true,
+    });
   });
 
   it('drops onto the map after an idx * order * 100ms stagger', () => {
     const { map } = renderMarker({ idx: 2, order: 3 });
     const [marker] = MockAdvancedMarkerElement.instances;
-    const { graphic } = getMarkerElements(marker);
+    const { motion } = getMarkerElements(marker);
 
     act(() => {
       jest.advanceTimersByTime(599);
@@ -128,7 +134,13 @@ describe('Marker', () => {
       jest.advanceTimersByTime(1);
     });
     expect(marker.map).toBe(map);
-    expect(graphic.classList).toHaveLength(2);
+    expect(motion.classList).toHaveLength(2);
+
+    act(() => {
+      motion.dispatchEvent(new Event('animationend'));
+    });
+
+    expect(motion.classList).toHaveLength(1);
   });
 
   it('dispatches markersLoaded once the end marker has dropped', async () => {
@@ -169,20 +181,29 @@ describe('Marker', () => {
       clickMarker(marker);
     });
 
-    expect(graphic.classList).toHaveLength(3);
-    expect(infoWindow.setHeaderDisabled).toHaveBeenCalledWith(true);
-    expect(infoWindow.setContent).toHaveBeenCalledWith(
-      expect.stringContaining('A title')
-    );
-    expect(infoWindow.setContent).toHaveBeenCalledWith(
-      expect.stringContaining('A description')
-    );
-    expect(infoWindow.open).toHaveBeenCalledWith({ anchor: marker, map });
+    expect(graphic.classList).toHaveLength(2);
+    expect(infoWindow.setHeaderDisabled).toHaveBeenCalledWith(false);
+
+    const [[heading]] = infoWindow.setHeaderContent.mock.calls;
+    const [[content]] = infoWindow.setContent.mock.calls;
+
+    expect(heading).toBeInstanceOf(HTMLHeadingElement);
+    expect(heading).toHaveTextContent('A title');
+    expect(content).toBeInstanceOf(HTMLParagraphElement);
+    expect(content).toHaveTextContent('A description');
+    expect(infoWindow.setOptions).toHaveBeenCalledWith({
+      ariaLabel: 'A title',
+    });
+    expect(infoWindow.open).toHaveBeenCalledWith({
+      anchor: marker,
+      map,
+      shouldFocus: true,
+    });
 
     act(() => {
       jest.advanceTimersByTime(2000);
     });
-    expect(graphic.classList).toHaveLength(2);
+    expect(graphic.classList).toHaveLength(1);
   });
 
   it('restarts the bounce reset timer when clicked again before it elapses', () => {
@@ -202,13 +223,13 @@ describe('Marker', () => {
       jest.advanceTimersByTime(1999);
     });
 
-    expect(graphic.classList).toHaveLength(3);
+    expect(graphic.classList).toHaveLength(2);
 
     act(() => {
       jest.advanceTimersByTime(1);
     });
 
-    expect(graphic.classList).toHaveLength(2);
+    expect(graphic.classList).toHaveLength(1);
   });
 
   it('auto-closes the info window 5s after it becomes visible', () => {
@@ -227,6 +248,24 @@ describe('Marker', () => {
     expect(infoWindow.close).not.toHaveBeenCalled();
 
     act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(infoWindow.close).toHaveBeenCalledTimes(1);
+  });
+
+  it('cancels auto-close when the info window is closed manually', () => {
+    const { infoWindow } = renderMarker({ idx: 1, order: 1 });
+
+    act(() => {
+      jest.advanceTimersByTime(100);
+      infoWindow.open();
+    });
+
+    infoWindow.close.mockClear();
+
+    act(() => {
+      infoWindow.close();
       jest.advanceTimersByTime(5000);
     });
 
@@ -337,7 +376,7 @@ describe('Marker', () => {
       clickMarker(marker);
     });
 
-    expect(graphic.classList).toHaveLength(3);
+    expect(graphic.classList).toHaveLength(2);
     unmount();
 
     act(() => {

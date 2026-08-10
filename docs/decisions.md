@@ -58,11 +58,11 @@ The endpoint validates the method and request shape at runtime, enforces bounded
 
 ## D007 — Modernise Google Maps in coordinated phases
 
-- **Status:** Accepted; in progress
+- **Status:** Accepted
 - **Decided:** 2026-08-09
 
 `@googlemaps/react-wrapper` is archived and classic `google.maps.Marker` is deprecated, but Advanced Markers are not a constructor-level substitution. They change map setup, icon rendering, animation, cleanup and zoom behaviour.
 
-Keep one coordinated migration plan, but deliver it as small parity-preserving releases: maintained loader first; Map ID and cloud style second; Advanced Markers and their changed rendering/animation lifecycle third; final cleanup last. This gives each infrastructure boundary a focused test and manual-QA surface without prematurely rewriting the imperative marker layer. Preserve loading/error states, geometry decoding, marker and polyline sequencing, information windows, zoom-responsive visuals and reduced-motion behaviour throughout. The detailed phases and current constraints live in [Travel / Google Maps Feature](travel-feature.md#modernisation-phases) and the [Roadmap](roadmap.md#framework--dependency-upgrades).
+Deliver the coordinated migration as small parity-preserving releases: maintained loader first; Map ID and cloud style second; Advanced Markers and their changed rendering/animation lifecycle third; final cleanup last. This gave each infrastructure boundary a focused test and manual-QA surface without prematurely rewriting the imperative marker layer. Loading/error states, geometry decoding, marker and polyline sequencing, information windows, zoom-responsive visuals and reduced-motion behaviour were preserved throughout. The completed phases and current implementation live in [Travel / Google Maps Feature](travel-feature.md#modernisation-phases).
 
 The Map ID phase deliberately retains raster rendering to isolate cloud-style parity from renderer differences. Advanced Markers support raster for the feature set used here, so vector rendering is optional and should be evaluated separately after marker parity rather than silently folded into either migration phase.
