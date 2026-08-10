@@ -321,6 +321,20 @@ describe('Marker', () => {
     expect(visual).toHaveStyle({ transform: 'scale(2.25)' });
   });
 
+  it('keeps the rendered scale unchanged within the same zoom range', () => {
+    const { map } = renderMarker({ idx: 1, order: 1 });
+    const [marker] = MockAdvancedMarkerElement.instances;
+    const { visual } = getMarkerElements(marker);
+
+    expect(visual).toHaveStyle({ transform: 'scale(1)' });
+
+    act(() => {
+      map.setZoom(5);
+    });
+
+    expect(visual).toHaveStyle({ transform: 'scale(1)' });
+  });
+
   it('does not attach an info-window visibility listener when no info window is provided', () => {
     const { map } = renderMarker({
       idx: 1,
@@ -335,6 +349,12 @@ describe('Marker', () => {
     const [marker] = MockAdvancedMarkerElement.instances;
 
     expect(marker.map).toBe(map);
+
+    expect(() => {
+      act(() => {
+        clickMarker(marker);
+      });
+    }).not.toThrow();
   });
 
   it('does not attach or drop the marker when no map is provided', () => {

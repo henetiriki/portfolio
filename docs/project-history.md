@@ -5,6 +5,7 @@ This is the concise record of completed project work. It is not a substitute for
 ## 2026-08-10 — Codecov patch coverage
 
 - Added private-repository Codecov reporting without a stored upload secret: the existing Jest LCOV output is uploaded through GitHub OIDC, while a repository configuration requires 100% coverage of changed coverable lines and supplies concise pull-request comments plus source annotations. Jest's existing 80% global threshold remains the whole-project guard because Codecov project status is not part of the private free tier. GitHub branch protection still needs the first successful `codecov/patch` status before it can be selected as a required check.
+- Restored whole-project coverage to 100% across statements, branches, functions and lines without coverage exclusions or ignore comments. Focused tests now cover unavailable starting camera state, marker interaction without an InfoWindow, stable marker scaling within a zoom range, the single-current-city invariant and station aggregate integrity; an unused experience-description export was removed.
 
 ## 2026-08-10 — Package metadata cleanup
 
@@ -33,7 +34,7 @@ This is the concise record of completed project work. It is not a substitute for
 - Consolidated canonical, title, description, Open Graph and Twitter metadata behind a shared per-page `Seo` component, removed obsolete keyword metadata, and aligned the install surface with the dark theme using standalone PWA presentation. Decorative waves and the small navigation logo now load normally while the fixed background remains the deliberate preloaded LCP image.
 - Added a concise static `/llms.txt` discovery file for AI agents, covering the five public content routes without exposing private contact or anti-automation details.
 - Hardened the remaining shared/API edges with typed fetch failures, bounded retries, non-mutating random selection, method guards and explicit cache policy. Delayed Maps work now cancels cleanly, while navigation uses a semantic 44px scroll control, threshold-only passive scroll handling, larger mobile links and reduced-motion alternatives for smooth scrolling and decorative animation.
-- Verified the release line with linting, both TypeScript projects, formatting, generated CSS-variable integrity, full Jest coverage, standard and PWA builds, and targeted browser QA. The suite reached 100% branches/functions/lines; the lower statement percentage in the large station fixture remains a confirmed instrumentation artifact rather than uncovered behaviour.
+- Verified the release line with linting, both TypeScript projects, formatting, generated CSS-variable integrity, full Jest coverage, standard and PWA builds, and targeted browser QA. The subsequent Codecov pass added a station aggregate integrity test that exercises every named fixture export, bringing statement coverage up to the existing 100% branches/functions/lines result.
 
 ## 2026-08-08 — React 19 and the Mantine styling migration
 
