@@ -31,10 +31,12 @@ const securityHeaders = [
     key: 'Strict-Transport-Security',
     value: 'max-age=63072000; includeSubDomains; preload',
   },
-  {
-    key: 'X-XSS-Protection',
-    value: '1; mode=block',
-  },
+  // X-XSS-Protection is deliberately absent. The header is deprecated, no
+  // current browser implements it, and its `1; mode=block` value was itself
+  // exploitable in legacy browsers — so removing it is safer than sending it.
+  // Content Security Policy is the modern replacement and is tracked as its
+  // own roadmap item, since Maps, BotID, Vercel telemetry and remote images
+  // all need an allowlist built in Report-Only first.
   {
     key: 'X-Frame-Options',
     value: 'DENY',

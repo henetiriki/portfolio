@@ -87,6 +87,15 @@ jobs:
           files: ./coverage/lcov.info
           use_oidc: true
 
+      # Both build paths are exercised because they use the same bundler but
+      # different plugin chains (see D004). The default path is what local
+      # `yarn build` runs; the PWA path is what production deploys.
+      - name: Build default (no service worker)
+        run: yarn build
+
+      - name: Verify no service worker is emitted without WITH_PWA
+        run: test ! -e public/sw.js
+
       - name: Build production PWA
         env:
           WITH_PWA: 'true'
