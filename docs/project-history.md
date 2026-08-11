@@ -2,6 +2,13 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-11 — Navigation landmark and scroll coverage
+
+- Added `<nav aria-label='Main'>` landmarks around both the desktop menu and the drawer menu. The site previously had no navigation landmark at all — the primary navigation sat inside `component='header'` — so assistive-technology users could not jump to it. Both share one label deliberately: `display: none` removes the inactive one from the accessibility tree entirely, so only ever one is exposed. See [Components](components.md).
+- Extended the browser suite to 40 specs: a landmark assertion on desktop, and scroll coverage for the header's transparent-to-opaque transition and the scroll-to-top control, including that the control actually returns the page to the top. These are pure browser behaviours — jsdom has no layout and no scrolling, so the unit tests can dispatch the event but cannot observe the header changing appearance.
+- Capped Playwright workers at 4 locally after the added specs made the suite flaky: every page triggers a `/_next/image` optimisation on the single `next start` process, and saturating that event loop failed unrelated specs irreproducibly while a serial run passed. Confirmed stable over three consecutive full runs, with no measurable time cost.
+- Documented a trap that cost real debugging time: `reuseExistingServer` makes Playwright silently attach to a stale `next start` on port 3000, which serves a `.next` that has since been rebuilt, so every spec fails on a hydration timeout at once. Recorded in [Development Workflow](development.md#browser-regression-suite) with the distinguishing signal — breadth of failure — and the check to run.
+
 ## 2026-08-11 — Browser regression suite
 
 - Added a Playwright suite in `e2e/`, wired into the existing single CI job with a version-keyed browser cache and a failure-only report artefact. 35 specs run in about 11 seconds with no skips across a desktop and a real touch-emulated mobile project, covering every content route, the 404, the mobile drawer including its keyboard and Escape paths, contact-form tab order and error-border colour against a mocked endpoint, the travel page's degradation when Maps is unavailable, and an axe WCAG A/AA pass per page template. See [Development Workflow](development.md#browser-regression-suite).

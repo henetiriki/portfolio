@@ -20,6 +20,18 @@ test.describe('desktop navigation', () => {
     await page.goto('/');
   });
 
+  test('exposes a navigation landmark containing every route', async ({
+    page,
+  }) => {
+    const nav = page.getByRole('navigation');
+
+    await expect(nav).toHaveCount(1);
+
+    for (const { path } of CONTENT_ROUTES) {
+      await expect(nav.locator(`a[href="${path}"]`)).toBeVisible();
+    }
+  });
+
   test('shows inline links for every route and hides the burger', async ({
     page,
   }) => {

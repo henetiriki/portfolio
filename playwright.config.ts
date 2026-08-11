@@ -53,5 +53,12 @@ export default defineConfig({
     timeout: 120_000,
     url: BASE_URL,
   },
-  workers: isCI ? 1 : undefined,
+  // Capped deliberately rather than left at one worker per core. Every spec
+  // loads the fixed background photo, so each page triggers a `/_next/image`
+  // optimisation on the single `next start` process — sharp work on one event
+  // loop. Saturating that produced scattered, irreproducible failures across
+  // unrelated specs; the same run passes serially. A suite that needs a re-run
+  // to be believed is worse than no suite, so determinism wins over the few
+  // seconds a higher count would save on a 40-spec run.
+  workers: isCI ? 1 : 4,
 });

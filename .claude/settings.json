@@ -22,6 +22,10 @@
       "Bash(yarn css-vars:check *)",
       "Bash(yarn info *)",
       "Bash(yarn tsc --pretty --noEmit --project service-worker/tsconfig.json)",
+      "Bash(yarn playwright test --list)",
+      "Bash(yarn playwright --version)",
+      "Bash(yarn node --version)",
+      "Bash(git fetch *)",
       "mcp__Claude_Browser__tabs_context"
     ]
   }
