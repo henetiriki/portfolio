@@ -1,6 +1,6 @@
 # Documentation
 
-Specs describing the current implementation of Louw Swart's personal portfolio site, generated from a read-through of the codebase on 2026-08-04. These documents describe **what exists today**, not a design proposal — treat the source under `src/` as the source of truth if anything drifts out of sync.
+Specs describing the current implementation of Louw Swart's personal portfolio site. These documents describe **what exists today**, not a design proposal — treat the source as the authority if anything drifts out of sync, and correct the drift rather than working around it. Keeping them accurate is part of shipping a change: the [release checklist](release-checklist.md#documentation-sweep) makes the sweep a required step in both directions.
 
 ## Contents
 
@@ -21,9 +21,10 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 
 ## At a glance
 
-- **Framework**: Next.js 16 (Pages Router) + React 19 + TypeScript, strict mode
+- **Framework**: Next.js 16 (Pages Router) + React 19 + TypeScript 6, strict mode
 - **UI kit**: Mantine v9 (`@mantine/core`, `form`, `hooks`, `notifications`) styled via CSS Modules + CSS variables
 - **Purpose**: a single-person portfolio/CV site with four content pages (Home, Experience, Portfolio, Travel) and a Contact page that emails the owner
 - **Notable integrations**: Google Maps JS API (travel map), Vercel BotID (bot/spam protection on the contact form), Nodemailer over Gmail SMTP, Serwist (opt-in PWA/service worker), `next-sitemap`
 - **State**: one `useReducer`-backed React Context (`PortfolioState`) shared app-wide — no Redux/Zustand/query library
+- **Testing**: Jest + React Testing Library for units (100% coverage, 80% enforced floor), Playwright + axe for browser behaviour jsdom cannot see — see [Development Workflow](development.md#testing)
 - **Package manager**: Yarn 4 (Berry), Node `24.x`

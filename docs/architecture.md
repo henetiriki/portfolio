@@ -16,6 +16,7 @@
 | PWA             | Serwist (only enabled when `WITH_PWA=true`)                                             |
 | Sitemap/robots  | `next-sitemap` (runs as a `build` step)                                                 |
 | Package manager | Yarn 4 (Berry), Node `24.x`                                                             |
+| Testing         | Jest + React Testing Library (units), Playwright + axe (browser)                        |
 | Lint/format     | ESLint (`next/core-web-vitals` + a large custom ruleset), Prettier, Husky + lint-staged |
 
 ## Directory layout
@@ -45,9 +46,10 @@ src/
     common/         fetcher, delay, blurDataURL, randomItem, getNodeText, upperFirst
 public/            Static assets, PWA manifest, icons, email-adjacent HTML templates' images,
                     portfolio screenshots, wave SVGs, and a tiny hash-redirect script
+e2e/               Playwright browser regression suite, with shared helpers in e2e/support/
 ```
 
-Nearly every folder above also has its own `__tests__/` subfolder alongside the source it covers (e.g. `src/components/travel/__tests__/`) — see [Development Workflow](development.md#testing) for the full testing setup and conventions.
+Nearly every folder under `src/` also has its own `__tests__/` subfolder alongside the source it covers (e.g. `src/components/travel/__tests__/`). Browser tests sit outside `src/` in `e2e/` because they exercise the built site rather than any one module — see [Development Workflow](development.md#testing) and [Browser regression suite](development.md#browser-regression-suite).
 
 ## Path aliases
 

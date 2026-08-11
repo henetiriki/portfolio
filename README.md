@@ -9,6 +9,7 @@ Four content pages (Home, Experience, Portfolio, Travel) plus a Contact page tha
 | **Framework**       | Next.js 16 (Pages Router) + React 19 + TypeScript (`strict`) |
 | **UI**              | Mantine v9, styled with CSS Modules + CSS variables          |
 | **Hosting**         | Vercel (auto-deploys `main`)                                 |
+| **Testing**         | Jest + React Testing Library, Playwright + axe (browser)     |
 | **Package manager** | Yarn 4 (Berry)                                               |
 | **Node**            | `24.x` (pinned in [.nvmrc](.nvmrc))                          |
 
@@ -30,16 +31,20 @@ The app needs environment variables to run — a Google Maps key, Gmail SMTP cre
 
 | Script                                      | Purpose                                                                |
 | ------------------------------------------- | ---------------------------------------------------------------------- |
-| `yarn dev`                                  | Dev server (Turbopack) with the Node inspector attached                |
 | `yarn build`                                | Production build (webpack), then `next-sitemap` (sitemap + robots.txt) |
+| `yarn clean`                                | Wipe the build cache (`.next`)                                         |
+| `yarn css-vars:check` / `css-vars:generate` | Verify / regenerate the WebStorm CSS-variable stub from `colors.ts`    |
+| `yarn dev`                                  | Dev server (Turbopack) with the Node inspector attached                |
+| `yarn eslint:check` / `eslint:write`        | Lint / lint and autofix                                                |
+| `yarn prettier:check` / `prettier:write`    | Format check / write                                                   |
 | `yarn start`                                | Serve a production build locally                                       |
 | `yarn test`                                 | Jest + React Testing Library                                           |
 | `yarn test:coverage`                        | Tests with coverage (80% global threshold)                             |
+| `yarn test:e2e`                             | Playwright browser regression suite (needs a build; serves on :3000)   |
+| `yarn test:e2e:install`                     | Fetch the Playwright browser binary (install scripts are disabled)     |
+| `yarn test:e2e:ui`                          | Browser suite in Playwright's interactive runner                       |
 | `yarn test:watch`                           | Tests in watch mode                                                    |
 | `yarn type-check`                           | `tsc --noEmit`                                                         |
-| `yarn eslint:check` / `eslint:write`        | Lint / lint and autofix                                                |
-| `yarn prettier:check` / `prettier:write`    | Format check / write                                                   |
-| `yarn css-vars:generate` / `css-vars:check` | Regenerate / verify the WebStorm CSS-variable stub from `colors.ts`    |
 
 Set `WITH_PWA=true` to build with the Serwist service worker (this is on in production, off by default locally).
 
@@ -57,10 +62,11 @@ src/
   styles/       Mantine theme, colour palette, global CSS
   utils/        Small helpers and test utilities
 docs/           Living documentation (see below)
+e2e/            Playwright browser regression suite
 service-worker/ Serwist service worker source
 ```
 
-Tests live in `__tests__/` folders beside the code they cover — except page and API tests, which mirror into `src/__tests__/pages/` so Next doesn't treat them as routes.
+Unit tests live in `__tests__/` folders beside the code they cover — except page and API tests, which mirror into `src/__tests__/pages/` so Next doesn't treat them as routes. Browser tests live separately in `e2e/`, because they exercise the built site rather than any single module.
 
 ## Documentation
 
@@ -70,6 +76,7 @@ Useful starting points:
 
 - **[Development Workflow](docs/development.md)** — scripts, linting, testing conventions, git hooks
 - **[Release Checklist](docs/release-checklist.md)** — how a change gets to production
+- **[Engineering Decisions](docs/decisions.md)** — durable technical choices and why they were made
 - **[Roadmap](docs/roadmap.md)** — open work and known follow-ups
 - **[Project History](docs/project-history.md)** — concise record of completed milestones
 
