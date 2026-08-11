@@ -89,6 +89,10 @@ Constraints worth knowing before adding specs:
 
 **Viewport-specific specs are routed by filename, not skipped at runtime.** `*.mobile.spec.ts` runs only in the mobile project and `*.desktop.spec.ts` only in the desktop one, via each project's `testIgnore`. `Navigation.module.css` swaps the two navigation modes on the `sm` breakpoint — `.desktopLinks` is hidden below it, `.burger` and `.drawer` above it — so a single spec file cannot cover both. Routing rather than skipping keeps the run at zero skips, because a permanently skipped test teaches you to ignore the skip count, which is precisely when a genuinely skipped one slips past.
 
+**Workers are capped at 4 locally (1 in CI), not left at one per core.** Every spec loads the fixed background photo, so each page triggers a `/_next/image` optimisation on the single `next start` process — sharp work on one event loop. Saturating it produced scattered, irreproducible failures across unrelated specs that all passed when run serially. The cap costs nothing measurable on a 40-spec run and buys a suite whose result can be believed first time.
+
+**If every spec fails on a hydration timeout, suspect a stale server before suspecting your change.** `playwright.config.ts` sets `reuseExistingServer` outside CI, so Playwright will silently attach to whatever is already listening on port 3000 — including a `next start` left running from an earlier session. That server keeps serving a `.next` you have since rebuilt underneath it, so the chunks it references no longer exist, no JavaScript runs, and `waitForHydration` times out everywhere at once. The tell is breadth: a real regression fails a few related specs, this fails all of them. Check with `lsof -nP -iTCP:3000 -sTCP:LISTEN` and kill the process.
+
 The browser binary is installed explicitly (`yarn test:e2e:install`) rather than by a postinstall hook, because install scripts are disabled repository-wide — see [D008](decisions.md#d008--keep-the-package-managers-supply-chain-defaults).
 
 ## Linting & formatting

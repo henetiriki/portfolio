@@ -65,7 +65,14 @@ export const Navigation = () => {
           <Container h='100%'>
             <Group h='100%' justify='space-between'>
               <Logo />
-              <Group className={classes.desktopLinks} gap={0}>
+              {/* Both navigations share a label because only one is ever in
+                  the accessibility tree: Navigation.module.css hides the other
+                  with `display: none`, which removes it entirely. */}
+              <Group
+                aria-label='Main'
+                className={classes.desktopLinks}
+                component='nav'
+                gap={0}>
                 {menuItems.map(({ href, text }) => (
                   <Box key={href} pos='relative'>
                     <NavigationLink
@@ -104,20 +111,22 @@ export const Navigation = () => {
           size='100%'
           zIndex={1000000}>
           <ScrollArea h={`calc(100vh - ${rem(60)})`} mx='-md'>
-            {menuItems.map(({ href, text }) => (
-              <Box key={href} pos='relative'>
-                <NavigationLink
-                  href={href}
-                  onClickCb={() => {
-                    closeDrawer();
-                    scrollToTop();
-                  }}
-                  pathname={pathname}
-                  variant={'sm'}>
-                  {text}
-                </NavigationLink>
-              </Box>
-            ))}
+            <Box aria-label='Main' component='nav'>
+              {menuItems.map(({ href, text }) => (
+                <Box key={href} pos='relative'>
+                  <NavigationLink
+                    href={href}
+                    onClickCb={() => {
+                      closeDrawer();
+                      scrollToTop();
+                    }}
+                    pathname={pathname}
+                    variant={'sm'}>
+                    {text}
+                  </NavigationLink>
+                </Box>
+              ))}
+            </Box>
           </ScrollArea>
         </Drawer>
       </Box>

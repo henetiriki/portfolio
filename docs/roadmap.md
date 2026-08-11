@@ -13,9 +13,8 @@ Last reviewed: 2026-08-11.
   - **Also before publishing**, confirm the repository history carries no secrets. `.env`, `.env.production` and `.env.test` are tracked but hold only non-secret or dummy values; real credentials live in `.env*.local`, which is gitignored. That is the current state — history should still be checked rather than assumed, because publishing exposes every past commit, not just the tip.
 
 - [ ] **Extend the browser regression suite.** The harness and its first specs have landed — see [Development Workflow](development.md#browser-regression-suite). Remaining candidates, still deliberately narrow:
-  - Add a `<nav>` landmark to the header and assert it. The primary navigation currently sits inside `component='header'` with no navigation landmark anywhere on the site, so assistive-technology users cannot jump to it. Found by this suite; it is an app fix plus a test, not a test-only change.
-  - Cover the scroll-driven navigation background and scroll-to-top control, which are pure browser behaviours with no jsdom equivalent.
-  - Consider a reduced-motion pass (`prefers-reduced-motion`), since the map reveal, marker drop and smooth scrolling all branch on it.
+  - Consider a reduced-motion pass (`prefers-reduced-motion`), since the map reveal, marker drop and smooth scrolling all branch on it. Playwright can set it per project via `use.reducedMotion`, so this is a project variant rather than new specs.
+  - Consider covering the footer's own scroll-to-top control, which shares `pageTopRef` with the header's but has a separate call site.
 
 ## Framework & dependency upgrades
 
