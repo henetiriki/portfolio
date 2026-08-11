@@ -15,7 +15,14 @@
       "mcp__Claude_Browser__preview_logs",
       "mcp__Claude_Browser__read_network_requests",
       "mcp__Claude_Browser__read_page",
-      "mcp__Claude_Browser__get_page_text"
+      "mcp__Claude_Browser__get_page_text",
+      "Bash(yarn explain *)",
+      "Bash(yarn test:e2e *)",
+      "Bash(yarn why *)",
+      "Bash(yarn css-vars:check *)",
+      "Bash(yarn info *)",
+      "Bash(yarn tsc --pretty --noEmit --project service-worker/tsconfig.json)",
+      "mcp__Claude_Browser__tabs_context"
     ]
   }
 }

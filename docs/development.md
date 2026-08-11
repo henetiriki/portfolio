@@ -9,17 +9,22 @@
 
 | Script                              | Command                                                    | Purpose                                                                               |
 | ----------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `dev`                               | `NODE_OPTIONS='--inspect --trace-warnings' next dev`       | Local dev server (Turbopack) with the Node inspector attached and full warning traces |
 | `build`                             | `next build --webpack && next-sitemap`                     | Production build (webpack — see below), followed by sitemap/robots generation         |
-| `start`                             | `next start`                                               | Serve a production build                                                              |
 | `clean`                             | `rm -rf .next`                                             | Wipe the build cache                                                                  |
+| `css-vars:check`                    | `node scripts/generate-mantine-css-variables.mjs --check`  | Verify the stub matches `colors.ts` without writing it                                |
+| `css-vars:generate`                 | `node scripts/generate-mantine-css-variables.mjs`          | Regenerate the gitignored WebStorm CSS-variable stub from `colors.ts`                 |
+| `dev`                               | `NODE_OPTIONS='--inspect --trace-warnings' next dev`       | Local dev server (Turbopack) with the Node inspector attached and full warning traces |
 | `eslint:check` / `eslint:write`     | `eslint .` [`--fix`]                                       | Lint / lint and autofix                                                               |
-| `prettier:check` / `prettier:write` | `prettier . --check/--write --ignore-path .prettierignore` | Formatting                                                                            |
-| `type-check`                        | `tsc --pretty --noEmit`                                    | TypeScript type checking without emitting output                                      |
 | `prepare`                           | `husky install`                                            | Installs git hooks (runs automatically on `yarn install` via the `prepare` lifecycle) |
+| `prettier:check` / `prettier:write` | `prettier . --check/--write --ignore-path .prettierignore` | Formatting                                                                            |
+| `start`                             | `next start`                                               | Serve a production build                                                              |
 | `test`                              | `jest`                                                     | Runs the Jest suite once                                                              |
-| `test:watch`                        | `jest --watch`                                             | Jest in watch mode                                                                    |
 | `test:coverage`                     | `jest --coverage`                                          | Jest with a coverage report                                                           |
+| `test:e2e`                          | `playwright test`                                          | Browser regression suite (see below)                                                  |
+| `test:e2e:install`                  | `playwright install --with-deps chromium`                  | Fetch the browser binary (install scripts are disabled, so this is explicit)          |
+| `test:e2e:ui`                       | `playwright test --ui`                                     | Browser suite in Playwright's interactive runner                                      |
+| `test:watch`                        | `jest --watch`                                             | Jest in watch mode                                                                    |
+| `type-check`                        | `tsc --pretty --noEmit`                                    | TypeScript type checking without emitting output                                      |
 
 ## Bundlers: Turbopack in dev, webpack in builds
 
@@ -67,6 +72,25 @@ It cannot reach production: production builds use webpack rather than Turbopack,
 
 Thrown at `handleStaticIndicator` inside Next's HMR websocket handler while processing an `isrManifest` message, and usually preceded by `[HMR] Invalid message: {"type":"isrManifest",...}`. Entirely within `next/dist/client`. HMR does not exist in production.
 
+## Browser regression suite
+
+Playwright, in `e2e/`, run with `yarn test:e2e` (`--ui` for the interactive runner). It is deliberately narrower than the Jest suite: it exists to catch what jsdom structurally cannot — real layout, focus order, hydration and colour contrast. The Jest suite remains the place for logic and component behaviour.
+
+It exists because that is this project's documented failure mode. The Mantine v7 migration passed lint, types, a production build _and_ its own visual QA, then page-by-page comparison against production found eight separate regressions; the mobile drawer needed several rounds; the shimmer has regressed twice. Whole-project Jest coverage was 100% throughout.
+
+Constraints worth knowing before adding specs:
+
+- **Port 3000 is fixed.** The Google Maps API key is restricted to `http://localhost:3000` and the production origin, so any other port fails Maps authorisation. `playwright.config.ts` pins it.
+- **Google Maps is always blocked** (`blockGoogleMaps`). CI has only a dummy key, so a real load would behave differently there than locally — exactly the flakiness a regression suite must not have. The Maps layer has its own SDK mock and full unit coverage; the browser suite checks that the page _around_ it degrades to `MapError`.
+- **Hydration is asserted directly**, by looking for a React fibre on a real node. The prerendered HTML is already complete, so "is it visible?" passes against static markup and proves nothing about interactivity.
+- **Third-party frames are excluded from the axe pass.** The experience page embeds a YouTube player whose own DOM trips `aria-allowed-attr`, `aria-prohibited-attr` and `button-name`. Including it would make the check permanently red and therefore ignored.
+- **The contact endpoint is always mocked.** A real submission sends an actual email through Gmail SMTP.
+- **CI uses the real Cloudinary image host and real image IDs**, so axe measures contrast against the photograph that actually renders rather than a broken image. This does make the suite depend on `res.cloudinary.com` being reachable. `.env.test` keeps the localhost host because several Jest assertions encode that URL, and jsdom never fetches images.
+
+**Viewport-specific specs are routed by filename, not skipped at runtime.** `*.mobile.spec.ts` runs only in the mobile project and `*.desktop.spec.ts` only in the desktop one, via each project's `testIgnore`. `Navigation.module.css` swaps the two navigation modes on the `sm` breakpoint — `.desktopLinks` is hidden below it, `.burger` and `.drawer` above it — so a single spec file cannot cover both. Routing rather than skipping keeps the run at zero skips, because a permanently skipped test teaches you to ignore the skip count, which is precisely when a genuinely skipped one slips past.
+
+The browser binary is installed explicitly (`yarn test:e2e:install`) rather than by a postinstall hook, because install scripts are disabled repository-wide — see [D008](decisions.md#d008--keep-the-package-managers-supply-chain-defaults).
+
 ## Linting & formatting
 
 - **ESLint 9, flat config** (`eslint.config.mjs`). ESLint core's `defineConfig()` composes `eslint-config-next/core-web-vitals`, `eslint-plugin-react`'s `recommended` + `jsx-runtime`, `jsx-a11y`'s `recommended`, `import`'s `recommended` + `typescript`, `security`'s `recommended`, `typescript-eslint`'s `recommended`, and `eslint-config-prettier` last (to disable formatting-related rules). The former `typescript-eslint` `config()` helper is deprecated now that core provides the same functionality. Two flat-config constraints shape the file and are worth understanding before editing it:
@@ -110,6 +134,8 @@ So every commit auto-fixes lint issues and reformats staged files of the listed 
 Dependabot version updates are configured entirely in the repository and do not require a paid GitHub plan. Repository-level Dependabot alerts and security-update settings remain separate GitHub settings; this file does not imply that either setting has been enabled.
 
 ## Testing
+
+Two suites with deliberately different jobs: **Jest + React Testing Library** for logic and component behaviour (below), and a **[Playwright browser suite](#browser-regression-suite)** for what jsdom structurally cannot observe. Neither substitutes for the other — the browser suite exists because full Jest coverage did not prevent a documented run of visual regressions.
 
 Jest + React Testing Library were set up 2026-08-06, followed by a full tiered coverage pass (see [Project History](project-history.md)). The 2026-08-10 Codecov baseline is **100% branches, functions, lines and statements** across 268 tests. The final gaps were closed with behavioural coverage for defensive Maps paths and fixture-integrity checks: the current-city selector enforces exactly one current location, while the aggregate station list must contain every named station export. The later map-sequencing tests replaced obsolete global-flag assertions with coverage of initial tile readiness, viewport gating, per-layer completion, delayed rail data and idempotent completion. No source files or lines are ignored to produce the result. A global `coverageThreshold` in `jest.config.js` (80% branches/functions/lines/statements) fails `test:coverage` if coverage regresses below that floor — well under current coverage, so it's a regression guard rather than a target to hit.
 
