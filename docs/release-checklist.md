@@ -27,7 +27,7 @@ yarn test:coverage
 - [ ] The pull request's `codecov/patch` check passes at 100%; inspect any GitHub Checks annotations rather than treating the aggregate Jest percentage as coverage of the changed lines
 - [ ] `yarn css-vars:check` passes. CI runs this after `postinstall` as an integrity check for the generated, gitignored WebStorm stub; it is not a committed-file drift check.
 - [ ] `yarn tsc --pretty --noEmit --project service-worker/tsconfig.json` passes. The root `type-check` deliberately excludes this Web Worker project because its TypeScript libraries cannot be mixed with the application's DOM libraries.
-- [ ] **`yarn build` succeeds** — CI runs the production PWA branch, but this plain build still covers the separate no-PWA configuration path.
+- [ ] **`yarn build` succeeds** — CI also builds this default path and asserts it emits no `public/sw.js`, but run it locally too so a failure is not first seen in CI.
 - [ ] **`WITH_PWA=true yarn build` succeeds and emits a non-empty `public/sw.js`** — CI runs this production-like path and asserts the output; repeat it locally for a full release-ready check.
 - [ ] Any new `process.env` value is added in the Vercel dashboard, the `env` block in `next.config.js` if the client needs it, and `.env.test` as a dummy. If `next.config.js` requires it during a production build, also add a safe dummy to the CI job's `env` block because CI does not load `.env.test`; `next/jest` does load `.env.test` but does not evaluate the config's client `env` bridge ([environment-variables.md](environment-variables.md)).
 
@@ -73,11 +73,12 @@ Verify on the live site (https://www.ouwl.house):
 
 Worth knowing before relying on the automation:
 
-- **The no-PWA build remains manual.** CI runs `WITH_PWA=true yarn build`, which covers the real production/Serwist/prerender path, but `next.config.js` also has a separate branch when `WITH_PWA` is unset. Run plain `yarn build` locally so that branch does not silently decay.
 - **The CSS-variable stub has no committed baseline.** It is intentionally gitignored and regenerated during `postinstall`; CI's subsequent `css-vars:check` proves the current generated output matches `colors.ts`, not that a checked-in artefact is current. This is the intended model because the file exists only for local WebStorm analysis.
-- **Dev and production use different bundlers.** `next dev` runs Turbopack; `next build` is pinned to webpack with `--webpack` because `@serwist/next` injects a webpack config that Next 16 refuses to build through Turbopack. A bundler-specific difference therefore cannot show up in local dev; CI's PWA build now covers the production webpack path, while the manual plain build covers its no-PWA configuration branch. See [development.md](development.md#bundlers-turbopack-in-dev-webpack-in-builds).
+- **Dev and production use different bundlers.** `next dev` runs Turbopack; `next build` is pinned to webpack with `--webpack` because `@serwist/next` injects a webpack config that Next 16 refuses to build through Turbopack. A bundler-specific difference therefore cannot show up in local dev; CI covers both webpack configuration branches, but neither is Turbopack, so dev-only differences still surface only in manual QA. See [development.md](development.md#bundlers-turbopack-in-dev-webpack-in-builds).
 
-**Resolved as of Next.js 16** (kept here because it bit this project repeatedly on 14 and 15):
+**Resolved** (kept because each bit this project before):
+
+- ~~**The no-PWA build remains manual.**~~ CI now builds the default path alongside the PWA path, and asserts the default emits no `public/sw.js` — so the `WITH_PWA` gating itself is tested, not just that both configurations compile.
 
 - ~~**Production-mode QA collides with `next dev`.**~~ `next dev` now writes to `.next/dev` and `next build` to `.next`, so they no longer share prerendered output — verified by running a full production build with a dev server live and confirming it kept serving. Next 16 also takes a lockfile preventing two `next dev` (or two `next build`) instances on the same project. The old failure mode was `Cannot find module './chunks/vendor-chunks/next.js'` plus 500s on uncompiled routes, fixed with `yarn clean && yarn dev`.
 

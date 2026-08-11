@@ -2,7 +2,7 @@
 
 Open work only. Completed milestones are recorded in [Project History](project-history.md), durable rationale in [Engineering Decisions](decisions.md), and current behaviour in the topical documentation. Items are grouped by area rather than strict priority; each should normally be delivered as its own scoped change unless a dependency is called out explicitly.
 
-Last reviewed: 2026-08-10.
+Last reviewed: 2026-08-11.
 
 ## Testing & automation
 
@@ -22,4 +22,4 @@ Last reviewed: 2026-08-10.
 
 ## Performance, SEO & platform polish
 
-- [ ] **Modernise security headers deliberately.** Remove the deprecated `X-XSS-Protection` header and introduce Content Security Policy in Report-Only first because Maps, BotID, Vercel telemetry and remote images all need an allowlist.
+- [ ] **Introduce a Content Security Policy.** Ship it in Report-Only first and promote it only once the reports are clean, because Maps, BotID, Vercel telemetry and remote images all need an allowlist. The deprecated `X-XSS-Protection` header has already been removed, so this is the remaining half of the security-header work.

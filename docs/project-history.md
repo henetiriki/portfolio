@@ -2,6 +2,14 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-11 — Supply-chain, header and build-path hardening
+
+- Restored the three install-time protections Yarn 4.18 introduced and the version bump had disabled: the `1d` minimum-age gate, the empty git-repository allowlist and script execution being off by default. Exactly one dependency needs an install script, so it is permitted individually through `dependenciesMeta` rather than globally. Verified from a deleted `node_modules`, including that `sharp` needs no exception. See [D008](decisions.md#d008--keep-the-package-managers-supply-chain-defaults).
+- Removed the deprecated `X-XSS-Protection` header, whose `1; mode=block` value was itself exploitable in legacy browsers. Content Security Policy remains a separate roadmap item because it needs a Report-Only allowlist pass.
+- Extended CI to build both paths. The default build is now exercised alongside the production PWA build, and asserts that no service worker is emitted without `WITH_PWA`, which tests the gating rather than only that the code compiles.
+- Lowered the preloaded LCP background image from quality 100 to 85 after measuring a ~66% WebP size reduction on a real photograph, and narrowed the allowed `qualities` list to match.
+- Recorded the contact endpoint's automation-only protection as an accepted, bounded gap rather than an unexamined one. See [D009](decisions.md#d009--accept-the-contact-endpoints-automation-only-protection).
+
 ## 2026-08-10 — Codecov patch coverage
 
 - Added private-repository Codecov reporting without a stored upload secret: the existing Jest LCOV output is uploaded through GitHub OIDC, while a repository configuration requires 100% coverage of changed coverable lines and supplies concise pull-request comments plus source annotations. Jest's existing 80% global threshold remains the whole-project guard because Codecov project status is not part of the private free tier. GitHub branch protection still needs the first successful `codecov/patch` status before it can be selected as a required check.
