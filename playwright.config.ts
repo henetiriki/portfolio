@@ -19,14 +19,19 @@ export default defineConfig({
   forbidOnly: isCI,
   fullyParallel: true,
   projects: [
+    // Viewport-specific specs are routed by filename rather than skipped at
+    // runtime. A permanently skipped test teaches you to ignore the skip
+    // count, which is exactly when a genuinely skipped test slips past.
     {
       name: 'desktop-chromium',
+      testIgnore: /\.mobile\.spec\.ts$/,
       use: { ...devices['Desktop Chrome'] },
     },
     {
       // The mobile drawer has needed several rounds of fixes historically, so
       // it gets a real touch-enabled viewport rather than a resized desktop.
       name: 'mobile-chromium',
+      testIgnore: /\.desktop\.spec\.ts$/,
       use: { ...devices['Pixel 7'] },
     },
   ],

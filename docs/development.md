@@ -87,6 +87,8 @@ Constraints worth knowing before adding specs:
 - **The contact endpoint is always mocked.** A real submission sends an actual email through Gmail SMTP.
 - **CI uses the real Cloudinary image host and real image IDs**, so axe measures contrast against the photograph that actually renders rather than a broken image. This does make the suite depend on `res.cloudinary.com` being reachable. `.env.test` keeps the localhost host because several Jest assertions encode that URL, and jsdom never fetches images.
 
+**Viewport-specific specs are routed by filename, not skipped at runtime.** `*.mobile.spec.ts` runs only in the mobile project and `*.desktop.spec.ts` only in the desktop one, via each project's `testIgnore`. `Navigation.module.css` swaps the two navigation modes on the `sm` breakpoint — `.desktopLinks` is hidden below it, `.burger` and `.drawer` above it — so a single spec file cannot cover both. Routing rather than skipping keeps the run at zero skips, because a permanently skipped test teaches you to ignore the skip count, which is precisely when a genuinely skipped one slips past.
+
 The browser binary is installed explicitly (`yarn test:e2e:install`) rather than by a postinstall hook, because install scripts are disabled repository-wide — see [D008](decisions.md#d008--keep-the-package-managers-supply-chain-defaults).
 
 ## Linting & formatting

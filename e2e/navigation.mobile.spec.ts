@@ -2,6 +2,11 @@ import { expect, test } from '@playwright/test';
 import { blockGoogleMaps } from './support/helpers';
 
 /**
+ * Mobile-only: `playwright.config.ts` routes `*.mobile.spec.ts` to the mobile
+ * project, so this never runs against a desktop viewport and never reports a
+ * skip. `Navigation.module.css` hides `.burger` and `.drawer` above the `sm`
+ * breakpoint, so there would be nothing here to exercise.
+ *
  * The mobile drawer is the single most regression-prone part of this UI — it
  * needed repeated fixes across the Mantine v6 -> v7 -> v9 migrations (grey
  * bar behind the close control, an invisible close icon, background content
@@ -9,11 +14,6 @@ import { blockGoogleMaps } from './support/helpers';
  * cheapest place to stop that recurring.
  */
 test.describe('mobile drawer', () => {
-  test.skip(
-    ({ isMobile }) => !isMobile,
-    'drawer only renders on small viewports'
-  );
-
   test.beforeEach(async ({ page }) => {
     await blockGoogleMaps(page);
     await page.goto('/');
