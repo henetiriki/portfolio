@@ -75,4 +75,4 @@ Useful starting points:
 
 ## Deploying
 
-There are no versions, tags, or release artefacts. A change ships by squash-merging a PR into `main`, which Vercel deploys automatically. [Project History](docs/project-history.md) is the concise release record, while the [Roadmap](docs/roadmap.md) contains open work only. Follow the [release checklist](docs/release-checklist.md) — CI runs a production-like PWA build, while the plain non-PWA `yarn build` remains a manual pre-merge check.
+There are no versions, tags, or release artefacts. A change ships by squash-merging a PR into `main`, which Vercel deploys automatically. [Project History](docs/project-history.md) is the concise release record, while the [Roadmap](docs/roadmap.md) contains open work only. Follow the [release checklist](docs/release-checklist.md) — CI builds both the default and the production-like PWA path, and asserts that only the latter emits a service worker.

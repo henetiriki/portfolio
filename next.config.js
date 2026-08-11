@@ -31,10 +31,12 @@ const securityHeaders = [
     key: 'Strict-Transport-Security',
     value: 'max-age=63072000; includeSubDomains; preload',
   },
-  {
-    key: 'X-XSS-Protection',
-    value: '1; mode=block',
-  },
+  // X-XSS-Protection is deliberately absent. The header is deprecated, no
+  // current browser implements it, and its `1; mode=block` value was itself
+  // exploitable in legacy browsers — so removing it is safer than sending it.
+  // Content Security Policy is the modern replacement and is tracked as its
+  // own roadmap item, since Maps, BotID, Vercel telemetry and remote images
+  // all need an allowlist built in Report-Only first.
   {
     key: 'X-Frame-Options',
     value: 'DENY',
@@ -73,7 +75,13 @@ const baseConfig = withBotId({
   },
   images: {
     minimumCacheTTL: 31536000,
-    qualities: [100],
+    // The only optimised image is FixedBackground's full-viewport photo, which
+    // carries `preload` and is the deliberate LCP element — so its encoded size
+    // is on the critical path. Measured on a real photograph, WebP at 85 is
+    // ~66% smaller than at 100 (35 KB vs 103 KB) with no visible difference on
+    // a backdrop image. Next's own default is 75; 85 stays conservative.
+    // Keep this list minimal: every allowed value is a separate cache entry.
+    qualities: [85],
     remotePatterns: [
       {
         hostname: process.env.IMAGE_HOST_NAME,

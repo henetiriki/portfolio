@@ -43,7 +43,7 @@ export const FixedBackground: FC = () => {
             fill
             placeholder={blurDataURL(width || 1080, height || 1920)}
             preload
-            quality={100}
+            quality={85}
             sizes='100vw'
             src={`${imgHost}/${igImgId}.jpg`}
             style={{ objectFit: 'cover' }}
