@@ -94,5 +94,10 @@
     "**/*.{cjs,html,js,jsx,json,md,mjs,scss,ts,tsx}": [
       "prettier --ignore-path .prettierignore --write"
     ]
+  },
+  "dependenciesMeta": {
+    "unrs-resolver": {
+      "built": true
+    }
   }
 }

@@ -7424,6 +7424,9 @@ __metadata:
     typescript: "npm:^6.0.2"
     typescript-eslint: "npm:^8.66.0"
     webpack: "npm:^5"
+  dependenciesMeta:
+    unrs-resolver:
+      built: true
   languageName: unknown
   linkType: soft
 
