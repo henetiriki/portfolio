@@ -4,7 +4,7 @@ Quick reference for shipping a change to production.
 
 **How releases work here:** there are no version numbers, tags, or build artefacts. `package.json` is `private: true` and its `version` (`0.1.0`) is never bumped or published. A "release" is simply **a pull request squash-merged into `main`**, which Vercel's Git integration deploys to production automatically. [Project History](project-history.md) is the concise release record; the [Roadmap](roadmap.md) contains unfinished work only.
 
-> **"Release ready check"** — asking for one means: run everything under [Development](#development) and [Before Opening The PR](#before-opening-the-pr), including the full [documentation sweep](#documentation-sweep) in both directions, and report what passes, what fails, and anything that needs a human decision.
+> **"Release ready check"** / **"Prepare for release"** — asking for either means: run everything under [Development](#development) and [Before Opening The PR](#before-opening-the-pr), including the full [documentation sweep](#documentation-sweep) in both directions, and report what passes, what fails, and anything that needs a human decision.
 
 ## Development
 
@@ -31,6 +31,17 @@ yarn test:coverage
 - [ ] **`WITH_PWA=true yarn build` succeeds and emits a non-empty `public/sw.js`** — CI runs this production-like path and asserts the output; repeat it locally for a full release-ready check.
 - [ ] Any new `process.env` value is added in the Vercel dashboard, the `env` block in `next.config.js` if the client needs it, and `.env.test` as a dummy. If `next.config.js` requires it during a production build, also add a safe dummy to the CI job's `env` block because CI does not load `.env.test`; `next/jest` does load `.env.test` but does not evaluate the config's client `env` bridge ([environment-variables.md](environment-variables.md)).
 
+### Sensitive information
+
+Run against the diff, every time — not only when the change looks security-related. The expensive mistakes here are accidental.
+
+- [ ] **Nothing secret is in the diff.** Credentials, API keys, tokens, passwords, private URLs, personal data. Real secrets belong in `.env*.local` (gitignored) and the Vercel dashboard; `.env`, `.env.production` and `.env.test` are tracked and must hold only non-secret or dummy values.
+- [ ] **Any new `NEXT_PUBLIC_*` value is intended to be public.** That prefix inlines the value into the client bundle at build time, so it ships to every visitor and is readable with view-source. Treat adding one as publishing it.
+- [ ] **Any new value in the CI workflow's `env` block is intended to be public.** `ci.yml` is committed, so those values are as exposed as the rest of the repository.
+- [ ] **No real personal data has been added to fixtures, tests or documentation** — other people's names, addresses, emails or photographs.
+- [ ] **A new third-party host or asset URL has been considered for abuse, not just for secrecy.** A public URL can still be an abuse vector: the Cloudinary delivery host is necessarily public, yet it allows unsigned on-the-fly transformations that consume account credits. Ask what an anonymous caller can _do_ with the endpoint, not only what they can read.
+- [ ] If anything sensitive ever _was_ committed, treat rotation as the fix. Removing it in a later commit does not remove it from history, and history is fully readable the moment the repository becomes public.
+
 ### Documentation sweep
 
 Docs here describe **what exists today**, so they are part of the change, not an afterthought. Check both directions:
@@ -40,7 +51,8 @@ Docs here describe **what exists today**, so they are part of the change, not an
 - [ ] Version numbers, file paths, script names and config keys quoted in docs match `package.json`, `next.config.js`, `ci.yml` and the actual tree
 - [ ] Cross-links between docs still resolve, and new docs are listed in [docs/README.md](README.md)
 - [ ] Root [README.md](../README.md) still accurate if the stack, scripts, or layout changed
-- [ ] [Project History](project-history.md) updated with completed milestones when the change is significant enough to retain, and any newly discovered follow-up added to the [Roadmap](roadmap.md) rather than left in a commit message
+- [ ] **Completed work has been _moved_, not copied** — anything this change finishes is added to [Project History](project-history.md) **and removed from the [Roadmap](roadmap.md)**. Per [D001](decisions.md#d001--separate-plans-decisions-and-history) the roadmap holds open work only, so a finished item left behind (or ticked in place as `[x]`) is a defect in the sweep. Partially completed work stays, narrowed to what actually remains.
+- [ ] Any newly discovered follow-up is added to the [Roadmap](roadmap.md) rather than left in a commit message
 - [ ] [Engineering Decisions](decisions.md) updated only when the change establishes or revises a durable technical choice
 
 ## Pull Request

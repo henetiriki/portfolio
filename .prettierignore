@@ -4,3 +4,5 @@ coverage/
 
 next-env.d.ts
 public/sw.js
+test-results/
+playwright-report/

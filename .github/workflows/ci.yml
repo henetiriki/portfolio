@@ -29,11 +29,11 @@ jobs:
       GOOGLE_MAPS_MAP_ID: 'test-google-maps-map-id'
       HOST: 'http://localhost:3000'
       HOSTNAME: 'localhost:3000'
-      IMAGE_HOST: 'http://localhost:3000/images'
-      IMAGE_HOST_NAME: 'localhost'
-      IMAGE_HOST_PATH: 'images'
-      IMAGE_HOST_PROTOCOL: 'http'
-      ISTAGRAM_IMAGE_IDS: 'test-img-id'
+      IMAGE_HOST: 'https://res.cloudinary.com/henetiriki/image/upload/v1664623206/insta'
+      IMAGE_HOST_NAME: 'res.cloudinary.com'
+      IMAGE_HOST_PATH: 'henetiriki/image/upload/v1664623206/insta'
+      IMAGE_HOST_PROTOCOL: 'https'
+      ISTAGRAM_IMAGE_IDS: 'BZ4QGdOn6SP,Bcg0AZwFwv6,B5zAuLqJTEg,CEbEP7XJafW'
       PROTOCOL: 'https'
       WITH_PWA: 'false'
     steps:
@@ -103,3 +103,28 @@ jobs:
 
       - name: Verify service worker output
         run: test -s public/sw.js
+
+      # Cached on the Playwright version: the browser download is ~100 MB and
+      # changes only when the package does. Install scripts are disabled
+      # repository-wide (D008), so the browser is fetched explicitly here
+      # rather than by a postinstall hook.
+      - name: Cache Playwright browser
+        id: playwright-cache
+        uses: actions/cache@v6
+        with:
+          key: ${{ runner.os }}-playwright-${{ hashFiles('yarn.lock') }}
+          path: ~/.cache/ms-playwright
+
+      - name: Install Playwright browser
+        run: yarn test:e2e:install
+
+      - name: Browser regression suite
+        run: yarn test:e2e
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
