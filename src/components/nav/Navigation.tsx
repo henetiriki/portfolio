@@ -65,9 +65,7 @@ export const Navigation = () => {
           <Container h='100%'>
             <Group h='100%' justify='space-between'>
               <Logo />
-              {/* Both navigations share a label because only one is ever in
-                  the accessibility tree: Navigation.module.css hides the other
-                  with `display: none`, which removes it entirely. */}
+              {/* Both navigations share a label because only one is ever in the accessibility tree: Navigation.module.css hides the other with `display: none`, which removes it entirely. */}
               <Group
                 aria-label='Main'
                 className={classes.desktopLinks}
