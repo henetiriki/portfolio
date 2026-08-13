@@ -26,4 +26,6 @@ Last reviewed: 2026-08-11.
 
 ## Performance, SEO & platform polish
 
+- [ ] **Investigate the duplicated background-image request.** Every route fetches the fixed background twice through the optimiser — `_next/image?…&w=640&q=85` and again at `&w=3840&q=85` — observed on the live site. The second is a 3840px-wide render of the deliberate LCP image, which is wasteful on mobile. `FixedBackground` uses `fill` with `sizes='100vw'`, so the generated `srcset` runs to the largest configured device size and a high-DPR viewport can select it; the duplication suggests the candidate is being re-evaluated after the first pick. Worth checking whether a narrower `sizes` (or a capped `deviceSizes`) removes the second fetch without softening the image, and measuring LCP before and after rather than assuming. Not urgent: every route does this and the home page still scores near-perfect.
+
 - [ ] **Introduce a Content Security Policy.** Ship it in Report-Only first and promote it only once the reports are clean, because Maps, BotID, Vercel telemetry and remote images all need an allowlist. The deprecated `X-XSS-Protection` header has already been removed, so this is the remaining half of the security-header work.

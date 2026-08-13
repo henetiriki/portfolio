@@ -2,6 +2,14 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-11 — Defer the YouTube embed on /experience
+
+- `/experience` scored materially worse than every other route in PageSpeed mobile. Measured against the live site: the YouTube iframe was eager (no `loading` attribute) and sits at 35,207px down a 39,453px document, so a full `youtube.com/embed` player — roughly a megabyte of JavaScript — was fetched and executed on every page load for content almost nobody scrolls to. Page markup was not the problem: only 522 DOM nodes.
+- `/travel` was the diagnostic control rather than a counter-example. It carries a heavier third-party in the Google Map, but that is code-split via `next/dynamic` and only initialises once in view, and it scores well. Same class of dependency, opposite loading strategy.
+- Fixed with `loading='lazy'`. The existing `width`/`height` already reserve the box, so deferring introduces no layout shift.
+- Covered at both levels: a unit test asserts the attribute and the reserved dimensions, and browser specs assert the _behaviour_ — no YouTube request on initial load, but one once the iframe is scrolled into view, so a "fix" that simply broke the embed would not pass. Requests are stubbed rather than allowed through, so the suite gains no dependency on YouTube being reachable. Both guards were verified to fail with the attribute removed.
+- **Not yet addressed:** the fixed background image is requested twice on every route (`_next/image?…&w=640` and `&w=3840`). Not the cause here — the home page does the same and scores near-perfect — but a 3840px-wide LCP image on mobile is worth its own investigation. Added to the [Roadmap](roadmap.md).
+
 ## 2026-08-11 — Navigation landmark and scroll coverage
 
 - Added `<nav aria-label='Main'>` landmarks around both the desktop menu and the drawer menu. The site previously had no navigation landmark at all — the primary navigation sat inside `component='header'` — so assistive-technology users could not jump to it. Both share one label deliberately: `display: none` removes the inactive one from the accessibility tree entirely, so only ever one is exposed. See [Components](components.md).
