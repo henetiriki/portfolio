@@ -1,4 +1,4 @@
-# Portfolio [![CI](https://github.com/henetiriki/portfolio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/henetiriki/portfolio/actions/workflows/ci.yml)
+# Portfolio [![CI](https://github.com/henetiriki/portfolio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/henetiriki/portfolio/actions/workflows/ci.yml) [![Dependabot Updates](https://github.com/henetiriki/portfolio/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/henetiriki/portfolio/actions/workflows/dependabot/dependabot-updates)
 
 Personal portfolio and CV site for Louw Swart — live at **[www.ouwl.house](https://www.ouwl.house)**.
 
