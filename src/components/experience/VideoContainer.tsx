@@ -19,10 +19,12 @@ export const VideoContainer: FC<{ video?: Video }> = ({
       pb='30%'
       pos='relative'
       pt='26.3%'>
+      {/* `loading` is load-bearing — see docs/components.md */}
       <iframe
         allowFullScreen
         className='youtube-frame'
         height='720'
+        loading='lazy'
         src={videoUrl}
         title={videoTitle}
         width='1280'
