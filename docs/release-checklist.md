@@ -54,6 +54,7 @@ Docs here describe **what exists today**, so they are part of the change, not an
 - [ ] Root [README.md](../README.md) still accurate if the stack, scripts, or layout changed
 - [ ] **Completed work has been _moved_, not copied** — anything this change finishes is added to [Project History](project-history.md) **and removed from the [Roadmap](roadmap.md)**. Per [D001](decisions.md#d001--separate-plans-decisions-and-history) the roadmap holds open work only, so a finished item left behind (or ticked in place as `[x]`) is a defect in the sweep. Partially completed work stays, narrowed to what actually remains.
 - [ ] Any newly discovered follow-up is added to the [Roadmap](roadmap.md) rather than left in a commit message
+- [ ] **Work agreed but not started is in the [Roadmap](roadmap.md) too.** Not just follow-ups found in the code — anything decided in discussion while this change was open. A decision that lives only in a conversation is lost the moment the branch closes, and "add it next time" reliably means never. Write it down in the branch you are already on, even when it is unrelated to the change.
 - [ ] [Engineering Decisions](decisions.md) updated only when the change establishes or revises a durable technical choice
 
 ## Pull Request
