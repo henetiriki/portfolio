@@ -2,7 +2,7 @@
 
 Open work only. Completed milestones are recorded in [Project History](project-history.md), durable rationale in [Engineering Decisions](decisions.md), and current behaviour in the topical documentation. Items are grouped by area rather than strict priority; each should normally be delivered as its own scoped change unless a dependency is called out explicitly.
 
-Last reviewed: 2026-08-11.
+Last reviewed: 2026-08-13.
 
 ## Testing & automation
 
@@ -17,6 +17,21 @@ Last reviewed: 2026-08-11.
   - Consider covering the footer's own scroll-to-top control, which shares `pageTopRef` with the header's but has a separate call site.
 
 ## Framework & dependency upgrades
+
+- [ ] **Remove the `WITH_PWA` flag so every production build generates the service worker.** Decided 2026-08-11. Production already sets `WITH_PWA=true` in `.env.production`, so the flag only ever selects between what ships and a configuration nothing deploys. Removing it cuts build complexity and roughly halves CI build time.
+  - **What it touches:** `next.config.js` loses its conditional branch — the async config function exists solely so `@serwist/next`, which is ESM-only, can be dynamically imported when the flag is set, so that indirection may go too. CI drops from two builds to one, the release checklist from two build steps to one, and `.env.production`'s `WITH_PWA=true` becomes redundant.
+  - **It revises [D004](decisions.md#d004--keep-pwa-generation-opt-in-and-production-builds-on-webpack)**, which established the opt-in. Update that decision rather than silently contradicting it; [PWA & SEO](pwa-seo.md) also references the gating.
+  - **Three consequences that are not visible in the diff:**
+    1. CI currently asserts the default build emits **no** `public/sw.js`. That assertion and the gating it tests both disappear — remove the step rather than leaving one that can no longer fail.
+    2. Local `yarn build` gets slower and always writes `public/sw.js` (gitignored, so harmless, but a change in local behaviour).
+    3. **The Playwright suite serves a production build via `yarn start`**, so an always-on service worker can cache across specs and cause flakiness. Set `serviceWorkers: 'block'` on the Playwright context, or cover service-worker behaviour deliberately in one spec rather than letting it leak into all of them.
+
+- [ ] **Self-host the web fonts with `next/font/local` to make builds hermetic.** `next/font/google` downloads the font files from `fonts.gstatic.com` at build time, so every build depends on that host being reachable. On 2026-08-13 a CI build failed on exactly this (`Failed to fetch font file from https://fonts.gstatic.com/...montserrat...woff2`, retried and failed) while the Vercel build of the same commit succeeded — a runner-network problem, not a code one. It was the first such failure in the previous twelve runs, so it is transient rather than systemic, but the dependency is real and avoidable.
+  - **Smaller than it looks: two files, ~72KB.** The build emits 14 `woff2` files totalling 368KB, but only two are ever fetched — the preloaded latin subsets (Montserrat 37KB, Roboto 35KB). The other twelve are unicode-range subsets a browser pulls only if a glyph demands one.
+  - **Two files are provably enough for this content.** The whole of `src/` contains 13 non-ASCII characters (`ã æ é í ô ö ø ü – — ' " "`). Every one falls inside Google's `latin` unicode-range: the accented characters are all ≤ U+00FF, and the typographic dashes and quotes sit in U+2000–206F, which that range covers. The site's text is static fixtures, so there is no user-generated content that could later need a subset that was not shipped.
+  - **Ship the licences with the files.** Montserrat is OFL 1.1 and Roboto is likewise openly licensed; both permit bundling _provided the licence text travels with the font_. This matters more once the repository is public — see the visibility item above.
+  - **Verify rather than assume one thing:** Next currently generates size-adjusted fallbacks (`Montserrat Fallback`, `Roboto Fallback`) to limit layout shift. `next/font/local` supports this, but confirm those `@font-face` rules still appear in the built CSS rather than trusting that they carry over.
+  - **Related, not a substitute:** CI builds twice, so it fetches the fonts twice per run. Removing the `WITH_PWA` flag (above) halves that exposure; only self-hosting removes it.
 
 - [ ] **Adopt the native TypeScript 7 toolchain when ecosystem support is ready — blocked.** The project now uses TypeScript 6, the supported JavaScript-based bridge release, with its configuration deprecations already removed. The 2026-08-09 TypeScript `7.0.2` trial still failed before compilation because Yarn's built-in compatibility patch expected `lib/_tsc.js`, which the native Go distribution does not ship; `typescript-eslint@8.66` also requires TypeScript `<6.1.0`. Recheck only when Yarn supports the native distribution and TypeScript-ESLint supports its compiler API strategy; both conditions are required.
 
