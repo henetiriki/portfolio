@@ -31,17 +31,11 @@
 
 ## Bot protection (BotID)
 
-Distinct from crawler SEO — `botid` (Vercel BotID) is used to keep automated traffic away from the contact form specifically:
-
-- Client: `_app.tsx` renders `<BotIdClient protect={[{ method: 'POST', path: '/api/contact' }]} />`, instrumenting that one route.
-- Server: `api/contact.ts` calls `checkBotId()` once per accepted request before creating the SMTP transporter or sending either email. A rejected request never reaches the mail transport.
-- This is layered with server-side form validation and a secondary anti-automation signal. The signal's identifier and detection details are intentionally omitted; no single mechanism is treated as sufficient on its own.
+Distinct from crawler SEO, and documented elsewhere: `botid` (Vercel BotID) keeps automated traffic away from the contact form specifically, and has nothing to do with how search engines see the site. See [Security](security.md#bot-protection) for the posture and [Contact Feature](contact-feature.md) for the request flow it sits in.
 
 ## Misc head-adjacent behavior
 
 - Image preloading is restricted to `FixedBackground`, the deliberate full-viewport LCP image. The header-adjacent `content-top` wave uses `loading='eager'` because Next can identify it as LCP, but it is not preloaded; lower decorative waves and the 40px navigation logo remain lazy/normal priority. Portfolio cards retain grid-accurate `sizes` without being preloaded.
 
-- `next.config.js` sets a fixed set of `securityHeaders` (HSTS, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `X-DNS-Prefetch-Control`, `Referrer-Policy`) on every route via `headers()`. `X-XSS-Protection` was deliberately removed — it is deprecated and its `1; mode=block` value was itself exploitable in legacy browsers.
-- **The Content Security Policy ships alongside them as `Content-Security-Policy-Report-Only`**, built from the `contentSecurityPolicyDirectives` map in the same file so each directive reads as a list rather than one long string. Violations are posted to `/api/csp-report`, which reads the raw body (`report-uri` sends `application/csp-report`, which Next's body parser does not treat as JSON), drops extension-injected noise and logs one line per violation to the Vercel runtime logs. `img-src` is derived from `IMAGE_HOST_PROTOCOL`/`IMAGE_HOST_NAME`, so the remote image host stays in step with `images.remotePatterns` — see [Environment Variables](environment-variables.md). Why it is Report-Only, why `'unsafe-inline'` is permanent here, and why `report-to` is absent are all in [D-260814c](decisions.md#d-260814c--ship-the-content-security-policy-report-only-and-accept-unsafe-inline); promoting it to an enforcing header is tracked in the [roadmap](roadmap.md#performance-seo--platform-polish).
-  - **A header value that Next silently drops is the failure mode to watch.** `headers()` uses `source: '/:path*'`, and Next compiles values as path-to-regexp templates when the source carries a parameter. `security-headers.spec.ts` asserts the header arrives, and that no backslash appears in it — a "fix" that escapes the colons ships literal backslashes that no browser can parse, and the page looks healthy either way.
+- Response headers, the Content Security Policy and its report endpoint have moved to [Security](security.md), which covers the whole security surface in one place.
 - `public/scripts/hash-redirect.js`, loaded async from `_document.tsx`, redirects to `/` whenever the URL hash contains `#!` — a leftover guard against old hashbang-style URLs (e.g. from a pre-Next.js single-page app) being indexed or bookmarked.

@@ -70,7 +70,7 @@ Unit tests live in `__tests__/` folders beside the code they cover — except pa
 
 ## Documentation
 
-Full documentation lives in **[docs/](docs/README.md)** — architecture, routing, state, components, the travel and contact features, styling, PWA/SEO, environment variables, and the development workflow.
+Full documentation lives in **[docs/](docs/README.md)** — architecture, routing, state, components, the travel and contact features, styling, PWA/SEO, security, environment variables, and the development workflow.
 
 Useful starting points:
 

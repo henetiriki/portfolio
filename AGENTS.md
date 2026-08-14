@@ -40,7 +40,7 @@ yarn test:e2e
 ## Documentation discipline
 
 - **Read the topical doc for the area you are about to change, before changing it.** [`docs/README.md`](docs/README.md) is the index and names what each doc covers. The [release checklist](docs/release-checklist.md#documentation-sweep) already requires updating that doc afterwards, so reading it first is strictly cheaper than discovering late what you contradicted.
-  - **Read the one that matters, not all of them.** `docs/` is roughly 250KB across 15 files — `development.md` and `project-history.md` are 46KB and 38KB on their own. Bulk-loading them crowds out the work.
+  - **Read the one that matters, not all of them.** `docs/` is roughly 250KB across 16 files — `development.md` and `project-history.md` are 46KB and 46KB on their own. Bulk-loading them crowds out the work.
 - [`docs/roadmap.md`](docs/roadmap.md) holds **open work only**. When work completes, **move** it to [`docs/project-history.md`](docs/project-history.md) — moved, not copied. A finished item left in the roadmap, or ticked in place, is a defect.
 - **Work agreed in conversation but not started still gets written into the roadmap**, in the branch you are already on, even when unrelated to it. "Add it next time" reliably means never.
 - Durable rationale goes in [`docs/decisions.md`](docs/decisions.md); current behaviour goes in the relevant topical doc.
