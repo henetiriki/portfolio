@@ -3,7 +3,7 @@
 ## Requirements
 
 - Node `24.x` (pinned in `.nvmrc` as `24` and `package.json#engines`)
-- Yarn `4.18.0` via Corepack (`packageManager: "yarn@4.18.0"` in `package.json`, binary vendored at `.yarn/releases/yarn-4.18.0.cjs`, config in `.yarnrc.yml`)
+- Yarn `4.18.0` via Corepack (`packageManager: "yarn@4.18.0+sha512.…"` in `package.json`, binary vendored at `.yarn/releases/yarn-4.18.0.cjs`, config in `.yarnrc.yml`). The trailing integrity hash is Corepack's, and is regenerated with `corepack use yarn@<version>` rather than hand-edited — see [D008](decisions.md#d008--keep-the-package-managers-supply-chain-defaults).
 
 ## Scripts (`package.json`)
 
@@ -95,6 +95,8 @@ Constraints worth knowing before adding specs:
 **If every spec fails on a hydration timeout, suspect a stale server before suspecting your change.** `playwright.config.ts` sets `reuseExistingServer` outside CI, so Playwright will silently attach to whatever is already listening on port 3000 — including a `next start` left running from an earlier session. That server keeps serving a `.next` you have since rebuilt underneath it, so the chunks it references no longer exist, no JavaScript runs, and `waitForHydration` times out everywhere at once. The tell is breadth: a real regression fails a few related specs, this fails all of them. Check with `lsof -nP -iTCP:3000 -sTCP:LISTEN` and kill the process.
 
 The browser binary is installed explicitly (`yarn test:e2e:install`) rather than by a postinstall hook, because install scripts are disabled repository-wide — see [D008](decisions.md#d008--keep-the-package-managers-supply-chain-defaults).
+
+In CI the ~270 MB browser download is cached under a key built from the **installed Playwright version**, resolved at run time from `@playwright/test/package.json`. That is what the download actually tracks; a lockfile-wide key would throw the cache away on every weekly Dependabot bump. The install step itself always runs regardless of a cache hit, because `--with-deps` also installs system font and library packages that live outside the cached browser directory.
 
 ## Linting & formatting
 
