@@ -12,6 +12,9 @@ node_modules/
 !.yarn/sdks
 !.yarn/versions
 
+# agent worktrees
+.claude/worktrees/
+
 # testing
 coverage/
 

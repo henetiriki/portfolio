@@ -33,7 +33,14 @@ const preset = (sharedConfig, files) => {
 
 export default defineConfig(
   {
-    ignores: ['.yarn/', '.next/', 'coverage/', 'next-env.d.ts', 'public/sw.js'],
+    ignores: [
+      '.claude/worktrees/',
+      '.yarn/',
+      '.next/',
+      'coverage/',
+      'next-env.d.ts',
+      'public/sw.js',
+    ],
   },
   ...nextCoreWebVitals,
   preset(react.configs.flat.recommended, WEB_FILES),
