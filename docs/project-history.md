@@ -2,6 +2,15 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-14 — Stop `git -C` from defeating the permission allowlist
+
+- [`AGENTS.md`](../AGENTS.md) gains a shell-hygiene rule against passing `-C <path>` to `git`, and `.claude/settings.json` gains the bare no-argument forms of the four read-only check scripts plus `git check-ignore` and the browser `find` tool.
+- **Found from the symptom, not from a review.** Git commands started prompting for approval again, and the allowlist looked untouched because it was — the commands had changed shape. `Bash(git add *)` matches by prefix and never sees `git -C /path/to/repo add`, and the harness's own auto-allow for read-only git reads the token after `git`, finding `-C` rather than `status`. Ten `git -C … status` calls, seven `log`, seven `grep` and five `commit` in one session all fell through to a prompt.
+- **The habit came from avoiding `cd`.** The rule that the working directory persists between calls is what makes `-C` pointless, so reaching for it to honour that rule inverts it. Both defeat the allowlist for the same reason chaining does: matching runs against the whole command string.
+- **Widening the rules was rejected as the fix.** `Bash(git -C * )` would allowlist `push --force` and `reset --hard` along with everything else, and per-subcommand `-C` variants would double the list to accommodate a habit with no reason to exist.
+- **The four check scripts were listed only as `yarn X *`.** That form matches by prefix and needs the trailing space, so a bare invocation may not match — and bare is how they are run: `prettier:check` 11 times, `type-check` 7, `eslint:check` 7, `css-vars:check` 6, none with arguments. The exact forms were added alongside the wildcards rather than widening either.
+- Deliberately still absent: `yarn build` and `yarn test:e2e` write output, `eslint:write` and `prettier:write` rewrite files, and `npx`/`node`/`python3` would grant arbitrary code execution. `git push`, `rebase`, `remote` and `worktree` remain prompts by choice.
+
 ## 2026-08-14 — Identify decisions by date rather than by sequence
 
 - [Engineering Decisions](decisions.md) no longer numbers entries `D001`, `D002`, … Each is now `D-YYMMDD` plus a letter taken from the date in its own `**Decided:**` field — `D-260814a`, `D-260814b`, `D-260814c`. See [D-260814d](decisions.md#d-260814d--identify-decisions-by-date-rather-than-by-sequence) and the [Identifiers](decisions.md#identifiers) section that now opens the file.
