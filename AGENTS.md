@@ -81,7 +81,7 @@ Isolation for work that runs alongside something already in progress. They live 
 
 Merging to `main` deploys to production via Vercel. There are no tags or version numbers.
 
-Changes touching **only** `docs/`, `*.md` or `.claude/` skip the build, via `ignoreCommand` in `vercel.json`. The expected result is a `success` status reading _"Canceled by Ignored Build Step"_ plus a _"Skipped Deployment"_ comment on the pull request — **that is not a failure**, and it is easy to misread that green tick as a completed build. It also keeps the footer's "Updated:" timestamp honest, since `NEXT_PUBLIC_LAST_MODIFIED` is computed at build time.
+Changes touching **only** `docs/`, `*.md`, `.claude/` or `.worktreeinclude` skip the build, via `ignoreCommand` in `vercel.json`. The test is the deployed site: a path is excluded because nothing it changes can reach a visitor, so agent and worktree configuration qualifies and `.gitignore` does not. The expected result is a `success` status reading _"Canceled by Ignored Build Step"_ plus a _"Skipped Deployment"_ comment on the pull request — **that is not a failure**, and it is easy to misread that green tick as a completed build. It also keeps the footer's "Updated:" timestamp honest, since `NEXT_PUBLIC_LAST_MODIFIED` is computed at build time.
 
 ## About this file
 
