@@ -31,7 +31,8 @@
 Next.js 16 made Turbopack the default for **both** `next dev` and `next build`. This project deliberately splits them:
 
 - **`next dev` uses Turbopack** (the default — no flag). Verified to run this project's full PostCSS pipeline correctly: `postcss-simple-vars` substitutes `$mantine-breakpoint-*` to literal `em` values, CSS Modules hash as normal, and autoprefixer still emits vendor prefixes.
-- **`next build` uses webpack** via an explicit `--webpack` flag. This is not a preference — Next 16 **hard-fails a Turbopack build when a webpack config is present**, and `@serwist/next` injects one. The PWA build (`WITH_PWA=true`, what production runs) would otherwise not build at all. `@serwist/next@10`, which may change this, is preview-only; revisit when it ships stable.
+- **`next build` uses webpack** via an explicit `--webpack` flag. This is not a preference — Next 16 **hard-fails a Turbopack build when a webpack config is present**, and `@serwist/next` injects one into every production build. `@serwist/next@10`, which may change this, is preview-only; revisit when it ships stable.
+- **Development never loads Serwist at all.** `next.config.js` returns before the dynamic `import()` unless `NODE_ENV` is `production`. That is load-bearing: `withSerwistInit` attaches a `webpack` key unconditionally, so wrapping in dev would put a webpack config in front of Turbopack, which `@serwist/next` does not support. See [D004](decisions.md#d004--generate-the-service-worker-in-every-production-build-never-in-development).
 
 The practical consequence: **dev and production are built by different bundlers**, so a bundler-specific difference can in principle reach production without showing up locally. Keep the pre-PR production build in the [release checklist](release-checklist.md) as the thing that catches it.
 

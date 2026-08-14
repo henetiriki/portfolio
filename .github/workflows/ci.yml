@@ -35,7 +35,6 @@ jobs:
       IMAGE_HOST_PROTOCOL: 'https'
       ISTAGRAM_IMAGE_IDS: 'BZ4QGdOn6SP,Bcg0AZwFwv6,B5zAuLqJTEg,CEbEP7XJafW'
       PROTOCOL: 'https'
-      WITH_PWA: 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -87,18 +86,10 @@ jobs:
           files: ./coverage/lcov.info
           use_oidc: true
 
-      # Both build paths are exercised because they use the same bundler but
-      # different plugin chains (see D004). The default path is what local
-      # `yarn build` runs; the PWA path is what production deploys.
-      - name: Build default (no service worker)
-        run: yarn build
-
-      - name: Verify no service worker is emitted without WITH_PWA
-        run: test ! -e public/sw.js
-
-      - name: Build production PWA
-        env:
-          WITH_PWA: 'true'
+      # One build, because there is only one production configuration: the
+      # service worker is generated whenever NODE_ENV is production, with no
+      # flag to set. See D004.
+      - name: Build
         run: yarn build
 
       - name: Verify service worker output

@@ -6,20 +6,19 @@ This replaced `publicRuntimeConfig`/`serverRuntimeConfig` (`next/config`) 2026-0
 
 Note for tests: `next/jest` loads `.env.test` directly but does **not** evaluate `next.config.js`'s `env` key (that bridging only happens in the real Next.js dev/build/start pipeline), so `.env.test` additionally defines the `NEXT_PUBLIC_*` names directly as dummy values — see the file itself.
 
-`.env`, `.env.production`, and `.env.test` are checked into this repo and only contain non-secret host/feature-flag config (see below); `.env*.local` is gitignored for anything sensitive.
+`.env` and `.env.test` are checked into this repo and only contain non-secret host config (see below); `.env*.local` is gitignored for anything sensitive. There is no `.env.production`: it held only `WITH_PWA=true`, and was deleted when that flag was removed on 2026-08-14.
 
 `.env.test` (added alongside the Jest setup — see [Development Workflow](development.md#testing)) holds dummy values for every var `next.config.js` reads unconditionally at module load, purely so `next/jest` can load a valid config while running tests. Next.js loads `.env.test` instead of `.env.local` whenever `NODE_ENV=test`. None of its values are real credentials.
 
-GitHub's production-mode CI build does not load `.env.test`, so `.github/workflows/ci.yml` mirrors the same safe source-variable values at job scope. The PWA build step overrides only `WITH_PWA=true`. Keep those dummy workflow values aligned when adding any variable that `next.config.js` requires at build time; never put real deployment or SMTP credentials in the workflow.
+GitHub's production-mode CI build does not load `.env.test`, so `.github/workflows/ci.yml` mirrors the same safe source-variable values at job scope. Keep those dummy workflow values aligned when adding any variable that `next.config.js` requires at build time; never put real deployment or SMTP credentials in the workflow.
 
 ## Committed defaults
 
-| File              | Variable   | Value          | Purpose                                                                                       |
-| ----------------- | ---------- | -------------- | --------------------------------------------------------------------------------------------- |
-| `.env`            | `PROTOCOL` | (set locally)  | Used to help derive image-host / URL config for local dev                                     |
-| `.env`            | `HOSTNAME` | (set locally)  | ditto                                                                                         |
-| `.env`            | `HOST`     | (set locally)  | Base site URL — feeds `NEXT_PUBLIC_SITE_URL`, canonical links, and `next-sitemap`'s `siteUrl` |
-| `.env.production` | `WITH_PWA` | `true`/`false` | Gates whether Serwist wraps the Next config (service worker generation)                       |
+| File   | Variable   | Value         | Purpose                                                                                       |
+| ------ | ---------- | ------------- | --------------------------------------------------------------------------------------------- |
+| `.env` | `PROTOCOL` | (set locally) | Used to help derive image-host / URL config for local dev                                     |
+| `.env` | `HOSTNAME` | (set locally) | ditto                                                                                         |
+| `.env` | `HOST`     | (set locally) | Base site URL — feeds `NEXT_PUBLIC_SITE_URL`, canonical links, and `next-sitemap`'s `siteUrl` |
 
 ## Required at runtime (not committed — supply via `.env.local` / hosting platform env config)
 
@@ -49,10 +48,9 @@ Unlike the API key, a Map ID is a public browser identifier rather than a creden
 
 ### Build-only
 
-| Variable   | Consumed by      | Purpose                                                                                                                        |
-| ---------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `ANALYZE`  | `next.config.js` | `true` wraps the config with `@next/bundle-analyzer` for a local bundle-size report                                            |
-| `WITH_PWA` | `next.config.js` | `true` wraps the config with Serwist (service worker generation); unset/`false` in normal dev to avoid stale SW caching issues |
+| Variable  | Consumed by      | Purpose                                                                             |
+| --------- | ---------------- | ----------------------------------------------------------------------------------- |
+| `ANALYZE` | `next.config.js` | `true` wraps the config with `@next/bundle-analyzer` for a local bundle-size report |
 
 ## Not currently read from env
 

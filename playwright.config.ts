@@ -41,6 +41,12 @@ export default defineConfig({
   use: {
     baseURL: BASE_URL,
     screenshot: 'only-on-failure',
+    // The suite serves a production build, which now always ships a service
+    // worker. Left unblocked it would precache pages and serve them to later
+    // specs, so a spec could pass against a stale response from an earlier
+    // one. Service-worker behaviour is verified by the build assertion in CI
+    // rather than through the browser suite.
+    serviceWorkers: 'block',
     trace: 'on-first-retry',
     video: 'off',
   },

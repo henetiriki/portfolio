@@ -46,7 +46,7 @@ The app needs environment variables to run — a Google Maps key, Gmail SMTP cre
 | `yarn test:watch`                           | Tests in watch mode                                                    |
 | `yarn type-check`                           | `tsc --noEmit`                                                         |
 
-Set `WITH_PWA=true` to build with the Serwist service worker (this is on in production, off by default locally).
+Every production build generates the Serwist service worker; `yarn dev` never does. There is no flag to set.
 
 ## Project Layout
 
@@ -83,4 +83,4 @@ Useful starting points:
 
 ## Deploying
 
-There are no versions, tags, or release artefacts. A change ships by squash-merging a PR into `main`, which Vercel deploys automatically. [Project History](docs/project-history.md) is the concise release record, while the [Roadmap](docs/roadmap.md) contains open work only. Follow the [release checklist](docs/release-checklist.md) — CI builds both the default and the production-like PWA path, and asserts that only the latter emits a service worker.
+There are no versions, tags, or release artefacts. A change ships by squash-merging a PR into `main`, which Vercel deploys automatically. [Project History](docs/project-history.md) is the concise release record, while the [Roadmap](docs/roadmap.md) contains open work only. Follow the [release checklist](docs/release-checklist.md) — CI runs the production build and asserts it emits a service worker.

@@ -2,6 +2,13 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-14 — Remove the WITH_PWA flag
+
+- Every production build now generates the service worker and development never does, with no flag to set anywhere. `.env.production` held only `WITH_PWA=true` and has been deleted; the variable is also gone from `.env.test`, the CI workflow and the Vercel project. CI drops from two builds to one, and the release checklist from two build steps to one. See [D004](decisions.md#d004--generate-the-service-worker-in-every-production-build-never-in-development).
+- **The gate is `NODE_ENV`, not Serwist's own `disable` option**, and that distinction is load-bearing. `withSerwistInit` attaches a `webpack` key to the config unconditionally — `disable` is only consulted inside that callback — so wrapping unconditionally would put a webpack config in front of `next dev`, which runs Turbopack and which `@serwist/next` explicitly warns it does not support. Returning early before the dynamic `import()` keeps Serwist out of development entirely. Verified by reading the plugin source rather than trusting the option name.
+- CI's "no service worker without `WITH_PWA`" assertion was **removed rather than left in place**, since the gating it tested no longer exists and a step that can no longer fail is worse than no step.
+- Playwright now blocks service workers (`serviceWorkers: 'block'`). The suite serves a production build, which always ships a service worker now, so an unblocked one would precache pages and let a later spec pass against a stale response from an earlier one.
+
 ## 2026-08-11 — Defer the YouTube embed on /experience
 
 - `/experience` scored materially worse than every other route in PageSpeed mobile. Measured against the live site: the YouTube iframe was eager (no `loading` attribute) and sits at 35,207px down a 39,453px document, so a full `youtube.com/embed` player — roughly a megabyte of JavaScript — was fetched and executed on every page load for content almost nobody scrolls to. Page markup was not the problem: only 522 DOM nodes.

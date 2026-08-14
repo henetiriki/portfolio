@@ -27,8 +27,7 @@ yarn test:coverage
 - [ ] The pull request's `codecov/patch` check passes at 100%; inspect any GitHub Checks annotations rather than treating the aggregate Jest percentage as coverage of the changed lines
 - [ ] `yarn css-vars:check` passes. CI runs this after `postinstall` as an integrity check for the generated, gitignored WebStorm stub; it is not a committed-file drift check.
 - [ ] `yarn tsc --pretty --noEmit --project service-worker/tsconfig.json` passes. The root `type-check` deliberately excludes this Web Worker project because its TypeScript libraries cannot be mixed with the application's DOM libraries.
-- [ ] **`yarn build` succeeds** — CI also builds this default path and asserts it emits no `public/sw.js`, but run it locally too so a failure is not first seen in CI.
-- [ ] **`WITH_PWA=true yarn build` succeeds and emits a non-empty `public/sw.js`** — CI runs this production-like path and asserts the output; repeat it locally for a full release-ready check.
+- [ ] **`yarn build` succeeds and emits a non-empty `public/sw.js`.** There is only one production configuration — the service worker is generated whenever `NODE_ENV` is production, with no flag to set. CI runs the same build and asserts the same output, but run it locally so a failure is not first seen in CI.
 - [ ] **`yarn test:e2e` passes.** Run it _after_ a build: Playwright serves the production output with `yarn start` on port 3000, which the Google Maps key is restricted to. It catches what jsdom cannot — layout, focus order, hydration and colour contrast — so a green Jest run is not a substitute. If a spec fails in CI rather than locally, the report is uploaded as a `playwright-report` artefact. See [Browser regression suite](development.md#browser-regression-suite).
 - [ ] Any new `process.env` value is added in the Vercel dashboard, the `env` block in `next.config.js` if the client needs it, and `.env.test` as a dummy. If `next.config.js` requires it during a production build, also add a safe dummy to the CI job's `env` block because CI does not load `.env.test`; `next/jest` does load `.env.test` but does not evaluate the config's client `env` bridge ([environment-variables.md](environment-variables.md)).
 
@@ -36,7 +35,7 @@ yarn test:coverage
 
 Run against the diff, every time — not only when the change looks security-related. The expensive mistakes here are accidental.
 
-- [ ] **Nothing secret is in the diff.** Credentials, API keys, tokens, passwords, private URLs, personal data. Real secrets belong in `.env*.local` (gitignored) and the Vercel dashboard; `.env`, `.env.production` and `.env.test` are tracked and must hold only non-secret or dummy values.
+- [ ] **Nothing secret is in the diff.** Credentials, API keys, tokens, passwords, private URLs, personal data. Real secrets belong in `.env*.local` (gitignored) and the Vercel dashboard; `.env` and `.env.test` are tracked and must hold only non-secret or dummy values.
 - [ ] **Any new `NEXT_PUBLIC_*` value is intended to be public.** That prefix inlines the value into the client bundle at build time, so it ships to every visitor and is readable with view-source. Treat adding one as publishing it.
 - [ ] **Any new value in the CI workflow's `env` block is intended to be public.** `ci.yml` is committed, so those values are as exposed as the rest of the repository.
 - [ ] **No real personal data has been added to fixtures, tests or documentation** — other people's names, addresses, emails or photographs.
@@ -61,7 +60,7 @@ Docs here describe **what exists today**, so they are part of the change, not an
 
 - [ ] PR opened against `main`; CI (`.github/workflows/ci.yml`) is green
 - [ ] Vercel preview deployment builds successfully
-- [ ] Manual QA on the **preview URL**, not just localhost — it is the only pre-production environment where `WITH_PWA=true`, real env vars, and prerendered output all apply together
+- [ ] Manual QA on the **preview URL**, not just localhost — it is the only pre-production environment where the service worker, real env vars, and prerendered output all apply together
 
 ## Merge & Deploy
 
@@ -98,7 +97,7 @@ Worth knowing before relying on the automation:
 
 **Resolved** (kept because each bit this project before):
 
-- ~~**The no-PWA build remains manual.**~~ CI now builds the default path alongside the PWA path, and asserts the default emits no `public/sw.js` — so the `WITH_PWA` gating itself is tested, not just that both configurations compile.
+- ~~**The no-PWA build remains manual.**~~ Obsolete as of 2026-08-14: the `WITH_PWA` flag was removed, so there is no second configuration to build. CI runs the single production build and asserts it emits `public/sw.js`.
 
 - ~~**Production-mode QA collides with `next dev`.**~~ `next dev` now writes to `.next/dev` and `next build` to `.next`, so they no longer share prerendered output — verified by running a full production build with a dev server live and confirming it kept serving. Next 16 also takes a lockfile preventing two `next dev` (or two `next build`) instances on the same project. The old failure mode was `Cannot find module './chunks/vendor-chunks/next.js'` plus 500s on uncompiled routes, fixed with `yarn clean && yarn dev`.
 
