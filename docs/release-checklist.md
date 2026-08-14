@@ -84,7 +84,7 @@ Verify on the live site (https://www.ouwl.house):
 - [ ] `https://www.ouwl.house/sitemap.xml` and `/robots.txt` regenerated (`next-sitemap` runs as the second half of `yarn build` and reads `siteUrl` from `HOST`)
 - [ ] `https://www.ouwl.house/llms.txt` returns the static Markdown file with a `200` response and an H1, rather than the custom 404 page
 - [ ] Every content route has its own title, description, canonical, `og:url` and social title; URLs point at the real domain, not `undefined` or localhost
-- [ ] Installed PWA launches with a dark splash/background in a standalone window
+- [ ] Installed PWA launches with a dark splash/background in a standalone window — the manifest and every icon and splash asset it references are now asserted by the [browser suite](development.md#browser-regression-suite), so this check is about the real install experience rather than whether the files are there
 - [ ] Service worker registers and `/_offline` serves when offline
 - [ ] Contact form submits — ⚠️ **this sends a real email** through Gmail SMTP, so treat it as a live test, not a smoke test
 
