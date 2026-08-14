@@ -43,6 +43,27 @@ yarn test:e2e
 - Durable rationale goes in [`docs/decisions.md`](docs/decisions.md); current behaviour goes in the relevant topical doc.
 - **No long explanatory comments in CSS, CSS Modules or JSX.** Put the reasoning in the relevant doc and leave at most a one-line pointer at the call site. Relocate it — do not delete it.
 
+## Working across branches
+
+Branches run concurrently here, and `main` is the only integration point. Merges are squashed, so a branch lands as a single commit and its own history does not survive: **rebase onto `origin/main`** rather than merging `main` into a branch, and never merge one branch into another.
+
+- **The conflict surface is three documentation files, not the source.** [`roadmap.md`](docs/roadmap.md), [`project-history.md`](docs/project-history.md) and [`decisions.md`](docs/decisions.md) are touched by nearly every change and each is edited at a fixed anchor, so two branches collide there far more often than in `src/`.
+- **A clean rebase is not evidence.** Rebasing #164 over #165 produced three silent failures and one honest conflict: Git spliced a new section into the middle of D009, left two `## D010` headings, and re-applied an identical `.gitignore` rule a second time — all without a marker. Read the diff of every documentation file after a rebase; do not trust the exit status.
+- **Claim a decision number when the pull request opens**, checked against `main` _and_ every open pull request. Whichever branch merges second renumbers, and must fix the inbound links — the anchor contains the number, so `grep -rn 'D0NN' AGENTS.md docs/` is part of the resolution, not an afterthought.
+- **`project-history.md` conflicts resolve mechanically**: keep both entries, newest date first, and for the same date put the later-merged one on top so the file reads in merge order.
+- **In `roadmap.md`, removal wins** when one branch completes an item another merely edited. Touch `Last reviewed:` only when you have actually reviewed the whole roadmap — otherwise it is a one-line conflict on every branch.
+- **Merge the smaller branch first**, then rebase the other onto it.
+- **Re-run [validation](#validating-a-change) after the rebase**, not only before opening the pull request. Nothing enforces checks on `main` yet, so two branches that each pass alone and break together have nothing to catch them.
+
+## Worktrees
+
+Isolation for work that runs alongside something already in progress. They live in `.claude/worktrees/`, which is both gitignored and prettierignored.
+
+- **`node_modules` is symlinked** from the main checkout through `worktree.symlinkDirectories`, so Husky, `lint-staged` and the `yarn` scripts work inside a worktree. It is shared state: if the branch changes `package.json` or `yarn.lock`, run a real install in the worktree instead of relying on the symlink.
+- **Never `git stash`.** The stash stack is shared across worktrees, so a concurrent session can pop your entry. Set work aside with a WIP commit.
+- **Changes to `.claude/` do not take effect in the session that makes them** — settings are read per directory at session start. Verify hooks and permission rules after the merge, from a session started in the main checkout.
+- **Remove the worktree once its pull request merges.** Nothing expires them. A worktree also holds a lock on its branch, so `git branch -D` fails until it is gone; `git worktree prune` clears a registration whose directory has already been deleted.
+
 ## Code conventions
 
 - Alphabetical ordering is **lint-enforced**: object keys, destructured keys, JSX props, interface members and imports. Source reads alphabetically rather than by logical grouping.
