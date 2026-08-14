@@ -76,6 +76,7 @@ Useful starting points:
 
 - **[Development Workflow](docs/development.md)** — scripts, linting, testing conventions, git hooks
 - **[Release Checklist](docs/release-checklist.md)** — how a change gets to production
+- **[AGENTS.md](AGENTS.md)** — working conventions for AI coding agents (environment, shell hygiene, docs discipline)
 - **[Engineering Decisions](docs/decisions.md)** — durable technical choices and why they were made
 - **[Roadmap](docs/roadmap.md)** — open work and known follow-ups
 - **[Project History](docs/project-history.md)** — concise record of completed milestones
