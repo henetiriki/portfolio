@@ -32,7 +32,24 @@ v6's `colorScheme` and `globalStyles` theme keys don't exist in v7. `colorScheme
 
 **`defaultRadius: 'sm'` is set deliberately, not incidentally.** Mantine v9 changed its own default from `sm` (4px) to `md` (8px) — confirmed by diffing the shipped `default-theme.mjs` between 8.3.18 and 9.5.1. Every component that doesn't pass an explicit `radius` inherits it, so leaving it unset would have silently rounded the `Tooltip`, notification toasts and `Drawer` more than before. Pinning `sm` preserves the pre-v9 appearance. The buttons and inputs that pass `radius='lg'` (`ContactForm`, `portfolio.tsx`, `ErrorContent`) were never affected either way. **This is a design choice, not a technical constraint** — deleting the line adopts Mantine's newer, rounder default.
 
-`src/styles/fonts.ts` loads **Montserrat** (400/600/700) and **Roboto** (400/700) through `next/font/google`. Next downloads and self-hosts the files at build time instead of making the browser request render-blocking Google stylesheets. `_app.tsx` writes the generated family names to `--portfolio-font-heading` and `--portfolio-font-body` in the shared `<Head>`; the Mantine theme consumes those properties and retains the existing system-font fallbacks.
+### Fonts
+
+`src/styles/fonts.ts` loads **Montserrat** (headings) and **Roboto** (body) through `next/font/local`, from two `woff2` files committed under `src/styles/fonts/`. `_app.tsx` writes the generated family names to `--portfolio-font-heading` and `--portfolio-font-body` in the shared `<Head>`; the Mantine theme consumes those properties and retains the system-font fallbacks. The generated names come from the exported constants, so what appears in DevTools and in the built CSS is `headingFont` and `bodyFont`, not `Montserrat` and `Roboto`.
+
+**Two files cover every weight the site uses.** Both are variable fonts with a `wght` axis of 100–900, so one file per family serves Montserrat 400/600/700 and Roboto 400/700 — which is why each `localFont()` call declares `weight: '100 900'` rather than a list. Roboto also carries a `wdth` axis (75–100), and Google's own stylesheet pins it; `declarations: [{ prop: 'font-stretch', value: '100%' }]` reproduces that, since `next/font/local` has no dedicated option for it.
+
+**Only the latin subset is shipped.** `next/font/google` emitted 14 subset files (368KB) and preloaded exactly these two; the rest exist for glyphs this site has no way to produce, its text being static fixtures. Dropping them also drops the `unicode-range` descriptors that scoped them, which changes nothing here: a character outside the shipped file now falls through to the theme's system stack instead of to a subset that was never downloaded.
+
+**Provenance, and how to refresh.** The files are byte-identical to what `next/font/google` fetched — the build emits the same content-hashed filenames as before the change. They came from the URLs in Google's own `css2` response for the weights this site uses:
+
+| File                                      | Source                                                                                     | SHA-256    | Size   |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------ | ---------- | ------ |
+| `fonts/montserrat/montserrat-latin.woff2` | `https://fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2`         | `6438d7b8` | 35,508 |
+| `fonts/roboto/roboto-latin.woff2`         | `https://fonts.gstatic.com/s/roboto/v51/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBHMdazQ.woff2` | `0a44e0bb` | 37,520 |
+
+To take a newer release, request `https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap` (and the Roboto equivalent) **with a current browser user agent** — the API serves formats by user agent, and a bare `curl` gets `ttf` — then replace the file the `/* latin */` block points at. Both families are OFL 1.1; `OFL.txt` sits beside each file and must travel with it.
+
+**The size-adjusted fallback faces are generated from the files themselves.** `adjustFontFallback: 'Arial'` is set explicitly so this cannot be lost silently — it produces the `bodyFont Fallback` / `headingFont Fallback` `@font-face` rules that limit layout shift while the real font loads. The override values differ slightly from the Google loader's, because `next/font/local` measures the file rather than reading Google's metrics table: Roboto moved from `size-adjust: 99.78%` to `100.37%`, Montserrat from `112.83%` to `110.19%`, with comparable shifts in the ascent and descent overrides. `e2e/fonts.spec.ts` asserts the fallback faces exist and are actually adjusted.
 
 ### How theme values become CSS variables
 
