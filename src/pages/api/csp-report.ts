@@ -7,7 +7,7 @@ import {
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 // The body is read raw because `report-uri` sends `application/csp-report`,
-// which Next's body parser does not treat as JSON. See docs/decisions.md#d012.
+// which Next's body parser does not treat as JSON. See docs/decisions.md#d-260814c.
 export const config = {
   api: {
     bodyParser: false,

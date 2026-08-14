@@ -31,7 +31,7 @@ const imageHostOrigin =
 
 // Report-Only for now. Rationale for every non-obvious source, and the
 // conditions for promoting this to an enforcing header, are in
-// docs/decisions.md D012.
+// docs/decisions.md D-260814c.
 const contentSecurityPolicyDirectives = {
   'base-uri': ["'self'"],
   'connect-src': [
@@ -66,7 +66,7 @@ const contentSecurityPolicyDirectives = {
   'object-src': ["'none'"],
   // `report-to` is deliberately absent — it supersedes `report-uri` in Chrome
   // but needs an absolute endpoint URL, and adding it stopped reports reaching
-  // us entirely. See docs/decisions.md D012.
+  // us entirely. See docs/decisions.md D-260814c.
   'report-uri': ['/api/csp-report'],
   'script-src': [
     "'self'",
@@ -201,7 +201,7 @@ const baseConfig = withBotId({
 // `withSerwistInit` attaches a `webpack` key unconditionally (its own
 // `disable` option is only checked inside that callback), and `next dev` runs
 // Turbopack, which @serwist/next does not support. Returning early keeps a
-// webpack config out of dev entirely. See docs/decisions.md D004.
+// webpack config out of dev entirely. See docs/decisions.md D-260807a.
 module.exports = async () => {
   if (process.env.NODE_ENV !== 'production') {
     return withBundleAnalyzer(baseConfig);

@@ -19,7 +19,7 @@ const asString = (value: unknown): string | undefined =>
   typeof value === 'string' && value ? value : undefined;
 
 // `report-uri` posts a single object under a `csp-report` key, with
-// hyphenated field names. See docs/decisions.md#d012.
+// hyphenated field names. See docs/decisions.md#d-260814c.
 const fromReportUri = (parsed: unknown): CspViolation[] => {
   const report = asRecord(asRecord(parsed)?.['csp-report']);
 
@@ -73,7 +73,7 @@ export const parseViolations = (raw: string): CspViolation[] => {
 
 // Extension-injected scripts violate the policy on every page and cannot be
 // fixed from here; they are dropped so they cannot drown the signal this
-// rollout is judged on. See docs/decisions.md#d012.
+// rollout is judged on. See docs/decisions.md#d-260814c.
 export const isReportable = ({
   blockedUri,
   sourceFile,
