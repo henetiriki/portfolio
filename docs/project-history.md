@@ -2,6 +2,15 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-14 — Let each worktree install its own dependencies
+
+- `worktree.symlinkDirectories` is gone from `.claude/settings.json`, a [`.worktreeinclude`](../.worktreeinclude) file carries `.env*.local` into new worktrees, and the [`AGENTS.md`](../AGENTS.md) Worktrees section is rewritten around a real install. Rationale in [D-260814e](decisions.md#d-260814e--let-each-worktree-install-its-own-dependencies).
+- **Verified in a throwaway worktree rather than reasoned about**, which is what turned up everything below. `yarn install` took 12 seconds, `postinstall` generated `src/styles/mantine-custom-properties.css`, and `yarn dev` served in 269 ms with no Turbopack symlink panic. Disk cost measured at 975 MB per worktree.
+- **The cost estimate on the roadmap was wrong by a factor of six, in the direction that matters least.** It recorded 167 MiB, which is what Yarn prints for the packages added; the worktree actually holds 786 MB of `node_modules` plus 181 MB of `.yarn/cache`. The install stays fast anyway because Yarn's global mirror serves the fetch step even with `enableGlobalCache: false` — 866 packages in 357 ms, no network.
+- **The first `yarn dev` failed, and not for any reason connected to the symlink.** `next.config.js` aborted on `Invalid input at "images.remotePatterns[0]"`, because `IMAGE_HOST_NAME` lives in `.env.local`, which is gitignored and therefore absent from a fresh checkout. Nothing had hit this before because nothing could get as far as starting a dev server in a worktree. `.worktreeinclude` is Claude Code's own mechanism for it and copies only files that are both listed and gitignored, so the secrets stay out of the repository.
+- **Two Content Security Policy gaps fell out of the same dev run**, both from Google Maps on `/travel` — a WebAssembly compile needing `'wasm-unsafe-eval'`, and `mapsresources-pa.googleapis.com` missing from `connect-src`. Recorded against the promotion item in the [Roadmap](roadmap.md). The suspicion that Turbopack's HMR runtime would flood development with `'unsafe-eval'` reports was checked at the same time and is unfounded: it produced nothing.
+- **The `next dev` managed block in `AGENTS.md` is now committed**, per the instruction that file already carried. It was absent from the tracked copy, so it would have appeared as an uncommitted change for whoever next ran a dev server.
+
 ## 2026-08-14 — Stop `git -C` from defeating the permission allowlist
 
 - [`AGENTS.md`](../AGENTS.md) gains a shell-hygiene rule against passing `-C <path>` to `git`, and `.claude/settings.json` gains the bare no-argument forms of the four read-only check scripts plus `git check-ignore` and the browser `find` tool.
