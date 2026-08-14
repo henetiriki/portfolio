@@ -12,7 +12,7 @@ import type { APIRequestContext } from '@playwright/test';
  * that step is dropped from the response with no build warning, and escaping
  * the colons to avoid it instead ships literal backslashes that no browser can
  * parse. Either way the page looks perfectly healthy. See
- * docs/decisions.md#d012.
+ * docs/decisions.md#d-260814c.
  */
 test.describe('content security policy', () => {
   const headersFor = async (request: APIRequestContext, path = '/') =>
