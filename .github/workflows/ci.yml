@@ -95,17 +95,25 @@ jobs:
       - name: Verify service worker output
         run: test -s public/sw.js
 
-      # Cached on the Playwright version: the browser download is ~100 MB and
-      # changes only when the package does. Install scripts are disabled
-      # repository-wide (D008), so the browser is fetched explicitly here
-      # rather than by a postinstall hook.
+      # Keyed on the installed Playwright version, because that is what the
+      # ~270 MB browser download actually tracks. A lockfile-wide key would
+      # discard it on every weekly Dependabot bump. Install scripts are
+      # disabled repository-wide (D008), so the browser is fetched explicitly
+      # here rather than by a postinstall hook.
+      - name: Resolve Playwright version
+        id: playwright-version
+        run: |
+          version="$(node -p "require('@playwright/test/package.json').version")"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
       - name: Cache Playwright browser
-        id: playwright-cache
         uses: actions/cache@v6
         with:
-          key: ${{ runner.os }}-playwright-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
           path: ~/.cache/ms-playwright
 
+      # Always run: --with-deps also installs system font and library packages,
+      # which live outside the cached browser directory.
       - name: Install Playwright browser
         run: yarn test:e2e:install
 

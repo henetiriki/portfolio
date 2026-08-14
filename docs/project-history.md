@@ -2,6 +2,13 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-14 — Pin the Yarn CLI and correct the Playwright cache step
+
+- `packageManager` now carries Corepack's integrity hash (`yarn@4.18.0+sha512.…`), generated with `corepack use yarn@4.18.0`. Corepack previously downloaded the Yarn CLI from `repo.yarnpkg.com` on every run and executed it with nothing to verify it against. This is the missing half of [D008](decisions.md#d008--keep-the-package-managers-supply-chain-defaults): that decision governs what Yarn may install, and nothing governed how Yarn itself arrived.
+- **Verified the check is live rather than decorative.** In a scratch `COREPACK_HOME`, the pinned version downloads and runs silently; the same download against a deliberately altered hash fails with `Mismatch hashes` and refuses to execute. A pin that is never exercised is indistinguishable from no pin, so it was worth proving both directions.
+- The Playwright browser cache is now keyed on the **installed Playwright version**, resolved at run time from `@playwright/test/package.json`, instead of `hashFiles('yarn.lock')`. The comment had claimed the version-based behaviour all along; with Dependabot opening grouped updates weekly, the lockfile-wide key was discarding a 269 MB cache roughly every week for changes that had nothing to do with the browser.
+- The comment's "~100 MB" was corrected to ~270 MB, and the unread `id: playwright-cache` was dropped rather than wired up. Gating the install step on a cache hit would be wrong: `--with-deps` also installs system font and library packages that live outside the cached directory, and on the 2026-08-14 cache hit it still pulled nine font packages. The step's `id` is now on the version-resolution step, which is actually read.
+
 ## 2026-08-14 — Remove the WITH_PWA flag
 
 - Every production build now generates the service worker and development never does, with no flag to set anywhere. `.env.production` held only `WITH_PWA=true` and has been deleted; the variable is also gone from `.env.test`, the CI workflow and the Vercel project. CI drops from two builds to one, and the release checklist from two build steps to one. See [D004](decisions.md#d004--generate-the-service-worker-in-every-production-build-never-in-development).
