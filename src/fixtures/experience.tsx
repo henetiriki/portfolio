@@ -68,7 +68,9 @@ export const jobs: Job[] = [
   {
     accomplishments: (
       <>
-        <Title order={5}>Accomplishments</Title>
+        <Title order={4} size='h5'>
+          Accomplishments
+        </Title>
         <Text component='p'>
           I built a flexible and customisable template configuration setup that
           will enable new data collection flows to be rolled out quickly in
@@ -114,7 +116,9 @@ export const jobs: Job[] = [
   {
     accomplishments: (
       <>
-        <Title order={5}>Accomplishments</Title>
+        <Title order={4} size='h5'>
+          Accomplishments
+        </Title>
         <Text component='p'>
           One of my own objectives was <b>mentoring</b> team members on good{' '}
           <b>SDLC</b> practices and continuous improvement - breaking stories
@@ -163,7 +167,9 @@ export const jobs: Job[] = [
   {
     accomplishments: (
       <>
-        <Title order={5}>Accomplishments</Title>
+        <Title order={4} size='h5'>
+          Accomplishments
+        </Title>
         <Text component='p'>
           My team delivered a front-end React application hosted as an{' '}
           <b>Amazon S3 static site</b>. This single page application formed part
@@ -368,7 +374,9 @@ export const jobs: Job[] = [
   {
     accomplishments: (
       <>
-        <Title order={5}>Accomplishments</Title>
+        <Title order={4} size='h5'>
+          Accomplishments
+        </Title>
         <Text component='p'>
           I worked alongside members of the hardware team on the implementation
           of a <b>RESTful JSON</b> communication protocol over HTTP for the 2nd
@@ -412,7 +420,9 @@ export const jobs: Job[] = [
   {
     accomplishments: (
       <>
-        <Title order={5}>Accomplishments</Title>
+        <Title order={4} size='h5'>
+          Accomplishments
+        </Title>
         <Text component='p'>
           I was involved in a major overhaul of the UI for the PPM System,
           which, amongst other tasks, included the implementation of a{' '}
@@ -453,7 +463,9 @@ export const jobs: Job[] = [
   {
     accomplishments: (
       <>
-        <Title order={5}>Accomplishments</Title>
+        <Title order={4} size='h5'>
+          Accomplishments
+        </Title>
         <Text component='p'>
           I integrated an open-source <b>mobile framework</b> (WURFL) into the
           Quirk software stack, which enabled the development of mobile client
