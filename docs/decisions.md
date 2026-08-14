@@ -29,14 +29,18 @@ Mantine v7 removed the old Emotion-oriented integration and made CSS Modules, CS
 
 Component styles use CSS Modules and Mantine style props; `postcss-preset-mantine` and `postcss-simple-vars` provide documented mixins and build-time breakpoints. Small finite variants use modifier classes rather than runtime-only custom properties. The project also retains Next's default PostCSS capabilities explicitly because defining a custom PostCSS config disables Next's built-in pipeline. See [Styling & Theming](styling-theming.md) for the implementation and migration-specific traps.
 
-## D004 — Keep PWA generation opt-in and production builds on webpack
+## D004 — Generate the service worker in every production build, never in development
 
-- **Status:** Accepted; revisit when stable Serwist support changes
-- **Decided:** 2026-08-07; reaffirmed 2026-08-09
+- **Status:** Accepted; supersedes the `WITH_PWA` opt-in
+- **Decided:** 2026-08-07; reaffirmed 2026-08-09; revised 2026-08-14
 
-Offline support is a production feature, but service-worker generation adds build complexity that is unnecessary for ordinary local development and previews. Serwist's stable Next integration requires webpack, while Next 16 defaults production builds to Turbopack.
+Offline support is a production feature. It was originally gated behind `WITH_PWA=true` so local and preview builds did not pay for service-worker generation. In practice `.env.production` always set it, so the flag only ever selected between what ships and a configuration nothing deployed — while costing a second CI build, a second build step in the release checklist, and a branch in `next.config.js`.
 
-`WITH_PWA=true` enables Serwist and generates `public/sw.js`; otherwise no service worker is built. Production builds explicitly use `next build --webpack` so PWA and non-PWA builds share one bundler. Development remains on Turbopack for speed. Revisit the webpack opt-out when a stable Serwist release supports the production bundler without custom compatibility work. See [PWA & SEO](pwa-seo.md) and [Development Workflow](development.md#bundlers-turbopack-in-dev-webpack-in-builds).
+The gate is now `NODE_ENV`: every production build generates `public/sw.js`, and development never does. There is no flag to set anywhere.
+
+**This is deliberately not Serwist's own `disable` option.** `withSerwistInit` attaches a `webpack` key to the config unconditionally — `disable` is only consulted inside that callback. Since `next dev` runs Turbopack, which `@serwist/next` does not support and warns about, wrapping unconditionally would put a webpack config in front of development. Returning early before the dynamic `import()` keeps Serwist out of dev entirely.
+
+Production builds still use `next build --webpack` explicitly, because Next 16 hard-fails a Turbopack build when a webpack config is present. Development remains on Turbopack for speed. Revisit the webpack opt-out when a stable Serwist release supports the production bundler without custom compatibility work — `@serwist/next@10`, currently preview-only, may be that release. See [PWA & SEO](pwa-seo.md) and [Development Workflow](development.md#bundlers-turbopack-in-dev-webpack-in-builds).
 
 ## D005 — Generate CSS declarations for WebStorm without shipping them
 

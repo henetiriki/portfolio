@@ -50,10 +50,17 @@ export const collectConsoleErrors = (page: Page) => {
  *   `next start` they fall through to the 404 handler and come back as
  *   `text/plain`, which this app's `nosniff` header then correctly refuses.
  *   That is a local-environment artefact, not a defect.
+ * - `reading 'waiting'` comes from `@serwist/window`, which reads
+ *   `registration.waiting` after registering the service worker. The suite
+ *   sets `serviceWorkers: 'block'`, so registration never resolves and that
+ *   property read throws. Caused by the suite's own configuration, and
+ *   unreachable in production where registration succeeds — the service
+ *   worker itself is asserted by the build step in CI instead.
  */
 export const isExpectedConsoleNoise = (message: string) =>
   /googleapis|maps|ERR_FAILED|Failed to load resource/i.test(message) ||
-  /_vercel\/(speed-)?insights/i.test(message);
+  /_vercel\/(speed-)?insights/i.test(message) ||
+  /reading 'waiting'/.test(message);
 
 /**
  * Wait until React has actually hydrated.

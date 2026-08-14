@@ -13,7 +13,7 @@
 | Maps            | `@googlemaps/js-api-loader` (Google Maps JavaScript API)                                |
 | Email           | `nodemailer` over Gmail SMTP                                                            |
 | Bot protection  | `botid` (Vercel BotID) client + server checks                                           |
-| PWA             | Serwist (only enabled when `WITH_PWA=true`)                                             |
+| PWA             | Serwist (every production build; never in development)                                  |
 | Sitemap/robots  | `next-sitemap` (runs as a `build` step)                                                 |
 | Package manager | Yarn 4 (Berry), Node `24.x`                                                             |
 | Testing         | Jest + React Testing Library (units), Playwright + axe (browser)                        |

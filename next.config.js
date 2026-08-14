@@ -130,11 +130,16 @@ const baseConfig = withBotId({
 
 // @serwist/next is ESM-only (no CJS build), so it can't be `require()`d from
 // this CommonJS config file — a dynamic `import()` inside an async config
-// function is Next.js's own documented escape hatch for this. Only loaded
-// when WITH_PWA=true (matching the previous next-pwa gating) so local/preview
-// builds don't pay for it.
+// function is Next.js's own documented escape hatch for this.
+//
+// Gated on NODE_ENV rather than a flag: every production build gets the
+// service worker, and development never does. This is not just a preference —
+// `withSerwistInit` attaches a `webpack` key unconditionally (its own
+// `disable` option is only checked inside that callback), and `next dev` runs
+// Turbopack, which @serwist/next does not support. Returning early keeps a
+// webpack config out of dev entirely. See docs/decisions.md D004.
 module.exports = async () => {
-  if (process.env.WITH_PWA !== 'true') {
+  if (process.env.NODE_ENV !== 'production') {
     return withBundleAnalyzer(baseConfig);
   }
 

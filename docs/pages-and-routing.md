@@ -18,11 +18,11 @@ Portfolio cards use `next/image` with `fill`. Linked cards give the immediate `A
 
 ## Error pages
 
-| Route  | File                 | Notes                                                                                                       |
-| ------ | -------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `/404` | `pages/404.tsx`      | Custom not-found page; sets a fixed background Instagram image id and `noindex, nofollow`                   |
-| `/500` | `pages/500.tsx`      | Custom server-error page; same pattern with a different fallback image id                                   |
-| N/A    | `pages/_offline.tsx` | Shown by Serwist's service worker when offline and a page isn't cached (only relevant when `WITH_PWA=true`) |
+| Route  | File                 | Notes                                                                                                                                 |
+| ------ | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `/404` | `pages/404.tsx`      | Custom not-found page; sets a fixed background Instagram image id and `noindex, nofollow`                                             |
+| `/500` | `pages/500.tsx`      | Custom server-error page; same pattern with a different fallback image id                                                             |
+| N/A    | `pages/_offline.tsx` | Shown by Serwist's service worker when offline and a page isn't cached (production builds only — development ships no service worker) |
 
 Both error pages reuse `Header` + `ErrorContent` (`@components/shared`) and dispatch a hard-coded `imgId` into global state on mount, since the normal `useIgImgId` fetch flow depends on a successful API round trip.
 
