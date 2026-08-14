@@ -12,8 +12,9 @@ node_modules/
 !.yarn/sdks
 !.yarn/versions
 
-# agent worktrees
+# agent config
 .claude/worktrees/
+.claude/settings.local.json
 
 # testing
 coverage/
@@ -27,6 +28,9 @@ build/
 public/sitemap.xml
 public/sw.js*
 src/styles/mantine-custom-properties.css
+
+# ide
+.idea/
 
 # misc
 .DS_Store
