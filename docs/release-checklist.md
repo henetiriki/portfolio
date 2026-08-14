@@ -67,7 +67,9 @@ Docs here describe **what exists today**, so they are part of the change, not an
 
 - [ ] **Squash merge** into `main` (keeps the `Title (#NNN)` history style)
 - [ ] Vercel auto-deploys `main` to production — no tag, no manual trigger, no deploy workflow
-- [ ] Vercel build completes without errors
+- [ ] Vercel build completes without errors — **unless the change touched only `docs/` or `*.md`**, in which case the build is skipped by design and "no deployment" is the expected outcome, not a failure
+
+> **Documentation-only changes do not deploy.** `vercel.json`'s `ignoreCommand` runs `git diff --quiet HEAD^ HEAD -- . ':(exclude)docs' ':(exclude)*.md'`. Note Vercel's inverted convention: **exit `0` skips the build, exit `1` builds** — so the command exits `0` precisely when nothing outside the docs changed. This also keeps the footer's "Updated:" timestamp honest, since `NEXT_PUBLIC_LAST_MODIFIED` is computed at build time and would otherwise move for a change no visitor can see. Two consequences: docs-only pull requests get **no preview deployment**, and if you ever want a docs-only redeploy anyway, trigger it from the Vercel dashboard. The command fails open — if `HEAD^` cannot be resolved it exits non-zero and the build proceeds, so the failure mode is a needless deploy rather than a missed one.
 
 ## After Deploy
 
