@@ -127,3 +127,30 @@ Two limits are deliberate:
 - **`||` is not blocked.** It carries the same problem, but it has not appeared in practice and was not part of the agreed rule. Widen the pattern if that changes.
 
 The hook fails open. If `jq` is ever missing the command exits non-zero, which the harness treats as a hook error rather than a denial, and the command proceeds — the same posture as the convention it replaces, so a broken hook cannot block work.
+
+## D012 — Ship the Content Security Policy Report-Only, and accept `unsafe-inline`
+
+- **Status:** Accepted
+- **Decided:** 2026-08-14
+
+The policy in `next.config.js` ships as `Content-Security-Policy-Report-Only`, with violations posted to `/api/csp-report` and logged. Promotion to an enforcing header is a separate, deliberate decision — the browser suite asserts the enforcing header is _absent_ so it cannot happen by accident.
+
+**`script-src` and `style-src` both carry `'unsafe-inline'`, and that is not a temporary concession.** Two independent reasons, either of which alone would be sufficient:
+
+- **BotID emits an inline script with no nonce hook.** `BotIdClient` renders `<script dangerouslySetInnerHTML>` with the protected-route configuration interpolated into it. The component accepts no `nonce` prop, so the only alternatives are dropping bot protection or hashing a value that changes whenever the route list does.
+- **Every page is statically prerendered.** There is no `getServerSideProps` or `getStaticProps` anywhere in `src/pages`, so `_document`'s `getInitialProps` does not run per request. A nonce minted at build time is a constant, which is not a nonce. Making nonces work would mean forcing every route to render per request — a real cost to a site whose pages are otherwise static, to protect against inline injection on a site with no user-generated content.
+
+What the policy still buys is worth having on its own: `frame-ancestors`, `base-uri`, `form-action` and `object-src 'none'` are unaffected by inline, and the host allowlists still block `<script src>` pointing anywhere off the list. Those are the directives the browser suite pins.
+
+**Every non-obvious source was observed rather than assumed**, except where noted:
+
+- `https://www.google.com` in `frame-src` is the YouTube embed's own nested frame, seen as a real Report-Only violation on `/experience`.
+- `va.vercel-scripts.com` and `vitals.vercel-insights.com` are the **development** endpoints for Vercel Analytics and Speed Insights. In production both load same-origin from `/_vercel/…`, so `'self'` already covers them; the hosts are listed so local development does not generate noise that has to be re-triaged every time.
+- BotID needs no host of its own. It loads its challenge from a same-origin path that `withBotId` rewrites to `api.vercel.com` server-side, so the browser only ever sees `'self'`.
+- `maps.googleapis.com` is allowlisted explicitly rather than discovered, for the reason recorded when this work was planned: a client-side blocker already fails a Maps `gen_204` probe on `/travel`, and a blocked probe cannot be distinguished from our own policy blocking it.
+
+**`report-to` is deliberately absent, and this was tested rather than reasoned about.** It is the non-deprecated successor to `report-uri`, and Chrome prefers it when both are present. Adding it alongside `Reporting-Endpoints: csp-endpoint="/api/csp-report"` stopped reports arriving altogether: the Reporting API requires an absolute endpoint URL, so the relative one was discarded, and Chrome had already stopped honouring `report-uri`. Making it absolute would mean building the URL from `HOST`, which on preview deployments points at production — preview violations would land in production logs, cross-origin, needing CORS. `report-uri` is deprecated but works today, and it is verified end to end by the browser suite. Revisit only with an absolute, per-environment URL.
+
+**Reports from browser extensions are dropped at the endpoint.** Extensions inject scripts into every page and violate the policy constantly, and nothing in this repository can fix that. Left in, they would swamp the only signal the promotion decision is supposed to rest on.
+
+The endpoint is unauthenticated and therefore spammable. It is capped at 16 KB per request, parses defensively and only writes a log line, which is judged proportionate for a personal site — the same posture as [D009](#d009--accept-the-contact-endpoints-automation-only-protection).

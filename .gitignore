@@ -1,7 +1,9 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-node_modules/
+# No trailing slash: worktrees get node_modules as a symlink, which Git sees as
+# a file, and `node_modules/` would not match it.
+node_modules
 .pnp/
 .pnp.js
 .pnp.*

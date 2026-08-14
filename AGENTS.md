@@ -38,6 +38,8 @@ yarn test:e2e
 
 ## Documentation discipline
 
+- **Read the topical doc for the area you are about to change, before changing it.** [`docs/README.md`](docs/README.md) is the index and names what each doc covers. The [release checklist](docs/release-checklist.md#documentation-sweep) already requires updating that doc afterwards, so reading it first is strictly cheaper than discovering late what you contradicted.
+  - **Read the one that matters, not all of them.** `docs/` is roughly 250KB across 15 files — `development.md` and `project-history.md` are 46KB and 38KB on their own. Bulk-loading them crowds out the work.
 - [`docs/roadmap.md`](docs/roadmap.md) holds **open work only**. When work completes, **move** it to [`docs/project-history.md`](docs/project-history.md) — moved, not copied. A finished item left in the roadmap, or ticked in place, is a defect.
 - **Work agreed in conversation but not started still gets written into the roadmap**, in the branch you are already on, even when unrelated to it. "Add it next time" reliably means never.
 - Durable rationale goes in [`docs/decisions.md`](docs/decisions.md); current behaviour goes in the relevant topical doc.
@@ -49,17 +51,20 @@ Branches run concurrently here, and `main` is the only integration point. Merges
 
 - **The conflict surface is three documentation files, not the source.** [`roadmap.md`](docs/roadmap.md), [`project-history.md`](docs/project-history.md) and [`decisions.md`](docs/decisions.md) are touched by nearly every change and each is edited at a fixed anchor, so two branches collide there far more often than in `src/`.
 - **A clean rebase is not evidence.** Rebasing #164 over #165 produced three silent failures and one honest conflict: Git spliced a new section into the middle of D009, left two `## D010` headings, and re-applied an identical `.gitignore` rule a second time — all without a marker. Read the diff of every documentation file after a rebase; do not trust the exit status.
-- **Claim a decision number when the pull request opens**, checked against `main` _and_ every open pull request. Whichever branch merges second renumbers, and must fix the inbound links — the anchor contains the number, so `grep -rn 'D0NN' AGENTS.md docs/` is part of the resolution, not an afterthought.
+- **Claim a decision number when the pull request opens**, checked against `main` _and_ every open pull request. Whichever branch merges second renumbers, and must fix the inbound links — the anchor contains the number, so `grep -rn 'D0NN' AGENTS.md docs/ src/ e2e/ next.config.js` is part of the resolution, not an afterthought. **Source files cite decisions too** — D012 alone is referenced from six of them — so a sweep of `docs/` on its own misses them.
 - **`project-history.md` conflicts resolve mechanically**: keep both entries, newest date first, and for the same date put the later-merged one on top so the file reads in merge order.
 - **In `roadmap.md`, removal wins** when one branch completes an item another merely edited. Touch `Last reviewed:` only when you have actually reviewed the whole roadmap — otherwise it is a one-line conflict on every branch.
 - **Merge the smaller branch first**, then rebase the other onto it.
+- **A change that rewrites one of those three files wholesale needs a window with no other branches open.** Renumbering decisions, reorganising a doc every branch touches, or moving content between docs maximises exactly the conflict the rules above exist to contain. Sequence such changes back to back, merging between, and start parallel work only afterwards.
 - **Re-run [validation](#validating-a-change) after the rebase**, not only before opening the pull request. Nothing enforces checks on `main` yet, so two branches that each pass alone and break together have nothing to catch them.
 
 ## Worktrees
 
 Isolation for work that runs alongside something already in progress. They live in `.claude/worktrees/`, which is both gitignored and prettierignored.
 
-- **`node_modules` is symlinked** from the main checkout through `worktree.symlinkDirectories`, so Husky, `lint-staged` and the `yarn` scripts work inside a worktree. It is shared state: if the branch changes `package.json` or `yarn.lock`, run a real install in the worktree instead of relying on the symlink.
+- **`node_modules` is symlinked** from the main checkout through `worktree.symlinkDirectories`, so Husky, `lint-staged`, the `yarn` scripts, `yarn build` and `yarn test:e2e` all work inside a worktree. Confirmed working 2026-08-14, on the first worktree created after the setting landed.
+- **`yarn dev` does not work in a worktree, and cannot be made to.** Turbopack refuses the symlink outright — `Symlink [project]/node_modules is invalid, it points out of the filesystem root` — and panics before serving anything. `yarn install` does not fix it: Yarn follows the symlink and installs into the main checkout, leaving the worktree's `node_modules` a symlink still. Verify dev-only behaviour from the main checkout instead. The production path is unaffected, because `yarn build` uses webpack.
+- **It is shared state**: if the branch changes `package.json` or `yarn.lock`, an install run from the worktree writes into the main checkout's `node_modules`, which is not what you want. Run it from the main checkout deliberately, or accept that both share the result.
 - **Never `git stash`.** The stash stack is shared across worktrees, so a concurrent session can pop your entry. Set work aside with a WIP commit.
 - **Changes to `.claude/` do not take effect in the session that makes them** — settings are read per directory at session start. Verify hooks and permission rules after the merge, from a session started in the main checkout.
 - **Remove the worktree once its pull request merges.** Nothing expires them. A worktree also holds a lock on its branch, so `git branch -D` fails until it is gone; `git worktree prune` clears a registration whose directory has already been deleted.
@@ -78,5 +83,7 @@ Merging to `main` deploys to production via Vercel. There are no tags or version
 Changes touching **only** `docs/`, `*.md` or `.claude/` skip the build, via `ignoreCommand` in `vercel.json`. The expected result is a `success` status reading _"Canceled by Ignored Build Step"_ plus a _"Skipped Deployment"_ comment on the pull request — **that is not a failure**, and it is easy to misread that green tick as a completed build. It also keeps the footer's "Updated:" timestamp honest, since `NEXT_PUBLIC_LAST_MODIFIED` is computed at build time.
 
 ## About this file
+
+This is the source of truth for working conventions — edit it here. [`CLAUDE.md`](CLAUDE.md) at the repository root exists only to import this file and [`docs/README.md`](docs/README.md), because Claude Code loads `CLAUDE.md` automatically and would otherwise start with neither. Keep it to those two imports and the note explaining why; conventions that drift into it stop being visible to every other tool that reads `AGENTS.md`.
 
 Next.js 16's `next dev` may append a managed block delimited by `BEGIN:nextjs-agent-rules`. Leave it in place and commit it alongside your work; removing it only re-creates an uncommitted change on the next dev run.
