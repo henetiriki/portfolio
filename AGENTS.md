@@ -38,6 +38,8 @@ yarn test:e2e
 
 ## Documentation discipline
 
+- **Read the topical doc for the area you are about to change, before changing it.** [`docs/README.md`](docs/README.md) is the index and names what each doc covers. The [release checklist](docs/release-checklist.md#documentation-sweep) already requires updating that doc afterwards, so reading it first is strictly cheaper than discovering late what you contradicted.
+  - **Read the one that matters, not all of them.** `docs/` is roughly 250KB across 15 files — `development.md` and `project-history.md` are 46KB and 38KB on their own. Bulk-loading them crowds out the work.
 - [`docs/roadmap.md`](docs/roadmap.md) holds **open work only**. When work completes, **move** it to [`docs/project-history.md`](docs/project-history.md) — moved, not copied. A finished item left in the roadmap, or ticked in place, is a defect.
 - **Work agreed in conversation but not started still gets written into the roadmap**, in the branch you are already on, even when unrelated to it. "Add it next time" reliably means never.
 - Durable rationale goes in [`docs/decisions.md`](docs/decisions.md); current behaviour goes in the relevant topical doc.
@@ -81,5 +83,7 @@ Merging to `main` deploys to production via Vercel. There are no tags or version
 Changes touching **only** `docs/`, `*.md` or `.claude/` skip the build, via `ignoreCommand` in `vercel.json`. The expected result is a `success` status reading _"Canceled by Ignored Build Step"_ plus a _"Skipped Deployment"_ comment on the pull request — **that is not a failure**, and it is easy to misread that green tick as a completed build. It also keeps the footer's "Updated:" timestamp honest, since `NEXT_PUBLIC_LAST_MODIFIED` is computed at build time.
 
 ## About this file
+
+This is the source of truth for working conventions — edit it here. [`CLAUDE.md`](CLAUDE.md) at the repository root exists only to import this file and [`docs/README.md`](docs/README.md), because Claude Code loads `CLAUDE.md` automatically and would otherwise start with neither. Keep it to those two imports and the note explaining why; conventions that drift into it stop being visible to every other tool that reads `AGENTS.md`.
 
 Next.js 16's `next dev` may append a managed block delimited by `BEGIN:nextjs-agent-rules`. Leave it in place and commit it alongside your work; removing it only re-creates an uncommitted change on the next dev run.
