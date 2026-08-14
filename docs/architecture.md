@@ -74,7 +74,7 @@ Relative parent imports (`../`) are disallowed by ESLint (`no-restricted-imports
 1. `src/pages/_document.tsx` renders the static HTML shell: favicons, PWA manifest link, Apple splash-screen `<link>` tags for every device size, and a `<script>` tag for `public/scripts/hash-redirect.js` (see [PWA & SEO](pwa-seo.md)).
 2. `src/pages/_app.tsx` (`Portfolio`) wraps every page:
    - Sets only app-wide `<Head>` values: the viewport and generated font custom properties. Route-specific SEO does not fall back to homepage values here.
-   - Loads self-hosted Roboto and Montserrat files through `next/font` and exposes their generated family names to the Mantine theme as root custom properties.
+   - Loads the repository's own Roboto and Montserrat files through `next/font/local` and exposes their generated family names to the Mantine theme as root custom properties (see [Styling & Theming](styling-theming.md#fonts)).
    - Registers `<BotIdClient protect={[{ method: 'POST', path: '/api/contact' }]} />` so BotID instruments the contact form's POST route client-side.
    - Wraps the tree in `MantineProvider` with the custom `theme` (see [Styling & Theming](styling-theming.md)).
    - Wraps in the local `ErrorBoundary` (class component) so a render error anywhere shows a minimal "Oops" message instead of a blank page.

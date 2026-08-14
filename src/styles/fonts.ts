@@ -1,13 +1,17 @@
-import { Montserrat, Roboto } from 'next/font/google';
+import localFont from 'next/font/local';
 
-export const bodyFont = Roboto({
+// Provenance and refresh procedure: docs/styling-theming.md#fonts.
+export const bodyFont = localFont({
+  adjustFontFallback: 'Arial',
+  declarations: [{ prop: 'font-stretch', value: '100%' }],
   display: 'swap',
-  subsets: ['latin'],
-  weight: ['400', '700'],
+  src: './fonts/roboto/roboto-latin.woff2',
+  weight: '100 900',
 });
 
-export const headingFont = Montserrat({
+export const headingFont = localFont({
+  adjustFontFallback: 'Arial',
   display: 'swap',
-  subsets: ['latin'],
-  weight: ['400', '600', '700'],
+  src: './fonts/montserrat/montserrat-latin.woff2',
+  weight: '100 900',
 });
