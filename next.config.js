@@ -22,6 +22,68 @@ const withBundleAnalyzer =
       })
     : withoutBundleAnalyzer;
 
+// Only defined when the remote image host is configured, so a missing variable
+// drops the source rather than emitting `undefined://undefined`.
+const imageHostOrigin =
+  process.env.IMAGE_HOST_NAME && process.env.IMAGE_HOST_PROTOCOL
+    ? `${process.env.IMAGE_HOST_PROTOCOL}://${process.env.IMAGE_HOST_NAME}`
+    : undefined;
+
+// Report-Only for now. Rationale for every non-obvious source, and the
+// conditions for promoting this to an enforcing header, are in
+// docs/decisions.md D012.
+const contentSecurityPolicyDirectives = {
+  'base-uri': ["'self'"],
+  'connect-src': [
+    "'self'",
+    'blob:',
+    'data:',
+    'https://maps.googleapis.com',
+    'https://va.vercel-scripts.com',
+    'https://vitals.vercel-insights.com',
+  ],
+  'default-src': ["'self'"],
+  'font-src': ["'self'", 'https://fonts.gstatic.com'],
+  'form-action': ["'self'"],
+  'frame-ancestors': ["'none'"],
+  // www.google.com is the YouTube embed's own nested frame, observed as a
+  // Report-Only violation on /experience rather than assumed.
+  'frame-src': [
+    'https://www.google.com',
+    'https://www.youtube-nocookie.com',
+    'https://www.youtube.com',
+  ],
+  'img-src': [
+    "'self'",
+    'blob:',
+    'data:',
+    imageHostOrigin,
+    'https://*.ggpht.com',
+    'https://*.googleapis.com',
+    'https://*.gstatic.com',
+  ],
+  'manifest-src': ["'self'"],
+  'object-src': ["'none'"],
+  // `report-to` is deliberately absent — it supersedes `report-uri` in Chrome
+  // but needs an absolute endpoint URL, and adding it stopped reports reaching
+  // us entirely. See docs/decisions.md D012.
+  'report-uri': ['/api/csp-report'],
+  'script-src': [
+    "'self'",
+    "'unsafe-inline'",
+    'https://maps.googleapis.com',
+    'https://va.vercel-scripts.com',
+  ],
+  'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+  'worker-src': ["'self'", 'blob:'],
+};
+
+const contentSecurityPolicy = Object.entries(contentSecurityPolicyDirectives)
+  .map(([directive, sources]) =>
+    [directive, ...sources.filter(Boolean)].join(' ')
+  )
+  .join('; ');
+
 const securityHeaders = [
   {
     key: 'X-DNS-Prefetch-Control',
@@ -31,12 +93,14 @@ const securityHeaders = [
     key: 'Strict-Transport-Security',
     value: 'max-age=63072000; includeSubDomains; preload',
   },
+  {
+    key: 'Content-Security-Policy-Report-Only',
+    value: contentSecurityPolicy,
+  },
   // X-XSS-Protection is deliberately absent. The header is deprecated, no
   // current browser implements it, and its `1; mode=block` value was itself
   // exploitable in legacy browsers — so removing it is safer than sending it.
-  // Content Security Policy is the modern replacement and is tracked as its
-  // own roadmap item, since Maps, BotID, Vercel telemetry and remote images
-  // all need an allowlist built in Report-Only first.
+  // Content Security Policy above is the modern replacement.
   {
     key: 'X-Frame-Options',
     value: 'DENY',

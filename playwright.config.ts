@@ -65,6 +65,6 @@ export default defineConfig({
   // loop. Saturating that produced scattered, irreproducible failures across
   // unrelated specs; the same run passes serially. A suite that needs a re-run
   // to be believed is worse than no suite, so determinism wins over the few
-  // seconds a higher count would save on a 60-spec run.
+  // seconds a higher count would save on a 76-spec run.
   workers: isCI ? 1 : 4,
 });
