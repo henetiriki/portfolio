@@ -41,4 +41,6 @@ Last reviewed: 2026-08-13.
 
 ## Performance, SEO & platform polish
 
+- [ ] **Close the remaining accessibility gap on `/experience`.** After the YouTube embed was deferred, mobile PageSpeed returned Performance 93, Best Practices 100, SEO 100 — but **Accessibility 98**. The project's own axe pass is clean across `wcag2a`/`wcag2aa`/`wcag21a`/`wcag21aa` with third-party frames excluded, so whatever Lighthouse is reporting is either outside those tags or something axe does not cover. Read the report's accessibility section before changing anything rather than guessing at it. If it turns out to be a real gap in our own markup, it is also a candidate for the browser suite, since that suite already runs an axe pass per page template and would be the natural place to stop it recurring.
+
 - [ ] **Introduce a Content Security Policy.** Ship it in Report-Only first and promote it only once the reports are clean, because Maps, BotID, Vercel telemetry and remote images all need an allowlist. The deprecated `X-XSS-Protection` header has already been removed, so this is the remaining half of the security-header work.
