@@ -14,7 +14,7 @@ Working conventions for AI coding agents in this repository.
 
 The permission allowlist in `.claude/settings.json` matches the _entire_ command string, so a chained command can never match a narrow rule.
 
-- **Do not chain independent commands** with `&&` or `;`. Issue them as separate calls — batch independent ones in the same response so they run in parallel at no extra round trip.
+- **Do not chain independent commands** with `&&` or `;`. Issue them as separate calls — batch independent ones in the same response so they run in parallel at no extra round trip. A `PreToolUse` hook in `.claude/settings.json` rejects any `Bash` command whose text contains `&&` or `;`, so this is enforced rather than trusted — see [D011](docs/decisions.md#d011--enforce-shell-hygiene-with-a-hook-rather-than-a-convention). The test is textual, so a literal `;` inside an argument (`find … -exec … \;`) is refused too; run those by hand.
 - **Prefer `Edit`/`Write` over shell heredocs** for file changes. Piping a `python3` or `node -e` script to rewrite a file is arbitrary code execution, can never be safely allowlisted, and is harder to review.
 - Genuine pipelines (`grep … | head`) are one logical command; leave them chained.
 - Put section headers in your reply, not in `echo` statements.
