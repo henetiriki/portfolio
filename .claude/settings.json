@@ -56,8 +56,5 @@
       "mcp__Claude_Browser__read_page",
       "mcp__Claude_Browser__tabs_context"
     ]
-  },
-  "worktree": {
-    "symlinkDirectories": ["node_modules"]
   }
 }

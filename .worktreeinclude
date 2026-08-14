@@ -1,0 +1,5 @@
+# Gitignored files copied into every worktree Claude Code creates. Gitignore
+# syntax; only files that match AND are gitignored are copied, so nothing
+# tracked is duplicated and nothing secret is committed by listing it here.
+# Without this, next.config.js fails fatally in a worktree — see AGENTS.md.
+.env*.local

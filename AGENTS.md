@@ -63,9 +63,9 @@ Branches run concurrently here, and `main` is the only integration point. Merges
 
 Isolation for work that runs alongside something already in progress. They live in `.claude/worktrees/`, which is both gitignored and prettierignored.
 
-- **`node_modules` is symlinked** from the main checkout through `worktree.symlinkDirectories`, so Husky, `lint-staged`, the `yarn` scripts, `yarn build` and `yarn test:e2e` all work inside a worktree. Confirmed working 2026-08-14, on the first worktree created after the setting landed.
-- **`yarn dev` does not work in a worktree, and cannot be made to.** Turbopack refuses the symlink outright — `Symlink [project]/node_modules is invalid, it points out of the filesystem root` — and panics before serving anything. `yarn install` does not fix it: Yarn follows the symlink and installs into the main checkout, leaving the worktree's `node_modules` a symlink still. Verify dev-only behaviour from the main checkout instead. The production path is unaffected, because `yarn build` uses webpack.
-- **It is shared state**: if the branch changes `package.json` or `yarn.lock`, an install run from the worktree writes into the main checkout's `node_modules`, which is not what you want. Run it from the main checkout deliberately, or accept that both share the result.
+- **Run `yarn install` first.** Each worktree owns its dependencies — nothing is shared from the main checkout — so Husky, `lint-staged`, the `yarn` scripts and both builds have nothing to run against until it does. It costs about 12 seconds and roughly 950 MB per worktree, and `postinstall` generates `src/styles/mantine-custom-properties.css`, so `yarn css-vars:check` passes without hand-generating it. See [D-260814e](docs/decisions.md#d-260814e--let-each-worktree-install-its-own-dependencies).
+- **`yarn dev` works, and is the reason for the install.** Nothing needs verifying from the main checkout any more.
+- **Gitignored files do not come with a worktree**, and `.env.local` holds `IMAGE_HOST_NAME`, so without it `next dev` and `yarn build` both abort on `Invalid input at "images.remotePatterns[0]"` before serving. [`.worktreeinclude`](.worktreeinclude) copies `.env*.local` into every worktree Claude Code creates; a worktree made by hand with `git worktree add` is not covered, so copy the file in yourself.
 - **Never `git stash`.** The stash stack is shared across worktrees, so a concurrent session can pop your entry. Set work aside with a WIP commit.
 - **Changes to `.claude/` do not take effect in the session that makes them** — settings are read per directory at session start. Verify hooks and permission rules after the merge, from a session started in the main checkout.
 - **Remove the worktree once its pull request merges.** Nothing expires them. A worktree also holds a lock on its branch, so `git branch -D` fails until it is gone; `git worktree prune` clears a registration whose directory has already been deleted.
@@ -81,10 +81,20 @@ Isolation for work that runs alongside something already in progress. They live 
 
 Merging to `main` deploys to production via Vercel. There are no tags or version numbers.
 
-Changes touching **only** `docs/`, `*.md` or `.claude/` skip the build, via `ignoreCommand` in `vercel.json`. The expected result is a `success` status reading _"Canceled by Ignored Build Step"_ plus a _"Skipped Deployment"_ comment on the pull request — **that is not a failure**, and it is easy to misread that green tick as a completed build. It also keeps the footer's "Updated:" timestamp honest, since `NEXT_PUBLIC_LAST_MODIFIED` is computed at build time.
+Changes touching **only** `docs/`, `*.md`, `.claude/` or `.worktreeinclude` skip the build, via `ignoreCommand` in `vercel.json`. The test is the deployed site: a path is excluded because nothing it changes can reach a visitor, so agent and worktree configuration qualifies and `.gitignore` does not. The expected result is a `success` status reading _"Canceled by Ignored Build Step"_ plus a _"Skipped Deployment"_ comment on the pull request — **that is not a failure**, and it is easy to misread that green tick as a completed build. It also keeps the footer's "Updated:" timestamp honest, since `NEXT_PUBLIC_LAST_MODIFIED` is computed at build time.
 
 ## About this file
 
 This is the source of truth for working conventions — edit it here. [`CLAUDE.md`](CLAUDE.md) at the repository root exists only to import this file and [`docs/README.md`](docs/README.md), because Claude Code loads `CLAUDE.md` automatically and would otherwise start with neither. Keep it to those two imports and the note explaining why; conventions that drift into it stop being visible to every other tool that reads `AGENTS.md`.
 
-Next.js 16's `next dev` may append a managed block delimited by `BEGIN:nextjs-agent-rules`. Leave it in place and commit it alongside your work; removing it only re-creates an uncommitted change on the next dev run.
+Next.js 16's `next dev` may append a managed block delimited by `BEGIN:nextjs-agent-rules`. Leave it in place and commit it alongside your work; removing it only re-creates an uncommitted change on the next dev run. It is committed below, from the first `next dev` run inside a worktree.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
