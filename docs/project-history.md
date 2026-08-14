@@ -2,6 +2,15 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-14 — Cover PWA installability in the browser suite
+
+- Added `e2e/pwa-installability.spec.ts`, taking the suite from 44 to 54 specs. It asserts the manifest is linked exactly once, parses, declares `display: standalone` with its identity and colour fields set, and offers `purpose: any` icons at both 192px and 512px — Chrome's actual condition for offering to install. It then checks that every manifest icon, every shortcut route, and all 35 icon and splash-screen `<link>` tags in `_document.tsx` are really served.
+- **The asset check is the point of the whole spec.** A renamed or moved icon breaks installability silently today: the build succeeds, no test fails, and the first symptom is an install prompt that never appears. Status _and_ content type are both checked, because a rewrite can answer a missing file with the application shell at 200.
+- **Verified by breaking it, not by watching it pass.** Deleting `apple-splash-640-1136.png` and `manifest-icon-512.maskable.png` failed exactly the two asset specs, each naming the missing path; both were restored and the suite returned to green. The failure report lists every broken asset rather than throwing on the first, because the usual cause — a renamed or moved directory — breaks many at once.
+- **The link count is asserted exactly (35)** so that deleting the tags wholesale fails rather than making "every asset is served" pass vacuously. Confirmed live by setting the expected count to 34 and watching it fail.
+- Left in both the desktop and mobile projects rather than routed to one by filename. Measured first: the whole file runs in 3.9s across both, so the duplication costs nothing worth a new convention, and the filename-routing mechanism keeps its documented meaning of _viewport-specific_.
+- The service-worker half stays on the [Roadmap](roadmap.md). It needs its own Playwright project with `serviceWorkers` unblocked, and the CI build assertion already covers the case where no service worker is produced at all.
+
 ## 2026-08-14 — Pin the Yarn CLI and correct the Playwright cache step
 
 - `packageManager` now carries Corepack's integrity hash (`yarn@4.18.0+sha512.…`), generated with `corepack use yarn@4.18.0`. Corepack previously downloaded the Yarn CLI from `repo.yarnpkg.com` on every run and executed it with nothing to verify it against. This is the missing half of [D008](decisions.md#d008--keep-the-package-managers-supply-chain-defaults): that decision governs what Yarn may install, and nothing governed how Yarn itself arrived.
