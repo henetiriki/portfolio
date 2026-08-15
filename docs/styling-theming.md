@@ -118,6 +118,12 @@ Plugin order matters here beyond alphabetical: `postcss-preset-mantine` needs to
 - A raw pixel breakpoint passed to v6's `theme.fn.largerThan`/`smallerThan` (e.g. `fn.largerThan(1080)`, used for a non-token breakpoint in `portfolio.tsx`) gets converted through `em()` at a 16px base, exactly like a named token. Its v7 equivalent is `@mixin larger-than 1080px`, which the Mantine PostCSS preset compiles to `@media (min-width: 67.5em)` rather than leaving it as a literal pixel query. This preserves the breakpoint's response to the user's browser default font size.
 - **Never let an autoformatter/refactor tool rewrite `$mantine-breakpoint-*` to `var(--mantine-breakpoint-*)` in a responsive mixin argument** (`Navigation.module.css`, `NavigationLink.module.css`, `portfolio.module.css`). The two look interchangeable and are not — see the `postcss-simple-vars` note above for why the `var()` form silently never matches. It happened twice during the v7 migration, and neither linting, type-checking nor tests caught it; only a real-browser `matchMedia()` check did.
 
+## The document canvas background
+
+`global.css` sets `html { background-color: var(--mantine-color-black-russian-4) }` — `#080A20`, the same value as the manifest's `theme_color`/`background_color` and the `theme-color` meta tag. Without it the canvas falls back to the user-agent white, which is invisible on a normal page (the nav, hero and footer paint their own backgrounds) but shows wherever component content does not reach: overscroll bounce in a browser tab, and the strip behind the gesture bar when installed as a PWA on Android.
+
+**It belongs on `html` and would break the hero on `body`.** The root element's background propagates to the canvas and paints beneath negative-z-index content; a block element's own background paints above it, which is exactly why `body` stays transparent for `FixedBackground` (below). See [D-260815d](decisions.md#d-260815d--paint-the-document-canvas-on-html-not-on-body).
+
 ## Post-v7 visual-parity fixes
 
 These surfaced one-by-one during manual page-by-page browser QA after the v7 migration shipped — each is a real v6→v7 behavioral difference, confirmed by comparing computed styles against the live production site, not a guess. Listed here (rather than as CSS comments) per this app's convention of keeping `.css`/`.module.css` files comment-free and putting the "why" in docs instead.

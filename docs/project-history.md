@@ -2,6 +2,16 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-15 — Repaint the PWA canvas, icons and splash screens
+
+- `html` now carries an opaque `--mantine-color-black-russian-4` background, so the document canvas matches the manifest instead of falling back to the user-agent white. Behaviour in [Styling & Theming](styling-theming.md#the-document-canvas-background), rationale in [D-260815d](decisions.md#d-260815d--paint-the-document-canvas-on-html-not-on-body).
+- Every icon and splash asset is regenerated from `public/images/ouwl.svg`, whose fill was inverted black to white so it matches the header logo. Rationale in [D-260815e](decisions.md#d-260815e--generate-the-pwa-icon-and-splash-set-from-one-vector-master), current shape in [PWA & SEO](pwa-seo.md#progressive-web-app).
+- **The white disc on Android was the manifest, not the splash files.** `purpose: any` and `purpose: maskable` shared one pair of files, so `any` resolved to maskable artwork — a black owl on an opaque white square — which Chrome then drew over `background_color`. They are now separate files with different artwork, and a `monochrome` layer was added for Android's themed icons.
+- **The splash matrix was stale in both directions.** It carried iPhone 5 and 6 Plus sizes while covering nothing newer than 2022, and because `apple-touch-startup-image` matches an exact device triple, every iPhone since the 14 Pro Max was getting no splash at all. Six device classes added, 30 files to 42, point sizes verified per device.
+- **Two things were only found by reading the pixels rather than the rendering.** The old `apple-splash-*` files were on a _transparent_ background, not white — the white came from the viewer compositing them. And `apple-icon-180.png` was a black owl on transparency, which iOS composites onto an opaque ground, so it had been near-invisible on the iOS home screen for years without anyone on Android seeing it.
+- **Owl scale is now consistent across orientations for the first time**, at 35% of the short edge. The old set used 0.70 portrait and 0.349 landscape, so the same device got a logo at half size depending on how it was held.
+- **The 42 `<link>` tags moved out of `_document.tsx` into `AppleSplashLinks`**, generated from one table of device points and pixel ratios. React 19 hoists them into `document.head` on its own, which the first version of the test did not know — it queried the render container, found nothing, and three of its four assertions passed vacuously over an empty list.
+
 ## 2026-08-15 — Stop rediscovering that the shell-hygiene hook refuses prose
 
 - [`AGENTS.md`](../AGENTS.md) now requires commit messages and pull request bodies to be written to a file and passed with `git commit -F <file>` or `gh pr create --body-file <file>`, never an inline heredoc. [D-260814b](decisions.md#d-260814b--enforce-shell-hygiene-with-a-hook-rather-than-a-convention) carries the correction that prompted it.
