@@ -10,6 +10,29 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260815b — Email Content Security Policy violations for the observation window
+
+- **Status:** Accepted, and deliberately temporary — delete with the Report-Only window
+- **Decided:** 2026-08-15
+
+`/api/csp-report` logs one line per violation to the Vercel runtime logs, which are a rolling buffer measured in hours to days. The promotion decision in [D-260814c](#d-260814c--ship-the-content-security-policy-report-only-and-accept-unsafe-inline) needs weeks of evidence, so the reports only exist if someone happens to look while they are still there. Emailing them, reusing the Nodemailer transport the contact form already has, makes them durable without adding a service, a dependency or a dashboard.
+
+**It is written to be deleted, and the shape follows from that.** One directory, `src/server/csp-mail/`, one import and one call in the endpoint. Removal is deleting the directory, the import and the call; nothing else knows it exists. The contact code it borrows is untouched.
+
+**Off unless deliberately switched on.** `CSP_VIOLATION_EMAILS` must be exactly `true`; anything else, including absent, is off. This is not a default-on feature with an escape hatch — the window opens on purpose, and previews and both test environments stay off for free. It is read at module load, so flipping it on Vercel needs a redeploy.
+
+**The endpoint cannot be authenticated, and everything else follows from that.** Browsers post CSP reports without JavaScript, so BotID cannot sign them and no token can be required. What the endpoint accepts is therefore whatever anyone chooses to post at it, and this change turns that into outbound mail.
+
+- **Deduplication is a noise control and must not be described as a defence.** The dedup set and the cap of 20 emails per instance are module-scope state, which survives only on a warm instance; under a flood Vercel scales out and resets both precisely when they would matter. They exist so one real page load cannot produce forty emails.
+- **The defence that would work is edge rate limiting, and it is unavailable** on a Hobby plan. Accepted knowingly: cap, then log-only, with the environment toggle as the real kill switch.
+- **Report fields reach a mail header, so they are sanitised rather than trusted.** Every field is collapsed to a single line and truncated before it is used, because a report carrying `\r\n` in its directive is otherwise a header-injection route. The mail is plain text, so no escaping question arises in the body either.
+
+**The send is awaited before the `204`, which costs the endpoint about four seconds per report.** Measured 2026-08-15 against real Gmail SMTP: 4.0s, effectively all of it the TLS handshake and `AUTH` for a transport built per call. Not awaiting would be faster and wrong — Vercel can freeze the instance once the response is finished, so a detached send may never complete. Browsers fire reports and ignore the response, so nothing user-facing degrades; it is still a reason to keep the window short rather than leaving the toggle on indefinitely.
+
+**Residual risk, accepted with the numbers in front of us.** The Workspace sender allows roughly 2,000 messages a day and is shared with the contact form, which has no separate identity available. A flood during a monitoring window could burn the day's quota and take contact delivery down until the toggle is flipped. Judged acceptable against a barely-used form, a window that only opens deliberately, and no other way to make the reports durable — the same proportionality as [D-260811b](#d-260811b--accept-the-contact-endpoints-automation-only-protection).
+
+**Delivery to a `+csp` alias, plus a fixed `[CSP]` subject prefix**, so the mail filter can key on the recipient rather than pattern-matching a subject. Both are derived in code from `GMAIL_SENDER_EMAIL` rather than configured, which keeps the switch to one variable.
+
 ## D-260815a — Give the service worker its own Playwright project rather than unblocking it everywhere
 
 - **Status:** Accepted
@@ -94,12 +117,21 @@ That instruction is advisory, and compliance proved unreliable across sessions �
 
 The check is a single `jq` program held inline in the settings file. It prints nothing when the command is clean, which the harness reads as "no opinion", and a `permissionDecision: "deny"` with a reason otherwise, which is fed back to the model so it reissues the calls separately. Inline rather than a script under `scripts/`, so there is no path resolution to get wrong in a worktree and nothing to keep in step with the settings file.
 
-Two limits are deliberate:
+One limit is deliberate:
 
-- **It is a textual test, not a shell parse.** `&&` or `;` anywhere in the string is refused, including inside quotes — `find … -exec … \;` and `grep 'a;b'` are both casualties. Parsing properly would mean a shell grammar inside a hook to save a handful of commands a year, which are in any case easy to run by hand or restructure as a pipeline. Genuine pipelines are untouched: `|` is not part of the pattern.
-- **`||` is not blocked.** It carries the same problem, but it has not appeared in practice and was not part of the agreed rule. Widen the pattern if that changes.
+- **It is a textual test, not a shell parse.** A chain operator anywhere in the string is refused, including inside quotes — `find … -exec … \;` and `grep 'a;b'` are both casualties. Parsing properly would mean a shell grammar inside a hook to save a handful of commands a year, which are in any case easy to run by hand or restructure as a pipeline. Genuine pipelines are untouched: a single `|` is not part of the pattern.
 
 The hook fails open. If `jq` is ever missing the command exits non-zero, which the harness treats as a hook error rather than a denial, and the command proceeds — the same posture as the convention it replaces, so a broken hook cannot block work.
+
+**Adopting Auto mode on 2026-08-15 retired one of the two reasons above and promoted the other.** Two justifications were recorded: chains never match a narrow rule and so become permission prompts, and a chain opening with an allowlisted command carries whatever follows it past the same review. Auto mode does not prompt for allowlisted commands, so the first is now void — and that is the ergonomic half, not the safety half.
+
+The second is what remains, and it is stronger without a human in the loop. The allow entries are wildcard-suffixed, so `Bash(git add *)` matches `git add . && <anything at all>` in its entirety. A prompt used to put that string in front of someone; nothing does now. Auto mode also introduces a soft-deny list, whose entries anchor at the start of the command — `Bash(vercel --prod:*)` does not fire on `echo deploying; vercel --prod`, so chaining is a deny-list evasion route as well as an allowlist one.
+
+The hook therefore stays, and it is no longer an ergonomics measure that happens to help review. It is the control that keeps the allow and deny lists meaning what they say.
+
+**`||` is blocked as of the same date, and why it was not blocked sooner is the instructive part.** It was left out originally because it had not appeared in practice, with a note to widen the pattern if that changed. That trigger needed an observer, and the observer was the permission prompt: a chain matching no narrow rule put its full text in front of someone. Auto mode removes that, so "if it appears" became a condition nobody is positioned to notice — while `||` launders exactly as `&&` does, matching `Bash(git add *)` in `git add . || <anything>` and slipping past a soft-deny rule that anchors at the start of the command. Waiting on a signal that no longer arrives is not a wait-and-see posture, it is the advisory convention this decision exists to replace. The pattern is now `&&|;|[|][|]`, using a character class rather than escaped pipes so there are no backslashes to get wrong across the JSON and jq layers.
+
+**Hook changes take effect immediately, unlike the permission rules.** Verified in the session that made this one: the edited hook refused the very next command carrying `||`, with the new wording. [`AGENTS.md`](../AGENTS.md) warns that `.claude/` changes do not apply until a session restart, which holds for permission rules but not for hooks — worth knowing, because it means a broken hook takes effect immediately too.
 
 ## D-260814a — Vendor what the build cannot proceed without
 

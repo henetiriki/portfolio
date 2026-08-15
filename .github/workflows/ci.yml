@@ -21,6 +21,7 @@ jobs:
     # Next production builds do not load .env.test. These non-secret dummy
     # values keep next.config.js valid without exposing deployment credentials.
     env:
+      CSP_VIOLATION_EMAILS: 'false'
       CUSTOM_APP_DOMAIN: 'example.test'
       GMAIL_APP_EMAIL: 'owner@example.test'
       GMAIL_APP_PASSWORD: 'test-app-password'

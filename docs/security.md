@@ -38,7 +38,19 @@ The policy ships as `Content-Security-Policy-Report-Only`, built from the `conte
 - The body is capped at **16 KB**, streamed and counted as it arrives; an oversized report is answered `413` rather than buffered.
 - `src/server/csp/` parses the `report-uri` shape defensively (every field falls back to `'unknown'`), drops reports whose blocked URI or source file uses an extension scheme (`chrome-extension:`, `moz-extension:`, `safari-extension:`, `safari-web-extension:`), and logs one `console.warn` line per surviving violation. Everything accepted answers `204`.
 - **The endpoint is unauthenticated and therefore spammable.** Browsers post reports without JavaScript, so no token can be required and BotID cannot sign them. The size cap, the defensive parse and the log-only handling are the whole mitigation, judged proportionate for a personal site.
-- **Violations land in the Vercel runtime logs**, which are a rolling buffer measured in hours to days. Nothing notifies anyone, and nothing retains them; emailing them for the duration of the observation window is open work on the [roadmap](roadmap.md#performance-seo--platform-polish).
+- **Violations land in the Vercel runtime logs**, which are a rolling buffer measured in hours to days. Nothing notifies anyone and nothing retains them, which is what the emailing below exists to work around.
+
+### Emailing violations (temporary)
+
+A diagnostic for the Report-Only observation window, not a feature: `src/server/csp-mail/` reuses the contact form's Nodemailer transport to email surviving violations so they outlive the log buffer. It is reached by a single call in `/api/csp-report` and is meant to be deleted with the window — see [D-260815b](decisions.md#d-260815b--email-content-security-policy-violations-for-the-observation-window).
+
+- **Off unless `CSP_VIOLATION_EMAILS` is exactly `true`.** Anything else, including absent, is off, so preview deployments and both test environments are off by default. It is read at module load, so switching it on Vercel needs a redeploy. See [Environment Variables](environment-variables.md).
+- **Recipient and subject are fixed by code**, not configured: the address is `GMAIL_SENDER_EMAIL` with a `+csp` tag inserted before the `@`, and every subject starts `[CSP]`, so a mail filter can key on the recipient rather than pattern-matching a subject. The deployed value is the display-name form (`Name <addr@host>`), so the tag lands inside the angle brackets and the result stays a valid address.
+- **Mail is plain text, and every field is single-lined and truncated before use.** Directives, blocked URIs and document URIs all arrive in an unauthenticated request body, and one of them reaches a mail header — a report carrying `\r\n` would otherwise be an injection route. No HTML is rendered, so there is no escaping question at all.
+- **One email per report, because a `report-uri` post carries exactly one violation.** The parser returns a list regardless, so the mail builder takes one, but nothing batches: the subject names the violation the report describes. A `report-to` batch would degrade gracefully rather than being handled — the subject would name the first and the body would carry all of them.
+- **Deduplication and the per-instance cap of 20 emails are noise control, not a defence.** Both are module-scope state, which survives only on a warm instance; under a flood Vercel scales out and resets them precisely when they would be needed. They exist so one real page load cannot produce forty emails. Past the cap the endpoint logs and stops mailing, saying so once.
+- **A delivery failure is logged with its cause and swallowed.** The endpoint still answers `204`, since a browser has nothing useful to do with a mail error. The cause is logged rather than dropped because the silent version is indistinguishable from a policy that is simply not being violated — which is the one conclusion this whole mechanism exists to support.
+- **The Gmail quota is shared with the contact form**, which is the accepted risk recorded in the decision.
 
 ### Failure modes to watch
 
