@@ -13,10 +13,10 @@ import type { APIRequestContext } from '@playwright/test';
  */
 
 // Every icon and splash-screen link in `_document.tsx`: three PNG favicons,
-// `favicon.ico`, one apple-touch-icon and 30 apple-touch-startup-images.
+// `favicon.ico`, one apple-touch-icon and 42 apple-touch-startup-images.
 // Asserted exactly, so that removing the tags wholesale fails here rather than
 // making the "every asset is served" check pass vacuously.
-const DOCUMENT_ASSET_LINKS = 35;
+const DOCUMENT_ASSET_LINKS = 47;
 
 const ICON_LINK_SELECTOR =
   'link[rel~="icon"], link[rel="apple-touch-icon"], link[rel="apple-touch-startup-image"]';

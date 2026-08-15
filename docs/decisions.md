@@ -10,6 +10,25 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260815e — Generate the PWA icon and splash set from one vector master
+
+- **Status:** Accepted
+- **Decided:** 2026-08-15
+
+Every icon and splash asset dated from October 2022 and had drifted from the app in three separate ways. All are now produced by one script from `public/images/ouwl.svg`, whose single `fill` was inverted from black to white so the artwork matches the header logo.
+
+**The `purpose: any` collision is what produced the white disc on Android.** `manifest.json` listed two files under four entries, so `any` resolved to the `.maskable.png` pair — a black owl on an opaque white square, correct for `maskable` and wrong for `any`. Chrome builds its splash from the `any` icon drawn over `background_color`, hence a white circle on `#080a20`. The two purposes now have **separate files with deliberately different artwork**: `any` fills the frame, `maskable` keeps its artwork inside the 80%-diameter safe circle. Reusing one file for both cannot be right for both, because the padding that makes an icon safe to mask is exactly what makes it look shrunken when it is not.
+
+**The `any` icons are opaque navy rather than transparent.** That is what makes Android's splash seamless — the icon's ground matches `background_color`, so the owl appears on an unbroken field instead of on a disc. Transparency would have re-introduced the same class of bug against a light launcher.
+
+**`apple-icon-180.png` was a black owl on transparency, which iOS composites onto an opaque ground.** It is now navy-backed like the rest. This was never visible to anyone testing on Android.
+
+**A `monochrome` layer is new.** Android's themed icons tint it to the user's wallpaper, so it must be a flat silhouette carried by the alpha channel — a greyscale conversion paints an opaque square instead, which is what the first attempt produced.
+
+**The splash matrix was stale in both directions, which is the finding worth keeping.** It carried iPhone 5 and 6 Plus sizes while covering nothing newer than 2022 — no iPhone 16 Pro, Air or 17 family, no M4 iPad Pro, no iPad mini. Because `apple-touch-startup-image` matches an exact `device-width`/`device-height`/`-webkit-device-pixel-ratio` triple, a missing class means **no splash at all**, so recent hardware got nothing. Six classes were added (12 files, 42 total) with point sizes verified per device rather than extrapolated. iOS still has no manifest-driven splash — `background_color` remains an Android feature — so this matrix is unavoidable and will go stale again; the answer is that regenerating it is now a script run rather than a project.
+
+**The owl is 35% of the short edge, applied to portrait and landscape alike.** The old set used 0.70 for portrait and 0.349 for landscape, so the same device got a logo at half scale depending on how it was held. There was no consistent prior behaviour to preserve.
+
 ## D-260815d — Paint the document canvas on `html`, not on `body`
 
 - **Status:** Accepted
