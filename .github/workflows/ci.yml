@@ -39,6 +39,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          # Two commits, because the step below diffs HEAD against HEAD^.
+          fetch-depth: 2
+
+      # A documentation-only change takes a cheap path: install and
+      # prettier:check, and nothing else. The exclusions are CI's, not Vercel's,
+      # and the two lists deliberately differ — see the release checklist.
+      - name: Classify the change
+        id: change
+        run: |
+          if git diff --quiet HEAD^ HEAD -- . ':(exclude)docs' ':(exclude)*.md' ':(exclude).claude' ':(exclude).worktreeinclude'; then
+            echo 'docs_only=true' >> "$GITHUB_OUTPUT"
+            echo 'Documentation-only change: `prettier:check` ran, everything else was skipped.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'docs_only=false' >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Set up Node
         uses: actions/setup-node@v7
@@ -51,6 +67,7 @@ jobs:
         run: corepack enable
 
       - name: Cache Next.js build cache
+        if: steps.change.outputs.docs_only != 'true'
         uses: actions/cache@v6
         with:
           path: ${{ github.workspace }}/.next/cache
@@ -62,24 +79,32 @@ jobs:
         run: yarn install --immutable
 
       - name: Check generated CSS variables
+        if: steps.change.outputs.docs_only != 'true'
         run: yarn css-vars:check
 
       - name: Lint
+        if: steps.change.outputs.docs_only != 'true'
         run: yarn eslint:check
 
       - name: Type-check application
+        if: steps.change.outputs.docs_only != 'true'
         run: yarn type-check
 
       - name: Type-check service worker
+        if: steps.change.outputs.docs_only != 'true'
         run: yarn tsc --pretty --noEmit --project service-worker/tsconfig.json
 
+      # Never gated: prettier covers the whole tree, so on a documentation-only
+      # change it is the one check that applies to what changed.
       - name: Check formatting
         run: yarn prettier:check
 
       - name: Test with coverage
+        if: steps.change.outputs.docs_only != 'true'
         run: yarn test:coverage
 
       - name: Upload coverage to Codecov
+        if: steps.change.outputs.docs_only != 'true'
         uses: codecov/codecov-action@v7
         with:
           disable_search: true
@@ -91,9 +116,11 @@ jobs:
       # service worker is generated whenever NODE_ENV is production, with no
       # flag to set. See D-260807a.
       - name: Build
+        if: steps.change.outputs.docs_only != 'true'
         run: yarn build
 
       - name: Verify service worker output
+        if: steps.change.outputs.docs_only != 'true'
         run: test -s public/sw.js
 
       # Keyed on the installed Playwright version, because that is what the
@@ -103,26 +130,30 @@ jobs:
       # here rather than by a postinstall hook.
       - name: Resolve Playwright version
         id: playwright-version
+        if: steps.change.outputs.docs_only != 'true'
         run: |
           version="$(node -p "require('@playwright/test/package.json').version")"
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Cache Playwright browser
+        if: steps.change.outputs.docs_only != 'true'
         uses: actions/cache@v6
         with:
           key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
           path: ~/.cache/ms-playwright
 
-      # Always run: --with-deps also installs system font and library packages,
-      # which live outside the cached browser directory.
+      # Runs on a cache hit too: --with-deps also installs system font and
+      # library packages, which live outside the cached browser directory.
       - name: Install Playwright browser
+        if: steps.change.outputs.docs_only != 'true'
         run: yarn test:e2e:install
 
       - name: Browser regression suite
+        if: steps.change.outputs.docs_only != 'true'
         run: yarn test:e2e
 
       - name: Upload Playwright report on failure
-        if: failure()
+        if: failure() && steps.change.outputs.docs_only != 'true'
         uses: actions/upload-artifact@v5
         with:
           name: playwright-report

@@ -10,6 +10,23 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260815c — Give documentation-only changes a cheap CI path rather than no CI run
+
+- **Status:** Accepted
+- **Decided:** 2026-08-15
+
+This project is deliberately documentation-heavy — the [release checklist](release-checklist.md#documentation-sweep) makes a docs sweep part of every change — so a roadmap edit was paying for a production build, a ~270 MB Playwright download and the whole browser suite. Replayed over the thirty merges to `main` up to [#175](https://github.com/henetiriki/portfolio/pull/175), **ten of them touch nothing outside `docs/`, `*.md`, `.claude/` and `.worktreeinclude`.** A third of the CI bill was buying nothing.
+
+**A cheap path, not an absent one.** `prettier:check` runs `prettier .` across the tree, so Markdown and JSON _are_ checked, and on a documentation-only change it is the only check that applies to what changed — a blanket skip would remove the one thing still worth running. Everything else is gated: `eslint` and both type-checks cover no Markdown, `css-vars:check` reads `colors.ts`, and Jest cannot be affected by prose.
+
+**`paths-ignore` was rejected before it was tried.** A workflow filtered out that way never reports, and a required check that never reports leaves a pull request pending forever — so it would silently break the branch protection the [roadmap](roadmap.md#testing--automation) plans. The filter is a per-step `if:` inside the job, so `CI / Validate & build` still runs and still reports success. That is the whole reason for the shape.
+
+**The exclusion list is CI's, not Vercel's, and copying would have been the obvious mistake.** Vercel asks whether a change can reach a visitor; CI asks whether a change can affect lint, types, tests or the build. `e2e/` and `playwright.config.ts` are excluded from the deploy ([D-260815a](#d-260815a--give-the-service-worker-its-own-playwright-project-rather-than-unblocking-it-everywhere)) and are precisely the paths whose change _must_ run the browser suite. Verified against real commits rather than reasoned about: replaying the classification, [#173](https://github.com/henetiriki/portfolio/pull/173) takes the full path on `e2e/` alone while Vercel skipped it, and [#166](https://github.com/henetiriki/portfolio/pull/166) takes the full path on `.gitignore` alone — which is in neither list, on both sides, because it decides what the build has to work with.
+
+**One `git diff`, matching `vercel.json`'s shape, and it fails open.** `HEAD^` is the base tip on a pull request — the checked-out ref is the merge commit — and the previous tip on a push to `main`, so a single command covers both events; the checkout carries `fetch-depth: 2` for that parent. Any failure to resolve it exits non-zero and the change is treated as not documentation-only, so the failure mode is a needless full run rather than a missed check. The same direction `vercel.json` chose.
+
+**One consequence is owed to whoever enables branch protection.** The cheap path skips the Jest run, so no report is uploaded and `codecov/patch` is not expected to post a status at all on a documentation-only pull request. Requiring that check on `main` therefore needs verifying against a real documentation-only pull request first, or it reintroduces exactly the permanently-pending failure that `paths-ignore` was rejected for. Recorded on the [roadmap](roadmap.md#testing--automation) item that plans the requirement; nothing is required today, so nothing is broken today.
+
 ## D-260815b — Email Content Security Policy violations for the observation window
 
 - **Status:** Accepted, and deliberately temporary — delete with the Report-Only window

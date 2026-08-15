@@ -84,7 +84,7 @@ Merging to `main` deploys to production via Vercel. There are no tags or version
 Changes a visitor cannot see skip the build, via `ignoreCommand` in `vercel.json` — the excluded paths and the reasoning are on the [release checklist](docs/release-checklist.md#merge--deploy). Two consequences matter while working:
 
 - **A skip is a `success` status reading _"Canceled by Ignored Build Step"_, not a failure.** It is easy to misread that green tick as a completed build.
-- **An exclusion there is not an exclusion in CI.** The browser suite is exactly what must still run when `e2e/` changes.
+- **CI has its own, shorter list, and the two are not interchangeable.** A change touching only `docs/`, `*.md`, `.claude/` or `.worktreeinclude` gets a [cheap CI path](docs/release-checklist.md#pull-request) — install and `prettier:check`, nothing else. `e2e/` and `playwright.config.ts` are excluded from the deploy and deliberately not from CI, because the browser suite is exactly what must run when they change.
 
 ## About this file
 
