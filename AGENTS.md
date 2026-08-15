@@ -14,7 +14,7 @@ Working conventions for AI coding agents in this repository.
 
 The permission allowlist in `.claude/settings.json` matches the _entire_ command string, so a chained command can never match a narrow rule.
 
-- **Do not chain independent commands** with `&&` or `;`. Issue them as separate calls — batch independent ones in the same response so they run in parallel at no extra round trip. A `PreToolUse` hook in `.claude/settings.json` rejects any `Bash` command whose text contains `&&` or `;`, so this is enforced rather than trusted — see [D-260814b](docs/decisions.md#d-260814b--enforce-shell-hygiene-with-a-hook-rather-than-a-convention). The test is textual, so a literal `;` inside an argument (`find … -exec … \;`) is refused too; run those by hand.
+- **Do not chain independent commands** with `&&`, `;` or `||`. Issue them as separate calls — batch independent ones in the same response so they run in parallel at no extra round trip. A `PreToolUse` hook in `.claude/settings.json` rejects any `Bash` command whose text contains one of the three, so this is enforced rather than trusted — see [D-260814b](docs/decisions.md#d-260814b--enforce-shell-hygiene-with-a-hook-rather-than-a-convention). The test is textual, so a literal `;` inside an argument (`find … -exec … \;`) is refused too; run those by hand.
 - **Do not pass `-C <path>` to `git`.** The working directory is already the repository root, so it buys nothing, and it defeats the allowlist twice over: `Bash(git add *)` matches by prefix and never sees `git -C /path/to/repo add`, while the harness's built-in auto-allow for read-only git reads the token after `git` and finds `-C` rather than `status`. Run `git status`, not `git -C … status`. Widening the rules to cover it is not the fix — `Bash(git -C * )` would allowlist `push --force` and `reset --hard` along with everything else.
 - **Prefer `Edit`/`Write` over shell heredocs** for file changes. Piping a `python3` or `node -e` script to rewrite a file is arbitrary code execution, can never be safely allowlisted, and is harder to review.
 - Genuine pipelines (`grep … | head`) are one logical command; leave them chained.
@@ -22,7 +22,7 @@ The permission allowlist in `.claude/settings.json` matches the _entire_ command
 
 ## Validating a change
 
-Run these before opening a pull request; the full list, including both builds, is in the [release checklist](docs/release-checklist.md).
+Run these before opening a pull request; the full list, including the production build, is in the [release checklist](docs/release-checklist.md).
 
 ```bash
 yarn eslint:check
@@ -40,7 +40,7 @@ yarn test:e2e
 ## Documentation discipline
 
 - **Read the topical doc for the area you are about to change, before changing it.** [`docs/README.md`](docs/README.md) is the index and names what each doc covers. The [release checklist](docs/release-checklist.md#documentation-sweep) already requires updating that doc afterwards, so reading it first is strictly cheaper than discovering late what you contradicted.
-  - **Read the one that matters, not all of them.** `docs/` is roughly 250KB across 16 files — `development.md` and `project-history.md` are 46KB and 46KB on their own. Bulk-loading them crowds out the work.
+  - **Read the one that matters, not all of them.** `docs/` is roughly 275KB across 16 files — `project-history.md` and `development.md` are 53KB and 46KB on their own. Bulk-loading them crowds out the work.
 - [`docs/roadmap.md`](docs/roadmap.md) holds **open work only**. When work completes, **move** it to [`docs/project-history.md`](docs/project-history.md) — moved, not copied. A finished item left in the roadmap, or ticked in place, is a defect.
 - **Work agreed in conversation but not started still gets written into the roadmap**, in the branch you are already on, even when unrelated to it. "Add it next time" reliably means never.
 - Durable rationale goes in [`docs/decisions.md`](docs/decisions.md); current behaviour goes in the relevant topical doc.
@@ -81,7 +81,10 @@ Isolation for work that runs alongside something already in progress. They live 
 
 Merging to `main` deploys to production via Vercel. There are no tags or version numbers.
 
-Changes touching **only** `docs/`, `*.md`, `.claude/`, `.worktreeinclude`, `e2e/` or `playwright.config.ts` skip the build, via `ignoreCommand` in `vercel.json`. The test is the deployed site: a path is excluded because nothing it changes can reach a visitor, so agent configuration, worktree configuration and the browser suite all qualify, while `.gitignore` does not. **An exclusion here is not an exclusion in CI** — the browser suite is exactly what must still run when `e2e/` changes. The expected result is a `success` status reading _"Canceled by Ignored Build Step"_ plus a _"Skipped Deployment"_ comment on the pull request — **that is not a failure**, and it is easy to misread that green tick as a completed build. It also keeps the footer's "Updated:" timestamp honest, since `NEXT_PUBLIC_LAST_MODIFIED` is computed at build time.
+Changes a visitor cannot see skip the build, via `ignoreCommand` in `vercel.json` — the excluded paths and the reasoning are on the [release checklist](docs/release-checklist.md#merge--deploy). Two consequences matter while working:
+
+- **A skip is a `success` status reading _"Canceled by Ignored Build Step"_, not a failure.** It is easy to misread that green tick as a completed build.
+- **An exclusion there is not an exclusion in CI.** The browser suite is exactly what must still run when `e2e/` changes.
 
 ## About this file
 

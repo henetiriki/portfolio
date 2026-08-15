@@ -56,8 +56,6 @@ Multiple field-validation errors can be returned together; the client renders on
 - `send(transporter, message)` resolves `{ success: true }` or rejects `{ success: false, error }` with no fallthrough. The API owns error semantics and uses only fixed, redacted logs; it never logs the submission, message options, transport response or SMTP error detail.
 - An owner-send rejection maps to `500 { data: ['e_generic'] }`; a confirmation-send rejection is non-fatal after the owner delivery. Raw transport errors never cross the API boundary.
 
-> **Historical note:** the 2026-08-06 fix first added correct rejection control flow and API error handling. The 2026-08-09 hardening then moved request verification and transport creation out of each individual `send()`, making the two-message sequence explicit and retry-safe in `api/contact.ts`. Both layers are covered by focused regression tests.
-
 ## Environment variables used
 
 `CUSTOM_APP_DOMAIN`, `GMAIL_SENDER_EMAIL`, `GMAIL_APP_EMAIL`, `GMAIL_APP_PASSWORD` — see [Environment Variables](environment-variables.md).

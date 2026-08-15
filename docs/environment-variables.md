@@ -4,23 +4,23 @@ All values are read via `process.env`, either directly in server-only modules un
 
 This replaced `publicRuntimeConfig`/`serverRuntimeConfig` (`next/config`) 2026-08-08 — that API was removed entirely in Next.js 16, which this project now runs (see [Project History](project-history.md#2026-08-08--react-19-and-the-mantine-styling-migration)), so the migration was a prerequisite rather than a cleanup. Source environment names are kept without a `NEXT_PUBLIC_*` prefix and `next.config.js` bridges the client-facing subset to build-time-inlined public names. One value, `lastModified`, isn't a raw env var at all — it's computed once at config-load time from the current date — so it can only be exposed via this bridge.
 
-Note for tests: `next/jest` loads `.env.test` directly but does **not** evaluate `next.config.js`'s `env` key (that bridging only happens in the real Next.js dev/build/start pipeline), so `.env.test` additionally defines the `NEXT_PUBLIC_*` names directly as dummy values — see the file itself.
+`.env` and `.env.test` are checked into this repo and hold only non-secret host config or dummy values; `.env*.local` is gitignored for anything sensitive. There is no `.env.production`: it held only `WITH_PWA=true`, and was deleted when that flag was removed on 2026-08-14.
 
-`.env` and `.env.test` are checked into this repo and only contain non-secret host config (see below); `.env*.local` is gitignored for anything sensitive. There is no `.env.production`: it held only `WITH_PWA=true`, and was deleted when that flag was removed on 2026-08-14.
+**`.env.test`** (added alongside the Jest setup — see [Development Workflow](development.md#testing)) exists so `next/jest` can load a valid config: `next.config.js` reads several variables unconditionally at module load and validates the resulting `images.remotePatterns`. Next.js loads it instead of `.env.local` whenever `NODE_ENV=test`. It also defines the `NEXT_PUBLIC_*` names directly, because `next/jest` loads `.env` files but does **not** evaluate `next.config.js`'s `env` key — that bridging only happens in the real dev/build/start pipeline. None of its values are real credentials.
 
-`.env.test` (added alongside the Jest setup — see [Development Workflow](development.md#testing)) holds dummy values for every var `next.config.js` reads unconditionally at module load, purely so `next/jest` can load a valid config while running tests. Next.js loads `.env.test` instead of `.env.local` whenever `NODE_ENV=test`. None of its values are real credentials.
+**The CI workflow mirrors the same values at job scope**, since a production-mode build does not load `.env.test`. Keep those dummy values aligned when adding any variable `next.config.js` requires at build time; never put real deployment or SMTP credentials in `ci.yml`, which is committed.
 
-GitHub's production-mode CI build does not load `.env.test`, so `.github/workflows/ci.yml` mirrors the same safe source-variable values at job scope. Keep those dummy workflow values aligned when adding any variable that `next.config.js` requires at build time; never put real deployment or SMTP credentials in the workflow.
-
-One variable appears in both files for the opposite reason. `CSP_VIOLATION_EMAILS` is read by no build-time code, and is pinned to `false` in each so a test run can never attempt SMTP delivery — the browser suite posts a real report to `/api/csp-report`, and that path would otherwise reach the mail transport with dummy Gmail credentials.
+One variable appears in both for the opposite reason. `CSP_VIOLATION_EMAILS` is read by no build-time code, and is pinned to `false` in each so a test run can never attempt SMTP delivery — the browser suite posts a real report to `/api/csp-report`, and that path would otherwise reach the mail transport with dummy Gmail credentials.
 
 ## Committed defaults
 
-| File   | Variable   | Value         | Purpose                                                                                       |
-| ------ | ---------- | ------------- | --------------------------------------------------------------------------------------------- |
-| `.env` | `PROTOCOL` | (set locally) | Used to help derive image-host / URL config for local dev                                     |
-| `.env` | `HOSTNAME` | (set locally) | ditto                                                                                         |
-| `.env` | `HOST`     | (set locally) | Base site URL — feeds `NEXT_PUBLIC_SITE_URL`, canonical links, and `next-sitemap`'s `siteUrl` |
+| File   | Variable   | Value                   | Purpose                                                                                       |
+| ------ | ---------- | ----------------------- | --------------------------------------------------------------------------------------------- |
+| `.env` | `PROTOCOL` | `https`                 | Scheme half of `HOST`                                                                         |
+| `.env` | `HOSTNAME` | `www.ouwl.house`        | Host half of `HOST`                                                                           |
+| `.env` | `HOST`     | `$PROTOCOL://$HOSTNAME` | Base site URL — feeds `NEXT_PUBLIC_SITE_URL`, canonical links, and `next-sitemap`'s `siteUrl` |
+
+These are the production public origin, not local defaults: `.env.test` overrides all three for Jest, and the CI workflow and Vercel supply their own.
 
 ## Required at runtime (not committed — supply via `.env.local` / hosting platform env config)
 

@@ -36,6 +36,7 @@ The app needs environment variables to run — a Google Maps key, Gmail SMTP cre
 | `yarn css-vars:check` / `css-vars:generate` | Verify / regenerate the WebStorm CSS-variable stub from `colors.ts`    |
 | `yarn dev`                                  | Dev server (Turbopack) with the Node inspector attached                |
 | `yarn eslint:check` / `eslint:write`        | Lint / lint and autofix                                                |
+| `postinstall`                               | Regenerates the WebStorm CSS-variable stub after every install         |
 | `yarn prettier:check` / `prettier:write`    | Format check / write                                                   |
 | `yarn start`                                | Serve a production build locally                                       |
 | `yarn test`                                 | Jest + React Testing Library                                           |
