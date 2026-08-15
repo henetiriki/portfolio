@@ -62,6 +62,16 @@ Docs here describe **what exists today**, so they are part of the change, not an
 - [ ] Vercel preview deployment builds successfully
 - [ ] Manual QA on the **preview URL**, not just localhost — it is the only pre-production environment where the service worker, real env vars, and prerendered output all apply together
 
+> **Documentation-only changes take a cheap path through CI, not a skipped one.** When a change touches only `docs/`, `*.md`, `.claude/` or `.worktreeinclude`, the `Validate & build` job installs dependencies, runs `prettier:check` and stops. Lint, both type-checks, `css-vars:check`, the Jest run and its Codecov upload, the production build, the Playwright browser download and the browser suite are all skipped. The job still runs and still reports, so the check exists to be required later — which a `paths-ignore` filter would not, since a filtered-out workflow never reports at all and would leave a required check pending forever.
+>
+> **`prettier:check` is the one step never gated**, because `prettier .` covers the whole tree: on a documentation-only change it is the only check that applies to what changed. `eslint` and both type-checks cover no Markdown, and Jest cannot be affected by it.
+>
+> **The exclusions are CI's, not Vercel's, and the two lists deliberately differ.** Vercel asks whether a change can reach a visitor; CI asks whether it can affect lint, types, tests or the build. `e2e/` and `playwright.config.ts` are excluded from the deploy and **not** from CI — they are precisely the paths whose change must run the browser suite. `.gitignore` is in neither list, for the same reason on both sides.
+>
+> **The classification is one `git diff`, and it fails open.** `git diff --quiet HEAD^ HEAD -- . ':(exclude)docs' ':(exclude)*.md' ':(exclude).claude' ':(exclude).worktreeinclude'` — the same shape as `vercel.json`'s command with a different exclusion list. `HEAD^` is the base tip on a pull request, because the checked-out ref is the merge commit, and the previous tip on a push to `main`; the checkout is `fetch-depth: 2` so that parent exists. Any error resolving it exits non-zero, which classifies the change as not documentation-only and runs everything.
+>
+> **What a cheap run looks like:** the job is green with most steps marked skipped, and the run summary reads _"Documentation-only change: `prettier:check` ran, everything else was skipped."_ As with a Vercel skip, do not read the green tick as evidence the suite passed.
+
 ## Merge & Deploy
 
 - [ ] **Squash merge** into `main` (keeps the `Title (#NNN)` history style)
@@ -72,7 +82,7 @@ Docs here describe **what exists today**, so they are part of the change, not an
 >
 > **What earns an exclusion** is that nothing the path changes can reach a visitor. `docs/`, `*.md` and `.claude/` are agent and human documentation; `.worktreeinclude` configures which gitignored files Claude Code copies into a worktree, which is a local development concern the deployed site never sees; `e2e/` and `playwright.config.ts` are the browser suite, which no bundle imports and no request reaches. `.gitignore` is deliberately not excluded: it decides what is in the repository at all, and therefore what the build has to work with.
 >
-> **The browser suite is excluded from the deploy, never from CI.** The root `tsconfig.json` includes `e2e/`, so `next build` does type-check it and a broken spec would have failed the Vercel build — a redundant safety net, not a unique one, since CI runs `type-check` and `test:e2e` on every change and is not skipped. If the [planned CI skip](roadmap.md#testing--automation) ever copies this path list, that reasoning inverts and the suite stops being checked at all.
+> **The browser suite is excluded from the deploy, never from CI.** The root `tsconfig.json` includes `e2e/`, so `next build` does type-check it and a broken spec would have failed the Vercel build — a redundant safety net, not a unique one, since CI runs `type-check` and `test:e2e` on every change that touches them. CI's own [cheap path](#pull-request) deliberately does not copy this list: were it to, the suite would stop being checked at all.
 >
 > **What a skip actually looks like:** Vercel posts a `success` status whose description reads _"Canceled by Ignored Build Step"_, and the pull request gets a _"Skipped Deployment — Ignored"_ comment. It is easy to misread that green tick as a completed build; check the description. There is no preview URL, and the footer's "Updated:" timestamp stays put — which is the point, since `NEXT_PUBLIC_LAST_MODIFIED` is computed at build time and would otherwise move for a change no visitor can see.
 >
