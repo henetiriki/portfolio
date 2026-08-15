@@ -34,11 +34,15 @@ const imageHostOrigin =
 // docs/decisions.md D-260814c.
 const contentSecurityPolicyDirectives = {
   'base-uri': ["'self'"],
+  // mapsresources-pa is the Maps SDK's style-table host, observed in production
+  // reports on /travel rather than assumed. The narrowness that hid it is real:
+  // img-src carries https://*.googleapis.com while this lists hosts one by one.
   'connect-src': [
     "'self'",
     'blob:',
     'data:',
     'https://maps.googleapis.com',
+    'https://mapsresources-pa.googleapis.com',
     'https://va.vercel-scripts.com',
     'https://vitals.vercel-insights.com',
   ],
@@ -68,12 +72,18 @@ const contentSecurityPolicyDirectives = {
   // but needs an absolute endpoint URL, and adding it stopped reports reaching
   // us entirely. See docs/decisions.md D-260814c.
   'report-uri': ['/api/csp-report'],
+  // 'wasm-unsafe-eval' permits the WebAssembly module Maps compiles and nothing
+  // else; 'unsafe-eval' would be a far wider grant than the violation calls for.
   'script-src': [
     "'self'",
     "'unsafe-inline'",
+    "'wasm-unsafe-eval'",
     'https://maps.googleapis.com',
     'https://va.vercel-scripts.com',
   ],
+  // fonts.googleapis.com and fonts.gstatic.com survive the 2026-08-14 font
+  // vendoring because the Maps SDK requests them for its own controls, which
+  // production reports confirmed. See docs/security.md.
   'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
   'worker-src': ["'self'", 'blob:'],
 };
@@ -94,7 +104,7 @@ const securityHeaders = [
     value: 'max-age=63072000; includeSubDomains; preload',
   },
   {
-    key: 'Content-Security-Policy-Report-Only',
+    key: 'Content-Security-Policy',
     value: contentSecurityPolicy,
   },
   // X-XSS-Protection is deliberately absent. The header is deprecated, no

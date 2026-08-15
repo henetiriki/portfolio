@@ -99,7 +99,7 @@ Verify on the live site (https://www.ouwl.house):
 - [ ] `https://www.ouwl.house/llms.txt` returns the static Markdown file with a `200` response and an H1, rather than the custom 404 page
 - [ ] Every content route has its own title, description, canonical, `og:url` and social title; URLs point at the real domain, not `undefined` or localhost
 - [ ] Installed PWA launches with a dark splash/background in a standalone window — the manifest and every icon and splash asset it references are now asserted by the [browser suite](development.md#browser-regression-suite), so this check is about the real install experience rather than whether the files are there
-- [ ] `/_offline` serves when offline — registration itself is now asserted by the [browser suite](development.md#browser-regression-suite), so what is left here is the offline experience, which it deliberately does not cover
+- [ ] `/_offline` serves when offline, and a page visited beforehand still renders — both are now asserted by the [browser suite](development.md#browser-regression-suite) against a local build, so what is left here is confirming it on the deployed origin with a real worker update in play
 - [ ] Contact form submits — ⚠️ **this sends a real email** through Gmail SMTP, so treat it as a live test, not a smoke test
 
 ## Known Gaps
