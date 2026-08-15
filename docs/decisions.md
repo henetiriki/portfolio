@@ -10,6 +10,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260815d — Paint the document canvas on `html`, not on `body`
+
+- **Status:** Accepted
+- **Decided:** 2026-08-15
+
+Installed as a PWA on Android, the app showed a **white band behind the gesture bar** on every page, while the launch splash was solid `#080a20` top to bottom. The two are painted by different things: the splash is drawn by the system from `background_color` in `manifest.json` before any CSS exists, and once the page loads Chrome derives that region's colour from the **document canvas** instead. Both `html` and `body` computed to `rgba(0, 0, 0, 0)`, so the canvas fell back to the user-agent default — white. The site only ever _looked_ dark because the nav, hero and footer each paint their own backgrounds; anywhere component content did not reach, the white canvas showed through. The same gap is visible as overscroll bounce at either end in an ordinary browser tab.
+
+**The fix has to go on `html`, and putting it on `body` would have broken the hero.** `body { background-color: transparent }` is load-bearing, not an oversight — [`FixedBackground`](styling-theming.md#globalcsss-four-rules) shows through from `position: fixed; z-index: -1`, and CSS paints a block element's own background _after_ negative-z-index descendants. The root element's background is different: it propagates to the canvas and paints beneath everything, negative z-index included. So an opaque `html` sits harmlessly behind the fixed image where an opaque `body` would cover it. The distinction is invisible in the CSS and cost a wrong first attempt to find.
+
+**The value is the token that already equals the manifest.** `--mantine-color-black-russian-4` is `#080A20` — the same value as `theme_color`, `background_color` and the `theme-color` meta tag. Splash, canvas and browser chrome now resolve to one colour from one palette entry rather than three hand-copied hex literals.
+
+**`viewport-fit=cover` was considered and rejected as a separate concern.** It draws content _under_ the system bars rather than colouring the region behind them, and would pull `env(safe-area-inset-*)` handling into every page for a problem that one declaration already solves.
+
 ## D-260815c — Give documentation-only changes a cheap CI path rather than no CI run
 
 - **Status:** Accepted

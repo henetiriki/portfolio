@@ -1,4 +1,5 @@
 html {
+  background-color: var(--mantine-color-black-russian-4);
   font-size: 16px;
 }
 
