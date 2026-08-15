@@ -14,8 +14,14 @@ import {
  * left unblocked, so its precache cannot reach any other spec.
  * See docs/development.md#browser-regression-suite and docs/decisions.md#d-260815a.
  *
- * Deliberately not offline coverage: `/_offline` stays a manual check on the
- * release checklist.
+ * Offline is covered here, and the two tests below are deliberately not one.
+ * The fallback path and the runtime-cache path fail independently, and only the
+ * first was ever broken: `/_offline` was absent from the precache manifest, so
+ * an offline navigation to an unvisited route produced no response at all,
+ * while a visited route kept working from cache and made the whole thing look
+ * healthy. A single test on a visited page passes without the fallback ever
+ * being consulted, which is exactly how the manual check missed it.
+ * See docs/decisions.md#d-260815g and #d-260815f.
  *
  * A regression here surfaces as a timeout rather than a failed assertion:
  * `navigator.serviceWorker.ready` never settles when registration does not
@@ -79,5 +85,44 @@ test.describe('service worker', () => {
     const second = await page.reload();
 
     expect(second?.fromServiceWorker()).toBe(true);
+  });
+
+  test('serves the offline page for a route it has never seen', async ({
+    context,
+    page,
+  }) => {
+    await page.goto('/');
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+
+    await context.setOffline(true);
+    // A route deliberately not visited above, so nothing can answer it from the
+    // runtime cache and the precached fallback is the only possible source.
+    await page.goto('/travel');
+
+    await expect(
+      page.getByRole('heading', { name: 'You might’ve lost connectivity' })
+    ).toBeVisible();
+  });
+
+  test('serves a visited route from cache while offline', async ({
+    context,
+    page,
+  }) => {
+    await page.goto('/experience');
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+    // The worker took control after this page was fetched, so its HTML is not
+    // in the runtime cache yet. One reload under the worker is what puts it
+    // there, and is the step this test would otherwise silently skip.
+    await page.reload();
+
+    await context.setOffline(true);
+    await page.reload();
+
+    await expect(
+      page.getByRole('heading', { name: 'You might’ve lost connectivity' })
+    ).toBeHidden();
+    await expect(page).toHaveTitle(/Experience/);
   });
 });

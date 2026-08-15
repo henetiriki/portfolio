@@ -27,6 +27,42 @@ Installed as a PWA on Android, every page shows a **white band behind the gestur
 
 **How to tell it is done:** install the app on Android and confirm the region behind the gesture bar is `#080a20`. Chromium `main` reaches stable in roughly four to ten weeks depending on the branch point, so the earliest realistic check is late September 2026.
 
+## D-260815g — Precache the `/_offline` document, which the build manifest omits
+
+- **Status:** Accepted
+- **Decided:** 2026-08-15
+
+`service-worker/index.ts` appends `{ url: '/_offline', revision: NEXT_PUBLIC_LAST_MODIFIED }` to the precache entries rather than passing `self.__SW_MANIFEST` through unchanged. **Without it the offline fallback could never produce a response, and had not been able to for as long as it has existed.**
+
+**The manifest contained the offline page's JavaScript chunk but not its HTML.** `@serwist/next` builds the list from two sources: webpack assets, and a glob over `public/`. A Pages Router route is prerendered to `.next/server/pages/_offline.html`, and the plugin's `exclude` drops everything under `server/` — so `/_next/static/chunks/pages/_offline-<hash>.js` was precached and the document was not. `PrecacheFallbackPlugin` answers by calling `matchPrecache('/_offline')`, which returned `undefined`, so the plugin returned `undefined` and the navigation failed with `ERR_FAILED`.
+
+**This was a real defect, not a consequence of [D-260815f](#d-260815f--cache-only-same-origin-requests-so-the-service-worker-stops-rewriting-the-policy).** Confirmed by rebuilding against the unmodified `defaultCache` worker and re-running the new spec: it fails identically. The two changes landed together because the offline coverage added alongside the same-origin worker is what surfaced it.
+
+**Why it went unnoticed.** The release checklist carried "`/_offline` serves when offline" as a manual check, and a manual check performed on a page that had already been visited passes on the runtime cache without the fallback ever being consulted. The failure needs an offline navigation to a route the worker has never seen — which is precisely the case a person testing their own site is least likely to produce. `e2e/service-worker.spec.ts` now covers both, and the distinction between them is the point of having two tests rather than one.
+
+**The revision is the build timestamp**, `NEXT_PUBLIC_LAST_MODIFIED`, already computed in `next.config.js` for the footer. A precache entry with a null revision is treated as immutable, so the offline page would never update; the timestamp changes every build, which is exactly the invalidation this needs. Webpack replaces the expression with a string literal, so no `process` reference reaches the worker — verified in the built output, because a surviving reference would be a `ReferenceError` that stops the worker installing at all.
+
+## D-260815f — Cache only same-origin requests, so the service worker stops rewriting the policy
+
+- **Status:** Accepted
+- **Decided:** 2026-08-15
+
+`service-worker/index.ts` supplies its own two-entry `runtimeCaching` list, both entries gated on `sameOrigin`, in place of Serwist's `defaultCache`. Cross-origin requests match nothing and are never intercepted.
+
+**The reason is Content Security Policy, not caching.** A request the worker handles is re-issued with `fetch()` from inside the worker, and a worker has no `img-src`, `style-src` or `font-src` — every fetch there is governed by `connect-src` alone. `defaultCache` ends with a `NetworkOnly` catch-all matching `/.*/i`, preceded by a `!sameOrigin` `NetworkFirst`, so **every** subresource on the site passed through the worker and was judged against `connect-src`. The per-destination directives only ever applied on a visitor's first, pre-worker load.
+
+**This was found in production, not reasoned about.** Nine of the thirteen violation reports from the 2026-08-15 observation window carry `document-uri: /sw.js`: five Maps sprites on `maps.gstatic.com` that `img-src https://*.gstatic.com` already allows, three Google Fonts stylesheets that `style-src https://fonts.googleapis.com` already allows, and one style-table request. Each was permitted for the destination it actually had and refused for the destination the worker gave it.
+
+**The alternative was to widen `connect-src` to the union of the other fetch directives.** Four lines, no behaviour change, and it would have worked — but it makes `connect-src` meaningless as a distinct directive, and it couples the policy to a third-party default list: any change to `defaultCache`, or any new host the Maps SDK reaches for, reopens the same gap. Removing the interception removes the class of problem.
+
+**Doing it before promotion is what makes it cheap.** A worker change reaches returning visitors only once the new worker activates, so there is a window where clients on the old worker keep reporting these violations. Under Report-Only that is noise in the log. After promotion it would be broken pages.
+
+**`runtimeCaching` cannot simply be dropped.** Serwist wires `fallbacks.entries` in as a `PrecacheFallbackPlugin` attached to the handlers supplied through `runtimeCaching`, and skips that step entirely when the option is absent — so an empty list means no `/_offline` page, with no error to notice. The list had to be replaced, not removed.
+
+**Offline behaviour is unchanged, and most of what was dropped was inert here.** Page HTML is not precached — only `/_next/static/**`, `public/**` and `/_offline` are — so a visited page works offline because the same-origin `NetworkFirst` cached it in passing, and an unvisited one falls back to `/_offline`. Both survive. The discarded rules were third-party ones, which cannot make this site usable without a network: Maps requires one by definition, and the fonts were vendored in [D-260814a](#d-260814a--vendor-what-the-build-cannot-proceed-without). Of the rest, the three RSC rules never matched a Pages Router app at all, and there is no `/api/auth`, no audio and no video. The kept `/_next/image` entry is deliberate: `StaleWhileRevalidate` preserves current behaviour for `FixedBackground`'s photo, which is the deliberate LCP element.
+
+**The cost is owning the list**, mitigated by `e2e/service-worker.spec.ts`, which now covers offline in both directions — the fallback for an unvisited route and the runtime cache for a visited one. That was previously a manual check, and it is the assertion that would catch a matcher which stops matching navigations.
+
 ## D-260815e — Generate the PWA icon and splash set from one vector master
 
 - **Status:** Accepted
