@@ -1,10 +1,7 @@
 import { Readable } from 'stream';
 import handler from '@pages/api/csp-report';
-import { emailViolations } from '@server/csp-mail';
 import { createMockApiContext } from '@utils/test/apiContext';
 import type { NextApiRequest } from 'next';
-
-jest.mock('../../../server/csp-mail', () => ({ emailViolations: jest.fn() }));
 
 const postingBody = (raw: string) => {
   const context = createMockApiContext(undefined, { method: 'POST' });
@@ -41,14 +38,6 @@ describe('csp-report API handler', () => {
     expect(console.warn).toHaveBeenCalledWith(
       'CSP violation: script-src-elem blocked https://evil.example/x.js on https://www.ouwl.house/travel'
     );
-    expect(emailViolations).toHaveBeenCalledWith([
-      {
-        blockedUri: 'https://evil.example/x.js',
-        directive: 'script-src-elem',
-        documentUri: 'https://www.ouwl.house/travel',
-        sourceFile: undefined,
-      },
-    ]);
     expect(status).toHaveBeenCalledWith(204);
     expect(end).toHaveBeenCalled();
   });
@@ -61,7 +50,6 @@ describe('csp-report API handler', () => {
     await handler(req, res);
 
     expect(console.warn).not.toHaveBeenCalled();
-    expect(emailViolations).toHaveBeenCalledWith([]);
     expect(status).toHaveBeenCalledWith(204);
   });
 

@@ -3,9 +3,9 @@ import { CONTENT_ROUTES } from './support/helpers';
 import type { APIRequestContext } from '@playwright/test';
 
 /**
- * The policy ships Report-Only, and its whole value depends on the header
- * actually arriving intact — a mode this suite exists to pin down because both
- * of its failure modes are silent.
+ * The policy enforces, and its whole value depends on the header actually
+ * arriving intact — a mode this suite exists to pin down because both of its
+ * failure modes are silent.
  *
  * `headers.source` in next.config.js carries a route parameter, which puts
  * every value through Next's path-to-regexp compilation. A value that trips
@@ -13,21 +13,26 @@ import type { APIRequestContext } from '@playwright/test';
  * the colons to avoid it instead ships literal backslashes that no browser can
  * parse. Either way the page looks perfectly healthy. See
  * docs/decisions.md#d-260814c.
+ *
+ * Enforcing raises the stakes of exactly that failure: a dropped header used to
+ * mean losing observation, and now means losing the policy itself while every
+ * page still renders. See docs/decisions.md#d-260815h.
  */
 test.describe('content security policy', () => {
   const headersFor = async (request: APIRequestContext, path = '/') =>
     (await request.get(path)).headers();
 
   const policyFor = async (request: APIRequestContext) =>
-    (await headersFor(request))['content-security-policy-report-only'];
+    (await headersFor(request))['content-security-policy'];
 
   for (const { path } of CONTENT_ROUTES) {
-    test(`${path} is served the Report-Only policy`, async ({ request }) => {
+    test(`${path} is served the enforcing policy`, async ({ request }) => {
       const headers = await headersFor(request, path);
 
-      expect(headers['content-security-policy-report-only']).toBeTruthy();
-      // Promotion to an enforcing header is a deliberate, separate decision.
-      expect(headers['content-security-policy']).toBeUndefined();
+      expect(headers['content-security-policy']).toBeTruthy();
+      // Both headers together would apply independently and report
+      // indistinguishably, since the endpoint records no disposition.
+      expect(headers['content-security-policy-report-only']).toBeUndefined();
     });
   }
 
@@ -39,6 +44,15 @@ test.describe('content security policy', () => {
     // real Cloudinary host. Change those and this is the assertion to update.
     expect(policy).toContain('https://res.cloudinary.com');
     expect(policy).not.toContain('\\');
+  });
+
+  test('the policy keeps what the map needs to render', async ({ request }) => {
+    const policy = await policyFor(request);
+
+    // Both were observed violations before they were allowlist entries, and
+    // enforcing makes losing either a broken map rather than a report.
+    expect(policy).toContain("'wasm-unsafe-eval'");
+    expect(policy).toContain('https://mapsresources-pa.googleapis.com');
   });
 
   test('the policy keeps the directives that do not depend on inline', async ({

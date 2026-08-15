@@ -27,6 +27,23 @@ Installed as a PWA on Android, every page shows a **white band behind the gestur
 
 **How to tell it is done:** install the app on Android and confirm the region behind the gesture bar is `#080a20`. Chromium `main` reaches stable in roughly four to ten weeks depending on the branch point, so the earliest realistic check is late September 2026.
 
+## D-260815h — Promote the policy to enforcing in one step
+
+- **Status:** Accepted
+- **Decided:** 2026-08-15
+
+The header key in `next.config.js` becomes `Content-Security-Policy`. Report-Only is retired rather than kept alongside, and the planned intermediate step — enforcing only `frame-ancestors`, `base-uri`, `form-action` and `object-src` next to a Report-Only header — is skipped.
+
+**The intermediate step existed to hedge an unverified allowlist, and the allowlist is now verified.** Every page and every lazy path was exercised across Chromium, Firefox and Safari against the corrected policy on 2026-08-15, with the map driven until it rendered in vector mode and the YouTube embed actually played. Keeping the hedge would have meant running two headers whose reports are indistinguishable — `src/server/csp/` records neither `disposition` nor which header fired — and doing parser, log and email work to tell them apart, purely to support a state that would then be dismantled. Three deploys and a temporary feature, instead of one deploy and none.
+
+**Sequencing was the real risk, not the allowlist.** Promotion had to follow [D-260815f](#d-260815f--cache-only-same-origin-requests-so-the-service-worker-stops-rewriting-the-policy) reaching real clients. A visitor still running the previous worker re-issues cross-origin requests from inside it, where `connect-src` decides, so enforcing while those workers were live would have blocked Maps sprites and Google Fonts for precisely the people who had used the site before. Under Report-Only the same condition was log noise. This is why the two changes ship as separate deploys, and why the `/sw.js` reports tailing off was the signal to proceed.
+
+**`frame-ancestors 'none'` is enforced without ever having been observed.** Safari discards the directive in a report-only policy ([CSP Level 2](https://www.w3.org/TR/CSP2/#directive-frame-ancestors)), so no amount of further observation could have produced evidence for it — the message it logged on every page was the absence of evidence, not a finding. Enforcing it is safe by construction rather than by report: `X-Frame-Options: DENY` has enforced the identical rule throughout, so anything legitimate that framed the site was already broken. That header stays for the same reason.
+
+**`report-uri` stays, and matters more than before.** An enforcing policy's violations are broken pages rather than observations, so the endpoint changes from a rollout instrument into the fastest route from "something looks wrong" to the directive and URL responsible.
+
+**The accepted exposure is unchanged.** `'unsafe-inline'` remains permanent on `script-src` and `style-src` while BotID renders a nonce-less inline script and every page is statically prerendered ([D-260814c](#d-260814c--ship-the-content-security-policy-report-only-and-accept-unsafe-inline)). Promotion does not narrow that; it makes the host allowlists and the document directives real.
+
 ## D-260815g — Precache the `/_offline` document, which the build manifest omits
 
 - **Status:** Accepted
