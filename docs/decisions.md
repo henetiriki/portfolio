@@ -138,7 +138,11 @@ The check is a single `jq` program held inline in the settings file. It prints n
 
 One limit is deliberate:
 
-- **It is a textual test, not a shell parse.** A chain operator anywhere in the string is refused, including inside quotes — `find … -exec … \;` and `grep 'a;b'` are both casualties. Parsing properly would mean a shell grammar inside a hook to save a handful of commands a year, which are in any case easy to run by hand or restructure as a pipeline. Genuine pipelines are untouched: a single `|` is not part of the pattern.
+- **It is a textual test, not a shell parse.** A chain operator anywhere in the string is refused, including inside quotes — `find … -exec … \;` and `grep 'a;b'` are both casualties. Genuine pipelines are untouched: a single `|` is not part of the pattern.
+
+**The cost of that limit was understated, and the correction argues for a convention rather than a smarter hook.** This originally read that parsing would save "a handful of commands a year". The casualty that actually recurs is not `find … -exec`; it is **prose**. A heredoc body is part of the command string, so a semicolon anywhere in a commit message or pull request body refuses the commit, and the messages this project asks for are long enough that one usually appears. Every new session rediscovers this the same way.
+
+Narrowing the hook to ignore text after a `<<` marker would stay textual and need no shell grammar, and it was considered. It is rejected because the Auto-mode note below promotes this hook from an ergonomic measure to the control keeping the allow and deny lists honest — and a heredoc is precisely where an evasion would hide. The fix belongs on the other side: [`AGENTS.md`](../AGENTS.md) now requires commit messages and pull request bodies to be written to a file and passed with `-F` or `--body-file`. That is better practice regardless of the hook, for the same reason `Write` is preferred over a heredoc for file changes — it is reviewable before it runs.
 
 The hook fails open. If `jq` is ever missing the command exits non-zero, which the harness treats as a hook error rather than a denial, and the command proceeds — the same posture as the convention it replaces, so a broken hook cannot block work.
 

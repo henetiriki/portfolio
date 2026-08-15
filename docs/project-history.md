@@ -2,6 +2,13 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-15 — Stop rediscovering that the shell-hygiene hook refuses prose
+
+- [`AGENTS.md`](../AGENTS.md) now requires commit messages and pull request bodies to be written to a file and passed with `git commit -F <file>` or `gh pr create --body-file <file>`, never an inline heredoc. [D-260814b](decisions.md#d-260814b--enforce-shell-hygiene-with-a-hook-rather-than-a-convention) carries the correction that prompted it.
+- **The documented casualty was the rare one.** The hook tests the entire command string, and the limit was illustrated with `find … -exec … \;`, which implied collisions were occasional. A heredoc body is part of that string too, so a single semicolon anywhere in a commit message refuses the commit — and this project asks for long prose messages, so one usually appears. Every new session hit it, diagnosed it, and worked around it identically.
+- **The hook was not narrowed, deliberately.** Ignoring text after a `<<` marker would have stayed textual and needed no shell grammar. It was rejected because the Auto-mode revision to the same decision promotes this hook from an ergonomic measure to the control that keeps the allow and deny lists honest, and a heredoc is exactly where an evasion would hide. Writing the message to a file is better practice regardless — reviewable before it runs, for the same reason `Write` beats a heredoc for file changes.
+- **`D-260814b`'s stated cost was wrong and is corrected in place** rather than left standing: it claimed parsing would save "a handful of commands a year". The docs describe what is true today, and that sentence had been falsified by use.
+
 ## 2026-08-15 — Give documentation-only changes a cheap CI path
 
 - `ci.yml` classifies each change with one `git diff` and gates every expensive step behind it. A change touching only `docs/`, `*.md`, `.claude/` or `.worktreeinclude` installs dependencies, runs `prettier:check` and stops. Behaviour on the [release checklist](release-checklist.md#pull-request), rationale in [D-260815c](decisions.md#d-260815c--give-documentation-only-changes-a-cheap-ci-path-rather-than-no-ci-run).
