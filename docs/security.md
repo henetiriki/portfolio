@@ -10,14 +10,14 @@ The per-change procedure — what to check in a diff before opening a pull reque
 
 `next.config.js` sets a fixed `securityHeaders` array on every route through `headers()`, with `source: '/:path*'`:
 
-| Header                                | Value                                          |
-| ------------------------------------- | ---------------------------------------------- |
-| `Strict-Transport-Security`           | `max-age=63072000; includeSubDomains; preload` |
-| `X-Frame-Options`                     | `DENY`                                         |
-| `X-Content-Type-Options`              | `nosniff`                                      |
-| `X-DNS-Prefetch-Control`              | `on`                                           |
-| `Referrer-Policy`                     | `strict-origin-when-cross-origin`              |
-| `Content-Security-Policy-Report-Only` | the policy below                               |
+| Header                      | Value                                          |
+| --------------------------- | ---------------------------------------------- |
+| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` |
+| `X-Frame-Options`           | `DENY`                                         |
+| `X-Content-Type-Options`    | `nosniff`                                      |
+| `X-DNS-Prefetch-Control`    | `on`                                           |
+| `Referrer-Policy`           | `strict-origin-when-cross-origin`              |
+| `Content-Security-Policy`   | the policy below                               |
 
 - **`X-XSS-Protection` is deliberately absent.** It is deprecated, no current browser implements it, and its `1; mode=block` value was itself exploitable in legacy browsers. The Content Security Policy is the modern replacement.
 - **`nosniff` applies to `/:path*` and cannot be carved out.** Next merges header rules rather than letting a later rule unset an earlier one, which matters when a dev-only warning tempts someone to weaken it — see [Development Workflow](development.md#known-dev-only-console-errors-nextjs-16).
@@ -54,7 +54,7 @@ The policy **enforces**, shipping as `Content-Security-Policy`, built from the `
 
 ### Browser coverage
 
-`e2e/security-headers.spec.ts` asserts that the Report-Only header reaches every content route, that the enforcing header is absent, that the inline-independent directives and the real origins survive unescaped, and that `/api/csp-report` answers a real report body with `204`. See [Browser regression suite](development.md#browser-regression-suite).
+`e2e/security-headers.spec.ts` asserts that the enforcing header reaches every content route, that Report-Only is absent so the two never ship together, that the inline-independent directives and the real origins survive unescaped, and that `/api/csp-report` answers a real report body with `204`. See [Browser regression suite](development.md#browser-regression-suite).
 
 `e2e/service-worker.spec.ts` is the only thing that exercises `worker-src`, by registering a real service worker under the deployed policy — see [D-260815a](decisions.md#d-260815a--give-the-service-worker-its-own-playwright-project-rather-than-unblocking-it-everywhere). It asserts nothing about the policy directly; the evidence is that the run produces no violation.
 

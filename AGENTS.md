@@ -41,11 +41,12 @@ yarn test:e2e
 ## Documentation discipline
 
 - **Read the topical doc for the area you are about to change, before changing it.** [`docs/README.md`](docs/README.md) is the index and names what each doc covers. The [release checklist](docs/release-checklist.md#documentation-sweep) already requires updating that doc afterwards, so reading it first is strictly cheaper than discovering late what you contradicted.
-  - **Read the one that matters, not all of them.** `docs/` is roughly 275KB across 16 files — `project-history.md` and `development.md` are 53KB and 46KB on their own. Bulk-loading them crowds out the work.
+  - **Read the one that matters, not all of them.** `docs/` runs to several hundred kilobytes, and `project-history.md` and `development.md` are far larger than the rest. Bulk-loading them crowds out the work.
 - [`docs/roadmap.md`](docs/roadmap.md) holds **open work only**. When work completes, **move** it to [`docs/project-history.md`](docs/project-history.md) — moved, not copied. A finished item left in the roadmap, or ticked in place, is a defect.
 - **Work agreed in conversation but not started still gets written into the roadmap**, in the branch you are already on, even when unrelated to it. "Add it next time" reliably means never.
 - Durable rationale goes in [`docs/decisions.md`](docs/decisions.md); current behaviour goes in the relevant topical doc.
 - **No long explanatory comments in CSS, CSS Modules or JSX.** Put the reasoning in the relevant doc and leave at most a one-line pointer at the call site. Relocate it — do not delete it.
+- **Keep drifting numbers out of the prose.** Test totals, file sizes, directory counts and the like are wrong within a few commits and nobody goes back to correct them, so they end up misinforming the reader the doc was written for. Write the property that survives — "the unit suite runs in seconds" rather than a count. Where a figure genuinely carries the argument, date it, as the coverage baseline in [`development.md`](docs/development.md#testing) does.
 
 ## Working across branches
 

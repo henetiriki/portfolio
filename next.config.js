@@ -29,9 +29,8 @@ const imageHostOrigin =
     ? `${process.env.IMAGE_HOST_PROTOCOL}://${process.env.IMAGE_HOST_NAME}`
     : undefined;
 
-// Report-Only for now. Rationale for every non-obvious source, and the
-// conditions for promoting this to an enforcing header, are in
-// docs/decisions.md D-260814c.
+// Enforcing. Rationale for every non-obvious source is in docs/decisions.md
+// D-260814c; the promotion from Report-Only is D-260815h.
 const contentSecurityPolicyDirectives = {
   'base-uri': ["'self'"],
   // mapsresources-pa is the Maps SDK's style-table host, observed in production

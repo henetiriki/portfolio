@@ -4,28 +4,11 @@ This log records durable choices whose rationale is useful beyond the change tha
 
 ## Identifiers
 
-Each decision is identified by the date it was decided, in the form `D-YYMMDD` plus a letter: `D-260814a`, `D-260814b`. The date is the one recorded in `**Decided:**`, never the merge date, so a rebase cannot change an identifier. The letter is always present, even when a date holds only one decision, and orders decisions within that date by the order they merged.
+Each decision is identified by the date it was decided, in the form `D-YYMMDD` plus a letter: `D-260814a`, `D-260814b`. The date is the one recorded in `**Decided:**`, never the merge date, so a rebase cannot change an identifier. The letter is always present, even when a date holds only one decision, and is the next free letter for that date at mint time — normally merge order too, though a corrected date can take one out of that order rather than renumber published identifiers, as [D-260815i](#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar) did. Where the two disagree, the order entries appear in this file is the merge order.
 
 To mint one: take your decision date, look for that date already in this file, and take the next free letter. Nothing needs checking against other branches, and nothing is ever renumbered.
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
-
-## D-260816a — Wait for the Chromium fix instead of working around the Android navigation bar
-
-- **Status:** Accepted
-- **Decided:** 2026-08-16
-
-Installed as a PWA on Android, every page shows a **white band behind the gesture bar**. Nothing changes in this repository: the manifest keeps `display: standalone`, and the band is expected to disappear on its own when Chrome stable picks up a fix already merged upstream.
-
-**The fix landed in Chromium `main` on 2026-08-06** — [issues.chromium.org/40759522](https://issues.chromium.org/issues/40759522), commit `0a6ab4f`, behind the default-on `WebAppNavigationBarThemeColor` killswitch. Its message states the problem exactly: installed web apps coloured the status bar from the manifest theme colour "but left the Android navigation bar at the platform default", and the change reuses the theme colour for the navigation bar. **It colours that bar from `theme_color`, which this manifest already sets to `#080a20`** — so nothing here needs to change for the fixed behaviour to be correct.
-
-**The band is datable and was not the canvas.** [#134](https://github.com/henetiriki/portfolio/pull/134) switched `display` from `fullscreen` to `standalone` in the same commit that changed `background_color` to `#080a20`; under `fullscreen` Android draws no system bars, so there was no navigation bar to mis-paint. [D-260815d](#d-260815d--paint-the-document-canvas-on-html-not-on-body) misdiagnosed it as a transparent canvas. That fix is correct on its own merits and stays, but it was never going to reach this surface — production serves `html: rgb(8, 10, 32)` and the band persisted.
-
-**Two workarounds were built and both discarded, which is the part worth keeping.** Reverting to `fullscreen` removes the system bars entirely: one word, provably effective for four years, but it costs the clock, battery and signal permanently on a site people read rather than play, and it changes Android only — iOS ignores `display: fullscreen`. `viewport-fit=cover` draws content beneath the bars so the opaque `html` background reaches them, but needs `env(safe-area-inset-*)` on every edge-anchored element — the sticky header, the fixed scroll-to-top control, the footer's bottom band, and the full-screen mobile drawer whose close button is absolutely positioned and which could not be opened under browser automation to verify.
-
-**A permanent workaround for a temporary defect is the wrong trade, and it was nearly made.** The revert to `fullscreen` was written, validated and ready to commit under the belief that the ticket was a stale 2021 report marked fixed long ago. It is instead ten days old. Workarounds outlive the bugs they route around, because nobody remembers to remove them — so the deciding question was not "which fixes it today" but "which leaves nothing to undo".
-
-**How to tell it is done:** install the app on Android and confirm the region behind the gesture bar is `#080a20`. Chromium `main` reaches stable in roughly four to ten weeks depending on the branch point, so the earliest realistic check is late September 2026.
 
 ## D-260815h — Promote the policy to enforcing in one step
 
@@ -80,6 +63,25 @@ The header key in `next.config.js` becomes `Content-Security-Policy`. Report-Onl
 
 **The cost is owning the list**, mitigated by `e2e/service-worker.spec.ts`, which now covers offline in both directions — the fallback for an unvisited route and the runtime cache for a visited one. That was previously a manual check, and it is the assertion that would catch a matcher which stops matching navigations.
 
+## D-260815i — Wait for the Chromium fix instead of working around the Android navigation bar
+
+- **Status:** Accepted
+- **Decided:** 2026-08-15
+
+Installed as a PWA on Android, every page shows a **white band behind the gesture bar**. Nothing changes in this repository: the manifest keeps `display: standalone`, and the band is expected to disappear on its own when Chrome stable picks up a fix already merged upstream.
+
+**The fix landed in Chromium `main` on 2026-08-06** — [issues.chromium.org/40759522](https://issues.chromium.org/issues/40759522), commit `0a6ab4f`, behind the default-on `WebAppNavigationBarThemeColor` killswitch. Its message states the problem exactly: installed web apps coloured the status bar from the manifest theme colour "but left the Android navigation bar at the platform default", and the change reuses the theme colour for the navigation bar. **It colours that bar from `theme_color`, which this manifest already sets to `#080a20`** — so nothing here needs to change for the fixed behaviour to be correct.
+
+**The band is datable and was not the canvas.** [#134](https://github.com/henetiriki/portfolio/pull/134) switched `display` from `fullscreen` to `standalone` in the same commit that changed `background_color` to `#080a20`; under `fullscreen` Android draws no system bars, so there was no navigation bar to mis-paint. [D-260815d](#d-260815d--paint-the-document-canvas-on-html-not-on-body) misdiagnosed it as a transparent canvas. That fix is correct on its own merits and stays, but it was never going to reach this surface — production serves `html: rgb(8, 10, 32)` and the band persisted.
+
+**Two workarounds were built and both discarded, which is the part worth keeping.** Reverting to `fullscreen` removes the system bars entirely: one word, provably effective for four years, but it costs the clock, battery and signal permanently on a site people read rather than play, and it changes Android only — iOS ignores `display: fullscreen`. `viewport-fit=cover` draws content beneath the bars so the opaque `html` background reaches them, but needs `env(safe-area-inset-*)` on every edge-anchored element — the sticky header, the fixed scroll-to-top control, the footer's bottom band, and the full-screen mobile drawer whose close button is absolutely positioned and which could not be opened under browser automation to verify.
+
+**A permanent workaround for a temporary defect is the wrong trade, and it was nearly made.** The revert to `fullscreen` was written, validated and ready to commit under the belief that the ticket was a stale 2021 report marked fixed long ago. It is instead ten days old. Workarounds outlive the bugs they route around, because nobody remembers to remove them — so the deciding question was not "which fixes it today" but "which leaves nothing to undo".
+
+**How to tell it is done:** install the app on Android and confirm the region behind the gesture bar is `#080a20`. Chromium `main` reaches stable in roughly four to ten weeks depending on the branch point, so the earliest realistic check is late September 2026.
+
+**Its identifier is out of step with its merge order, deliberately.** This decision merged in [#180](https://github.com/henetiriki/portfolio/pull/180), before `f`, `g` and `h` merged in [#181](https://github.com/henetiriki/portfolio/pull/181), so the letter that would reflect merge order is `f`. It was originally minted `D-260816a` against a date a day ahead of the work; correcting the date meant taking the next free letter rather than renumbering three published identifiers and every link into them. Its position in this file follows the merge order, not the letter — see [Identifiers](#identifiers).
+
 ## D-260815e — Generate the PWA icon and splash set from one vector master
 
 - **Status:** Accepted
@@ -106,13 +108,13 @@ Every icon and splash asset dated from October 2022 and had drifted from the app
 
 The document canvas was transparent: both `html` and `body` computed to `rgba(0, 0, 0, 0)`, so it fell back to the user-agent default — white. The site only ever _looked_ dark because the nav, hero and footer each paint their own backgrounds; anywhere component content did not reach, the white canvas showed through. It is visible as overscroll bounce at either end of an ordinary browser tab, and an opaque canvas is correct on its own merits.
 
-**Correction, 2026-08-16: this did not fix what it was written to fix.** The change was prompted by a white band behind the **Android gesture bar in the installed PWA**, and this decision claimed Chrome derives that region's colour from the document canvas. That holds for a browser tab and **not for an installed app**, whose system navigation bar the browser paints itself. The mechanism was verified in a desktop browser and generalised to a surface that was never tested. Production serves `html: rgb(8, 10, 32)` and the band survived — a checked negative result, and the reason the real cause was found only afterwards. See [D-260816a](#d-260816a--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar).
+**Correction, 2026-08-15: this did not fix what it was written to fix.** The change was prompted by a white band behind the **Android gesture bar in the installed PWA**, and this decision claimed Chrome derives that region's colour from the document canvas. That holds for a browser tab and **not for an installed app**, whose system navigation bar the browser paints itself. The mechanism was verified in a desktop browser and generalised to a surface that was never tested. Production serves `html: rgb(8, 10, 32)` and the band survived — a checked negative result, and the reason the real cause was found only afterwards. See [D-260815i](#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar).
 
 **The fix has to go on `html`, and putting it on `body` would have broken the hero.** `body { background-color: transparent }` is load-bearing, not an oversight — [`FixedBackground`](styling-theming.md#globalcsss-four-rules) shows through from `position: fixed; z-index: -1`, and CSS paints a block element's own background _after_ negative-z-index descendants. The root element's background is different: it propagates to the canvas and paints beneath everything, negative z-index included. So an opaque `html` sits harmlessly behind the fixed image where an opaque `body` would cover it. The distinction is invisible in the CSS and cost a wrong first attempt to find.
 
 **The value is the token that already equals the manifest.** `--mantine-color-black-russian-4` is `#080A20` — the same value as `theme_color`, `background_color` and the `theme-color` meta tag. Splash, canvas and browser chrome now resolve to one colour from one palette entry rather than three hand-copied hex literals.
 
-**`viewport-fit=cover` was rejected here on reasoning that did not hold.** The stated ground was that it would pull `env(safe-area-inset-*)` handling into every page "for a problem that one declaration already solves" — but the one declaration did not solve it, so the trade was mispriced. It was later trialled and abandoned unfinished; see [D-260816a](#d-260816a--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar).
+**`viewport-fit=cover` was rejected here on reasoning that did not hold.** The stated ground was that it would pull `env(safe-area-inset-*)` handling into every page "for a problem that one declaration already solves" — but the one declaration did not solve it, so the trade was mispriced. It was later trialled and abandoned unfinished; see [D-260815i](#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar).
 
 ## D-260815c — Give documentation-only changes a cheap CI path rather than no CI run
 
@@ -131,7 +133,7 @@ This project is deliberately documentation-heavy — the [release checklist](rel
 
 **One consequence is owed to whoever enables branch protection.** The cheap path skips the Jest run, so no report is uploaded and `codecov/patch` is not expected to post a status at all on a documentation-only pull request. Requiring that check on `main` would therefore reintroduce exactly the permanently-pending failure that `paths-ignore` was rejected for. Nothing is required today, so nothing is broken today.
 
-**Resolved the same day it was raised: the Jest run and the Codecov upload go back on the cheap path when the repository is made public**, rather than dropping the requirement. Skipping them was this decision's one concession to the roadmap's original shape, written before anyone priced the run — 308 tests in under four seconds locally, against a production build and a ~270 MB browser download. It is a few percent of the saving, and paying it removes the branch-protection edge case rather than betting on Codecov's behaviour with no upload. Sequenced onto the [publication item](roadmap.md#testing--automation), because that is when a required check first exists to be blocked.
+**Resolved the same day it was raised: the Jest run and the Codecov upload go back on the cheap path when the repository is made public**, rather than dropping the requirement. Skipping them was this decision's one concession to the roadmap's original shape, written before anyone priced the run — the unit suite takes seconds locally, against a production build and a ~270 MB browser download. It is a few percent of the saving, and paying it removes the branch-protection edge case rather than betting on Codecov's behaviour with no upload. Sequenced onto the [publication item](roadmap.md#testing--automation), because that is when a required check first exists to be blocked.
 
 ## D-260815b — Email Content Security Policy violations for the observation window
 
