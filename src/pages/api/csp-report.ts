@@ -4,6 +4,7 @@ import {
   parseViolations,
   readReportBody,
 } from '@server/csp';
+import { emailViolations } from '@server/csp-mail';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 // The body is read raw because `report-uri` sends `application/csp-report`,
@@ -34,7 +35,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<void>) => {
     return;
   }
 
-  parseViolations(raw).filter(isReportable).forEach(logViolation);
+  const violations = parseViolations(raw).filter(isReportable);
+
+  violations.forEach(logViolation);
+
+  await emailViolations(violations);
 
   res.status(204).end();
 };
