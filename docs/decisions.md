@@ -117,10 +117,9 @@ That instruction is advisory, and compliance proved unreliable across sessions �
 
 The check is a single `jq` program held inline in the settings file. It prints nothing when the command is clean, which the harness reads as "no opinion", and a `permissionDecision: "deny"` with a reason otherwise, which is fed back to the model so it reissues the calls separately. Inline rather than a script under `scripts/`, so there is no path resolution to get wrong in a worktree and nothing to keep in step with the settings file.
 
-Two limits are deliberate:
+One limit is deliberate:
 
-- **It is a textual test, not a shell parse.** `&&` or `;` anywhere in the string is refused, including inside quotes — `find … -exec … \;` and `grep 'a;b'` are both casualties. Parsing properly would mean a shell grammar inside a hook to save a handful of commands a year, which are in any case easy to run by hand or restructure as a pipeline. Genuine pipelines are untouched: `|` is not part of the pattern.
-- **`||` is not blocked.** It carries the same problem, but it has not appeared in practice and was not part of the agreed rule. Widen the pattern if that changes.
+- **It is a textual test, not a shell parse.** A chain operator anywhere in the string is refused, including inside quotes — `find … -exec … \;` and `grep 'a;b'` are both casualties. Parsing properly would mean a shell grammar inside a hook to save a handful of commands a year, which are in any case easy to run by hand or restructure as a pipeline. Genuine pipelines are untouched: a single `|` is not part of the pattern.
 
 The hook fails open. If `jq` is ever missing the command exits non-zero, which the harness treats as a hook error rather than a denial, and the command proceeds — the same posture as the convention it replaces, so a broken hook cannot block work.
 
@@ -128,7 +127,11 @@ The hook fails open. If `jq` is ever missing the command exits non-zero, which t
 
 The second is what remains, and it is stronger without a human in the loop. The allow entries are wildcard-suffixed, so `Bash(git add *)` matches `git add . && <anything at all>` in its entirety. A prompt used to put that string in front of someone; nothing does now. Auto mode also introduces a soft-deny list, whose entries anchor at the start of the command — `Bash(vercel --prod:*)` does not fire on `echo deploying; vercel --prod`, so chaining is a deny-list evasion route as well as an allowlist one.
 
-The hook therefore stays, but it is no longer an ergonomics measure that happens to help review. It is the control that keeps the allow and deny lists meaning what they say, and it should be widened rather than relaxed if `||` ever appears in practice.
+The hook therefore stays, and it is no longer an ergonomics measure that happens to help review. It is the control that keeps the allow and deny lists meaning what they say.
+
+**`||` is blocked as of the same date, and why it was not blocked sooner is the instructive part.** It was left out originally because it had not appeared in practice, with a note to widen the pattern if that changed. That trigger needed an observer, and the observer was the permission prompt: a chain matching no narrow rule put its full text in front of someone. Auto mode removes that, so "if it appears" became a condition nobody is positioned to notice — while `||` launders exactly as `&&` does, matching `Bash(git add *)` in `git add . || <anything>` and slipping past a soft-deny rule that anchors at the start of the command. Waiting on a signal that no longer arrives is not a wait-and-see posture, it is the advisory convention this decision exists to replace. The pattern is now `&&|;|[|][|]`, using a character class rather than escaped pipes so there are no backslashes to get wrong across the JSON and jq layers.
+
+**Hook changes take effect immediately, unlike the permission rules.** Verified in the session that made this one: the edited hook refused the very next command carrying `||`, with the new wording. [`AGENTS.md`](../AGENTS.md) warns that `.claude/` changes do not apply until a session restart, which holds for permission rules but not for hooks — worth knowing, because it means a broken hook takes effect immediately too.
 
 ## D-260814a — Vendor what the build cannot proceed without
 
