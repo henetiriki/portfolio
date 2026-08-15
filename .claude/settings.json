@@ -23,7 +23,6 @@
       "Bash(git commit *)",
       "Bash(git fetch *)",
       "Bash(git pull *)",
-      "Bash(git stash *)",
       "Bash(npm view *)",
       "Bash(npx jest *)",
       "Bash(yarn css-vars:check *)",
