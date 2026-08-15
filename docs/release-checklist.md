@@ -66,11 +66,13 @@ Docs here describe **what exists today**, so they are part of the change, not an
 
 - [ ] **Squash merge** into `main` (keeps the `Title (#NNN)` history style)
 - [ ] Vercel auto-deploys `main` to production — no tag, no manual trigger, no deploy workflow
-- [ ] Vercel build completes without errors — **unless the change touched only `docs/`, `*.md`, `.claude/` or `.worktreeinclude`**, in which case the build is skipped by design. Vercel still reports a `success` status; read its description, not just its colour
+- [ ] Vercel build completes without errors — **unless the change touched only `docs/`, `*.md`, `.claude/`, `.worktreeinclude`, `e2e/` or `playwright.config.ts`**, in which case the build is skipped by design. Vercel still reports a `success` status; read its description, not just its colour
 
-> **Documentation-only changes do not deploy.** `vercel.json`'s `ignoreCommand` runs `git diff --quiet HEAD^ HEAD -- . ':(exclude)docs' ':(exclude)*.md' ':(exclude).claude' ':(exclude).worktreeinclude'`. Note Vercel's inverted convention: **exit `0` skips the build, exit `1` builds** — so the command exits `0` precisely when nothing outside those paths changed.
+> **Changes a visitor cannot see do not deploy.** `vercel.json`'s `ignoreCommand` runs `git diff --quiet HEAD^ HEAD -- . ':(exclude)docs' ':(exclude)*.md' ':(exclude).claude' ':(exclude).worktreeinclude' ':(exclude)e2e' ':(exclude)playwright.config.ts'`. Note Vercel's inverted convention: **exit `0` skips the build, exit `1` builds** — so the command exits `0` precisely when nothing outside those paths changed.
 >
-> **What earns an exclusion** is that nothing the path changes can reach a visitor. `docs/`, `*.md` and `.claude/` are agent and human documentation; `.worktreeinclude` configures which gitignored files Claude Code copies into a worktree, which is a local development concern the deployed site never sees. `.gitignore` is deliberately not excluded: it decides what is in the repository at all, and therefore what the build has to work with.
+> **What earns an exclusion** is that nothing the path changes can reach a visitor. `docs/`, `*.md` and `.claude/` are agent and human documentation; `.worktreeinclude` configures which gitignored files Claude Code copies into a worktree, which is a local development concern the deployed site never sees; `e2e/` and `playwright.config.ts` are the browser suite, which no bundle imports and no request reaches. `.gitignore` is deliberately not excluded: it decides what is in the repository at all, and therefore what the build has to work with.
+>
+> **The browser suite is excluded from the deploy, never from CI.** The root `tsconfig.json` includes `e2e/`, so `next build` does type-check it and a broken spec would have failed the Vercel build — a redundant safety net, not a unique one, since CI runs `type-check` and `test:e2e` on every change and is not skipped. If the [planned CI skip](roadmap.md#testing--automation) ever copies this path list, that reasoning inverts and the suite stops being checked at all.
 >
 > **What a skip actually looks like:** Vercel posts a `success` status whose description reads _"Canceled by Ignored Build Step"_, and the pull request gets a _"Skipped Deployment — Ignored"_ comment. It is easy to misread that green tick as a completed build; check the description. There is no preview URL, and the footer's "Updated:" timestamp stays put — which is the point, since `NEXT_PUBLIC_LAST_MODIFIED` is computed at build time and would otherwise move for a change no visitor can see.
 >
@@ -87,7 +89,7 @@ Verify on the live site (https://www.ouwl.house):
 - [ ] `https://www.ouwl.house/llms.txt` returns the static Markdown file with a `200` response and an H1, rather than the custom 404 page
 - [ ] Every content route has its own title, description, canonical, `og:url` and social title; URLs point at the real domain, not `undefined` or localhost
 - [ ] Installed PWA launches with a dark splash/background in a standalone window — the manifest and every icon and splash asset it references are now asserted by the [browser suite](development.md#browser-regression-suite), so this check is about the real install experience rather than whether the files are there
-- [ ] Service worker registers and `/_offline` serves when offline
+- [ ] `/_offline` serves when offline — registration itself is now asserted by the [browser suite](development.md#browser-regression-suite), so what is left here is the offline experience, which it deliberately does not cover
 - [ ] Contact form submits — ⚠️ **this sends a real email** through Gmail SMTP, so treat it as a live test, not a smoke test
 
 ## Known Gaps

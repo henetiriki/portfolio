@@ -49,6 +49,8 @@ The policy ships as `Content-Security-Policy-Report-Only`, built from the `conte
 
 `e2e/security-headers.spec.ts` asserts that the Report-Only header reaches every content route, that the enforcing header is absent, that the inline-independent directives and the real origins survive unescaped, and that `/api/csp-report` answers a real report body with `204`. See [Browser regression suite](development.md#browser-regression-suite).
 
+`e2e/service-worker.spec.ts` is the only thing that exercises `worker-src`, by registering a real service worker under the deployed policy — see [D-260815a](decisions.md#d-260815a--give-the-service-worker-its-own-playwright-project-rather-than-unblocking-it-everywhere). It asserts nothing about the policy directly; the evidence is that the run produces no violation.
+
 ## Bot protection
 
 `botid` (Vercel BotID) protects the contact form specifically — `_app.tsx` instruments `POST /api/contact` client-side and `api/contact.ts` calls `checkBotId()` once per request before any mail work begins. It is documented with the rest of that flow in [Contact Feature](contact-feature.md), which would read as half a story without it; the posture it accepts is [D-260811b](decisions.md#d-260811b--accept-the-contact-endpoints-automation-only-protection).
