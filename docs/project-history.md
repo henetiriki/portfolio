@@ -2,6 +2,16 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-15 — Cover service-worker registration in the browser suite
+
+- `e2e/service-worker.spec.ts` runs in a third Playwright project, `service-worker-chromium`, the only one where `serviceWorkers` is `'allow'`. It asserts the worker registers at origin scope from `/sw.js`, takes control without a reload, and answers a reload from its fetch handler. The suite goes from 76 to 78 specs, still with zero skips. Rationale in [D-260815a](decisions.md#d-260815a--give-the-service-worker-its-own-playwright-project-rather-than-unblocking-it-everywhere); behaviour in [Development Workflow](development.md#browser-regression-suite).
+- **The global `serviceWorkers: 'block'` stays**, because it is load-bearing rather than incidental: an unblocked worker precaches pages, so a later spec could pass against a response an earlier spec caused to be cached. A third project was the cheaper answer than defending every other spec against a cache.
+- **The fetch-handler assertion is made discriminating rather than merely true.** The first navigation is asserted _not_ to come from the worker — in a fresh context nothing is registered yet — so `fromServiceWorker()` returning true on the reload means something. Without that pairing the check would pass either way.
+- **Both tests were verified to fail**, by re-running the project with `serviceWorkers: 'block'`. They time out rather than failing an assertion, because `navigator.serviceWorker.ready` never settles when registration does not happen. Recorded in the spec, since a timeout is otherwise the signature of an unrelated problem.
+- **`worker-src 'self' blob:` now has evidence behind it.** It was the one Content Security Policy directive nothing had ever exercised, precisely because the suite blocked service workers — which made this a prerequisite for [promoting the policy](roadmap.md), not the low-priority item it had been. The run produces no violation. The evidence is local and Chromium-only, so the cross-engine requirement stands.
+- **A documented claim became a checked one.** `e2e/support/helpers.ts` filtered a `reading 'waiting'` console error as caused by the suite's own blocking rather than by the app. The new spec asserts the error is absent where registration succeeds, so the filter is now justified by a test instead of by a comment.
+- **Offline coverage was deliberately not attempted.** The goal is installability; `/_offline` remains a manual check on the [release checklist](release-checklist.md#after-deploy).
+
 ## 2026-08-14 — Give the security surface its own doc
 
 - [Security](security.md) is a new topical doc holding the response headers, the Content Security Policy, its report endpoint and its failure modes, plus the secrets posture and the accepted Cloudinary exposure. It is listed in [docs/README.md](README.md) and in the root [README](../README.md).

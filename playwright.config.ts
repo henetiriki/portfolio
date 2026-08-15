@@ -9,6 +9,10 @@ export const BASE_URL = `http://localhost:${PORT}`;
 
 const isCI = !!process.env.CI;
 
+// Routed by filename, like the viewport-specific specs — this one runs only in
+// the project that lets a service worker register, and nowhere else.
+const SERVICE_WORKER_SPEC = /service-worker\.spec\.ts$/;
+
 export default defineConfig({
   // Deliberately narrower than the Jest suite: this exists to catch real
   // browser behaviour (layout, focus order, hydration, contrast) that jsdom
@@ -24,15 +28,24 @@ export default defineConfig({
     // count, which is exactly when a genuinely skipped test slips past.
     {
       name: 'desktop-chromium',
-      testIgnore: /\.mobile\.spec\.ts$/,
+      testIgnore: [/\.mobile\.spec\.ts$/, SERVICE_WORKER_SPEC],
       use: { ...devices['Desktop Chrome'] },
     },
     {
       // The mobile drawer has needed several rounds of fixes historically, so
       // it gets a real touch-enabled viewport rather than a resized desktop.
       name: 'mobile-chromium',
-      testIgnore: /\.desktop\.spec\.ts$/,
+      testIgnore: [/\.desktop\.spec\.ts$/, SERVICE_WORKER_SPEC],
       use: { ...devices['Pixel 7'] },
+    },
+    {
+      // The one project that lets a service worker register. It is a separate
+      // project rather than a relaxed setting on the others because the block
+      // below is load-bearing for them, not incidental.
+      // See docs/decisions.md#d-260815a.
+      name: 'service-worker-chromium',
+      testMatch: SERVICE_WORKER_SPEC,
+      use: { ...devices['Desktop Chrome'], serviceWorkers: 'allow' },
     },
   ],
   reporter: isCI ? [['github'], ['html', { open: 'never' }]] : [['list']],
@@ -44,8 +57,7 @@ export default defineConfig({
     // The suite serves a production build, which now always ships a service
     // worker. Left unblocked it would precache pages and serve them to later
     // specs, so a spec could pass against a stale response from an earlier
-    // one. Service-worker behaviour is verified by the build assertion in CI
-    // rather than through the browser suite.
+    // one. The `service-worker-chromium` project above opts back in, alone.
     serviceWorkers: 'block',
     trace: 'on-first-retry',
     video: 'off',
@@ -65,6 +77,6 @@ export default defineConfig({
   // loop. Saturating that produced scattered, irreproducible failures across
   // unrelated specs; the same run passes serially. A suite that needs a re-run
   // to be believed is worse than no suite, so determinism wins over the few
-  // seconds a higher count would save on a 76-spec run.
+  // seconds a higher count would save on a 78-spec run.
   workers: isCI ? 1 : 4,
 });

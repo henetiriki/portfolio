@@ -10,6 +10,21 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260815a — Give the service worker its own Playwright project rather than unblocking it everywhere
+
+- **Status:** Accepted
+- **Decided:** 2026-08-15
+
+Service-worker registration needed browser coverage, and the suite sets `serviceWorkers: 'block'` globally. The cheap change is to drop that line; the reason not to is that the block is load-bearing rather than incidental. An unblocked worker precaches pages, so a later spec can pass against a response an earlier spec caused to be cached — a suite that is green because it is stale, which is worse than one that is red.
+
+The registration spec therefore runs in a third project, `service-worker-chromium`, which is the only place `serviceWorkers: 'allow'` appears. Playwright gives every test its own browser context, so the precache cannot outlive the test that created it, and no other project ever starts a worker at all. Routing is by filename via `testMatch`/`testIgnore`, the same mechanism the viewport-specific specs already use, so the run still reports zero skips.
+
+**Two assertions, because "it registered" is not the property that matters.** A worker scoped below the origin root registers happily and controls nothing, and a worker that starts without a fetch handler serves nothing — both look like success from the registration promise alone. The spec pins the scope and script URL, waits for `navigator.serviceWorker.controller` to be set without reloading — which is what `clientsClaim` in `service-worker/index.ts` buys, and the reason a first visit is not left unhandled — and then asserts a reload is answered by the worker. That last check is made discriminating by asserting the _first_ navigation is **not** from the worker: in a fresh context nothing is registered yet, so a `fromServiceWorker()` that returned true either way would prove nothing.
+
+**A regression here appears as a timeout, not a failed assertion.** `navigator.serviceWorker.ready` never settles when registration does not happen, so there is nothing to compare. Verified by re-running the project with `serviceWorkers: 'block'`: both tests time out rather than failing informatively. Accepted — the alternative is racing a fixed deadline against a promise that may legitimately be slow, which trades a clear failure for a flaky one.
+
+This also retires the one Content Security Policy directive that had never been exercised. `worker-src 'self' blob:` was unreachable precisely because the suite blocked service workers, which made this a prerequisite for [promoting the policy](roadmap.md) rather than the low-priority item it had been.
+
 ## D-260814e — Let each worktree install its own dependencies
 
 - **Status:** Accepted; supersedes the `worktree.symlinkDirectories` setting
