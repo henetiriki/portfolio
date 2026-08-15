@@ -97,7 +97,7 @@ Verify on the live site (https://www.ouwl.house):
 Worth knowing before relying on the automation:
 
 - **The CSS-variable stub has no committed baseline.** It is intentionally gitignored and regenerated during `postinstall`; CI's subsequent `css-vars:check` proves the current generated output matches `colors.ts`, not that a checked-in artefact is current. This is the intended model because the file exists only for local WebStorm analysis.
-- **Dev and production use different bundlers.** `next dev` runs Turbopack; `next build` is pinned to webpack with `--webpack` because `@serwist/next` injects a webpack config that Next 16 refuses to build through Turbopack. A bundler-specific difference therefore cannot show up in local dev; CI covers both webpack configuration branches, but neither is Turbopack, so dev-only differences still surface only in manual QA. See [development.md](development.md#bundlers-turbopack-in-dev-webpack-in-builds).
+- **Dev and production use different bundlers.** `next dev` runs Turbopack; `next build` is pinned to webpack with `--webpack` because `@serwist/next` injects a webpack config that Next 16 refuses to build through Turbopack. Nothing automated exercises Turbopack — CI runs the one webpack production build — so a bundler-specific difference in either direction surfaces only in local dev or manual QA. See [development.md](development.md#bundlers-turbopack-in-dev-webpack-in-builds).
 
 **Resolved** (kept because each bit this project before):
 
