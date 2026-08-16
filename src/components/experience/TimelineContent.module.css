@@ -15,4 +15,8 @@
   right: 100%;
   top: 15px;
   width: 0;
+
+  @mixin smaller-than $mantine-breakpoint-xs {
+    border-width: 12px 14px 12px 0;
+  }
 }
