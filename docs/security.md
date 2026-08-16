@@ -2,7 +2,7 @@
 
 The site's security surface in one place: the response headers, the Content Security Policy and its report endpoint, where bot protection lives, and how secrets are handled. This is a topical doc, so it describes **what exists today** — rationale lives in [Engineering Decisions](decisions.md) and is linked from each section, per [D-260809a](decisions.md#d-260809a--separate-plans-decisions-and-history).
 
-The per-change procedure — what to check in a diff before opening a pull request — is the [release checklist](release-checklist.md#sensitive-information), not this file.
+The per-change procedure — what to check in a diff before opening a pull request — is the [release checklist](release-checklist.md#sensitive-information), not this file. **How to report a vulnerability is [`SECURITY.md`](../SECURITY.md)**, at the repository root, which is what GitHub surfaces as the security policy; before it existed GitHub offered this file in its place, which answers a different question.
 
 **What belongs here** is whatever someone auditing the site's security posture would expect to find in one place: headers, the policy, bot protection and secrets handling. Implementation that merely touches something sensitive does not — email template rendering and escaping stay with [Contact Feature](contact-feature.md).
 
