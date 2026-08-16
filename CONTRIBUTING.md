@@ -17,4 +17,4 @@ Two things are genuinely welcome, and the [contact form](https://www.ouwl.house/
 
 ## Reuse
 
-No licence is granted. The source is published to be read, not copied, so the default applies and all rights are reserved. If you would like to use part of it, ask through the contact form above rather than assuming.
+No licence is granted — see [LICENSE](LICENSE). The source is published to be read, not copied, so all rights are reserved. If you would like to use part of it, ask through the contact form above rather than assuming. The third-party dependencies remain under their own licences, which that notice does not affect.
