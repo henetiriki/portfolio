@@ -2,6 +2,13 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-16 — Restore the Jest run and the Codecov upload to the cheap path
+
+- **Both now run on every pull request, including a documentation-only one**, which is what makes `codecov/patch` requirable: a skipped upload posts no status at all, and a required check that never reports leaves the pull request pending forever. That was the last thing standing between the protected branch and the check set originally planned — [D-260815c](decisions.md#d-260815c--give-documentation-only-changes-a-cheap-ci-path-rather-than-no-ci-run).
+- **The cheap path is otherwise unchanged.** Lint, both type-checks, `css-vars:check`, the production build, the Playwright browser download and the browser suite are still skipped on prose, which is where the saving actually was. The unit suite runs in seconds; the browser half is the expensive part.
+- **Prose still cannot affect Jest** — the run is paid for so the requirement holds, not because a documentation change might break a test. `prettier:check` remains ungated for the opposite reason: it is the one check that _does_ apply to what changed.
+- **The fork exception stays**, since GitHub issues no OIDC token to a fork pull request and `fail_ci_if_error` would turn a missing token into a failed job.
+
 ## 2026-08-16 — Make the repository public and protect `main`
 
 - **The repository is public**, which is what made required status checks available at all: they are unavailable to a private repository on a free personal plan, and publishing was chosen over a paid plan. The two pre-publish checks were discharged first — see the entry below.

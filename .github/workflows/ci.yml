@@ -98,8 +98,11 @@ jobs:
       - name: Check formatting
         run: yarn prettier:check
 
+      # Also never gated, though nothing under docs/ can affect it. Codecov must
+      # post a status on every pull request for `codecov/patch` to be required —
+      # a skipped upload leaves that check pending forever. Jest is the fast part
+      # of the cheap path, so paying for it removes the edge case. See D-260815c.
       - name: Test with coverage
-        if: steps.change.outputs.docs_only != 'true'
         run: yarn test:coverage
 
       # Skipped for fork pull requests, which GitHub issues no OIDC token to
@@ -110,9 +113,8 @@ jobs:
       # would stop uploading from the branch the coverage is about.
       - name: Upload coverage to Codecov
         if: >-
-          steps.change.outputs.docs_only != 'true' && (github.event_name !=
-          'pull_request' || github.event.pull_request.head.repo.full_name ==
-          github.repository)
+          github.event_name != 'pull_request' ||
+          github.event.pull_request.head.repo.full_name == github.repository
         uses: codecov/codecov-action@v7
         with:
           disable_search: true
