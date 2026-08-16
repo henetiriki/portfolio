@@ -2,6 +2,15 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-16 — Put the type scale back on Mantine's defaults
+
+- **Body copy is 16px.** Every `fontSizes` token sat one step below Mantine's own since the v7 migration, and `Text` defaults to `md`, so every paragraph on the site rendered at 14px beneath headings on a conventional scale — [D-260816f](decisions.md#d-260816f--put-the-type-scale-back-on-mantines-defaults-and-make-leading-a-ratio). Two files changed.
+- **The leading mattered more than the sizes.** `body` carried an absolute `line-height: 1.5rem`, so larger text got proportionally tighter: 1.71 at 14px, 1.33 at 18px. A unitless `1.5` tracks whatever size it lands on, and without it the sizes alone would have made the largest text worse.
+- **Dropping the contact form's `size='lg'` would have shipped an iOS zoom defect.** The plan treated it as a workaround made redundant by a larger `md`; measuring showed `Input` defaults to `sm`, not `md`, so removing the prop rendered the fields at 14px and shrank the control from 50px to 36px. It sets a deliberate control height rather than compensating for anything, and it stays.
+- **A Mantine control's box does not scale with the token.** `--input-height` and `--button-height` are per-size constants; only the `-fz` variables read the theme. The form's text grew inside boxes that did not.
+- **Verified by measurement across all five routes rather than by eye**, since the browser pane was hidden for much of it and layout read zero. Computed font sizes and Mantine's own CSS variables resolve regardless, which is what the checks used.
+- **About half the site's text never read the scale** and is untouched — header navigation, page sub-headings, timeline entries, map markers, portfolio cards. Reviewing those is now [open work](roadmap.md), agreed rather than assumed: the visible before/after was checked against expectations, and two items on the "unchanged" list had in fact moved — the home page's `ex-flight attendant` line (14px → 16px) and the footer's navigation links (16px → 18px), both `Text` defaults rather than hardcoded.
+
 ## 2026-08-16 — Say to keep the wrong turn, since one line of this file said the opposite
 
 - **The practice already existed and the rule did not.** Several decisions record a discarded first attempt — the greyscale icon layer that painted an opaque square in [D-260815e](decisions.md#d-260815e--generate-the-pwa-icon-and-splash-set-from-one-vector-master), the `html`-versus-`body` background that "cost a wrong first attempt to find" — but nothing said to do it, so it happened when the author happened to think of it.
