@@ -59,7 +59,7 @@ Branches run concurrently here, and `main` is the only integration point. Merges
 - **In `roadmap.md`, removal wins** when one branch completes an item another merely edited. Touch `Last reviewed:` only when you have actually reviewed the whole roadmap — otherwise it is a one-line conflict on every branch.
 - **Merge the smaller branch first**, then rebase the other onto it.
 - **A change that rewrites one of those three files wholesale needs a window with no other branches open.** Reorganising a doc every branch touches, or moving content between docs, maximises exactly the conflict the rules above exist to contain. Sequence such changes back to back, merging between, and start parallel work only afterwards.
-- **Re-run [validation](#validating-a-change) after the rebase**, not only before opening the pull request. Nothing enforces checks on `main` yet, so two branches that each pass alone and break together have nothing to catch them.
+- **Re-run [validation](#validating-a-change) after the rebase**, not only before opening the pull request. The ruleset on `main` requires branches to be up to date before merging, so the second branch has to rebase and re-run anyway — the case it exists for is two branches that each pass alone and break together.
 
 ## Worktrees
 

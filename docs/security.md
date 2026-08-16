@@ -68,7 +68,7 @@ A rejected request never reaches the mail transport. The form also carries a sec
 
 - **Real secrets live in `.env*.local`, which is gitignored, and in the Vercel dashboard.** `.env` and `.env.test` are tracked and hold only non-secret host config or dummy values; `.env.test` exists so `next.config.js` validates under Jest, not as a source of credentials. See [Environment Variables](environment-variables.md).
 - **`NEXT_PUBLIC_*` inlines a value into the client bundle at build time**, so adding one is publishing it. The same applies to values added to the CI workflow's `env` block, since `ci.yml` is committed.
-- **The repository is private today and publication is the next step**, which makes history the thing to check rather than the tip. That check is done and recorded on the [roadmap](roadmap.md#testing--automation); re-run it if anything that could carry a credential is committed. If something sensitive ever is, rotation is the fix — a later commit removing it does not remove it from history.
+- **The repository is public as of 2026-08-16, so history is readable, not only the tip.** It was verified free of secrets before publication — every `.env*` blob that has ever existed, plus a search for the common credential and key formats. **Secret scanning and push protection are enabled**, so a credential is now blocked at the push rather than found later. If something sensitive ever does land, rotation is the fix: a later commit removing it does not remove it from history.
 - Each of these is a line item on the [release checklist](release-checklist.md#sensitive-information), to be run against every diff rather than only security-looking ones.
 
 ## Accepted exposure
