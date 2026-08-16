@@ -8,33 +8,43 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Hoisted to workflow level so the two jobs below share one copy. The build
+# needs all of it; Playwright's `webServer` starts `yarn start`, so the browser
+# suite needs it too. Next production builds do not load .env.test — these
+# non-secret dummy values keep next.config.js valid without exposing
+# deployment credentials.
+env:
+  CUSTOM_APP_DOMAIN: 'example.test'
+  GMAIL_APP_EMAIL: 'owner@example.test'
+  GMAIL_APP_PASSWORD: 'test-app-password'
+  GMAIL_SENDER_EMAIL: 'owner@example.test'
+  GOOGLE_MAPS_API_KEY: 'test-google-maps-api-key'
+  GOOGLE_MAPS_MAP_ID: 'test-google-maps-map-id'
+  HOST: 'http://localhost:3000'
+  HOSTNAME: 'localhost:3000'
+  IMAGE_HOST: 'https://res.cloudinary.com/henetiriki/image/upload/v1664623206/insta'
+  IMAGE_HOST_NAME: 'res.cloudinary.com'
+  IMAGE_HOST_PATH: 'henetiriki/image/upload/v1664623206/insta'
+  IMAGE_HOST_PROTOCOL: 'https'
+  ISTAGRAM_IMAGE_IDS: 'BZ4QGdOn6SP,Bcg0AZwFwv6,B5zAuLqJTEg,CEbEP7XJafW'
+  PROTOCOL: 'https'
+
 jobs:
-  test:
-    name: Validate & build
+  # A documentation-only change takes a cheap path. Its own job because
+  # `steps.*` does not cross job boundaries and both jobs below consume the
+  # answer. Checkout only, no install, so it costs seconds. The exclusions are
+  # CI's, not Vercel's, and the two lists deliberately differ — see the release
+  # checklist.
+  classify:
+    name: Classify the change
     runs-on: ubuntu-latest
-    # Next production builds do not load .env.test. These non-secret dummy
-    # values keep next.config.js valid without exposing deployment credentials.
-    env:
-      CUSTOM_APP_DOMAIN: 'example.test'
-      GMAIL_APP_EMAIL: 'owner@example.test'
-      GMAIL_APP_PASSWORD: 'test-app-password'
-      GMAIL_SENDER_EMAIL: 'owner@example.test'
-      GOOGLE_MAPS_API_KEY: 'test-google-maps-api-key'
-      GOOGLE_MAPS_MAP_ID: 'test-google-maps-map-id'
-      HOST: 'http://localhost:3000'
-      HOSTNAME: 'localhost:3000'
-      IMAGE_HOST: 'https://res.cloudinary.com/henetiriki/image/upload/v1664623206/insta'
-      IMAGE_HOST_NAME: 'res.cloudinary.com'
-      IMAGE_HOST_PATH: 'henetiriki/image/upload/v1664623206/insta'
-      IMAGE_HOST_PROTOCOL: 'https'
-      ISTAGRAM_IMAGE_IDS: 'BZ4QGdOn6SP,Bcg0AZwFwv6,B5zAuLqJTEg,CEbEP7XJafW'
-      PROTOCOL: 'https'
+    outputs:
+      docs_only: ${{ steps.change.outputs.docs_only }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -42,18 +52,30 @@ jobs:
           # Two commits, because the step below diffs HEAD against HEAD^.
           fetch-depth: 2
 
-      # A documentation-only change takes a cheap path: install and
-      # prettier:check, and nothing else. The exclusions are CI's, not Vercel's,
-      # and the two lists deliberately differ — see the release checklist.
       - name: Classify the change
         id: change
         run: |
           if git diff --quiet HEAD^ HEAD -- . ':(exclude)docs' ':(exclude)*.md' ':(exclude).claude' ':(exclude).worktreeinclude'; then
             echo 'docs_only=true' >> "$GITHUB_OUTPUT"
-            echo 'Documentation-only change: `prettier:check` ran, everything else was skipped.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Documentation-only change: `prettier:check` and the Jest run ran, everything else was skipped.' >> "$GITHUB_STEP_SUMMARY"
           else
             echo 'docs_only=false' >> "$GITHUB_OUTPUT"
           fi
+
+  # Everything that runs against source. Keeps per-step gates rather than one
+  # gate on the job, because `prettier:check`, the Jest run and the Codecov
+  # upload all still run on a documentation-only change. See D-260815c.
+  validate:
+    name: Validate
+    needs: classify
+    permissions:
+      contents: read
+      # Codecov authenticates by short-lived OIDC, so no upload secret is stored.
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
 
       - name: Set up Node
         uses: actions/setup-node@v7
@@ -65,32 +87,23 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Cache Next.js build cache
-        if: steps.change.outputs.docs_only != 'true'
-        uses: actions/cache@v6
-        with:
-          path: ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('yarn.lock') }}-${{ hashFiles('next.config.js', 'postcss.config.cjs', 'tsconfig.json', 'src/**/*.js', 'src/**/*.jsx', 'src/**/*.ts', 'src/**/*.tsx', 'src/**/*.css', 'service-worker/**/*.ts') }}
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('yarn.lock') }}-
-
       - name: Install dependencies
         run: yarn install --immutable
 
       - name: Check generated CSS variables
-        if: steps.change.outputs.docs_only != 'true'
+        if: needs.classify.outputs.docs_only != 'true'
         run: yarn css-vars:check
 
       - name: Lint
-        if: steps.change.outputs.docs_only != 'true'
+        if: needs.classify.outputs.docs_only != 'true'
         run: yarn eslint:check
 
       - name: Type-check application
-        if: steps.change.outputs.docs_only != 'true'
+        if: needs.classify.outputs.docs_only != 'true'
         run: yarn type-check
 
       - name: Type-check service worker
-        if: steps.change.outputs.docs_only != 'true'
+        if: needs.classify.outputs.docs_only != 'true'
         run: yarn tsc --pretty --noEmit --project service-worker/tsconfig.json
 
       # Never gated: prettier covers the whole tree, so on a documentation-only
@@ -122,15 +135,49 @@ jobs:
           files: ./coverage/lcov.info
           use_oidc: true
 
+  # Everything that needs a production build, running concurrently with the job
+  # above: nothing here consumes anything it produces. This job is exactly what
+  # the cheap path skips, so it is one gate on the job rather than a gate per
+  # step. A job skipped by an `if:` reports success and satisfies a required
+  # check, which a `paths-ignore` filter would not — see D-260815c.
+  build:
+    name: Build & browser suite
+    needs: classify
+    if: needs.classify.outputs.docs_only != 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          cache: 'yarn'
+          cache-dependency-path: 'yarn.lock'
+          node-version-file: '.nvmrc'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      # Belongs solely to this job, so the two do not contend for it.
+      - name: Cache Next.js build cache
+        uses: actions/cache@v6
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('yarn.lock') }}-${{ hashFiles('next.config.js', 'postcss.config.cjs', 'tsconfig.json', 'src/**/*.js', 'src/**/*.jsx', 'src/**/*.ts', 'src/**/*.tsx', 'src/**/*.css', 'service-worker/**/*.ts') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('yarn.lock') }}-
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
       # One build, because there is only one production configuration: the
       # service worker is generated whenever NODE_ENV is production, with no
       # flag to set. See D-260807a.
       - name: Build
-        if: steps.change.outputs.docs_only != 'true'
         run: yarn build
 
       - name: Verify service worker output
-        if: steps.change.outputs.docs_only != 'true'
         run: test -s public/sw.js
 
       # Keyed on the installed Playwright version, because that is what the
@@ -140,13 +187,11 @@ jobs:
       # here rather than by a postinstall hook.
       - name: Resolve Playwright version
         id: playwright-version
-        if: steps.change.outputs.docs_only != 'true'
         run: |
           version="$(node -p "require('@playwright/test/package.json').version")"
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Cache Playwright browser
-        if: steps.change.outputs.docs_only != 'true'
         uses: actions/cache@v6
         with:
           key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
@@ -155,15 +200,13 @@ jobs:
       # Runs on a cache hit too: --with-deps also installs system font and
       # library packages, which live outside the cached browser directory.
       - name: Install Playwright browser
-        if: steps.change.outputs.docs_only != 'true'
         run: yarn test:e2e:install
 
       - name: Browser regression suite
-        if: steps.change.outputs.docs_only != 'true'
         run: yarn test:e2e
 
       - name: Upload Playwright report on failure
-        if: failure() && steps.change.outputs.docs_only != 'true'
+        if: failure()
         uses: actions/upload-artifact@v5
         with:
           name: playwright-report
