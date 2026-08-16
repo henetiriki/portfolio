@@ -6,8 +6,6 @@ Last reviewed: 2026-08-16.
 
 ## Testing & automation
 
-- [ ] **Document the CodeQL default setup, which no doc currently mentions.** Code scanning is enabled through GitHub's default setup rather than a workflow file, so `Analyze (javascript-typescript)` and `Analyze (actions)` appear as check runs on every pull request with nothing in `.github/workflows/` to explain them. It is configured for the `default` query suite on a `remote` threat model with a weekly schedule. Decide whether it belongs in [Security](security.md) as part of the surface, whether either analysis should be a required check, and whether default setup or a committed workflow is the right form — a workflow would be visible in the repository but would then need maintaining.
-
 - [ ] **Consider tagging releases, since "what was live when" is currently only recoverable as a commit SHA.** A release here is a squash-merge to `main` that Vercel deploys automatically, with no tag, no version bump and no artefact — see the [release checklist](release-checklist.md). `package.json`'s `version` has never moved and is already documented as inert, so nothing is wrong today; the question is whether each deploy is worth naming.
   - **What it would buy**: rollback and bisection against what production actually ran rather than against `main`'s history, and a stable identifier for [Project History](project-history.md) entries to cite instead of a date.
   - **What it would cost**: something has to mint the tag. A workflow on push to `main` is the obvious trigger, but it would fire on documentation-only merges too unless gated the way the [cheap path](release-checklist.md#pull-request) is, and the tag would then be created by CI rather than by whoever merged.
