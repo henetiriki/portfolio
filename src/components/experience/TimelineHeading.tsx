@@ -11,6 +11,7 @@ export const TimelineHeading: FC<{ icon: JSX.Element; title: string }> = ({
       bg='shamrock'
       h='2.5rem'
       justify='center'
+      ml={{ base: -12, xs: 0 }}
       mr='1.25rem'
       style={{ borderRadius: '100%' }}
       w='2.5rem'>

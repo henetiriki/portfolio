@@ -12,7 +12,7 @@ export const Content: FC<
       opacity={0.9}
       p={{ base: '2rem 1.5rem', xs: '4rem' }}
       w='100%'>
-      <Container>{children}</Container>
+      <Container px={{ base: 0, xs: 'md' }}>{children}</Container>
     </Box>
     {waveBottom && (
       <WaveWrapper style={{ marginBottom: '8rem' }} wave='content-bottom' />

@@ -12,6 +12,27 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260816k — Reclaim the timeline's gutter from the container, not from the rail
+
+- **Status:** Accepted
+- **Decided:** 2026-08-16
+
+The left inset on `/experience` narrows below the `xs` breakpoint by making four of its five layers responsive: the Mantine `Container` inside `Content` drops its padding, `TimelineBox` reduces its rail-to-card padding, `TimelineContent` reduces its own, and the rail moves 12px nearer the edge with `TimelineHeading`'s icon shifted by the same amount to stay centred on it.
+
+**The rail's offset is an alignment constant, and moving it alone breaks that silently.** `TimelineHeading`'s icon is a `2.5rem` circle sitting at the container's content edge, so its centre falls exactly 20px in — which is where the rail is drawn. The margin can be reduced, but only in step with the icon: the two move together or not at all, and nothing about the markup says so.
+
+**The rail stops 12px short of matching the card's right gutter, which was the proposal.** Aligning them exactly — rail 24px from the edge, as the card is from the other — is the symmetry the layout appears to be reaching for, and it is worth another 8px of column. It puts the section icons 4px from the screen edge: the only element on any page outside the site's 24px left margin, sitting in the rounded-corner and edge-swipe zone on both platforms. The icons are the anchor for each section and the worst candidate for that spot. Twelve pixels of overhang reads as a deliberate break; twenty reads as a mistake.
+
+**Rail symmetry would not have produced a symmetric page anyway**, which is the part worth keeping. The block a reader sees is the text, not the hairline rail: at 412px the copy runs 93px from the left and 40px from the right, and moving the rail flush leaves it at 73 against 40. Most of that difference is the rail-to-card gap and the arrow, so no position of the rail equalises it. The gap, not the rail, is where the remaining asymmetry lives.
+
+**The container is the layer that moves both at once, which makes the largest win also the safest.** The icon sits at the container's content edge and the rail is measured 20px from the same edge, so removing that padding at mobile widths shifts the pair together and the alignment survives untouched. It returns 32px — more than either timeline-local change — while being the one edit that cannot break the invariant above. That was not obvious from the layer list, which reads as five independent insets.
+
+**`TimelineContent`'s arrow puts a floor on the rail-to-card padding that is invisible in the markup.** The card's `::before` is drawn at `right: 100%`, outside the card, into the same gap the dot occupies. Taking the padding to 24px — the value the arithmetic suggested — put the arrow tip through the dot. The padding stops at 32px, and the arrow narrows below `xs` so the clearance matches what it has at desktop widths.
+
+**The regression spec asserts ratios and relationships, not the values these produced.** The column is asserted against the viewport rather than in pixels, because any future spacing change moves the number without touching the property worth holding. The alignment invariants are asserted directly, since they are what a plausible future fix would trade away for width. The column assertions were confirmed to fail on the previous layout; the invariants pass on both, which is what they are for.
+
+**The container change reaches every page, deliberately.** `Content` wraps all five routes, so each gains the same 32px below `xs`. The padding it removes was duplicated — `Content`'s own `Box` already insets by 24px at that width — so what goes is a second inset inside the first, not the page's margin. `MapError` keeps its own container and is unaffected, being a sibling of `Content` rather than a child.
+
 ## D-260816j — Keep CodeQL on default setup, and leave it unrequired
 
 - **Status:** Accepted

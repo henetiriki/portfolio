@@ -50,6 +50,8 @@ Renders the optional YouTube embed for a timeline entry, inside a fixed-ratio bo
 
 A set of small, single-purpose components composed together in `pages/experience.tsx` to lay out each job/school entry: `Timeline`, `TimelineBox`, `TimelineContent`, `TimelineFromTo` (renders the `year.from`–`year.to` range), `TimelineHeading` (section heading with an icon, e.g. `IconBriefcase`/`IconSchool`), `TimelineInstitution` (name + optional link), `TimelineLocation`, `TimelineTitle`, and `VideoContainer` (renders an embedded YouTube iframe when a job entry defines `video`).
 
+Their horizontal spacing is viewport-dependent below the `xs` breakpoint: `TimelineBox`'s rail-to-card padding and `TimelineContent`'s own padding both narrow, as does the arrow `TimelineContent` draws outside its left edge, and `Timeline`'s margin moves the rail 12px nearer the screen edge. Two relationships constrain any further change and are asserted by `experience-gutter.mobile.spec.ts` — `Timeline`'s margin is where `TimelineHeading`'s icon centre falls, so the icon carries a matching negative margin at the same breakpoint, and the arrow shares the rail-to-card gap with the dot. See [D-260816k](decisions.md#d-260816k--reclaim-the-timelines-gutter-from-the-container-not-from-the-rail).
+
 ## `travel/` — Google Maps feature
 
 See [Travel Feature](travel-feature.md) for the full data/behavior spec. Component summary:
