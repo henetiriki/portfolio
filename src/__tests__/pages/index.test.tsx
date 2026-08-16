@@ -37,17 +37,18 @@ describe('Home page', () => {
     expect(await screen.findByText('ex-flight attendant turned programmer'));
   });
 
-  it('keeps the role and location out of the heading outline', () => {
+  it('heads the about section with the role rather than repeating the name', () => {
     render(<Home />);
 
-    expect(screen.getByText('Front-end Engineer')).toBeInTheDocument();
+    // see D-260816e — the name is the h1, so a second heading carrying it left
+    // the outline naming the same person twice and the section not at all
+    expect(
+      screen.getAllByRole('heading', { name: /louw swart/i })
+    ).toHaveLength(1);
+    expect(
+      screen.getByRole('heading', { level: 3, name: 'Front-end Engineer' })
+    ).toBeInTheDocument();
     expect(screen.getByText('Garden Route, South Africa')).toBeInTheDocument();
-
-    // see D-260816e — every remaining h4 names a section, so the outline no
-    // longer advertises a job title as one
-    screen.getAllByRole('heading', { level: 4 }).forEach(heading => {
-      expect(heading).not.toHaveTextContent(/front-end engineer|garden route/i);
-    });
   });
 
   it('renders a static role tagline when reduced motion is preferred', () => {

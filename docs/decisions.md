@@ -12,20 +12,22 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
-## D-260816e — Make the About block's role line a subtitle rather than a heading
+## D-260816e — Head the About section with the role, not a second copy of the name
 
 - **Status:** Accepted
 - **Decided:** 2026-08-16
 
-The role and location under "Louw Swart" on the home page are a `<Title component='p' order={4} size='h5'>` and a `<Text c='whisper.5'>`, not a heading. Every remaining `h4` in that block names a section.
+The About block on the home page is `h2` "About me", `h3` "Front-end Engineer", then the location as a subtitle beneath it. The `h3` carrying "Louw Swart" is gone.
 
-**One heading level was doing two unrelated jobs.** `<Title order={4}>` marked both the person's job title and the genuine section headings "Open Source Contributions" and "Hobbies and Interests". The outline therefore read `About me → Louw Swart → Front-end Engineer, Wellington NZ`, with the three biography paragraphs appearing to belong to a section named after a job title. Someone navigating by heading landed on a label that leads nowhere, and the outline carried a node that is not a section.
+**The name was in the outline twice and the section was not in it at all.** The hero already renders "Louw Swart" as the page's `h1`, so the `h3` repeating it added nothing a reader or a crawler did not have. Worse, it pushed the job title down to `h4` — the same level as the genuine section headings "Open Source Contributions" and "Hobbies and Interests" — so the outline read `About me → Louw Swart → Front-end Engineer, Wellington NZ`, with the biography paragraphs appearing to belong to a section named after a job title. Promoting the role fixes both: the outline names the person once, and every heading below it names a section that exists.
 
-**The wrap forced the question rather than created it.** "Front-end Engineer, Garden Route, South Africa" needs about 500px in a 464px column, so it wrapped where "Front-end Engineer, Wellington NZ" had not. Splitting it across two lines is what a subtitle should have been all along; the longer string only made the existing shape visible.
+**"Front-end Engineer" is a real heading, which is why it is one.** The three paragraphs under it are about exactly that career, and the two `h4`s below are subsections of it. This is the difference from the shape considered first, where the role was a non-heading subtitle: that was right while the name held the `h3`, and stopped being right once the name left.
 
-**`component='p'` with `size='h5'` keeps the typography and drops the semantics.** The line stays in the heading font at 18px, one step below the 20px section headings it no longer competes with, and the location sits under it at body size in `whisper-5` — 8.1:1 against the content box, comfortably past AAA. `Title` is already used this way for the hero subtitle, so it is the established pattern here rather than a new one.
+**The wrap forced the question rather than created it.** "Front-end Engineer, Garden Route, South Africa" needs about 500px in a 464px column, so it wrapped where "Front-end Engineer, Wellington NZ" had not. The duplicated name and the overloaded heading level both predate this change; the longer string only made them visible.
 
-**Nothing is lost for search.** Both strings are still ordinary text in the document, and the page's real signal for the location is the meta description, which [D-260816d](#d-260816d--name-the-region-rather-than-the-town-and-take-en-zas-date-order) corrected in the same change.
+**The location is a subtitle, at `lg` in `whisper-5`.** 16px sits between the 24px `h3` above it and the 14px body copy below, so it reads as a subtitle rather than as the first line of the biography, and it measures 8.1:1 against the content box — comfortably past AAA. Both lines fit without wrapping at desktop and at 375px.
+
+**Nothing is lost for search.** The location is still ordinary text in the document, and the page's real signal for it is the meta description, which [D-260816d](#d-260816d--name-the-region-rather-than-the-town-and-take-en-zas-date-order) corrected in the same change.
 
 ## D-260816d — Name the region rather than the town, and take `en-ZA`'s date order
 

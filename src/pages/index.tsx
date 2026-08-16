@@ -62,11 +62,10 @@ const Home: NextPage = (): JSX.Element => {
           justify='space-between'>
           <Box className={classes.about}>
             <Title order={2}>About me</Title>
-            <Title order={3}>Louw Swart</Title>
-            <Title component='p' order={4} size='h5'>
-              Front-end Engineer
-            </Title>
-            <Text c='whisper.5'>Garden Route, South Africa</Text>
+            <Title order={3}>Front-end Engineer</Title>
+            <Text c='whisper.5' fz='lg'>
+              Garden Route, South Africa
+            </Text>
             <Text component='p'>
               I have had a varied career spanning 8 years in the travel industry
               as a <b>flight attendant</b>, after which I joined the IT sector
