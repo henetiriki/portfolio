@@ -8,7 +8,26 @@ Each decision is identified by the date it was decided, in the form `D-YYMMDD` p
 
 To mint one: take your decision date, look for that date already in this file, and take the next free letter. Nothing needs checking against other branches, and nothing is ever renumbered.
 
+**A letter freed by a rename is retired, not recycled.** `D-260816a` was published and then renamed to [D-260815i](#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar), so reusing it would silently point every stale inbound link at an unrelated decision — the one outcome renaming-in-place was avoided to prevent. `D-260816b` is therefore the first decision minted on that date.
+
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
+
+## D-260816b — Split CI into concurrent jobs, with the classification in its own
+
+- **Status:** Accepted
+- **Decided:** 2026-08-16
+
+`ci.yml` ran everything in one serial `Validate & build` job, so lint, types, formatting and the unit suite all waited behind a production build, a ~270 MB Playwright download and the browser suite. Nothing in the fast half feeds the slow half: the fast checks read source, and only the browser suite needs `.next`, because Playwright's `webServer` starts `yarn start`. They now run as `Validate` and `Build & browser suite`, concurrently.
+
+**Two parallel jobs each pay their own `yarn install`, and that is now free.** This was the constraint that put the split behind publication — a second install billed against the free monthly Actions allowance on a private repository. Public repositories get unmetered Actions minutes, so the trade of money for latency became a straight win rather than a judgement call. The Next build cache belongs solely to the second job, so the two do not contend for it either.
+
+**The classification needs its own job because `steps.*` does not cross job boundaries.** Both jobs consume the documentation-only answer from [D-260815c](#d-260815c--give-documentation-only-changes-a-cheap-ci-path-rather-than-no-ci-run), so it moves into a `classify` job that does a two-commit checkout, runs one `git diff` and exposes an output. It installs nothing and costs seconds, which is what makes an extra job affordable here.
+
+**The split subsumes half of the cheap path.** `Build & browser suite` _is_ everything that path skips, so it becomes one `if:` on the job rather than a gate per step. `Validate` keeps per-step gates, because `prettier:check`, the Jest run and the Codecov upload all still run when the rest of it does not.
+
+**A job skipped by an `if:` satisfies a required check; a workflow skipped by `paths-ignore` does not.** That asymmetry is load-bearing and is the same one D-260815c turned on, now applied at job rather than step granularity: a conditionally skipped job reports success, while a filtered-out workflow never reports and leaves the requirement pending forever. It is why the gated job can be required on `main` at all.
+
+**Splitting renames the required check, which is the risk the change actually carries.** `Validate & build` no longer exists, and a ruleset requiring a check that no longer runs blocks every pull request indefinitely. The ruleset was updated to require `Validate`, `Build & browser suite` and `codecov/patch` in the same window as the merge — see [Project History](project-history.md).
 
 ## D-260815h — Promote the policy to enforcing in one step
 
@@ -125,13 +144,13 @@ This project is deliberately documentation-heavy — the [release checklist](rel
 
 **A cheap path, not an absent one.** `prettier:check` runs `prettier .` across the tree, so Markdown and JSON _are_ checked, and on a documentation-only change it is the only check that applies to what changed — a blanket skip would remove the one thing still worth running. `eslint` and both type-checks cover no Markdown and `css-vars:check` reads `colors.ts`, so all three are gated. Jest cannot be affected by prose either, but it runs regardless: see the resolution below.
 
-**`paths-ignore` was rejected before it was tried.** A workflow filtered out that way never reports, and a required check that never reports leaves a pull request pending forever — so it would silently break the branch protection the [roadmap](roadmap.md#testing--automation) plans. The filter is a per-step `if:` inside the job, so `CI / Validate & build` still runs and still reports success. That is the whole reason for the shape.
+**`paths-ignore` was rejected before it was tried.** A workflow filtered out that way never reports, and a required check that never reports leaves a pull request pending forever — so it would silently break the branch protection now in place on `main`. The filter is an `if:` inside the workflow, so the jobs still run, or skip, and still report success. That is the whole reason for the shape, and [D-260816b](#d-260816b--split-ci-into-concurrent-jobs-with-the-classification-in-its-own) relies on the same asymmetry at job granularity.
 
 **The exclusion list is CI's, not Vercel's, and copying would have been the obvious mistake.** Vercel asks whether a change can reach a visitor; CI asks whether a change can affect lint, types, tests or the build. `e2e/` and `playwright.config.ts` are excluded from the deploy ([D-260815a](#d-260815a--give-the-service-worker-its-own-playwright-project-rather-than-unblocking-it-everywhere)) and are precisely the paths whose change _must_ run the browser suite. Verified against real commits rather than reasoned about: replaying the classification, [#173](https://github.com/henetiriki/portfolio/pull/173) takes the full path on `e2e/` alone while Vercel skipped it, and [#166](https://github.com/henetiriki/portfolio/pull/166) takes the full path on `.gitignore` alone — which is in neither list, on both sides, because it decides what the build has to work with.
 
 **One `git diff`, matching `vercel.json`'s shape, and it fails open.** `HEAD^` is the base tip on a pull request — the checked-out ref is the merge commit — and the previous tip on a push to `main`, so a single command covers both events; the checkout carries `fetch-depth: 2` for that parent. Any failure to resolve it exits non-zero and the change is treated as not documentation-only, so the failure mode is a needless full run rather than a missed check. The same direction `vercel.json` chose.
 
-**One consequence is owed to whoever enables branch protection.** The cheap path skips the Jest run, so no report is uploaded and `codecov/patch` is not expected to post a status at all on a documentation-only pull request. Requiring that check on `main` would therefore reintroduce exactly the permanently-pending failure that `paths-ignore` was rejected for. Nothing is required today, so nothing is broken today.
+**One consequence was owed to whoever enabled branch protection, and it was paid.** The cheap path originally skipped the Jest run, so no report was uploaded and `codecov/patch` could not post a status at all on a documentation-only pull request — requiring that check would have reintroduced exactly the permanently-pending failure `paths-ignore` was rejected for. The gate was removed before the check was required, so the case never arose.
 
 **Resolved the same day it was raised, and applied on 2026-08-16: the Jest run and the Codecov upload are no longer gated.** Skipping them was this decision's one concession to the roadmap's original shape, written before anyone priced the run — the unit suite takes seconds locally, against a production build and a ~270 MB browser download. It is a few percent of the saving, and paying it removes the branch-protection edge case rather than betting on Codecov's behaviour with no upload. Sequenced onto publication because that is when a required check first existed to be blocked; the shape of the cheap path is otherwise unchanged.
 
