@@ -12,6 +12,40 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260816h — Prefix every branch name, and keep the set to four
+
+- **Status:** Accepted
+- **Decided:** 2026-08-16
+
+Branches are `<prefix>/<hyphenated-description>` with `feature/`, `fix/`, `docs/` or `chore/`. The convention is written down in [AGENTS.md](../AGENTS.md#branch-names); before this, the only mention anywhere was a release-checklist line saying `feature/*`, which roughly a third of merged branches followed.
+
+**The practice was already three conventions, and none of them was wrong.** Of the thirty branches merged before this one, most were bare kebab-case, nine used `docs/` and seven used `feature/`. Nothing arbitrated, so each branch was named by whichever habit was closest to hand — and the bare majority meant the prefix, when present, carried no information, because its absence meant nothing.
+
+**`docs/` is a verifiable claim; the other three are not.** This repository already classifies changes twice — CI's cheap path and Vercel's `ignoreCommand` — and `docs/`'s scope is exactly the first and a subset of the second, so the prefix is a prediction the build either confirms or contradicts. That is a property a naming convention does not usually get, and it is the reason the set is worth having at all rather than a nicety.
+
+**The same was claimed for `chore/` and it is false**, caught by the documentation sweep on this change rather than by review. Vercel excludes a list of paths, not a category of intent: a dependency bump, an `eslint.config.mjs` edit or a workflow change is invisible to a visitor and deploys anyway, while a `chore/` touching only `e2e/` does not. The claim was plausible because this very branch is a `chore/` whose deploy _was_ skipped — one confirming instance, generalised without checking the list. `feature/` and `fix/` never claimed anything and are kept because the set has to cover every branch, or people fall back to bare names.
+
+**Adopted from [Conventional Branch](https://conventionalbranch.org/) rather than invented**, minus `hotfix/` and `release/`. Both presuppose a release process this repository does not have: every merge to `main` deploys to production automatically, with no tags or version numbers ([release checklist](release-checklist.md)), so there is no release to prepare and an urgent fix is procedurally identical to any other `fix/`. Taking the published spec and subtracting is cheaper to justify than a bespoke list, and it keeps the door open to the prefixes we dropped.
+
+**The argument for dropping `feature/` was made and rejected.** On a repository where every branch is a feature the prefix looks like pure tax, and the alternative proposed was bare names with `docs/` as the one exception. That was declined on the grounds of habit — which is the right call for a convention whose entire value is that it is followed without thinking. A rule that has to be remembered against an existing reflex is a rule that erodes.
+
+## D-260816g — Serve the browser suite on 3001, and leave 3000 to `next dev`
+
+- **Status:** Accepted
+- **Decided:** 2026-08-16
+
+`playwright.config.ts` serves on port 3001 with `reuseExistingServer: false` in every environment. Port 3000 is reserved for `next dev`.
+
+**The pin to 3000 outlived its reason.** The config called the port "not negotiable" because the Google Maps API key is restricted to `http://localhost:3000` — true of the key, and irrelevant to the suite, because `blockGoogleMaps` aborts `**://*.googleapis.com/**` at the network layer in every spec. That includes the one spec that appears to be an exception, which asserts the travel page's error state and depends on the abort to produce it. CI supplies a dummy key besides. Nothing in the browser suite has ever authenticated against Maps, so nothing in it cared what port it ran on. The restriction is real for manual QA under `yarn dev`, which is exactly what now keeps 3000.
+
+**A shared port made an agent and a human contend for one server.** Both need 3000 for different things — a dev server to watch changes land, and a production server to test against — and `reuseExistingServer` outside CI meant Playwright would attach to whichever it found. A suite that silently ran against a dev build, or against a stale `next start` serving output since rebuilt, is worse than one that will not start: it fails across every spec at once and reads as a regression in the change under test. That misdiagnosis has cost debugging time twice.
+
+**`reuseExistingServer` is `false` rather than `!isCI`.** On a port nothing else claims there is nothing legitimate to attach to, so reuse can only ever be right by accident. The cost is a server boot on each local run; the gain is that an occupied 3001 fails loudly and immediately.
+
+**Both `.claude/launch.json` servers moved to 3001 too, and that costs Maps in the agent's preview.** Reserving a port is only worth doing if the tooling honours it, and that file is how an agent starts a server. The consequence is real: a dev server on 3001 fails Maps authorisation, so the travel map renders as `MapError` in the browser pane. Accepted because manual QA belongs on the Vercel preview URL rather than an agent's localhost — the [pull request checklist](../AGENTS.md#opening-a-pull-request) says so already. Adding `http://localhost:3001` to the key's allowed referrers would undo the loss and was not done: it widens a credential's origin list for a convenience, and it is a change outside git that would then need [recording](../AGENTS.md#documentation-discipline).
+
+**The compiled output was never the conflict, which took measuring to establish.** Next 16 writes dev output to `.next/dev`, and `next build` clears `.next` with `cache`, `dev`, `lock` and `trace` excluded — `node_modules/next/dist/build/index.js`, the `clean` trace. So a production build alongside a running dev server disturbs nothing, and the port was the whole of the problem. `yarn clean` is the exception, being `rm -rf .next`.
+
 ## D-260816e — Head the About section with the role, not a second copy of the name
 
 - **Status:** Accepted

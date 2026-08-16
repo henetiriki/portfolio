@@ -4,14 +4,14 @@
     {
       "name": "dev",
       "runtimeExecutable": "yarn",
-      "runtimeArgs": ["dev"],
-      "port": 3000
+      "runtimeArgs": ["dev", "--port", "3001"],
+      "port": 3001
     },
     {
       "name": "prod",
       "runtimeExecutable": "yarn",
-      "runtimeArgs": ["start"],
-      "port": 3000
+      "runtimeArgs": ["start", "--port", "3001"],
+      "port": 3001
     }
   ]
 }

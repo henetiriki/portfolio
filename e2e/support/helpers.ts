@@ -11,11 +11,13 @@ export const CONTENT_ROUTES = [
 /**
  * Google Maps is never contacted from the browser suite.
  *
- * The API key is restricted to http://localhost:3000 and the production origin,
- * and CI supplies a dummy key, so a real load would behave differently between
- * a developer's machine and CI — exactly the flakiness a regression suite must
- * not have. The Maps layer already has its own SDK mock and full unit coverage;
- * what this suite checks is that the page around it degrades correctly.
+ * The API key is restricted by origin and CI supplies a dummy key, so a real
+ * load would behave differently between a developer's machine and CI — exactly
+ * the flakiness a regression suite must not have. The Maps layer already has
+ * its own SDK mock and full unit coverage; what this suite checks is that the
+ * page around it degrades correctly.
+ *
+ * This block is why the suite needs no particular port.
  */
 export const blockGoogleMaps = (page: Page) =>
   page.route('**://*.googleapis.com/**', (route: Route) => route.abort());

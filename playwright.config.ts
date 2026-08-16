@@ -1,9 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// Port 3000 is not negotiable. The Google Maps API key is restricted to
-// http://localhost:3000 and the production origin, so any other port silently
-// fails Maps authorisation. See docs/development.md#browser-regression-suite.
-const PORT = 3000;
+// 3001 rather than 3000, which is left free for `next dev`.
+// See docs/development.md#browser-regression-suite.
+const PORT = 3001;
 
 export const BASE_URL = `http://localhost:${PORT}`;
 
@@ -63,8 +62,13 @@ export default defineConfig({
     video: 'off',
   },
   webServer: {
-    command: 'yarn start',
-    reuseExistingServer: !isCI,
+    // `next start` defaults to 3000, so the port has to be passed as well as
+    // waited on — `url` alone would wait on 3001 for a server bound to 3000.
+    command: `yarn start --port ${PORT}`,
+    // Never reused. On a port of its own there is nothing legitimate to attach
+    // to, and attaching to a stale server was a repeat source of failures that
+    // looked like regressions. See docs/development.md#browser-regression-suite.
+    reuseExistingServer: false,
     // A production server is the right target: it exercises the prerendered
     // output that actually ships, and `next dev` would compile routes lazily
     // on first hit, making the first navigation in each spec arbitrarily slow.
