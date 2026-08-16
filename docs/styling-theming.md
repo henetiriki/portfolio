@@ -32,6 +32,14 @@ v6's `colorScheme` and `globalStyles` theme keys don't exist in v7. `colorScheme
 
 **`defaultRadius: 'sm'` is set deliberately, not incidentally.** Mantine v9 changed its own default from `sm` (4px) to `md` (8px) — confirmed by diffing the shipped `default-theme.mjs` between 8.3.18 and 9.5.1. Every component that doesn't pass an explicit `radius` inherits it, so leaving it unset would have silently rounded the `Tooltip`, notification toasts and `Drawer` more than before. Pinning `sm` preserves the pre-v9 appearance. The buttons and inputs that pass `radius='lg'` (`ContactForm`, `portfolio.tsx`, `ErrorContent`) were never affected either way. **This is a design choice, not a technical constraint** — deleting the line adopts Mantine's newer, rounder default.
 
+### Type scale
+
+`fontSizes` holds Mantine's own defaults — `xs` 12, `sm` 14, `md` 16, `lg` 18, `xl` 20 — and `body` in [`global.css`](#globalcsss-four-rules) sets a **unitless** `line-height: 1.5`, so leading tracks size instead of being pinned to one value. Both were corrected together on 2026-08-16; the scale had sat one step low since the v7 migration, which put body copy at 14px. See [D-260816f](decisions.md#d-260816f--put-the-type-scale-back-on-mantines-defaults-and-make-leading-a-ratio).
+
+- **`Text` and `Input` do not default to the same token.** `Text` defaults to `md`, `Input` and its wrappers to `sm`. That asymmetry is why the contact form passes an explicit `size='lg'`: dropping the prop would render its fields at `sm`, and anything under 16px makes iOS Safari zoom the viewport on focus.
+- **A Mantine component's box does not scale with `fontSizes`.** `--input-height` and `--button-height` are Mantine's own per-size constants (`lg` is `3.125rem` for both), while `--input-fz` and `--button-fz` read from the theme. Changing a token therefore moves the text inside a control without moving the control.
+- **Roughly half the site's text never reads these tokens at all**, sizing itself in CSS Modules or inline instead — the header navigation, page sub-headings, timeline entries, map markers and portfolio cards. Those are unaffected by the scale and are [open work](roadmap.md).
+
 ### Fonts
 
 `src/styles/fonts.ts` loads **Montserrat** (headings) and **Roboto** (body) through `next/font/local`, from two `woff2` files committed under `src/styles/fonts/`. `_app.tsx` writes the generated family names to `--portfolio-font-heading` and `--portfolio-font-body` in the shared `<Head>`; the Mantine theme consumes those properties and retains the system-font fallbacks. The generated names come from the exported constants, so what appears in DevTools and in the built CSS is `headingFont` and `bodyFont`, not `Montserrat` and `Roboto`.

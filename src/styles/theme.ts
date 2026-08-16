@@ -14,11 +14,11 @@ export const theme = createTheme({
   fontFamily:
     'var(--portfolio-font-body), -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji',
   fontSizes: {
-    lg: rem(16),
-    md: rem(14),
-    sm: rem(12),
-    xl: rem(18),
-    xs: rem(10),
+    lg: rem(18),
+    md: rem(16),
+    sm: rem(14),
+    xl: rem(20),
+    xs: rem(12),
   },
   headings: {
     fontFamily:

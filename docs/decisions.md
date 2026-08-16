@@ -12,6 +12,23 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260816f — Put the type scale back on Mantine's defaults, and make leading a ratio
+
+- **Status:** Accepted
+- **Decided:** 2026-08-16
+
+`fontSizes` in [`theme.ts`](../src/styles/theme.ts) is Mantine's own scale — 12/14/16/18/20 — and `body`'s `line-height` in [`global.css`](../src/styles/global.css) is a unitless `1.5`. Body copy moves from 14px to 16px.
+
+**The headings were on a conventional scale and the body was one step below it.** Every token sat a notch under Mantine's default, and `Text` defaults to `md`, so every paragraph on the site rendered at 14px beneath headings stepping 24px → 20px. The compression read as the headings being too large, when the body was in fact small — which is how it was described before it was measured.
+
+**The leading was pinned, and that mattered more than the sizes.** `body` carried `line-height: 1.5rem`, an absolute 24px rather than a ratio. At 14px that is 1.71 and generous, which is part of why small body copy read acceptably; at 18px it would have been 1.33 and cramped. Raising the sizes without this would have made the worst-affected text worse. A unitless value tracks whatever size it lands on.
+
+**`Text` and `Input` default to different tokens, and assuming otherwise nearly shipped a defect.** The plan was to drop the contact form's `size='lg'` as a workaround made redundant by a larger `md`. Measuring showed `Input` defaults to `sm`, not `md`, so removing the prop rendered the fields at 14px — under the 16px threshold that makes iOS Safari zoom on focus — and shrank the control from 50px to 36px. `size='lg'` is not compensation for a small `md`; it sets a deliberate 50px control height, and it stays.
+
+**A control's box does not scale with the token.** `--input-height` and `--button-height` are Mantine's per-size constants; only `--input-fz` and `--button-fz` read the theme. So the form's text grew inside boxes that did not, which is the intended outcome here but is worth knowing before assuming a token change resizes a component.
+
+**About half the site's text is outside this scale entirely** — the header navigation, page sub-headings, timeline entries, map markers and portfolio cards all size themselves in CSS Modules or inline. They are deliberately untouched here rather than swept along: folding them onto tokens is an opinionated change that deserves its own review, and it is [open work](roadmap.md).
+
 ## D-260816h — Prefix every branch name, and keep the set to four
 
 - **Status:** Accepted
@@ -42,7 +59,7 @@ Branches are `<prefix>/<hyphenated-description>` with `feature/`, `fix/`, `docs/
 
 **`reuseExistingServer` is `false` rather than `!isCI`.** On a port nothing else claims there is nothing legitimate to attach to, so reuse can only ever be right by accident. The cost is a server boot on each local run; the gain is that an occupied 3001 fails loudly and immediately.
 
-**Both `.claude/launch.json` servers moved to 3001 too, and that costs Maps in the agent's preview.** Reserving a port is only worth doing if the tooling honours it, and that file is how an agent starts a server. The consequence is real: a dev server on 3001 fails Maps authorisation, so the travel map renders as `MapError` in the browser pane. Accepted because manual QA belongs on the Vercel preview URL rather than an agent's localhost — the [pull request checklist](../AGENTS.md#opening-a-pull-request) says so already. Adding `http://localhost:3001` to the key's allowed referrers would undo the loss and was not done: it widens a credential's origin list for a convenience, and it is a change outside git that would then need [recording](../AGENTS.md#documentation-discipline).
+**Both `.claude/launch.json` servers moved to 3001 too, and that costs Maps in the agent's preview.** Reserving a port is only worth doing if the tooling honours it, and that file is how an agent starts a server. The consequence is real: a dev server on 3001 fails Maps authorisation, so the travel map renders as `MapError` in the browser pane. Accepted because manual QA belongs on the Vercel preview URL rather than an agent's localhost — the [pull request checklist](../AGENTS.md#opening-a-pull-request) says so already. Adding `http://localhost:3001` to the key's allowed referrers would undo the loss and was not done: it widens a credential's origin list for a convenience, and it is a change outside git that would then need [recording](../AGENTS.md#documentation-discipline). _Superseded the same day: the port was added to the key's allowed referrers, so the map renders on 3001 and the loss described above no longer applies. The recording it called for is [Security](security.md#accepted-exposure), which deliberately does not reproduce the list itself._
 
 **The compiled output was never the conflict, which took measuring to establish.** Next 16 writes dev output to `.next/dev`, and `next build` clears `.next` with `cache`, `dev`, `lock` and `trace` excluded — `node_modules/next/dist/build/index.js`, the `clean` trace. So a production build alongside a running dev server disturbs nothing, and the port was the whole of the problem. `yarn clean` is the exception, being `rm -rf .next`.
 
