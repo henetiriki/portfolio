@@ -8,7 +8,7 @@ Quick reference for shipping a change to production.
 
 ## Development
 
-- [ ] Work on a `feature/*` branch off `main` (e.g. `feature/react-upgrade`)
+- [ ] Work on a prefixed branch off `main` — `feature/`, `fix/`, `docs/` or `chore/`, then a hyphenated description (e.g. `feature/react-upgrade`). See [Branch names](../AGENTS.md#branch-names)
 - [ ] Local Node matches [.nvmrc](../.nvmrc) (`24`) and `engines.node` — run `nvm use` before validating, since a mismatched local runtime can pass checks that CI would fail
 - [ ] New dependencies use the full `^major.minor.patch` range, matching every other entry in `package.json`
 
@@ -28,7 +28,7 @@ yarn test:coverage
 - [ ] `yarn css-vars:check` passes. CI runs this after `postinstall` as an integrity check for the generated, gitignored WebStorm stub; it is not a committed-file drift check.
 - [ ] `yarn tsc --pretty --noEmit --project service-worker/tsconfig.json` passes. The root `type-check` deliberately excludes this Web Worker project because its TypeScript libraries cannot be mixed with the application's DOM libraries.
 - [ ] **`yarn build` succeeds and emits a non-empty `public/sw.js`.** There is only one production configuration — the service worker is generated whenever `NODE_ENV` is production, with no flag to set. CI runs the same build and asserts the same output, but run it locally so a failure is not first seen in CI.
-- [ ] **`yarn test:e2e` passes.** Run it _after_ a build: Playwright serves the production output with `yarn start` on port 3000, which the Google Maps key is restricted to. It catches what jsdom cannot — layout, focus order, hydration and colour contrast — so a green Jest run is not a substitute. If a spec fails in CI rather than locally, the report is uploaded as a `playwright-report` artefact. See [Browser regression suite](development.md#browser-regression-suite).
+- [ ] **`yarn test:e2e` passes.** Run it _after_ a build: Playwright serves the production output with `yarn start` on port 3001, and always starts that server itself rather than reusing one. It catches what jsdom cannot — layout, focus order, hydration and colour contrast — so a green Jest run is not a substitute. If a spec fails in CI rather than locally, the report is uploaded as a `playwright-report` artefact. See [Browser regression suite](development.md#browser-regression-suite).
 - [ ] Any new `process.env` value is added in the Vercel dashboard, the `env` block in `next.config.js` if the client needs it, and `.env.test` as a dummy. If `next.config.js` requires it during a production build, also add a safe dummy to the CI job's `env` block because CI does not load `.env.test`; `next/jest` does load `.env.test` but does not evaluate the config's client `env` bridge ([environment-variables.md](environment-variables.md)).
 
 ### Sensitive information
@@ -126,4 +126,4 @@ There is no artefact to re-publish — roll back through Vercel:
 1. Open the project's **Deployments** tab in the Vercel dashboard.
 2. Find the last known-good production deployment.
 3. **Promote to Production** (instant; serves the previous build).
-4. Fix forward on a new `feature/*` branch — reverting the merge commit on `main` also works and will trigger a fresh deploy.
+4. Fix forward on a new `fix/*` branch — reverting the merge commit on `main` also works and will trigger a fresh deploy.

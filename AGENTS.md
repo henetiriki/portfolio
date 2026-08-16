@@ -21,6 +21,23 @@ The permission allowlist in `.claude/settings.json` matches the _entire_ command
 - Genuine pipelines (`grep … | head`) are one logical command; leave them chained.
 - Put section headers in your reply, not in `echo` statements.
 
+## Branch names
+
+`<prefix>/<hyphenated-description>`, lowercase, always prefixed. Four prefixes:
+
+| Prefix     | For                                                          |
+| ---------- | ------------------------------------------------------------ |
+| `feature/` | New or changed behaviour a visitor could see                 |
+| `fix/`     | Repairing behaviour that is wrong                            |
+| `docs/`    | Only `docs/`, `*.md`, `.claude/` or `.worktreeinclude`       |
+| `chore/`   | Tooling, CI, dependencies, tests — no visitor-visible change |
+
+This is [Conventional Branch](https://conventionalbranch.org/) minus the prefixes this repository has no use for: `hotfix/` and `release/` both assume a release process this repository does not have — every merge deploys straight to production, so an urgent fix is just a `fix/`, and there is nothing to prepare a release on.
+
+**`docs/` and `chore/` are claims that can be checked, which is what makes them worth typing.** Both predict how the change is built: `docs/` matches the [cheap CI path](docs/release-checklist.md#pull-request) exactly, and both are skipped by Vercel's `ignoreCommand` — so a `docs/` branch that triggers `Build & browser suite`, or a `chore/` branch that deploys, is telling you the branch is misnamed or the change grew beyond what you meant. `feature/` and `fix/` carry no such signal and are there because the distinction is worth stating anyway.
+
+The description is what the branch is _for_, not what it touches: `chore/free-port-3000-and-prefix-branch-names`, not `chore/playwright-config`.
+
 ## Opening a pull request
 
 **Start every pull request body with the human checklist**, before any explanation:
@@ -51,7 +68,7 @@ yarn test:coverage
 yarn test:e2e
 ```
 
-- `yarn test:e2e` needs a production build first and serves on **port 3000** — the Google Maps API key is restricted to that origin, so another port silently fails Maps authorisation.
+- `yarn test:e2e` needs a production build first and serves on **port 3001**. **Port 3000 belongs to `next dev`** — leave whatever is running there alone; it is usually a human watching the change land.
 - The service worker is a separate TypeScript project: `yarn tsc --pretty --noEmit --project service-worker/tsconfig.json`.
 - Saying **"release ready check"** or **"prepare for release"** means running the pre-merge half of the release checklist, including the documentation sweep in both directions.
 
