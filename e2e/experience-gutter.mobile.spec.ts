@@ -64,17 +64,25 @@ test.describe('experience timeline at mobile widths', () => {
  * Walks the timeline structurally rather than by class name, so hashed CSS
  * Module names cannot silently detach these assertions from what they measure.
  *
- * Every step selects the first child `div` rather than `firstElementChild`:
- * Mantine renders responsive style props as a `<style>` element injected as the
- * first child of the element that carries them, which the simpler traversal
- * lands on instead.
+ * Every step looks for a `div` rather than taking whatever element is next or
+ * first: Mantine renders a responsive style prop as a `<style>` element placed
+ * immediately before the element carrying it, so both `firstElementChild` and
+ * `nextElementSibling` land on markup that has no geometry. Which steps are
+ * affected changes whenever a prop here becomes responsive, so no step assumes
+ * it is the exception.
  */
 function measure(heading: string) {
   const title = [...document.querySelectorAll('h2')].find(
     element => element.textContent?.trim() === heading
   );
   const icon = title?.parentElement?.querySelector(':scope > div');
-  const rail = title?.parentElement?.nextElementSibling;
+
+  let rail = title?.parentElement?.nextElementSibling;
+
+  while (rail && rail.tagName !== 'DIV') {
+    rail = rail.nextElementSibling;
+  }
+
   const box = rail?.querySelector(':scope > div');
   const card = box?.querySelector(':scope > div');
 
