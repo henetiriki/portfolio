@@ -12,6 +12,40 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260816e — Head the About section with the role, not a second copy of the name
+
+- **Status:** Accepted
+- **Decided:** 2026-08-16
+
+The About block on the home page is `h2` "About me", `h3` "Front-end Engineer", then the location as a subtitle beneath it. The `h3` carrying "Louw Swart" is gone.
+
+**The name was in the outline twice and the section was not in it at all.** The hero already renders "Louw Swart" as the page's `h1`, so the `h3` repeating it added nothing a reader or a crawler did not have. Worse, it pushed the job title down to `h4` — the same level as the genuine section headings "Open Source Contributions" and "Hobbies and Interests" — so the outline read `About me → Louw Swart → Front-end Engineer, Wellington NZ`, with the biography paragraphs appearing to belong to a section named after a job title. Promoting the role fixes both: the outline names the person once, and every heading below it names a section that exists.
+
+**"Front-end Engineer" is a real heading, which is why it is one.** The three paragraphs under it are about exactly that career, and the two `h4`s below are subsections of it.
+
+**The first attempt treated the symptom, and review caught it.** That version kept the `h3` name and demoted the role to a non-heading subtitle, which removed the bogus node from the outline but left the duplicated name in place and the section unnamed. Removing the name instead — on the grounds that the page already carries it as the `h1` — was called in review, and it is the better fix because it resolves both problems with one deletion rather than working around one of them. Recorded because the wrong version is the one that looks obviously right when the presenting complaint is "this line wraps".
+
+**The wrap forced the question rather than created it.** "Front-end Engineer, Garden Route, South Africa" needs about 500px in a 464px column, so it wrapped where "Front-end Engineer, Wellington NZ" had not. The duplicated name and the overloaded heading level both predate this change; the longer string only made them visible.
+
+**The location is a subtitle, at `lg` in `whisper-5`.** 16px sits between the 24px `h3` above it and the 14px body copy below, so it reads as a subtitle rather than as the first line of the biography, and it measures 8.1:1 against the content box — comfortably past AAA. Both lines fit without wrapping at desktop and at 375px.
+
+**Nothing is lost for search.** The location is still ordinary text in the document, and the page's real signal for it is the meta description, which [D-260816d](#d-260816d--name-the-region-rather-than-the-town-and-take-en-zas-date-order) corrected in the same change.
+
+## D-260816d — Name the region rather than the town, and take `en-ZA`'s date order
+
+- **Status:** Accepted
+- **Decided:** 2026-08-16
+
+The home page says "the Garden Route, South Africa" in both places it states a location, and the build timestamp formats with `en-ZA` and `Africa/Johannesburg`.
+
+**The region is as precise as a public page should be.** A town name is more identifying than the site needs to be, and the wording it replaces was a region-sized city rather than a suburb, so nothing is lost in kind. It also matches what the travel map already shows without duplicating it: the map's `current: true` city is the precise answer for anyone who wants it, so the prose does not need to be.
+
+**The preposition is "on", not "in".** South Africans are based _on_ the Garden Route, the way one is on a coast rather than in a city, and the description says so. It reads like a typo to anyone who has not heard it, which is exactly why it is recorded here rather than left to be "fixed" later.
+
+**`en-ZA` formats year-first, and that was accepted rather than overlooked.** The timestamp moves from `17/08/2026, 00:19 NZST` to `2026/08/16, 14:19 SAST` — the date order changes, not just the zone. Keeping day-first meant `en-GB`, whose short zone name for Johannesburg is `GMT+2`, since `SAST` exists only in the South African locale. Naming the zone is what the footer line is for, so the locale that names it wins; `2026/08/16` is a South African convention rather than a compromise, and year-first sorts correctly besides.
+
+**Both halves are one change because both are the same fact.** A footer timestamp in New Zealand time and a subtitle claiming Wellington are the same stale assumption, and splitting them would have left the site half-corrected for however long the second branch took.
+
 ## D-260816c — Keep the ruleset free of bypass actors, and accept the wedge risk
 
 - **Status:** Accepted

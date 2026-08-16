@@ -37,6 +37,20 @@ describe('Home page', () => {
     expect(await screen.findByText('ex-flight attendant turned programmer'));
   });
 
+  it('heads the about section with the role rather than repeating the name', () => {
+    render(<Home />);
+
+    // see D-260816e — the name is the h1, so a second heading carrying it left
+    // the outline naming the same person twice and the section not at all
+    expect(
+      screen.getAllByRole('heading', { name: /louw swart/i })
+    ).toHaveLength(1);
+    expect(
+      screen.getByRole('heading', { level: 3, name: 'Front-end Engineer' })
+    ).toBeInTheDocument();
+    expect(screen.getByText('Garden Route, South Africa')).toBeInTheDocument();
+  });
+
   it('renders a static role tagline when reduced motion is preferred', () => {
     (useReducedMotion as jest.Mock).mockReturnValue(true);
 

@@ -24,10 +24,10 @@ Renders the optional YouTube embed for a timeline entry, inside a fixed-ratio bo
 
 ## `footer/`
 
-| Component                                  | Responsibility                                                                                                                                                                                                                                                                                               |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Footer`                                   | Server-rendered wave dividers + primary nav links (`menuItems`) + social links (`socialLinks`, GitHub/LinkedIn/Instagram) + a copyright line and a "last built" timestamp sourced from `process.env.NEXT_PUBLIC_LAST_MODIFIED` (computed at build/boot time in `next.config.js`, Pacific/Auckland timezone). |
-| `FooterContainer` / `FooterLinksContainer` | Layout-only wrappers (background color / flex arrangement) reused across the two footer bands.                                                                                                                                                                                                               |
+| Component                                  | Responsibility                                                                                                                                                                                                                                                                                                  |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Footer`                                   | Server-rendered wave dividers + primary nav links (`menuItems`) + social links (`socialLinks`, GitHub/LinkedIn/Instagram) + a copyright line and a "last built" timestamp sourced from `process.env.NEXT_PUBLIC_LAST_MODIFIED` (computed at build/boot time in `next.config.js`, Africa/Johannesburg timezone). |
+| `FooterContainer` / `FooterLinksContainer` | Layout-only wrappers (background color / flex arrangement) reused across the two footer bands.                                                                                                                                                                                                                  |
 
 ## `form/`
 
