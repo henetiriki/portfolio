@@ -138,7 +138,7 @@ So every commit auto-fixes lint issues and reformats staged files of the listed 
 - The `github-actions` ecosystem scans `.github/workflows` from the repository root and groups available Action updates into one pull request, also with a five-PR limit.
 - Both checks run on Mondays at 06:00 `Africa/Johannesburg`. Dependabot creates operational pull requests; it is not another CI validation step. Each generated pull request goes through the existing `CI` workflow like any other change.
 
-Dependabot version updates are configured entirely in the repository and do not require a paid GitHub plan. Repository-level Dependabot alerts and security-update settings remain separate GitHub settings; this file does not imply that either setting has been enabled.
+Dependabot version updates are configured entirely in the repository and do not require a paid GitHub plan. **Dependabot alerts and security updates are separate repository settings, and both were enabled on 2026-08-16** when the repository became public — see [Security](security.md#secrets-and-credentials). They are what surfaces an advisory against a pinned dependency; the configuration in this file only governs routine version updates, which is why the `ignore` entries above cannot hide a vulnerability.
 
 ## Testing
 
