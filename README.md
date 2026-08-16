@@ -40,7 +40,7 @@ The app needs environment variables to run — a Google Maps key, Gmail SMTP cre
 | `yarn prettier:check` / `prettier:write`    | Format check / write                                                   |
 | `yarn start`                                | Serve a production build locally                                       |
 | `yarn test`                                 | Jest + React Testing Library                                           |
-| `yarn test:coverage`                        | Tests with coverage (80% global threshold)                             |
+| `yarn test:coverage`                        | Tests with coverage (95% global threshold)                             |
 | `yarn test:e2e`                             | Playwright browser regression suite (needs a build; serves on :3001)   |
 | `yarn test:e2e:install`                     | Fetch the Playwright browser binary (install scripts are disabled)     |
 | `yarn test:e2e:ui`                          | Browser suite in Playwright's interactive runner                       |
