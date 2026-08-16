@@ -52,6 +52,7 @@ Docs here describe **what exists today**, so they are part of the change, not an
 - [ ] Cross-links between docs still resolve, and new docs are listed in [docs/README.md](README.md)
 - [ ] Root [README.md](../README.md) still accurate if the stack, scripts, or layout changed
 - [ ] **Completed work has been _moved_, not copied** — anything this change finishes is added to [Project History](project-history.md) **and removed from the [Roadmap](roadmap.md)**. Per [D-260809a](decisions.md#d-260809a--separate-plans-decisions-and-history) the roadmap holds open work only, so a finished item left behind (or ticked in place as `[x]`) is a defect in the sweep. Partially completed work stays, narrowed to what actually remains.
+- [ ] **Anything changed outside git is written down here.** Repository settings, the `main` ruleset, Codecov, Vercel — a settings change produces no commit, so nothing pulls this sweep along behind it the way editing a file does, and it is the class of change that reliably goes unrecorded. If a [Roadmap](roadmap.md) item asked for the setting, retire it in the same pass
 - [ ] Any newly discovered follow-up is added to the [Roadmap](roadmap.md) rather than left in a commit message
 - [ ] **Work agreed but not started is in the [Roadmap](roadmap.md) too.** Not just follow-ups found in the code — anything decided in discussion while this change was open. A decision that lives only in a conversation is lost the moment the branch closes, and "add it next time" reliably means never. Write it down in the branch you are already on, even when it is unrelated to the change.
 - [ ] [Engineering Decisions](decisions.md) updated only when the change establishes or revises a durable technical choice
@@ -59,6 +60,7 @@ Docs here describe **what exists today**, so they are part of the change, not an
 ## Pull Request
 
 - [ ] PR opened against `main`; CI (`.github/workflows/ci.yml`) is green
+- [ ] The body opens with the two-item human checklist — see [Opening a pull request](../AGENTS.md#opening-a-pull-request). Everything else on this page is worked through before the pull request exists; those two are there because only a person can answer them
 - [ ] Vercel preview deployment builds successfully
 - [ ] Manual QA on the **preview URL**, not just localhost — it is the only pre-production environment where the service worker, real env vars, and prerendered output all apply together
 
