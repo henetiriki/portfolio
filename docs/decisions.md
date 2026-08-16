@@ -12,6 +12,21 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260816e — Make the About block's role line a subtitle rather than a heading
+
+- **Status:** Accepted
+- **Decided:** 2026-08-16
+
+The role and location under "Louw Swart" on the home page are a `<Title component='p' order={4} size='h5'>` and a `<Text c='whisper.5'>`, not a heading. Every remaining `h4` in that block names a section.
+
+**One heading level was doing two unrelated jobs.** `<Title order={4}>` marked both the person's job title and the genuine section headings "Open Source Contributions" and "Hobbies and Interests". The outline therefore read `About me → Louw Swart → Front-end Engineer, Wellington NZ`, with the three biography paragraphs appearing to belong to a section named after a job title. Someone navigating by heading landed on a label that leads nowhere, and the outline carried a node that is not a section.
+
+**The wrap forced the question rather than created it.** "Front-end Engineer, Garden Route, South Africa" needs about 500px in a 464px column, so it wrapped where "Front-end Engineer, Wellington NZ" had not. Splitting it across two lines is what a subtitle should have been all along; the longer string only made the existing shape visible.
+
+**`component='p'` with `size='h5'` keeps the typography and drops the semantics.** The line stays in the heading font at 18px, one step below the 20px section headings it no longer competes with, and the location sits under it at body size in `whisper-5` — 8.1:1 against the content box, comfortably past AAA. `Title` is already used this way for the hero subtitle, so it is the established pattern here rather than a new one.
+
+**Nothing is lost for search.** Both strings are still ordinary text in the document, and the page's real signal for the location is the meta description, which [D-260816d](#d-260816d--name-the-region-rather-than-the-town-and-take-en-zas-date-order) corrected in the same change.
+
 ## D-260816d — Name the region rather than the town, and take `en-ZA`'s date order
 
 - **Status:** Accepted
