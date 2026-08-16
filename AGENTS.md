@@ -25,16 +25,18 @@ The permission allowlist in `.claude/settings.json` matches the _entire_ command
 
 `<prefix>/<hyphenated-description>`, lowercase, always prefixed. Four prefixes:
 
-| Prefix     | For                                                          |
-| ---------- | ------------------------------------------------------------ |
-| `feature/` | New or changed behaviour a visitor could see                 |
-| `fix/`     | Repairing behaviour that is wrong                            |
-| `docs/`    | Only `docs/`, `*.md`, `.claude/` or `.worktreeinclude`       |
-| `chore/`   | Tooling, CI, dependencies, tests — no visitor-visible change |
+| Prefix     | For                                                      |
+| ---------- | -------------------------------------------------------- |
+| `feature/` | New or changed behaviour a visitor could see             |
+| `fix/`     | Repairing behaviour that is wrong                        |
+| `docs/`    | Only `docs/`, `*.md`, `.claude/` or `.worktreeinclude`   |
+| `chore/`   | Tooling, CI, dependencies, tests — work on the machinery |
 
 This is [Conventional Branch](https://conventionalbranch.org/) minus the prefixes this repository has no use for: `hotfix/` and `release/` both assume a release process this repository does not have — every merge deploys straight to production, so an urgent fix is just a `fix/`, and there is nothing to prepare a release on.
 
-**`docs/` and `chore/` are claims that can be checked, which is what makes them worth typing.** Both predict how the change is built: `docs/` matches the [cheap CI path](docs/release-checklist.md#pull-request) exactly, and both are skipped by Vercel's `ignoreCommand` — so a `docs/` branch that triggers `Build & browser suite`, or a `chore/` branch that deploys, is telling you the branch is misnamed or the change grew beyond what you meant. `feature/` and `fix/` carry no such signal and are there because the distinction is worth stating anyway.
+**`docs/` is the one prefix that makes a claim the build can check.** Its scope is exactly CI's [cheap path](docs/release-checklist.md#pull-request), and those paths are excluded from Vercel's `ignoreCommand` too, so a `docs/` branch should always take the cheap CI run and never deploy. One that triggers `Build & browser suite` is misnamed, or has grown beyond what you meant.
+
+**The other three are categories, not predictions — `chore/` especially.** Vercel's exclusion list is a list of _paths_, not a notion of what is boring: a dependency bump, an `eslint.config.mjs` edit or a workflow change all deploy like anything else, and a `chore/` touching `e2e/` or `playwright.config.ts` does not. Do not read the prefix as a forecast of what CI and Vercel will do; read the [exclusion lists](docs/release-checklist.md#merge--deploy), which differ from each other on purpose.
 
 The description is what the branch is _for_, not what it touches: `chore/free-port-3000-and-prefix-branch-names`, not `chore/playwright-config`.
 
