@@ -12,6 +12,27 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260816j — Keep CodeQL on default setup, and leave it unrequired
+
+- **Status:** Accepted
+- **Decided:** 2026-08-16
+
+Code scanning stays on GitHub's default setup rather than a committed workflow, and no CodeQL check run is added to the `main` ruleset. Current behaviour is in [Security](security.md#code-scanning-codeql).
+
+**Maintenance is the argument usually made for default setup, and here it is the weak one.** Dependabot already covers the `github-actions` ecosystem weekly on a grouped pattern, so `github/codeql-action` bumps would arrive inside a pull request it opens anyway. The real cost of a committed workflow is a forced major roughly every year or two, when a deprecation window closes or the workflow syntax moves — not nothing, but not enough to decide on.
+
+**The decision is about control, and this repository needs none of what a workflow buys.** A committed workflow is worth having when the query suite, the language matrix, path filters or the trigger schedule need to differ from the defaults. None does: the surface is a small TypeScript application, the `default` suite on a `remote` threat model is a reasonable fit, and code scanning has never reported an alert. Writing a workflow to restate the defaults adds a file to maintain in exchange for the ability to change settings nobody wants changed.
+
+**A workflow would not have prevented the problem default setup actually caused**, which is the argument that settles it. Enabling default setup also enabled _AI findings_, a preview feature gated on default setup, which failed on every pull request it ever ran on — and that is a repository setting, not a workflow job, so committing a `codeql.yml` would not have given any say over it. The visibility a workflow buys is visibility into the half that was never the problem.
+
+**AI findings was switched off on 2026-08-16**, once its failures were traced. It generates findings for non-CodeQL languages, and everything this repository is scanned for is already CodeQL-covered, so the feature was returning nothing even in the working case. The setting is not exposed by the API and flipping it does not move `code-scanning/default-setup`'s `updated_at`, so [Security](security.md#ai-findings-is-off-and-leaves-no-trace-that-it-ever-was-on) is the only record that it was ever on — the sharpest instance yet of the class of change [D-260816c](#d-260816c--keep-the-ruleset-free-of-bypass-actors-and-accept-the-wedge-risk) and the release checklist exist to catch.
+
+**Requiring the alert gate was considered and rejected on wedge risk, not on principle.** `CodeQL` — the _Code scanning results_ check — is the only one of the four worth requiring; the `Analyze` jobs report that a scan ran rather than what it found, so requiring those would be a gate in name only. The case for requiring the real one is decent: it already runs on every pull request, costs seconds, and the alert baseline is clean, which is the cheapest moment to lock a baseline in. Against it: the ruleset carries no bypass actors by [D-260816c](#d-260816c--keep-the-ruleset-free-of-bypass-actors-and-accept-the-wedge-risk), so a GitHub-side outage on a required check blocks every merge with no way through — and this surface is visibly churning right now, an AI product having been switched on underneath the repository and broken since. A gate that has never had anything to fire on is not worth that.
+
+**Dismissing a false positive is a change made outside git**, which is the other cost of requiring it: the alert would have to be dismissed in the web console before a merge could proceed, and this repository has a documented history of such changes going unrecorded.
+
+**Revisit when the first real alert appears**, which is the event that would make the gate worth its risk. Nothing needs re-deciding before then.
+
 ## D-260816i — Watch project coverage without blocking on it
 
 - **Status:** Accepted

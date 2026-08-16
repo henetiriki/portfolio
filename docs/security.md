@@ -1,10 +1,10 @@
 # Security
 
-The site's security surface in one place: the response headers, the Content Security Policy and its report endpoint, where bot protection lives, and how secrets are handled. This is a topical doc, so it describes **what exists today** — rationale lives in [Engineering Decisions](decisions.md) and is linked from each section, per [D-260809a](decisions.md#d-260809a--separate-plans-decisions-and-history).
+The security surface in one place: the response headers, the Content Security Policy and its report endpoint, where bot protection lives, what scans the code, and how secrets are handled. This is a topical doc, so it describes **what exists today** — rationale lives in [Engineering Decisions](decisions.md) and is linked from each section, per [D-260809a](decisions.md#d-260809a--separate-plans-decisions-and-history).
 
 The per-change procedure — what to check in a diff before opening a pull request — is the [release checklist](release-checklist.md#sensitive-information), not this file. **How to report a vulnerability is [`SECURITY.md`](../SECURITY.md)**, at the repository root, which is what GitHub surfaces as the security policy; before it existed GitHub offered this file in its place, which answers a different question.
 
-**What belongs here** is whatever someone auditing the site's security posture would expect to find in one place: headers, the policy, bot protection and secrets handling. Implementation that merely touches something sensitive does not — email template rendering and escaping stay with [Contact Feature](contact-feature.md).
+**What belongs here** is whatever someone auditing the security posture would expect to find in one place: headers, the policy, bot protection, code scanning and secrets handling. Most of that is the running site, and **code scanning is the one repository-side entry** — it earns its place because it is enabled outside the repository entirely, so nothing in the source would otherwise account for it. Implementation that merely touches something sensitive does not belong — email template rendering and escaping stay with [Contact Feature](contact-feature.md).
 
 ## Response headers
 
@@ -63,6 +63,49 @@ The policy **enforces**, shipping as `Content-Security-Policy`, built from the `
 `botid` (Vercel BotID) protects the contact form specifically — `_app.tsx` instruments `POST /api/contact` client-side and `api/contact.ts` calls `checkBotId()` once per request before any mail work begins. It is documented with the rest of that flow in [Contact Feature](contact-feature.md), which would read as half a story without it; the posture it accepts is [D-260811b](decisions.md#d-260811b--accept-the-contact-endpoints-automation-only-protection).
 
 A rejected request never reaches the mail transport. The form also carries a secondary anti-automation signal, layered with server-side validation: its identifier, detection rule and presentation are intentionally undocumented, here and everywhere else, including [`llms.txt`](pwa-seo.md#ai-agent-discovery-llmstxt) — no single mechanism is treated as sufficient on its own.
+
+## Code scanning (CodeQL)
+
+**Code scanning runs from GitHub's default setup, not from a workflow file.** `ci.yml` is the only thing in `.github/workflows/`, so nothing in the repository explains why CodeQL check runs appear on every pull request — which is the reason this section exists. It is configured for the `default` query suite on a `remote` threat model, weekly, on standard runners. Read the live configuration rather than trusting this paragraph:
+
+```bash
+gh api repos/henetiriki/portfolio/code-scanning/default-setup
+```
+
+**Three check runs come from this, and only one of them is a gate.** The names are close enough to be confused, and requiring the wrong one would buy nothing:
+
+| Check run                                              | Posted by                  | What it means                                                                     |
+| ------------------------------------------------------ | -------------------------- | --------------------------------------------------------------------------------- |
+| `Analyze (javascript-typescript)`, `Analyze (actions)` | `github-actions`           | The scans themselves. Green means the analysis **ran**, not that it found nothing |
+| `CodeQL`, shown as _Code scanning results / CodeQL_    | `github-advanced-security` | **The alert gate** — "No new alerts in code changed by this pull request"         |
+
+A fourth, `github-advanced-security`, ran until 2026-08-16 and is covered below.
+
+Four languages are configured (`actions`, `javascript`, `javascript-typescript`, `typescript`) but only two analyses run, because GitHub collapses the JavaScript/TypeScript trio into a single `javascript-typescript` job.
+
+**None of them is a required check, deliberately** — see [D-260816j](decisions.md#d-260816j--keep-codeql-on-default-setup-and-leave-it-unrequired).
+
+### AI findings is off, and leaves no trace that it ever was on
+
+**_AI findings_ is a preview feature, disabled on 2026-08-16.** It lives in the repository's code security settings — not in a workflow, which is why nothing in `.github/` accounts for it — and is gated on CodeQL default setup being enabled, so switching default setup on is what switched this on too.
+
+**It failed on every pull request it ever ran on**, from the day it appeared until it was turned off. It ran as a `dynamic` workflow with no file behind it, at path `dynamic/agents/github-advanced-security`, and the cause was on GitHub's side rather than anything this repository did:
+
+```
+CAPIError: 400 The requested model is not supported.
+```
+
+The job also reported `COPILOT_PERMISSION_GATE_REASON: not_assigned`. Read one of the archived failures with `gh api repos/henetiriki/portfolio/actions/jobs/<id>/logs --allow-escape-sequences`.
+
+**Turning it off costs no coverage here**, which is what made it an easy call rather than a trade: the feature generates findings for _non-CodeQL languages_, and every language this repository is scanned for — JavaScript, TypeScript, Actions — is one CodeQL already covers. What was left for it was CSS, JSON, YAML and Markdown.
+
+**It was never required, so it blocked nothing. The cost was habituation** — a permanent red X one row from the CodeQL alert gate, training the eye to skim past exactly where a real finding would appear.
+
+**Nothing anywhere records this change, which is why it is written here.** The toggle is absent from `code-scanning/default-setup`, and that endpoint's `updated_at` did not move when the setting was flipped, so there is no trace in git, in the API, or in the ruleset history. **The only way to verify the state is the absence of runs on a new pull request**, which is how the disable was confirmed — [#198](https://github.com/henetiriki/portfolio/pull/198) produced no `github-advanced-security` check where every pull request before it had. To check it again:
+
+```bash
+gh api "repos/henetiriki/portfolio/actions/runs?per_page=100" --jq '[.workflow_runs[] | select(.path=="dynamic/agents/github-advanced-security")] | .[0:3] | .[] | {n: .display_title, at: .created_at}'
+```
 
 ## Secrets and credentials
 
