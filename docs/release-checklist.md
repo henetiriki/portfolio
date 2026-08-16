@@ -40,7 +40,7 @@ Run against the diff, every time — not only when the change looks security-rel
 - [ ] **Any new value in the CI workflow's `env` block is intended to be public.** `ci.yml` is committed, so those values are as exposed as the rest of the repository.
 - [ ] **No real personal data has been added to fixtures, tests or documentation** — other people's names, addresses, emails or photographs.
 - [ ] **A new third-party host or asset URL has been considered for abuse, not just for secrecy.** A public URL can still be an abuse vector: the Cloudinary delivery host is necessarily public, and it allowed unsigned on-the-fly transformations that consume account credits until strict transformations was enabled — see [Security](security.md#accepted-exposure). Ask what an anonymous caller can _do_ with the endpoint, not only what they can read.
-- [ ] If anything sensitive ever _was_ committed, treat rotation as the fix. Removing it in a later commit does not remove it from history, and history is fully readable the moment the repository becomes public.
+- [ ] If anything sensitive ever _was_ committed, treat rotation as the fix. Removing it in a later commit does not remove it from history, and the repository is public, so history is readable by anyone. Push protection should stop a recognised credential before it lands, but it is a backstop rather than a reason to skip this check.
 
 ### Documentation sweep
 
@@ -62,7 +62,7 @@ Docs here describe **what exists today**, so they are part of the change, not an
 - [ ] Vercel preview deployment builds successfully
 - [ ] Manual QA on the **preview URL**, not just localhost — it is the only pre-production environment where the service worker, real env vars, and prerendered output all apply together
 
-> **Documentation-only changes take a cheap path through CI, not a skipped one.** When a change touches only `docs/`, `*.md`, `.claude/` or `.worktreeinclude`, the `Validate & build` job installs dependencies, runs `prettier:check` and stops. Lint, both type-checks, `css-vars:check`, the Jest run and its Codecov upload, the production build, the Playwright browser download and the browser suite are all skipped. The job still runs and still reports, so the check exists to be required later — which a `paths-ignore` filter would not, since a filtered-out workflow never reports at all and would leave a required check pending forever.
+> **Documentation-only changes take a cheap path through CI, not a skipped one.** When a change touches only `docs/`, `*.md`, `.claude/` or `.worktreeinclude`, the `Validate & build` job installs dependencies, runs `prettier:check` and stops. Lint, both type-checks, `css-vars:check`, the Jest run and its Codecov upload, the production build, the Playwright browser download and the browser suite are all skipped. The job still runs and still reports, which is what lets `Validate & build` be a required check on `main` — a `paths-ignore` filter could not, since a filtered-out workflow never reports at all and would leave the requirement pending forever.
 >
 > **`prettier:check` is the one step never gated**, because `prettier .` covers the whole tree: on a documentation-only change it is the only check that applies to what changed. `eslint` and both type-checks cover no Markdown, and Jest cannot be affected by it.
 >

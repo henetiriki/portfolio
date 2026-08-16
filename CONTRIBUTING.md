@@ -12,7 +12,7 @@ A pull request opened from a fork will also sit unmergeable for a mechanical rea
 
 Two things are genuinely welcome, and the [contact form](https://www.ouwl.house/contact) is the route for both:
 
-- **A security problem.** Please report it there rather than opening a pull request or posting details publicly, and allow a reasonable window for a fix before sharing it elsewhere. This is a personal site maintained by one person, so expect a human response time rather than a triage process.
+- **A security problem.** Use GitHub's **[private vulnerability reporting](https://github.com/henetiriki/portfolio/security/advisories/new)** if you have a GitHub account — it is the fastest route and keeps the details private — or the contact form if you would rather not. Either way, please do not open a public pull request or issue with the details, and allow a reasonable window for a fix before sharing it elsewhere. This is a personal site maintained by one person, so expect a human response time rather than a triage process.
 - **A factual error** on the site — a wrong date, a broken link, a claim that has gone stale.
 
 ## Reuse

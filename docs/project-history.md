@@ -2,6 +2,16 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-16 — Make the repository public and protect `main`
+
+- **The repository is public**, which is what made required status checks available at all: they are unavailable to a private repository on a free personal plan, and publishing was chosen over a paid plan. The two pre-publish checks were discharged first — see the entry below.
+- **`main` is protected by a ruleset** requiring a pull request, squash merges only, `Validate & build` passing, and branches to be up to date before merging. Force pushes and branch deletion are blocked. The repository role is on the bypass list, because a solo maintainer with no second person to unblock them should not be able to wedge themselves out of their own repository.
+- **`codecov/patch` is deliberately not required yet.** It cannot post on a documentation-only pull request while the cheap path skips the upload, so requiring it now would leave those pull requests pending forever. The [Roadmap](roadmap.md#testing--automation) carries the restore that unblocks it.
+- **Requiring branches to be up to date mechanises a caveat [`AGENTS.md`](../AGENTS.md) previously had to state.** Two branches that each pass alone and break together now have something to catch them, rather than depending on whoever rebases second remembering to re-run validation.
+- **Secret scanning, push protection, Dependabot alerts and security updates, and private vulnerability reporting are enabled** — all free only on a public repository, and none of them available before. Push protection is the one that changes daily behaviour: a recognised credential is refused at the push rather than found afterwards. `CONTRIBUTING.md` now points security reports at the private advisory route first.
+- **Fork pull request workflows require approval from all external contributors**, and Vercel's Git Fork Protection was already on by default, so neither CI nor a preview deployment runs on someone else's code unattended.
+- **Actions defaults were tightened while the settings were open**: the default workflow token dropped from write to read, and Actions can no longer create or approve pull requests. Neither affects `ci.yml`, which declares its own `permissions:` block; both close the gap for anything added later that forgets to.
+
 ## 2026-08-16 — Ready the repository for publication
 
 - **The Cloudinary delivery controls are enabled**, closing the transformation-credit exposure [Security](security.md#accepted-exposure) had carried as accepted. Verified by probe rather than by reading the settings screen: a transformation the account had not already produced is refused, while the site's own delivery URL still serves — so the vector is closed and the rotating background is untouched. `fetch` delivery turned out to be restricted already, making this one control rather than the two the roadmap listed.
