@@ -12,6 +12,23 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260816k — Reclaim the timeline's gutter from the container, not from the rail
+
+- **Status:** Accepted
+- **Decided:** 2026-08-16
+
+The left inset on `/experience` narrows below the `xs` breakpoint by making three of its five layers responsive: the Mantine `Container` inside `Content` drops its padding, `TimelineBox` reduces its rail-to-card padding, and `TimelineContent` reduces its own. The rail's `ml={20}` and the heading icon's size are untouched.
+
+**The rail's offset is an alignment constant, and the obvious fix breaks it silently.** `TimelineHeading`'s icon is a `2.5rem` circle sitting at the container's content edge, so its centre falls exactly 20px in — which is where the rail is drawn. Reducing that margin to reclaim width un-centres the rail from the icon above it, and nothing about the markup says so. The two move together or not at all.
+
+**The container is the layer that moves both at once, which makes the largest win also the safest.** The icon sits at the container's content edge and the rail is measured 20px from the same edge, so removing that padding at mobile widths shifts the pair together and the alignment survives untouched. It returns 32px — more than either timeline-local change — while being the one edit that cannot break the invariant above. That was not obvious from the layer list, which reads as five independent insets.
+
+**`TimelineContent`'s arrow puts a floor on the rail-to-card padding that is invisible in the markup.** The card's `::before` is drawn at `right: 100%`, outside the card, into the same gap the dot occupies. Taking the padding to 24px — the value the arithmetic suggested — put the arrow tip through the dot. The padding stops at 32px, and the arrow narrows below `xs` so the clearance matches what it has at desktop widths.
+
+**The regression spec asserts ratios and relationships, not the values these produced.** The column is asserted against the viewport rather than in pixels, because any future spacing change moves the number without touching the property worth holding. The alignment invariants are asserted directly, since they are what a plausible future fix would trade away for width. The column assertions were confirmed to fail on the previous layout; the invariants pass on both, which is what they are for.
+
+**The container change reaches every page, deliberately.** `Content` wraps all five routes, so each gains the same 32px below `xs`. The padding it removes was duplicated — `Content`'s own `Box` already insets by 24px at that width — so what goes is a second inset inside the first, not the page's margin. `MapError` keeps its own container and is unaffected, being a sibling of `Content` rather than a child.
+
 ## D-260816j — Keep CodeQL on default setup, and leave it unrequired
 
 - **Status:** Accepted

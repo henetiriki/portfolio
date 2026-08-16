@@ -16,7 +16,7 @@ import { blockGoogleMaps, waitForHydration } from './support/helpers';
  * The two alignment invariants are the reason a naive fix is dangerous: the
  * rail is drawn where the heading icon's centre falls, and the card's arrow
  * points into the gap the dot sits in. Either can be broken silently by an
- * edit that looks purely like spacing. See docs/decisions.md#d-260816j.
+ * edit that looks purely like spacing. See docs/decisions.md#d-260816k.
  */
 const sections = ['Work History', 'Education'];
 
