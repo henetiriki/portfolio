@@ -2,7 +2,7 @@
 
 Personal portfolio and CV site for Louw Swart — live at **[www.ouwl.house](https://www.ouwl.house)**.
 
-Four content pages (Home, Experience, Portfolio, Travel) plus a Contact page that emails the owner, an interactive Google Map of places travelled, and an opt-in PWA.
+Four content pages (Home, Experience, Portfolio, Travel) plus a Contact page that emails the owner, an interactive Google Map of places travelled, and an installable PWA.
 
 | Concern             | Choice                                                       |
 | ------------------- | ------------------------------------------------------------ |
@@ -81,6 +81,12 @@ Useful starting points:
 - **[Engineering Decisions](docs/decisions.md)** — durable technical choices and why they were made
 - **[Roadmap](docs/roadmap.md)** — open work and known follow-ups
 - **[Project History](docs/project-history.md)** — concise record of completed milestones
+
+## Contributing and reuse
+
+Pull requests are not accepted and issues are disabled — this is one person's CV rather than a project seeking contributors. Security problems and factual errors are welcome through the [contact form](https://www.ouwl.house/contact). See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+The source is published to be read, not copied: no licence is granted and all rights are reserved. See [LICENSE](LICENSE).
 
 ## Deploying
 

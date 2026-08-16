@@ -229,7 +229,7 @@ What the policy still buys is worth having on its own: `frame-ancestors`, `base-
 
 **Reports from browser extensions are dropped at the endpoint.** Extensions inject scripts into every page and violate the policy constantly, and nothing in this repository can fix that. Left in, they would swamp the only signal the promotion decision is supposed to rest on.
 
-The endpoint is unauthenticated and therefore spammable. It is capped at 16 KB per request, parses defensively and only writes a log line, which is judged proportionate for a personal site — the same posture as [D-260811b](#d-260811b--accept-the-contact-endpoints-automation-only-protection).
+The endpoint is unauthenticated by necessity, since browsers post reports without JavaScript. It is capped at 16 KB per request, parses defensively and only writes a log line, which is judged proportionate for a personal site — the same posture as [D-260811b](#d-260811b--accept-the-contact-endpoints-automation-only-protection).
 
 ## D-260814b — Enforce shell hygiene with a hook rather than a convention
 
