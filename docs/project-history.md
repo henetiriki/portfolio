@@ -2,6 +2,14 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-16 — Ready the repository for publication
+
+- **The Cloudinary delivery controls are enabled**, closing the transformation-credit exposure [Security](security.md#accepted-exposure) had carried as accepted. Verified by probe rather than by reading the settings screen: a transformation the account had not already produced is refused, while the site's own delivery URL still serves — so the vector is closed and the rotating background is untouched. `fetch` delivery turned out to be restricted already, making this one control rather than the two the roadmap listed.
+- **Why the site was never at risk from enabling it is now written down**, so nobody undoes the control on a suspicion that it might break something. Nothing under `src/` or `next.config.js` requests a transformation: `FixedBackground` hands the plain delivery URL to Next's `<Image>`, whose optimiser fetches the untransformed original and resizes it. Strict mode still serves originals.
+- **The repository history is verified free of secrets**, across every commit and every `.env*` blob that has ever existed rather than the two tracked today, with the negative searches recorded so the check is repeatable. The repository also carries no Actions secrets at all, so a fork pull request has nothing to exfiltrate.
+- **Both pre-publish checks are therefore discharged**, and the [Roadmap](roadmap.md#testing--automation) now presents publication as the next action rather than the end of a queue.
+- **Fork pull requests are recorded as new surface.** GitHub issues no OIDC token to them, so the Codecov upload cannot authenticate on a fork — which will read as an unexplained red X once `codecov/patch` is a required check.
+
 ## 2026-08-15 — Correct the documentation drift left by the policy promotion
 
 - **Three documents still described the policy as Report-Only** after [#181](https://github.com/henetiriki/portfolio/pull/181) promoted it. [Security](security.md#response-headers) listed `Content-Security-Policy-Report-Only` in the header table while asserting two sections later that the policy enforces, and both [Security](security.md#browser-coverage) and [Development Workflow](development.md#browser-regression-suite) described the browser suite as checking for the Report-Only header and the _absence_ of the enforcing one — the reverse of what `security-headers.spec.ts` asserts. The stale `Report-Only for now` comment above the directive map in `next.config.js` went with them.
