@@ -12,6 +12,27 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260816i — Watch project coverage without blocking on it
+
+- **Status:** Accepted
+- **Decided:** 2026-08-16
+
+[`codecov.yml`](../codecov.yml) enables the whole-project status as `informational: true` at `target: auto` with a `0%` threshold, and Jest's global `coverageThreshold` moves from 80% to 95%. `codecov/patch` remains the only required coverage check.
+
+**`codecov/patch` has a hole, and a fixed floor 20 points below the truth did not cover it.** Patch coverage judges only the coverable lines a pull request changes, so a change that deletes a test file has no coverable changed lines at all and passes trivially — while whole-project coverage falls. Jest's 80% floor could not notice a fall from 100% to 85%, which is the exact shape of that regression. The two instruments left a gap between them rather than overlapping.
+
+**Whole-project status was previously `off` for a plan reason that no longer applies.** It was unavailable to a _private_ repository on the free Developer plan; publication on 2026-08-16 removed the constraint, which is what reopened the question.
+
+**Requiring it was rejected because project status is a comparison and patch is not.** `codecov/patch` is computed from the pull request's own report and survives a missing base — demonstrated by [#189](https://github.com/henetiriki/portfolio/pull/189), which passed while `main` still carried an upload Codecov had silently dropped. A project status has nothing to compare against in that situation, and what Codecov does then was never verified. The one failure mode this repository has actually experienced would therefore land on the new check and nothing else, and the expensive direction of being wrong is a required check that never reports — the permanently-pending shape that earlier work deliberately spent effort eliminating.
+
+**Informational keeps the signal and discards that risk.** `codecov/project` always posts as success on GitHub, carrying the real delta in its description, so a dropped base upload degrades the report rather than the branch protection. If the ratchet later proves it earns a merge gate, promoting it is a one-line change plus a ruleset edit — the reverse is a repository nobody can merge into.
+
+**`hide_project_coverage` flips to `false` in the same change, because otherwise the ratchet has no output anyone reads.** It was `true` for a reason that expired with `project: off` — there was no project number to hide. Left set, the delta would exist only in the `codecov/project` status description, behind an expand. Enabling a status and then suppressing its report is the failure mode this avoids. The comment layout stays condensed, so the cost is a few lines.
+
+**Codecov has no per-pull-request graphic to reach for instead**, which is the answer to the obvious follow-up. Its sunburst is whole-repository, the comment and statuses are text, and the only visual review aid is the GitHub Checks annotation — which Codecov is itself deprecating. Jest's HTML report is richer and local-only, and hosting it would duplicate the annotations at greater cost. See [Testing](development.md#testing).
+
+**The 95% floor is the half that actually enforces, and it enforces locally.** It lives in `CI / Validate` and in `yarn test:coverage`, so it fails before a push rather than after a third party reports. 95% was chosen over 100% deliberately: the suite covers every function and branch today and no file or line is ignored to achieve it, so a hard 100% would make that claim load-bearing and force an `istanbul ignore` the first time a genuinely untestable path appears — biting precisely when the escape hatch is wanted. The gap left is real slack, not a rounding allowance.
+
 ## D-260816f — Put the type scale back on Mantine's defaults, and make leading a ratio
 
 - **Status:** Accepted
