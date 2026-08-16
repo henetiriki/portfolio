@@ -12,6 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260816c — Keep the ruleset free of bypass actors, and accept the wedge risk
+
+- **Status:** Accepted
+- **Decided:** 2026-08-16
+
+The `main` ruleset has no bypass actors. The Repository admin role briefly held an `always` bypass when protection was first enabled, and it was removed the same day so that the merge button cannot be clicked past a failing required check. On a repository with one maintainer, a bypass that exists is a bypass that gets used under mild time pressure, which makes every rule above it advisory.
+
+**The cost is real and was paid within hours.** Renaming the required check during [D-260816b](#d-260816b--split-ci-into-concurrent-jobs-with-the-classification-in-its-own) left the ruleset naming a check that no longer ran, and `main` was briefly unmergeable with no bypass to escape through. That is the scenario the original bypass was there to prevent.
+
+**Editing the ruleset is the escape hatch, and it is a better one.** The owner can always change the rule, so the protection was never truly locked — the difference is that lifting a rule is deliberate, visible in ruleset history and scoped to the thing that is wrong, whereas a standing bypass silently applies to every rule on every merge. The wedge is also self-announcing: a required check that never reports is obvious, unlike a check that was quietly bypassed.
+
+**Ruleset history is the record.** `gh api repos/<owner>/<repo>/rulesets/<id>/history` retains every version with its full state and the actor who changed it. Nothing in the repository records a settings change, so this is the only place a claim about protection can be checked — and a documentation entry describing settings can be accurate when written and stale an hour later, which is exactly what happened to the publication entry in [Project History](project-history.md).
+
 ## D-260816b — Split CI into concurrent jobs, with the classification in its own
 
 - **Status:** Accepted

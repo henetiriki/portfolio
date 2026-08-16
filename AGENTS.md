@@ -21,6 +21,23 @@ The permission allowlist in `.claude/settings.json` matches the _entire_ command
 - Genuine pipelines (`grep … | head`) are one logical command; leave them chained.
 - Put section headers in your reply, not in `echo` statements.
 
+## Opening a pull request
+
+**Start every pull request body with the human checklist**, before any explanation:
+
+```markdown
+### Before merging
+
+- [ ] Anything changed outside git for this work — ruleset, Codecov, Vercel, repository settings? If yes, it is recorded in the docs in this PR
+- [ ] Manual QA on the **preview URL**, not localhost
+```
+
+Two items, deliberately. The long list is the [release checklist](docs/release-checklist.md), and it is worked through before the pull request is opened rather than read at merge time — a checklist nobody reads is worse than none. These two are here because they are the ones an agent **cannot** answer: the first is knowable only by whoever clicked around in a web console, and the second needs eyes on a running site.
+
+The first item exists because that is the gap that actually bit — see the settings bullet under [Documentation discipline](#documentation-discipline).
+
+A `.github/pull_request_template.md` would not help: `gh pr create --body-file` bypasses templates entirely, so the section has to be written into the body. It costs nothing at merge time either, because `squash_merge_commit_message` is `COMMIT_MESSAGES` — the squash commit is built from commit messages, so the checklist never reaches the history.
+
 ## Validating a change
 
 Run these before opening a pull request; the full list, including the production build, is in the [release checklist](docs/release-checklist.md).
@@ -45,6 +62,8 @@ yarn test:e2e
 - [`docs/roadmap.md`](docs/roadmap.md) holds **open work only**. When work completes, **move** it to [`docs/project-history.md`](docs/project-history.md) — moved, not copied. A finished item left in the roadmap, or ticked in place, is a defect.
 - **Work agreed in conversation but not started still gets written into the roadmap**, in the branch you are already on, even when unrelated to it. "Add it next time" reliably means never.
 - Durable rationale goes in [`docs/decisions.md`](docs/decisions.md); current behaviour goes in the relevant topical doc.
+- **A change made outside git is still a change, and it is the one that goes unrecorded.** Repository settings, the `main` ruleset, Codecov, Vercel — none of it produces a commit, so nothing drags the documentation sweep along behind it the way editing a file does. Record it in the branch you are already on, or in a docs-only commit if there is no branch. This is not hypothetical: `codecov/patch` was added to the ruleset while the roadmap still carried adding it as open work, and the next session started from a roadmap that was a step behind the repository. See [D-260816c](docs/decisions.md#d-260816c--keep-the-ruleset-free-of-bypass-actors-and-accept-the-wedge-risk).
+- **Before picking up a roadmap item that names a repository setting, verify the live state rather than trusting the item.** `gh api repos/henetiriki/portfolio/rulesets` for branch protection, and `curl -s https://api.codecov.io/api/v2/github/henetiriki/repos/portfolio/` for Codecov activation. Two commands, and they catch the case above before it turns into a pull request that re-does finished work. `gh api repos/henetiriki/portfolio/rulesets/<id>/history` retains every past version with its actor, and is the only record anywhere of a settings change.
 - **No long explanatory comments in CSS, CSS Modules or JSX.** Put the reasoning in the relevant doc and leave at most a one-line pointer at the call site. Relocate it — do not delete it.
 - **Keep drifting numbers out of the prose.** Test totals, file sizes, directory counts and the like are wrong within a few commits and nobody goes back to correct them, so they end up misinforming the reader the doc was written for. Write the property that survives — "the unit suite runs in seconds" rather than a count. Where a figure genuinely carries the argument, date it, as the coverage baseline in [`development.md`](docs/development.md#testing) does.
 
