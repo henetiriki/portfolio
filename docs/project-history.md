@@ -2,6 +2,16 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-16 — Correct the stated location, and move the build timestamp with it
+
+- **Both prose call sites now say the Garden Route, South Africa.** The SEO description and the hero subtitle on the home page were the only two, and the description is the one that carried furthest — it is the meta description, the Open Graph description and the social card text for the site's root URL, so every share of `/` had been advertising the wrong hemisphere.
+- **The region, not the town.** "Garden Route" matches the granularity the travel map already shows and keeps a home address off a public page; the reasoning is [D-260816d](decisions.md#d-260816d--name-the-region-rather-than-the-town-and-take-en-zas-date-order).
+- **`src/fixtures/experience.tsx` was deliberately left alone.** Its `Wellington, New Zealand` values are the locations of past roles, which remain true, and the travel fixtures are travel history for the same reason. The map needed nothing either — its `current: true` city has been Mossel Bay since the vector map landed, and the prose disagreeing with it was the defect.
+- **`public/llms.txt` was checked and carries no location**, as expected. Recorded so the next pass does not have to re-establish it.
+- **The build timestamp is now `en-ZA` and `Africa/Johannesburg`**, so the footer's "Updated:" reads in the owner's actual timezone. South Africa observes no daylight saving, so the abbreviation stops alternating between `NZST` and `NZDT` and settles on `SAST`.
+- **The roadmap's claim that the string's shape would not change was wrong, and checking took one command.** It said both locales format day-first, so only the zone abbreviation would move. `en-ZA` formats year-first — `2026/08/16, 14:19 SAST` where `en-NZ` gave `17/08/2026, 00:19 NZST`. The alternative that preserved day-first was `en-GB`, which has no `SAST` abbreviation for the zone and falls back to `GMT+2`; the shape changed rather than the zone going unnamed.
+- **`NEXT_PUBLIC_LAST_MODIFIED` is also the precache revision for `/_offline`** ([D-260815g](decisions.md#d-260815g--precache-the-_offline-document-which-the-build-manifest-omits)), so the format change invalidates that one entry once. Harmless, and noted so it is recognised rather than investigated.
+
 ## 2026-08-16 — Correct two claims the split's own CI run disproved
 
 - **A missing report on `main` does not block `codecov/patch`.** The entry below stated the required check depends on both Codecov having the repository active _and_ `main` carrying a report for the comparison to have a base. The first half is right and is the one that bites; the second was inference, and [#189](https://github.com/henetiriki/portfolio/pull/189) disproved it by passing while `main` still carried the dropped upload. Patch coverage is computed from the pull request's own report, so a missing base costs the comparison rather than the status.

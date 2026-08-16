@@ -2,13 +2,13 @@
 
 const { withBotId } = require('botid/next/config');
 
-const lastModified = new Intl.DateTimeFormat('en-NZ', {
+const lastModified = new Intl.DateTimeFormat('en-ZA', {
   day: 'numeric',
   hour: 'numeric',
   hour12: false,
   minute: 'numeric',
   month: 'numeric',
-  timeZone: 'Pacific/Auckland',
+  timeZone: 'Africa/Johannesburg',
   timeZoneName: 'short',
   year: 'numeric',
 }).format(new Date());

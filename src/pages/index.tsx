@@ -16,7 +16,7 @@ const DynamicTypeAnimation = dynamic(
 );
 
 const description =
-  'Online portfolio and CV for Louw Swart, a front-end engineer based in Wellington, New Zealand, working with React, Next.js and Node.js.';
+  'Online portfolio and CV for Louw Swart, a front-end engineer based on the Garden Route, South Africa, working with React, Next.js and Node.js.';
 
 const Home: NextPage = (): JSX.Element => {
   const reduceMotion = useReducedMotion();
@@ -63,7 +63,9 @@ const Home: NextPage = (): JSX.Element => {
           <Box className={classes.about}>
             <Title order={2}>About me</Title>
             <Title order={3}>Louw Swart</Title>
-            <Title order={4}>Front-end Engineer, Wellington NZ</Title>
+            <Title order={4}>
+              Front-end Engineer, Garden Route, South Africa
+            </Title>
             <Text component='p'>
               I have had a varied career spanning 8 years in the travel industry
               as a <b>flight attendant</b>, after which I joined the IT sector
