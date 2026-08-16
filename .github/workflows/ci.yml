@@ -102,8 +102,17 @@ jobs:
         if: steps.change.outputs.docs_only != 'true'
         run: yarn test:coverage
 
+      # Skipped for fork pull requests, which GitHub issues no OIDC token to
+      # whatever `id-token: write` says — `use_oidc` would have nothing to
+      # authenticate with and `fail_ci_if_error` would make that a failed job.
+      # The event-name half of the guard is load-bearing: the pull_request
+      # context is null on a push to main, so the repository comparison alone
+      # would stop uploading from the branch the coverage is about.
       - name: Upload coverage to Codecov
-        if: steps.change.outputs.docs_only != 'true'
+        if: >-
+          steps.change.outputs.docs_only != 'true' && (github.event_name !=
+          'pull_request' || github.event.pull_request.head.repo.full_name ==
+          github.repository)
         uses: codecov/codecov-action@v7
         with:
           disable_search: true
