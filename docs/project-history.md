@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-16 — Say to keep the wrong turn, since one line of this file said the opposite
+
+- **The practice already existed and the rule did not.** Several decisions record a discarded first attempt — the greyscale icon layer that painted an opaque square in [D-260815e](decisions.md#d-260815e--generate-the-pwa-icon-and-splash-set-from-one-vector-master), the `html`-versus-`body` background that "cost a wrong first attempt to find" — but nothing said to do it, so it happened when the author happened to think of it.
+- **This file's own preamble reads as the opposite instruction.** It says the record omits superseded investigations, which literally applied means dropping the wrong first attempt. [`AGENTS.md`](../AGENTS.md) now distinguishes the two: the transcript goes, the fact that the first fix was wrong stays, along with why it appealed and what redirected it.
+- **It surfaced from a case that had just gone that way.** [D-260816e](decisions.md#d-260816e--head-the-about-section-with-the-role-not-a-second-copy-of-the-name) initially read as though the better heading structure had been arrived at while fixing a wrapped line, when review had in fact redirected it. Corrected before merge, and the rule exists so the correction is not needed next time.
+
 ## 2026-08-16 — Correct the stated location, and move the build timestamp with it
 
 - **Both prose call sites now say the Garden Route, South Africa.** The SEO description and the hero subtitle on the home page were the only two, and the description is the one that carried furthest — it is the meta description, the Open Graph description and the social card text for the site's root URL, so every share of `/` had been advertising the wrong hemisphere.
