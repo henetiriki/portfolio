@@ -1,4 +1,4 @@
 .title span {
-  font-size: 1rem;
+  font-size: var(--mantine-font-size-lg);
   font-style: italic;
 }

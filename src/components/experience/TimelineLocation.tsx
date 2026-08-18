@@ -5,7 +5,7 @@ import type { FC, JSX } from 'react';
 export const TimelineLocation: FC<{ location: JSX.Element | string }> = ({
   location,
 }) => (
-  <Text c='silver' className={classes.location} mb={16} mt={0} size='sm'>
+  <Text c='silver' className={classes.location} mb={16} mt={0}>
     {location}
   </Text>
 );

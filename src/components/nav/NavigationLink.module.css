@@ -1,8 +1,7 @@
 .link {
   align-items: center;
   color: var(--mantine-color-silver-1);
-  /*noinspection CssInvalidFunction*/
-  font-size: rem(14px);
+  font-size: var(--mantine-font-size-md);
   font-weight: 600;
   height: 100%;
   padding-left: var(--mantine-spacing-md);
@@ -36,8 +35,7 @@
 }
 
 .link.sm {
-  /*noinspection CssInvalidFunction*/
-  font-size: rem(24px);
+  font-size: var(--mantine-font-size-xl);
   /*noinspection CssInvalidFunction*/
   height: rem(64px);
   /*noinspection CssInvalidFunction*/

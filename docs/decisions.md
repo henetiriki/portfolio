@@ -12,6 +12,23 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260818a — Pull the text outside the type scale onto it, per call site
+
+- **Status:** Accepted
+- **Decided:** 2026-08-18
+
+Six sites named in the [roadmap item](roadmap.md) opened by [D-260816f](#d-260816f--put-the-type-scale-back-on-mantines-defaults-and-make-leading-a-ratio) were reviewed one at a time rather than converted as a set, per that item's own instruction. All six now read a `--mantine-font-size-*` token or a Mantine size keyword (`fz='xl'`) instead of a hardcoded value.
+
+**Two of the seven hardcoded values found were dead CSS, not typography.** `TimelineInstitution.module.css`'s `.link span` and `portfolio.module.css`'s `.titleLink span` both styled a `span` inside an `Anchor` whose content is a plain string (`name: string`, `title: string`) — neither component ever renders one. Both rules have matched nothing since at least the v7 Mantine migration. They were removed rather than converted; there was no text to size.
+
+**Most conversions land exactly on the value already there, which is the point.** `Header.module.css`'s `1.25rem` sub-heading and `TimelineInstitution`'s `fz='1.25rem'` institution name both already equal 20px — the same number the fixed `xl` token now holds, where before the base fix `xl` was 18px. Swapping the hardcoded value for the token changes nothing on screen; it only stops the value drifting out of step the next time the scale moves, which is the failure this whole item exists to close off.
+
+**Where a site was reviewed live and judged too small, it moved beyond a 1:1 token swap, deliberately.** The travel map's `InfoWindow` title and description (`Marker.module.css`) went `md`→`lg` and `sm`→`md`; the portfolio card's bold lead-in span (`portfolio.module.css`'s `.cardText span`) went `md`→`lg`. These are opinion, not restoration — the roadmap item is explicit that some call sites are deliberately independent of body copy, and a map marker earning its own larger scale is exactly the kind of judgment call it asks for per site rather than as a blanket rule.
+
+**The mobile drawer link (`NavigationLink.module.css`'s `.link.sm`) is the one call site with no token to restore.** Its `rem(24px)` sits above the whole default scale — `xl` (20px) is the largest token Mantine defines — so unlike the other five sites, pulling it onto the scale means shrinking it, not converting a coincidentally-matching value. It was moved to `xl` on request; if that reads as too small next to the rest of the drawer, the fix is a new decision to keep a hardcoded value here on purpose, not a bigger token, since none exists.
+
+**`TimelineLocation`'s `size='sm'` and `TimelineFromTo`'s unset (`md`-default) size were never hardcoded and were not part of the six call sites** — they already read the theme and moved with the base fix (12px→14px, 14px→16px) without anyone touching them. `TimelineLocation` was raised to match `TimelineFromTo` (both now default to `md`) once side-by-side review showed the gap between duration and location read as inconsistent, not because either was outside the theme.
+
 ## D-260816k — Reclaim the timeline's gutter from the container, not from the rail
 
 - **Status:** Accepted

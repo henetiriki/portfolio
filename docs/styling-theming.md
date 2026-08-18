@@ -38,7 +38,7 @@ v6's `colorScheme` and `globalStyles` theme keys don't exist in v7. `colorScheme
 
 - **`Text` and `Input` do not default to the same token.** `Text` defaults to `md`, `Input` and its wrappers to `sm`. That asymmetry is why the contact form passes an explicit `size='lg'`: dropping the prop would render its fields at `sm`, and anything under 16px makes iOS Safari zoom the viewport on focus.
 - **A Mantine component's box does not scale with `fontSizes`.** `--input-height` and `--button-height` are Mantine's own per-size constants (`lg` is `3.125rem` for both), while `--input-fz` and `--button-fz` read from the theme. Changing a token therefore moves the text inside a control without moving the control.
-- **Roughly half the site's text never reads these tokens at all**, sizing itself in CSS Modules or inline instead — the header navigation, page sub-headings, timeline entries, map markers and portfolio cards. Those are unaffected by the scale and are [open work](roadmap.md).
+- **The header navigation, page sub-headings, timeline entries, map markers and portfolio cards now read these tokens too.** They sized themselves in CSS Modules or inline instead until 2026-08-18, reviewed one call site at a time rather than converted as a set — some restore the exact value that was already there, others deliberately sit a step off body copy. See [D-260818a](decisions.md#d-260818a--pull-the-text-outside-the-type-scale-onto-it-per-call-site).
 
 ### Fonts
 
