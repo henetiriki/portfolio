@@ -5,7 +5,7 @@
 
 .title span {
   display: block;
-  font-size: 1.25rem;
+  font-size: var(--mantine-font-size-xl);
   font-weight: normal;
   letter-spacing: normal;
   line-height: 2rem;

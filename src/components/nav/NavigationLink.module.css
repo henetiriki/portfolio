@@ -35,8 +35,7 @@
 }
 
 .link.sm {
-  /*noinspection CssInvalidFunction*/
-  font-size: rem(24px);
+  font-size: var(--mantine-font-size-xl);
   /*noinspection CssInvalidFunction*/
   height: rem(64px);
   /*noinspection CssInvalidFunction*/

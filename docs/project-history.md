@@ -2,6 +2,14 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-18 — Pull the text outside the type scale onto it
+
+- **All six call sites named in the [2026-08-16 roadmap item](decisions.md#d-260816f--put-the-type-scale-back-on-mantines-defaults-and-make-leading-a-ratio) were reviewed and resolved, one at a time** — [D-260818a](decisions.md#d-260818a--pull-the-text-outside-the-type-scale-onto-it-per-call-site). Every one now reads a `--mantine-font-size-*` token or a Mantine size keyword instead of a hardcoded value.
+- **Two of the seven hardcoded declarations found were dead CSS.** `TimelineInstitution.module.css`'s `.link span` and `portfolio.module.css`'s `.titleLink span` both targeted a `span` inside an `Anchor` that only ever renders a plain string — neither has matched anything since the v7 Mantine migration. Removed rather than converted.
+- **Most conversions were a no-op on screen**, restoring a hardcoded value that already happened to equal its nearest token now that the base scale moved: the page sub-heading, the institution name, and the timeline's italic `span` (which had drifted 2px off body copy) all land exactly where they already were.
+- **Three sites were bumped a step further after live review**: the travel map's `InfoWindow` title and description, and the portfolio card's bold lead-in line. The mobile nav drawer went the other way — its `24px` sat above the whole default scale, so pulling it onto a token (`xl`) meant shrinking it to 20px, the only call site where "join the theme" and "get bigger" pointed in different directions.
+- **`TimelineLocation` and `TimelineFromTo` were untouched by the review itself** — both already read theme tokens and moved with the base fix on their own — but `TimelineLocation`'s `size='sm'` was raised to match `TimelineFromTo`'s `md` default once the two looked inconsistent side by side.
+
 ## 2026-08-16 — Reclaim the left gutter on the experience timeline
 
 - **Body copy on `/experience` went from half the screen to two thirds of it** at mobile widths — [D-260816k](decisions.md#d-260816k--reclaim-the-timelines-gutter-from-the-container-not-from-the-rail). Three of the five stacked layers now respond to the viewport; the rail's own offset and the heading icon are untouched.

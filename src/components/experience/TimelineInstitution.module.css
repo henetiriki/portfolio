@@ -2,8 +2,3 @@
   color: var(--mantine-color-shamrock-5);
   text-decoration: none;
 }
-
-.link span {
-  font-size: 0.75rem;
-  font-style: italic;
-}

@@ -7,7 +7,7 @@ export const TimelineInstitution: FC<Omit<Institution, 'location'>> = ({
   name,
   url,
 }) => (
-  <Text fz='1.25rem' mb={0} mt={0}>
+  <Text fz='xl' mb={0} mt={0}>
     {url && (
       <Anchor
         c='shamrock'

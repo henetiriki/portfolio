@@ -52,18 +52,13 @@
   text-decoration: none;
 }
 
-.titleLink span {
-  font-size: 0.75rem;
-  font-style: italic;
-}
-
 .cardText span {
-  font-size: 1rem;
+  font-size: var(--mantine-font-size-lg);
   font-weight: 700;
 }
 
 .actionButton {
-  font-size: 1rem;
+  font-size: var(--mantine-font-size-md);
   margin-top: 1rem;
 }
 

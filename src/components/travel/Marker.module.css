@@ -21,13 +21,13 @@
 
 .infoWindowTitle {
   color: var(--mantine-color-shamrock-4);
-  font-size: 1rem;
+  font-size: var(--mantine-font-size-lg);
   margin: 0;
 }
 
 .infoWindowDescription {
   color: var(--mantine-color-cinder-4);
-  font-size: 0.85rem;
+  font-size: var(--mantine-font-size-md);
   margin: 0.25rem 0;
 }
 
