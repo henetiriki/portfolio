@@ -12,6 +12,23 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260821g — Remove the CSP violation reporting endpoint and directive
+
+- **Status:** Accepted
+- **Decided:** 2026-08-21
+
+Raised in review of the endpoint's own posture, the same day [D-260821c](#d-260821c--accept-the-missing-rate-limit-on-apicsp-report) judged it "still necessary and proportionately scoped": is `/api/csp-report` actually worth keeping? [security.md](security.md#violation-reporting-apicsp-report) already documented its own weakest point — violations land in the Vercel runtime logs, "a rolling buffer measured in hours to days. Nothing notifies anyone and nothing retains them" — and on a personal site nobody is watching that buffer in real time. A reporting channel whose output nobody reads before it rolls off is not a reporting channel, it is a cost with no offsetting signal.
+
+**This reverses D-260821c and D-260821b within the same day, and that is recorded rather than smoothed over.** Both treated the endpoint as settled and fixed gaps in it — a missing rate limit, unsanitized log fields — without revisiting whether it should exist. Neither was wrong given the question each was asked; the question itself was the gap. Fixing an endpoint's edges and then asking whether the endpoint should exist at all are different reviews, and this is the second one.
+
+**The replacement signal is testing, not another delivery mechanism.** `e2e/security-headers.spec.ts` already pins the header's presence, its content on every route, and the two directives (`'wasm-unsafe-eval'`, `https://mapsresources-pa.googleapis.com`) that were previously found only through production violation reports; `e2e/service-worker.spec.ts` separately exercises `worker-src` end to end. Manual QA on the preview URL, already required by every pull request per [AGENTS.md](../AGENTS.md#opening-a-pull-request), is what a short-lived log could never be: performed by someone who will actually look. A future directive change that breaks something real fails a test or is visibly broken on the preview, not silently — which is the property the reporting endpoint was trying and failing to buy at this scale.
+
+**Nothing is added in its place.** No `report-to`, no third-party reporting service, no replacement observability. The 2026-08-15 promotion to enforcing already accepted that a bad directive breaks pages rather than merely logging a violation — see [D-260815h](#d-260815h--promote-the-policy-to-enforcing-in-one-step) — and that consequence is what makes the change visible without a reporting channel at all.
+
+**Deleted wholesale rather than left dormant.** `src/pages/api/csp-report.ts`, `src/server/csp/` (parsing, filtering, sanitization, and their tests) and the `report-uri` directive in `next.config.js` are all removed together — the module had no other caller, so nothing is left half-used. `e2e/security-headers.spec.ts`'s report-posting test goes with it. [D-260814c](#d-260814c--ship-the-content-security-policy-report-only-and-accept-unsafe-inline), [D-260815b](#d-260815b--email-content-security-policy-violations-for-the-observation-window), [D-260815h](#d-260815h--promote-the-policy-to-enforcing-in-one-step), [D-260821b](#d-260821b--sanitize-csp-report-fields-before-they-reach-the-runtime-logs) and [D-260821c](#d-260821c--accept-the-missing-rate-limit-on-apicsp-report) are left as published — they were each correct given what was known when decided, and the observation-window evidence they cite (`mapsresources-pa.googleapis.com`, `'wasm-unsafe-eval'`, the `/sw.js` violations) is exactly what justified promoting to enforcing in the first place.
+
+**Revisit if the platform changes what "reporting" would cost.** A durable log sink someone actually monitors, added for an unrelated reason, would change the calculus back — but adding one solely to revive this endpoint was already rejected once on cost grounds in D-260821c, and nothing here reopens that.
+
 ## D-260821f — Assert icon contrast directly, scoped to what axe cannot see
 
 - **Status:** Accepted

@@ -67,10 +67,6 @@ const contentSecurityPolicyDirectives = {
   ],
   'manifest-src': ["'self'"],
   'object-src': ["'none'"],
-  // `report-to` is deliberately absent — it supersedes `report-uri` in Chrome
-  // but needs an absolute endpoint URL, and adding it stopped reports reaching
-  // us entirely. See docs/decisions.md D-260814c.
-  'report-uri': ['/api/csp-report'],
   // 'wasm-unsafe-eval' permits the WebAssembly module Maps compiles and nothing
   // else; 'unsafe-eval' would be a far wider grant than the violation calls for.
   'script-src': [

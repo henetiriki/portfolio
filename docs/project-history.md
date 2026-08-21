@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-21 — Remove the CSP violation reporting endpoint and directive
+
+- **`/api/csp-report`, `src/server/csp/` and the `report-uri` directive in `next.config.js` are gone** — [D-260821g](decisions.md#d-260821g--remove-the-csp-violation-reporting-endpoint-and-directive). Raised the same day two prior reviews ([D-260821b](decisions.md#d-260821b--sanitize-csp-report-fields-before-they-reach-the-runtime-logs), [D-260821c](decisions.md#d-260821c--accept-the-missing-rate-limit-on-apicsp-report)) had fixed gaps in the endpoint without asking whether it should exist: the Vercel runtime logs it wrote to are a rolling buffer measured in hours to days that nobody was watching in real time, so the endpoint was a cost with no offsetting signal.
+- **The replacement signal is testing, not a new delivery mechanism.** `e2e/security-headers.spec.ts` already pins the enforcing header's presence and content, including the two directives previously found only through production violation reports; manual QA on the preview URL, already required per pull request, catches what a short-lived log could not.
+- **The three earlier CSP-reporting decisions stay published as written.** They were correct given what was known when decided, and the evidence they cite is what justified promoting the policy to enforcing in the first place.
+
 ## 2026-08-21 — Assert icon contrast directly, scoped to what axe cannot see
 
 - **Closed the gap D-260821a documented but did not fix** — [D-260821f](decisions.md#d-260821f--assert-icon-contrast-directly-scoped-to-what-axe-cannot-see). `accessibility.spec.ts` now reads an icon's computed colour, walks up for the first painted background, and checks the ratio against WCAG 1.4.11's 3:1 floor — the exact check axe's text-only `color-contrast` rule cannot perform on an SVG with `stroke="currentColor"`.
