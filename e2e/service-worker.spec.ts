@@ -67,6 +67,40 @@ test.describe('service worker', () => {
     );
   });
 
+  test('precaches manifest icons but not the Apple splash images', async ({
+    page,
+  }) => {
+    await page.goto('/');
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+
+    // The precache cache's own name is scope-dependent (see
+    // docs/pwa-seo.md), so it's found by content rather than hardcoded.
+    const precachedPaths = await page.evaluate(async () => {
+      const cacheNames = await caches.keys();
+      const precacheName = cacheNames.find(name => name.includes('precache'));
+
+      if (!precacheName) {
+        return [];
+      }
+
+      const cache = await caches.open(precacheName);
+      const requests = await cache.keys();
+
+      return requests.map(request => new URL(request.url).pathname);
+    });
+
+    // Discriminates against an empty or wrong cache being found: this only
+    // passes if manifest-icon-512.png, which is meant to stay precached, is
+    // actually in it.
+    expect(precachedPaths).toContain(
+      '/images/manifest-icons/manifest-icon-512.png'
+    );
+    expect(precachedPaths.some(path => path.includes('apple-splash-'))).toBe(
+      false
+    );
+  });
+
   test('answers a navigation from its fetch handler', async ({ page }) => {
     // The context is fresh, so nothing is registered yet and this first
     // navigation must come from the network. Asserted rather than assumed,
