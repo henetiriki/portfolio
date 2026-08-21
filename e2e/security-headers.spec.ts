@@ -30,8 +30,8 @@ test.describe('content security policy', () => {
       const headers = await headersFor(request, path);
 
       expect(headers['content-security-policy']).toBeTruthy();
-      // Both headers together would apply independently and report
-      // indistinguishably, since the endpoint records no disposition.
+      // Both headers together would apply independently, silently doubling
+      // the enforced policy with a redundant Report-Only copy.
       expect(headers['content-security-policy-report-only']).toBeUndefined();
     });
   }
@@ -64,25 +64,6 @@ test.describe('content security policy', () => {
     expect(policy).toContain("form-action 'self'");
     expect(policy).toContain("frame-ancestors 'none'");
     expect(policy).toContain("object-src 'none'");
-  });
-
-  test('the policy points at a report endpoint that accepts reports', async ({
-    request,
-  }) => {
-    expect(await policyFor(request)).toContain('report-uri /api/csp-report');
-
-    const response = await request.post('/api/csp-report', {
-      data: {
-        'csp-report': {
-          'blocked-uri': 'https://blocked.example/x.js',
-          'document-uri': '/',
-          'effective-directive': 'script-src-elem',
-        },
-      },
-      headers: { 'content-type': 'application/csp-report' },
-    });
-
-    expect(response.status()).toBe(204);
   });
 });
 

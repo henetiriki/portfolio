@@ -44,5 +44,5 @@ Distinct from crawler SEO, and documented elsewhere: `botid` (Vercel BotID) keep
 
 - Image preloading is restricted to `FixedBackground`, the deliberate full-viewport LCP image. The header-adjacent `content-top` wave uses `loading='eager'` because Next can identify it as LCP, but it is not preloaded; lower decorative waves and the 40px navigation logo remain lazy/normal priority. Portfolio cards retain grid-accurate `sizes` without being preloaded.
 
-- Response headers, the Content Security Policy and its report endpoint have moved to [Security](security.md), which covers the whole security surface in one place.
+- Response headers and the Content Security Policy have moved to [Security](security.md), which covers the whole security surface in one place.
 - `public/scripts/hash-redirect.js`, loaded async from `_document.tsx`, redirects to `/` whenever the URL hash contains `#!` — a leftover guard against old hashbang-style URLs (e.g. from a pre-Next.js single-page app) being indexed or bookmarked.

@@ -13,7 +13,7 @@ Please allow a reasonable window for a fix before sharing details elsewhere. Thi
 
 The live site at [www.ouwl.house](https://www.ouwl.house) and this repository.
 
-Two things are known and deliberate rather than worth reporting: the Content Security Policy carries `'unsafe-inline'` on `script-src` and `style-src`, and `/api/csp-report` is unauthenticated because browsers post violation reports without JavaScript. Both are explained in [docs/security.md](docs/security.md).
+One thing is known and deliberate rather than worth reporting: the Content Security Policy carries `'unsafe-inline'` on `script-src` and `style-src`. Explained in [docs/security.md](docs/security.md).
 
 ## Supported versions
 
