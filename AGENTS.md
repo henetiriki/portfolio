@@ -47,7 +47,7 @@ The description is what the branch is _for_, not what it touches: `chore/free-po
 ```markdown
 ### Before merging
 
-- [ ] Anything changed outside git for this work — ruleset, Codecov, Vercel, repository settings? If yes, it is recorded in the docs in this PR
+- [ ] Nothing changed outside git for this work — ruleset, Codecov, Vercel, repository settings — or if something did, it is recorded in the docs in this PR
 - [ ] Manual QA on the **preview URL**, not localhost
 ```
 
