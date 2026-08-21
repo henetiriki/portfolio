@@ -2,6 +2,13 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-21 — Give the mobile timeline icons back some edge clearance, and a colour that survives contrast
+
+- **The section icons moved 5px back from the screen edge and shrank `2.5rem` → `2rem` below `xs`** — [D-260821a](decisions.md#d-260821a--give-the-mobile-icons-back-some-edge-clearance-and-a-colour-that-survives-contrast). Review judged the 12px offset from [D-260816k](decisions.md#d-260816k--reclaim-the-timelines-gutter-from-the-container-not-from-the-rail) too tight; the net offset is now 7px.
+- **A curved SVG connector between icon and rail was built first and discarded.** Accurate to the sketch that prompted the work, but heavier than the ask once it was reduced to "make the icon smaller" directly — a second coordinate system to keep in sync with `Timeline`'s own margin, for a component-local relationship a resize handles without one.
+- **Shrinking the icon exposed a second alignment issue the resize itself caused**: bottom-pinned (`align='end'`) meant the icon still met the rail flush, but its visual centre no longer lined up with the heading text now that it didn't fill the row's height. Centring it at `base` (leaving `xs`+ untouched) fixed that and reopened the icon-to-rail gap, closed by moving `Timeline`'s whole box up by the same amount rather than anything inside it — every dot keeps its exact position relative to its own bubble.
+- **The icon's white-on-green was found to fail contrast badly — 1.72:1 against the circle's own `shamrock.4` background — and `axe` had never caught it**, in this project's e2e suite or re-run directly to confirm. Its `color-contrast` rule only evaluates text nodes; the icon is an SVG with `stroke="currentColor"`, invisible to that check regardless of how it fails. `black-russian.4` replaces white, at 11.39:1.
+
 ## 2026-08-18 — Pull the text outside the type scale onto it
 
 - **All six call sites named in the [2026-08-16 roadmap item](decisions.md#d-260816f--put-the-type-scale-back-on-mantines-defaults-and-make-leading-a-ratio) were reviewed and resolved, one at a time** — [D-260818a](decisions.md#d-260818a--pull-the-text-outside-the-type-scale-onto-it-per-call-site). Every one now reads a `--mantine-font-size-*` token or a Mantine size keyword instead of a hardcoded value.
