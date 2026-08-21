@@ -1,6 +1,6 @@
 # State Management
 
-There is exactly one piece of shared client state in the app: `PortfolioState`, implemented as a React Context wrapping a `useReducer`. No Redux, Zustand, Jotai, or data-fetching library (React Query/SWR) is used — API calls are done with a tiny `fetcher` wrapper around `fetch` (`@utils/common/fetcher.ts`) inside hooks that manage their own `useState`/`useEffect`. The wrapper applies a per-attempt 30s timeout, clears it in `finally`, retries network and non-OK failures twice with exponential backoff, and always rejects with an `Error`.
+There is exactly one piece of shared client state in the app: `PortfolioState`, implemented as a React Context wrapping a `useReducer`. No Redux, Zustand, Jotai, or data-fetching library (React Query/SWR) is used — API calls are done with a tiny `fetcher` wrapper around `fetch` (`@utils/common/fetcher.ts`) inside hooks that manage their own `useState`/`useEffect`. The wrapper applies a per-attempt 8s timeout, clears it in `finally`, and retries network errors and 5xx/429 responses twice with exponential backoff — other 4xx responses fail immediately since retrying them can't change the outcome. It always rejects with an `Error`.
 
 ## Files
 
