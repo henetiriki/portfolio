@@ -5,16 +5,16 @@ export const TimelineHeading: FC<{ icon: JSX.Element; title: string }> = ({
   icon,
   title,
 }) => (
-  <Flex align='end'>
+  <Flex align={{ base: 'center', xs: 'end' }}>
     <Flex
       align='center'
       bg='shamrock'
-      h='2.5rem'
+      h={{ base: '2rem', xs: '2.5rem' }}
       justify='center'
-      ml={{ base: -12, xs: 0 }}
+      ml={{ base: -3, xs: 0 }}
       mr='1.25rem'
       style={{ borderRadius: '100%' }}
-      w='2.5rem'>
+      w={{ base: '2rem', xs: '2.5rem' }}>
       {icon}
     </Flex>
     <Title order={2}>{title}</Title>
