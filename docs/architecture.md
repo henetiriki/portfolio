@@ -2,22 +2,22 @@
 
 ## Tech stack
 
-| Concern         | Choice                                                                                  |
-| --------------- | --------------------------------------------------------------------------------------- |
-| Framework       | Next.js `^16.3.0`, **Pages Router** (`src/pages`)                                       |
-| UI runtime      | React `^19` (`react`, `react-dom`)                                                      |
-| Language        | TypeScript `^6.0`, `strict: true`                                                       |
-| UI library      | Mantine v9 (`core`, `form`, `hooks`, `notifications`)                                   |
-| Styling         | CSS Modules + CSS variables (`postcss-preset-mantine`, `postcss-simple-vars`)           |
-| Icons           | `@tabler/icons-react`                                                                   |
-| Maps            | `@googlemaps/js-api-loader` (Google Maps JavaScript API)                                |
-| Email           | `nodemailer` over Gmail SMTP                                                            |
-| Bot protection  | `botid` (Vercel BotID) client + server checks                                           |
-| PWA             | Serwist (every production build; never in development)                                  |
-| Sitemap/robots  | `next-sitemap` (runs as a `build` step)                                                 |
-| Package manager | Yarn 4 (Berry), Node `24.x`                                                             |
-| Testing         | Jest + React Testing Library (units), Playwright + axe (browser)                        |
-| Lint/format     | ESLint (`next/core-web-vitals` + a large custom ruleset), Prettier, Husky + lint-staged |
+| Concern                  | Choice                                                                                  |
+| ------------------------ | --------------------------------------------------------------------------------------- |
+| Framework                | Next.js `^16.3.0`, **Pages Router** (`src/pages`)                                       |
+| UI runtime               | React `^19` (`react`, `react-dom`)                                                      |
+| Language                 | TypeScript `^6.0`, `strict: true`                                                       |
+| UI library               | Mantine v9 (`core`, `form`, `hooks`, `notifications`)                                   |
+| Styling                  | CSS Modules + CSS variables (`postcss-preset-mantine`, `postcss-simple-vars`)           |
+| Icons                    | `@tabler/icons-react`                                                                   |
+| Maps                     | `@googlemaps/js-api-loader` (Google Maps JavaScript API)                                |
+| Email                    | `nodemailer` over Gmail SMTP                                                            |
+| Contact abuse protection | Client and server-side checks                                                           |
+| PWA                      | Serwist (every production build; never in development)                                  |
+| Sitemap/robots           | `next-sitemap` (runs as a `build` step)                                                 |
+| Package manager          | Yarn 4 (Berry), Node `24.x`                                                             |
+| Testing                  | Jest + React Testing Library (units), Playwright + axe (browser)                        |
+| Lint/format              | ESLint (`next/core-web-vitals` + a large custom ruleset), Prettier, Husky + lint-staged |
 
 ## Directory layout
 
@@ -79,7 +79,7 @@ Relative parent imports (`../`) are disallowed by ESLint (`no-restricted-imports
 2. `src/pages/_app.tsx` (`Portfolio`) wraps every page:
    - Sets only app-wide `<Head>` values: the viewport and generated font custom properties. Route-specific SEO does not fall back to homepage values here.
    - Loads the repository's own Roboto and Montserrat files through `next/font/local` and exposes their generated family names to the Mantine theme as root custom properties (see [Styling & Theming](styling-theming.md#fonts)).
-   - Registers `<BotIdClient protect={[{ method: 'POST', path: '/api/contact' }]} />` so BotID instruments the contact form's POST route client-side.
+   - Enables the contact form's automated-abuse protection.
    - Wraps the tree in `MantineProvider` with the custom `theme` (see [Styling & Theming](styling-theming.md)).
    - Wraps in the local `ErrorBoundary` (class component) so a render error anywhere shows a minimal "Oops" message instead of a blank page.
    - Provides `PortfolioStateProvider` (the global Context) around everything below it.

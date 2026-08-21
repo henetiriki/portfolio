@@ -88,6 +88,12 @@ yarn test:e2e
 - **No long explanatory comments in CSS, CSS Modules or JSX.** Put the reasoning in the relevant doc and leave at most a one-line pointer at the call site. Relocate it — do not delete it.
 - **Keep drifting numbers out of the prose.** Test totals, file sizes, directory counts and the like are wrong within a few commits and nobody goes back to correct them, so they end up misinforming the reader the doc was written for. Write the property that survives — "the unit suite runs in seconds" rather than a count. Where a figure genuinely carries the argument, date it, as the coverage baseline in [`development.md`](docs/development.md#testing) does.
 
+## Private operational documentation
+
+- Public documentation explains user-facing behaviour and high-level protections. Exact controls, known limitations, monitoring gaps, security decisions, operational commands, and provider-management steps belong in the private maintainer runbook.
+- The private runbook is deliberately separate from this repository. An agent may use it only when the maintainer explicitly includes it in the task context; otherwise it must ask for the runbook rather than infer access or recreate private detail from public history.
+- Never link to the private runbook, disclose its location, or copy its contents into public files, issues, pull requests, chat summaries, or external tools. Do not put credential values in either repository.
+
 ## Working across branches
 
 Branches run concurrently here, and `main` is the only integration point. Merges are squashed, so a branch lands as a single commit and its own history does not survive: **rebase onto `origin/main`** rather than merging `main` into a branch, and never merge one branch into another.
