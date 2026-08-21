@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-21 — Accept the missing rate limit on `/api/csp-report`
+
+- **Raised as a follow-up to the CSP report sanitization work, and closed as an accepted risk rather than a fix** — [D-260821c](decisions.md#d-260821c--accept-the-missing-rate-limit-on-apicsp-report). The endpoint has no rate limiting, but the textbook mitigation (edge/WAF rate limiting) is unavailable on the Vercel Hobby plan this site runs on, and a weaker alternative was already tried and rejected for this endpoint's now-deleted mail path.
+- **A durable external limiter (Upstash Redis) would work, and was judged not worth it.** It would add a new external service, secret and dependency to bound a nuisance whose worst case — temporary log noise or a temporary Hobby usage ceiling — is already bounded and self-recovering for a personal site with no data at risk and no uptime SLA.
+- **Revisit triggers are named rather than left open-ended**: a move to Vercel Pro (free Firewall rate-limit rules) or observed rather than theoretical abuse.
+
 ## 2026-08-21 — Sanitize CSP report fields before they reach the runtime logs
 
 - **`logViolation` no longer trusts an attacker-controlled field to behave like a single-line string** — [D-260821b](decisions.md#d-260821b--sanitize-csp-report-fields-before-they-reach-the-runtime-logs). `/api/csp-report` is unauthenticated by necessity, so before this change a forged report carrying a `\n` in `blocked-uri` could splice a fake line into the Vercel runtime logs that are the whole incident record for CSP violations post-enforcement.
