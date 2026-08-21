@@ -15,6 +15,7 @@
 | `css-vars:generate`                 | `node scripts/generate-mantine-css-variables.mjs`          | Regenerate the gitignored WebStorm CSS-variable stub from `colors.ts`                 |
 | `dev`                               | `NODE_OPTIONS='--inspect --trace-warnings' next dev`       | Local dev server (Turbopack) with the Node inspector attached and full warning traces |
 | `eslint:check` / `eslint:write`     | `eslint .` [`--fix`]                                       | Lint / lint and autofix                                                               |
+| `icons:generate`                    | `node scripts/generate-pwa-icons.mjs`                      | Regenerate every manifest icon and Apple splash image from `ouwl.svg`                 |
 | `postinstall`                       | `yarn css-vars:generate`                                   | Regenerates the WebStorm stub on every install, including in a fresh worktree         |
 | `prepare`                           | `husky install`                                            | Installs git hooks (runs automatically on `yarn install` via the `prepare` lifecycle) |
 | `prettier:check` / `prettier:write` | `prettier . --check/--write --ignore-path .prettierignore` | Formatting                                                                            |
