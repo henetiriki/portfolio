@@ -12,6 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260821b — Sanitize CSP report fields before they reach the runtime logs
+
+- **Status:** Accepted
+- **Decided:** 2026-08-21
+
+`/api/csp-report` is unauthenticated by necessity — see [security.md](security.md#violation-reporting-apicsp-report) — which means every field in a posted report is attacker-controlled all the way into `logViolation`. Before this change, `blockedUri`, `directive`, `documentUri` and `sourceFile` were interpolated into a template literal with no escaping and no per-field length limit, so a forged report carrying a `\n` in `blocked-uri` could splice an arbitrary fake line into the Vercel runtime logs — the whole incident record for CSP violations since [D-260815h](#d-260815h--promote-the-policy-to-enforcing-in-one-step) retired Report-Only. Classic CWE-117 log injection, raised in review.
+
+Two changes, applied together rather than either alone. `sanitizeField` strips C0 control characters and DEL (`0x00`–`0x1f`, `0x7f`) and caps each field at 256 bytes, applied inside `asString` so every field is clean before a `CspViolation` is even constructed — not bolted on at the logging call site, where a second caller could forget it. `logViolation` also switched from string interpolation to `console.warn('CSP violation: ' + JSON.stringify(violation))`: `JSON.stringify` escapes control characters as literal `\n`/`\r` sequences rather than emitting them raw, so even a field that somehow reached logging unsanitized could not break the log into two lines. The two are redundant by design — sanitizing keeps the logged value readable and short, `JSON.stringify` is the actual injection-proof boundary — and neither alone was judged sufficient: sanitizing without structured output still trusts every future field to be sanitized correctly, and structured output without sanitizing lets a single field balloon the log with kilobytes of noise.
+
+**256 bytes, not a smaller or field-specific limit.** None of the four fields has a legitimate reason to be long — `directive` is a fixed CSP keyword, the others are URLs — but `blocked-uri` can legitimately be a `data:` URI truncated by the browser rather than this endpoint, so the cap is generous enough not to discard a real diagnostic value while still bounding the worst case tightly.
+
+**`MAX_REPORT_BYTES` (16 KB, the whole request body) was left as is.** It already bounds total request size before parsing begins, which this change does not duplicate; the new cap is about what ends up in a single log line after parsing, not about request admission.
+
 ## D-260821a — Give the mobile icons back some edge clearance, and a colour that survives contrast
 
 - **Status:** Accepted

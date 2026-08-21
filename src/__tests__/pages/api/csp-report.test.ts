@@ -36,7 +36,12 @@ describe('csp-report API handler', () => {
       'private, no-store'
     );
     expect(console.warn).toHaveBeenCalledWith(
-      'CSP violation: script-src-elem blocked https://evil.example/x.js on https://www.ouwl.house/travel'
+      'CSP violation: ' +
+        JSON.stringify({
+          blockedUri: 'https://evil.example/x.js',
+          directive: 'script-src-elem',
+          documentUri: 'https://www.ouwl.house/travel',
+        })
     );
     expect(status).toHaveBeenCalledWith(204);
     expect(end).toHaveBeenCalled();

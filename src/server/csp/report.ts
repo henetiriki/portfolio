@@ -2,6 +2,7 @@ import type { CspViolation } from './types';
 import type { NextApiRequest } from 'next';
 
 const MAX_REPORT_BYTES = 16 * 1024;
+const MAX_FIELD_LENGTH = 256;
 
 const EXTENSION_SCHEMES = [
   'chrome-extension:',
@@ -15,8 +16,24 @@ const asRecord = (value: unknown): Record<string, unknown> | undefined =>
     ? (value as Record<string, unknown>)
     : undefined;
 
-const asString = (value: unknown): string | undefined =>
-  typeof value === 'string' && value ? value : undefined;
+// A forged report can put control characters or unbounded length in any
+// field, and those are the only two things standing between an attacker and
+// the runtime logs that are the whole incident record post-promotion. See
+// docs/security.md#violation-reporting-apicsp-report.
+const CONTROL_CHARACTERS = new RegExp('[\\x00-\\x1f\\x7f]', 'g');
+
+const sanitizeField = (value: string): string =>
+  value.replace(CONTROL_CHARACTERS, '').slice(0, MAX_FIELD_LENGTH);
+
+const asString = (value: unknown): string | undefined => {
+  if (typeof value !== 'string' || !value) {
+    return undefined;
+  }
+
+  const sanitized = sanitizeField(value);
+
+  return sanitized || undefined;
+};
 
 // `report-uri` posts a single object under a `csp-report` key, with
 // hyphenated field names. See docs/decisions.md#d-260814c.
@@ -82,15 +99,6 @@ export const isReportable = ({
     EXTENSION_SCHEMES.some(scheme => value?.startsWith(scheme))
   );
 
-export const logViolation = ({
-  blockedUri,
-  directive,
-  documentUri,
-  sourceFile,
-}: CspViolation): void => {
-  const origin = sourceFile ? ` from ${sourceFile}` : '';
-
-  console.warn(
-    `CSP violation: ${directive} blocked ${blockedUri} on ${documentUri}${origin}`
-  );
+export const logViolation = (violation: CspViolation): void => {
+  console.warn(`CSP violation: ${JSON.stringify(violation)}`);
 };
