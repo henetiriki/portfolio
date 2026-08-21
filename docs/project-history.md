@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-21 — Remove the script-side `unsafe-inline` CSP allowance
+
+- **`script-src` is now strict while every content page remains statically prerendered.** `BotIdClient` previously serialised its bootstrap as an executable inline script. `BotIdInitializer` instead calls `initBotId()` from the external Next.js bundle after hydration, retaining BotID protection for `POST /api/contact`; its same-origin challenge scripts remain allowed by `'self'`.
+- **The production HTML now contains no executable inline script.** The remaining `__NEXT_DATA__` tag is `application/json`, not executable JavaScript. The one-line Mantine colour-scheme script was also removed by setting the forced dark scheme directly on `<html>`, and local font variables now arrive on `<html>` via `next/font` classes rather than an inline style element.
+- **`style-src 'unsafe-inline'` is deliberately unchanged.** Mantine still renders its runtime CSS variables and responsive styles inline, so removing it is a separate refactor, retained on the [Roadmap](roadmap.md#performance-seo--platform-polish). See [D-260821k](decisions.md#d-260821k--remove-unsafe-inline-from-script-src-without-giving-up-static-prerendering).
+
 ## 2026-08-21 — Check that documentation links resolve, in CI
 
 - **A full documentation audit found four dead links, and none were caught by the release checklist's own cross-link check.** Three cited a `security.md` section deleted the same day by [D-260821g](decisions.md#d-260821g--remove-the-csp-violation-reporting-endpoint-and-directive), one cited a source file the same decision deleted. All four are fixed by de-linking rather than repointing, since nothing replaces the deleted content and the surrounding sentences stay accurate as written.

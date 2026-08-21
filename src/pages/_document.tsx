@@ -1,12 +1,15 @@
-import { ColorSchemeScript, mantineHtmlProps } from '@mantine/core';
 import { Head, Html, Main, NextScript } from 'next/document';
 
 import { AppleSplashLinks } from '@components/shared';
+import { bodyFont, headingFont } from '@styles/fonts';
 
 const Document = () => (
-  <Html lang='en' {...mantineHtmlProps}>
+  <Html
+    className={`${bodyFont.variable} ${headingFont.variable}`}
+    data-mantine-color-scheme='dark'
+    lang='en'
+    suppressHydrationWarning>
     <Head style={{ border: 0, height: '100%' }}>
-      <ColorSchemeScript forceColorScheme='dark' />
       <meta charSet='utf-8' />
       <meta content='IE=edge' httpEquiv='X-UA-Compatible' />
       <meta content='Louw Swart' name='author' />

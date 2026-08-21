@@ -55,6 +55,16 @@ test.describe('content security policy', () => {
     expect(policy).toContain('https://mapsresources-pa.googleapis.com');
   });
 
+  test('the policy permits inline styles but not inline scripts', async ({
+    request,
+  }) => {
+    const policy = await policyFor(request);
+
+    expect(policy).toMatch(/script-src [^;]*'wasm-unsafe-eval'/);
+    expect(policy).not.toMatch(/script-src [^;]*'unsafe-inline'/);
+    expect(policy).toMatch(/style-src [^;]*'unsafe-inline'/);
+  });
+
   test('the policy keeps the directives that do not depend on inline', async ({
     request,
   }) => {

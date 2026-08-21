@@ -26,7 +26,7 @@ const FONT_PROPERTIES = [
 const firstFamily = (stack: string) =>
   stack.split(',')[0].replaceAll(/['"]/g, '').trim();
 
-/** The generated family name `next/font` writes into a custom property. */
+/** The generated family name `next/font` writes into a document-level property. */
 const readDeclaredFamily = async (page: Page, property: string) => {
   const stack = await page.evaluate(
     name =>
