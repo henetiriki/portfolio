@@ -23,6 +23,48 @@ export const blockGoogleMaps = (page: Page) =>
   page.route('**://*.googleapis.com/**', (route: Route) => route.abort());
 
 /**
+ * Record every `behavior` passed to `Element.prototype.scrollIntoView`.
+ *
+ * `useScrollTo` (see src/hooks/useScrollTo.ts) is the only caller of
+ * `scrollIntoView` in the app, from two separate call sites — the header's
+ * scroll-to-top button and the footer's nav links. Patching the prototype
+ * catches both, and is the only way to observe the `behavior` argument at
+ * all: the resulting scroll position cannot tell `'smooth'` from `'auto'`
+ * apart, and a footer link's own navigation can move `scrollY` to 0 by
+ * itself, independent of whether `scrollToTop` ran.
+ *
+ * Must be called, and awaited, before `page.goto` — both `exposeFunction` and
+ * `addInitScript` only take effect on navigations that start after them.
+ */
+export const captureScrollIntoView = async (page: Page) => {
+  const behaviors: string[] = [];
+
+  await page.exposeFunction('__onScrollIntoView', (behavior: string) => {
+    behaviors.push(behavior);
+  });
+  await page.addInitScript(() => {
+    const original = Element.prototype.scrollIntoView;
+
+    Element.prototype.scrollIntoView = function (
+      this: Element,
+      options?: boolean | ScrollIntoViewOptions
+    ) {
+      const behavior =
+        options && typeof options === 'object'
+          ? (options.behavior ?? 'auto')
+          : 'auto';
+
+      // @ts-expect-error -- injected by page.exposeFunction, not a real DOM global
+      window.__onScrollIntoView(behavior);
+
+      return original.call(this, options as ScrollIntoViewOptions);
+    };
+  });
+
+  return behaviors;
+};
+
+/**
  * Fail a test on unexpected console errors.
  *
  * Returns a getter rather than asserting directly so each spec decides when to
