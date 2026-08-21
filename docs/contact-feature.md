@@ -11,7 +11,7 @@ The `/contact` page lets a visitor send a message that's emailed to the site own
   - `submitForm` POSTs JSON to `/api/contact`. On `response.ok`, marks `isSubmitted` and resets the form. On failure, runtime-validates `{ data: string[] }` before mapping each code through `errorFromCode` (`@utils/contact.ts`) to a JSX message looked up in `@fixtures/contact`'s `errorMessages`; malformed/network responses fall back to the generic error.
   - After every submit attempt, resets `isSubmitted`/`apiErrors` after a 250ms delay (`finally` block) so the notification effects in `ContactForm` re-fire cleanly on a subsequent submit.
 - Notifications: `ContactForm` watches `apiErrors` and `isSubmitted` and shows Mantine `notifications.show(...)` toasts (bottom-center, 6s auto-close) — green "Thanks!" on success, red "Oops!" per error.
-- **BotID**: `_app.tsx` registers `<BotIdClient protect={[{ method: 'POST', path: '/api/contact' }]} />`, which instruments the page so the subsequent server-side `checkBotId()` call in `api/contact.ts` can classify the request once before any email work begins.
+- **BotID**: `BotIdInitializer`, mounted in `_app.tsx`, calls `initBotId()` from the external application bundle for `POST /api/contact`. The subsequent server-side `checkBotId()` call in `api/contact.ts` can therefore classify the request once before any email work begins, without an inline executable script in the prerendered document.
 
 ## Server side (`src/server/contact/` + `src/pages/api/contact.ts`)
 

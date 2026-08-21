@@ -74,7 +74,6 @@ const contentSecurityPolicyDirectives = {
   // else; 'unsafe-eval' would be a far wider grant than the violation calls for.
   'script-src': [
     "'self'",
-    "'unsafe-inline'",
     "'wasm-unsafe-eval'",
     'https://maps.googleapis.com',
     'https://va.vercel-scripts.com',

@@ -4,11 +4,10 @@ import { Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { BotIdClient } from 'botid/client';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { Navigation } from '@components/nav';
-import { ErrorBoundary } from '@components/shared';
+import { BotIdInitializer, ErrorBoundary } from '@components/shared';
 import { Layout } from '@containers/layout';
 import { useLoading } from '@hooks';
 import { PortfolioStateProvider } from '@state/context';
@@ -33,13 +32,6 @@ const DynamicTransition = dynamic(
   }
 );
 
-const protectedRoutes = [
-  {
-    method: 'POST',
-    path: '/api/contact',
-  },
-];
-
 const Portfolio: NextPage<AppProps> = ({
   Component, // eslint-disable-line react/prop-types
   pageProps, // eslint-disable-line react/prop-types
@@ -49,18 +41,16 @@ const Portfolio: NextPage<AppProps> = ({
   return (
     <>
       <Head>
-        <style>{`
-          :root {
-            --portfolio-font-body: ${bodyFont.style.fontFamily};
-            --portfolio-font-heading: ${headingFont.style.fontFamily};
-          }
-        `}</style>
-        <BotIdClient protect={protectedRoutes} />
         <meta content='width=device-width, initial-scale=1' name='viewport' />
       </Head>
       <ErrorBoundary>
         <MantineProvider forceColorScheme='dark' theme={theme}>
-          <Box bd={0} bg='rgba(12, 14, 39, 0.8)' h='100%'>
+          <BotIdInitializer />
+          <Box
+            bd={0}
+            bg='rgba(12, 14, 39, 0.8)'
+            className={`${bodyFont.variable} ${headingFont.variable}`}
+            h='100%'>
             <PortfolioStateProvider>
               {isLoading && <DynamicTransition />}
               <DynamicFixedBackground />

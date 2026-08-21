@@ -12,6 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260821k — Remove `unsafe-inline` from `script-src` without giving up static prerendering
+
+- **Status:** Accepted
+- **Decided:** 2026-08-21
+
+`BotIdClient` was the only executable inline script authored by this application. It serialised BotID's whole client bootstrap into the prerendered document, so [D-260814c](#d-260814c--ship-the-content-security-policy-report-only-and-accept-unsafe-inline) correctly retained `'unsafe-inline'` at the time. The package's `initBotId()` API is a workable alternative: `BotIdInitializer` calls it after hydration from the external Next.js bundle, preserving the same `POST /api/contact` configuration without putting an executable script in the HTML.
+
+**Static prerendering remains the right trade.** A production build confirms every content page is still static, while `/contact` contains no executable inline script: the only remaining inline `<script>` is Next.js's non-executable `application/json` data block. BotID's challenge requests remain same-origin because `withBotId` rewrites them at the server, so the existing `'self'` source permits the client script it loads. `BotIdInitializer` runs after hydration, so an early request has not yet received BotID's client headers. The server-side `checkBotId()` classifies that direct request as a bot in production, so the interval can prevent an unusually early legitimate submission from succeeding but does not create an allowed bypass.
+
+**The forced colour scheme and font variables were removed as independent script/style sources.** `<html data-mantine-color-scheme="dark">` replaces Mantine's static one-line `ColorSchemeScript`, matching the already-forced provider setting. `next/font/local` now exposes the two generated font families as CSS variables on `<html>`, instead of `_app.tsx` emitting a style element solely to define them.
+
+**`style-src 'unsafe-inline'` remains intentionally.** Mantine renders CSS variables, utility classes and responsive style props as inline `<style>` elements, and the document uses inline style attributes. Mantine can accept a nonce, but a secure nonce requires request-time rendering, the cost this change avoids. Replacing those styles with committed static CSS is a separate, wider styling change; it remains on the [Roadmap](roadmap.md#performance-seo--platform-polish).
+
 ## D-260821j — Check internal documentation links in CI, rather than relying on the release sweep
 
 - **Status:** Accepted
