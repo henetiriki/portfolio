@@ -110,6 +110,13 @@ jobs:
         if: needs.classify.outputs.docs_only != 'true'
         run: yarn tsc --pretty --noEmit --project service-worker/tsconfig.json
 
+      # Never gated, for the same reason prettier isn't: it exists specifically
+      # to check docs, so a documentation-only change is exactly the case it
+      # must not skip. Pure Node, no build inputs — a link either resolves or
+      # it doesn't, regardless of what else changed in the diff.
+      - name: Check documentation links
+        run: yarn docs:check-links
+
       # Never gated: prettier covers the whole tree, so on a documentation-only
       # change it is the one check that applies to what changed.
       - name: Check formatting

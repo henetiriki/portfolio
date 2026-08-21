@@ -35,6 +35,7 @@ The app needs environment variables to run — a Google Maps key, Gmail SMTP cre
 | `yarn clean`                                | Wipe the build cache (`.next`)                                         |
 | `yarn css-vars:check` / `css-vars:generate` | Verify / regenerate the WebStorm CSS-variable stub from `colors.ts`    |
 | `yarn dev`                                  | Dev server (Turbopack) with the Node inspector attached                |
+| `yarn docs:check-links`                     | Verify every relative Markdown link and heading anchor resolves        |
 | `yarn eslint:check` / `eslint:write`        | Lint / lint and autofix                                                |
 | `yarn icons:check` / `icons:generate`       | Verify / regenerate manifest icons and splash images from `ouwl.svg`   |
 | `postinstall`                               | Regenerates the WebStorm CSS-variable stub after every install         |

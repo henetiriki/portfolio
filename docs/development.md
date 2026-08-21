@@ -14,6 +14,7 @@
 | `css-vars:check`                    | `node scripts/generate-mantine-css-variables.mjs --check`  | Verify the stub matches `colors.ts` without writing it                                |
 | `css-vars:generate`                 | `node scripts/generate-mantine-css-variables.mjs`          | Regenerate the gitignored WebStorm CSS-variable stub from `colors.ts`                 |
 | `dev`                               | `NODE_OPTIONS='--inspect --trace-warnings' next dev`       | Local dev server (Turbopack) with the Node inspector attached and full warning traces |
+| `docs:check-links`                  | `node scripts/check-doc-links.mjs`                         | Verify every relative Markdown link and heading anchor across the docs resolves       |
 | `eslint:check` / `eslint:write`     | `eslint .` [`--fix`]                                       | Lint / lint and autofix                                                               |
 | `icons:check`                       | `node scripts/generate-pwa-icons.mjs --check`              | Verify committed icons/splash images match `SPLASH_DEVICES` and `ouwl.svg`            |
 | `icons:generate`                    | `node scripts/generate-pwa-icons.mjs`                      | Regenerate every manifest icon and Apple splash image from `ouwl.svg`                 |
@@ -30,6 +31,8 @@
 | `type-check`                        | `tsc --pretty --noEmit`                                    | TypeScript type checking without emitting output                                      |
 
 **A production build does not disturb a running dev server, but `yarn clean` does.** Next 16 keeps dev output in `.next/dev`, and `next build` clears `.next` with `cache`, `dev`, `lock` and `trace` excluded — so `yarn build` in one terminal leaves `next dev` in another intact. `yarn clean` is `rm -rf .next`, which takes `.next/dev` with it and leaves the running server serving files that no longer exist. Stop the dev server first, or delete only what you meant to.
+
+**`docs:check-links` walks `docs/*.md` and the root Markdown files, extracts every relative link, and checks the target exists — resolving a `#fragment` against a GitHub-style slug of the target's own headings when the target is a `.md` file.** No dependencies and nothing to generate, so unlike `css-vars:check`/`icons:check` it runs even on a documentation-only change; see [D-260821j](decisions.md#d-260821j--check-internal-documentation-links-in-ci-rather-than-relying-on-the-release-sweep). A same-file anchor (a link whose target is only `#heading`, no path) is checked the same way.
 
 ## Bundlers: Turbopack in dev, webpack in builds
 

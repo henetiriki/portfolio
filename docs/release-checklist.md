@@ -25,6 +25,7 @@ yarn test:coverage
 
 - [ ] All four pass; coverage stays above the 95% global threshold in `jest.config.js`
 - [ ] The pull request's `codecov/patch` check passes at 100%; inspect any GitHub Checks annotations rather than treating the aggregate Jest percentage as coverage of the changed lines. If the status never appears at all, the upload was dropped rather than failed — check Codecov's own state before the workflow, as [Testing](development.md#testing) describes
+- [ ] `yarn docs:check-links` passes. Unlike the two checks below, it runs even on a documentation-only change — it verifies every relative Markdown link and heading anchor across the docs resolves, which is exactly what changes on a docs-only diff.
 - [ ] `yarn css-vars:check` passes. CI runs this after `postinstall` as an integrity check for the generated, gitignored WebStorm stub; it is not a committed-file drift check.
 - [ ] `yarn tsc --pretty --noEmit --project service-worker/tsconfig.json` passes. The root `type-check` deliberately excludes this Web Worker project because its TypeScript libraries cannot be mixed with the application's DOM libraries.
 - [ ] **`yarn build` succeeds and emits a non-empty `public/sw.js`.** There is only one production configuration — the service worker is generated whenever `NODE_ENV` is production, with no flag to set. CI runs the same build and asserts the same output, but run it locally so a failure is not first seen in CI.

@@ -65,6 +65,7 @@ Run these before opening a pull request; the full list, including the production
 yarn eslint:check
 yarn type-check
 yarn prettier:check
+yarn docs:check-links
 yarn css-vars:check
 yarn test:coverage
 yarn test:e2e
