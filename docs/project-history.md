@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-21 — Check the splash matrix for internal consistency, and name what a check can't do
+
+- **`yarn icons:check` closes the splash-matrix roadmap item's last automatable piece.** Added to `scripts/generate-pwa-icons.mjs` alongside its existing generate mode, mirroring `css-vars:check`'s pattern: regenerate everything in memory, diff against what's committed, exit non-zero on any mismatch. Wired into CI the same way and gated the same way — skipped on documentation-only changes.
+- **It checks three things, all internal**: every `SPLASH_DEVICES`/icon target has a matching committed file, every committed file matches what the generator would currently produce, and no `apple-splash-*.png` exists with no matching table entry (orphaned by a removed device). Confirmed to catch a missing file, a stale one, and an orphaned one before being trusted, each independently.
+- **What prompted this rather than just building the check first: the roadmap's own wording didn't survive contact with the question "what could this check actually verify?"** "A check that fails when a known device class goes unmatched" reads as one problem. It's two — see [D-260821i](decisions.md#d-260821i--rely-on-manual-review-for-splash-device-coverage-not-an-automated-check) — and only the internal-consistency half has anything to check against. Device coverage (has Apple shipped a screen size the table doesn't have) remains open on the roadmap with candidate review mechanisms listed and none chosen.
+
 ## 2026-08-21 — Exclude the Apple splash images from the precache manifest
 
 - **The 42 splash images no longer ship in the service worker's precache manifest** — [D-260821h](decisions.md#d-260821h--reproduce-the-public-directory-precache-scan-to-exclude-the-apple-splash-images), closing the second follow-up on the splash-matrix roadmap item now that the generator is committed. They cost roughly 1.6 MB into every installed app to serve at most one file, fetched directly by iOS rather than through anything the worker's `runtimeCaching` list could intercept.

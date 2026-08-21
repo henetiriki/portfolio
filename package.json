@@ -15,6 +15,7 @@
     "dev": "NODE_OPTIONS='--inspect --trace-warnings' next dev",
     "eslint:check": "eslint .",
     "eslint:write": "eslint . --fix",
+    "icons:check": "node scripts/generate-pwa-icons.mjs --check",
     "icons:generate": "node scripts/generate-pwa-icons.mjs",
     "postinstall": "yarn css-vars:generate",
     "prepare": "husky install",
