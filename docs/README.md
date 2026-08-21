@@ -9,11 +9,11 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - [State Management](state-management.md) — the single global `PortfolioState` context/reducer
 - [Components](components.md) — component catalog grouped by feature area
 - [Travel / Google Maps Feature](travel-feature.md) — how the interactive map, markers and polylines work
-- [Contact Feature](contact-feature.md) — form validation, spam handling, and the Nodemailer-based email flow
+- [Contact Feature](contact-feature.md) — visitor experience and high-level server handling for messages
 - [Styling & Theming](styling-theming.md) — Mantine theme, custom color palette, CSS Modules setup
 - [PWA & SEO](pwa-seo.md) — manifest, service worker, meta tags, sitemap/robots
-- [Security](security.md) — response headers, Content Security Policy, bot protection, code scanning, secrets
-- [Environment Variables](environment-variables.md) — every `process.env` value the app reads
+- [Security](security.md) — public security posture and private reporting route
+- [Runtime Configuration](environment-variables.md) — safe handling and local setup guidance
 - [Development Workflow](development.md) — scripts, linting, formatting, git hooks
 - [Release Checklist](release-checklist.md) — how a change gets from a feature branch to production
 - [Roadmap](roadmap.md) — open work, known issues, and planned upgrades
@@ -25,7 +25,7 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - **Framework**: Next.js 16 (Pages Router) + React 19 + TypeScript 6, strict mode
 - **UI kit**: Mantine v9 (`@mantine/core`, `form`, `hooks`, `notifications`) styled via CSS Modules + CSS variables
 - **Purpose**: a single-person portfolio/CV site with four content pages (Home, Experience, Portfolio, Travel) and a Contact page that emails the owner
-- **Notable integrations**: Google Maps JS API (travel map), Vercel BotID (bot/spam protection on the contact form), Nodemailer over Gmail SMTP, Serwist (PWA/service worker, generated in every production build), `next-sitemap`
+- **Notable integrations**: Google Maps JS API (travel map), automated-abuse protection and server-side contact delivery, Serwist (PWA/service worker, generated in every production build), `next-sitemap`
 - **State**: one `useReducer`-backed React Context (`PortfolioState`) shared app-wide — no Redux/Zustand/query library
 - **Testing**: Jest + React Testing Library for units (full coverage, 95% enforced floor), Playwright + axe for browser behaviour jsdom cannot see — see [Development Workflow](development.md#testing)
 - **Package manager**: Yarn 4 (Berry), Node `24.x`

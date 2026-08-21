@@ -45,7 +45,7 @@ The `/travel` page renders an interactive Google Map plotting places the site ow
 
 ## Environment dependency
 
-The Google Maps JS API key and public vector Map ID are read from the deployment's `GOOGLE_MAPS_API_KEY` and `GOOGLE_MAPS_MAP_ID`. `next.config.js` re-exposes them as `process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` and `process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID` (see [Environment Variables](environment-variables.md)). `src/utils/googleMaps.ts` supplies the key to the loader when the client-side map mounts, while `mapConfig.ts` supplies the Map ID to the `google.maps.Map` constructor. The Map ID identifies cloud configuration rather than authenticating requests, but its real value is still kept in `.env.local`/deployment configuration; committed test and CI values are dummy identifiers.
+The travel map uses browser-visible map configuration supplied at build time. Its provider-side restrictions, configuration names, and local setup are maintained privately; see [Runtime Configuration](environment-variables.md) for safe-handling guidance.
 
 ## Modernisation phases
 

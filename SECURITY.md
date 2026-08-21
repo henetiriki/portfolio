@@ -13,12 +13,10 @@ Please allow a reasonable window for a fix before sharing details elsewhere. Thi
 
 The live site at [www.ouwl.house](https://www.ouwl.house) and this repository.
 
-One thing is known and deliberate rather than worth reporting: the Content Security Policy carries `'unsafe-inline'` on `script-src` and `style-src`. Explained in [docs/security.md](docs/security.md).
-
 ## Supported versions
 
 There is one deployed version — whatever is currently on `main`, which Vercel deploys automatically. There are no releases, tags or version numbers, so there is nothing older still in support.
 
 ## What this file is not
 
-[docs/security.md](docs/security.md) describes the site's security surface — response headers, the Content Security Policy, bot protection and how secrets are handled. It is documentation for whoever maintains this, not a reporting policy, and GitHub was previously surfacing it in this file's place.
+[docs/security.md](docs/security.md) describes the site's public security posture. It is documentation for whoever maintains this, not a reporting policy, and GitHub was previously surfacing it in this file's place.

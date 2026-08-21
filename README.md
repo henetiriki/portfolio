@@ -25,7 +25,7 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-The app needs environment variables to run — a Google Maps key, Gmail SMTP credentials for the contact form, and an image host. See [docs/environment-variables.md](docs/environment-variables.md) for the full list and which ones are required where.
+The app needs maintainer-supplied development configuration to run. Do not commit credentials or production configuration; see [Runtime Configuration](docs/environment-variables.md) for safe handling guidance.
 
 ## Scripts
 

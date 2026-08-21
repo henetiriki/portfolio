@@ -12,25 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
-## D-260821k — Remove `unsafe-inline` from `script-src` without giving up static prerendering
+## D-260821k — Private security implementation record
 
 - **Status:** Accepted
 - **Decided:** 2026-08-21
 
-`BotIdClient` was the only executable inline script authored by this application. It serialised BotID's whole client bootstrap into the prerendered document, so [D-260814c](#d-260814c--ship-the-content-security-policy-report-only-and-accept-unsafe-inline) correctly retained `'unsafe-inline'` at the time. The package's `initBotId()` API is a workable alternative: `BotIdInitializer` calls it after hydration from the external Next.js bundle, preserving the same `POST /api/contact` configuration without putting an executable script in the HTML.
-
-**Static prerendering remains the right trade.** A production build confirms every content page is still static, while `/contact` contains no executable inline script: the only remaining inline `<script>` is Next.js's non-executable `application/json` data block. BotID's challenge requests remain same-origin because `withBotId` rewrites them at the server, so the existing `'self'` source permits the client script it loads. `BotIdInitializer` runs after hydration, so an early request has not yet received BotID's client headers. The server-side `checkBotId()` classifies that direct request as a bot in production, so the interval can prevent an unusually early legitimate submission from succeeding but does not create an allowed bypass.
-
-**The forced colour scheme and font variables were removed as independent script/style sources.** `<html data-mantine-color-scheme="dark">` replaces Mantine's static one-line `ColorSchemeScript`, matching the already-forced provider setting. `next/font/local` now exposes the two generated font families as CSS variables on `<html>`, instead of `_app.tsx` emitting a style element solely to define them.
-
-**`style-src 'unsafe-inline'` remains intentionally.** Mantine renders CSS variables, utility classes and responsive style props as inline `<style>` elements, and the document uses inline style attributes. Mantine can accept a nonce, but a secure nonce requires request-time rendering, the cost this change avoids. Replacing those styles with committed static CSS is a separate, wider styling change; it remains on the [Roadmap](roadmap.md#performance-seo--platform-polish).
+The public record retains the decision identifier and outcome. The security implementation, rationale, validation evidence, and remaining trade-offs are maintained privately.
 
 ## D-260821j — Check internal documentation links in CI, rather than relying on the release sweep
 
 - **Status:** Accepted
 - **Decided:** 2026-08-21
 
-A full documentation audit found four dead links: three citing a `security.md` section deleted the same day by [D-260821g](#d-260821g--remove-the-csp-violation-reporting-endpoint-and-directive), one citing a source file deleted by the same decision. None were caught by the release checklist's own "cross-links between docs still resolve" line, because that line depends on whoever runs the sweep re-verifying every anchor across every file — including files the change in front of them never touched.
+A full documentation audit found four dead links: three cited a deleted security-documentation section and one cited a deleted source file. None were caught by the release checklist's own "cross-links between docs still resolve" line, because that line depends on whoever runs the sweep re-verifying every anchor across every file — including files the change in front of them never touched.
 
 **This has an automatable answer, unlike the splash-device problem decided the same day in [D-260821i](#d-260821i--rely-on-manual-review-for-splash-device-coverage-not-an-automated-check).** That decision drew the line at "a check can only compare the repository against itself; it has nothing external to diff against" — device coverage needs to know what Apple has shipped, which nothing in the repository can answer. A link anchor has no such gap: the ground truth is the doc set itself. Whether `security.md#some-heading` resolves is fully determined by what's in `security.md`, so this is squarely on the automatable side of that same line, not an exception to it.
 
@@ -74,22 +68,12 @@ The [roadmap](roadmap.md) framed the splash matrix's staleness as one problem wi
 
 **Revisit if `@serwist/next` ever exposes an exclude option for `globPublicPatterns`.** That would let this reproduction collapse back into the one-line config it should have been.
 
-## D-260821g — Remove the CSP violation reporting endpoint and directive
+## D-260821g — Private security operations record
 
 - **Status:** Accepted
 - **Decided:** 2026-08-21
 
-Raised in review of the endpoint's own posture, the same day [D-260821c](#d-260821c--accept-the-missing-rate-limit-on-apicsp-report) judged it "still necessary and proportionately scoped": is `/api/csp-report` actually worth keeping? `security.md` already documented its own weakest point — violations land in the Vercel runtime logs, "a rolling buffer measured in hours to days. Nothing notifies anyone and nothing retains them" — and on a personal site nobody is watching that buffer in real time. A reporting channel whose output nobody reads before it rolls off is not a reporting channel, it is a cost with no offsetting signal.
-
-**This reverses D-260821c and D-260821b within the same day, and that is recorded rather than smoothed over.** Both treated the endpoint as settled and fixed gaps in it — a missing rate limit, unsanitized log fields — without revisiting whether it should exist. Neither was wrong given the question each was asked; the question itself was the gap. Fixing an endpoint's edges and then asking whether the endpoint should exist at all are different reviews, and this is the second one.
-
-**The replacement signal is testing, not another delivery mechanism.** `e2e/security-headers.spec.ts` already pins the header's presence, its content on every route, and the two directives (`'wasm-unsafe-eval'`, `https://mapsresources-pa.googleapis.com`) that were previously found only through production violation reports; `e2e/service-worker.spec.ts` separately exercises `worker-src` end to end. Manual QA on the preview URL, already required by every pull request per [AGENTS.md](../AGENTS.md#opening-a-pull-request), is what a short-lived log could never be: performed by someone who will actually look. A future directive change that breaks something real fails a test or is visibly broken on the preview, not silently — which is the property the reporting endpoint was trying and failing to buy at this scale.
-
-**Nothing is added in its place.** No `report-to`, no third-party reporting service, no replacement observability. The 2026-08-15 promotion to enforcing already accepted that a bad directive breaks pages rather than merely logging a violation — see [D-260815h](#d-260815h--promote-the-policy-to-enforcing-in-one-step) — and that consequence is what makes the change visible without a reporting channel at all.
-
-**Deleted wholesale rather than left dormant.** `src/pages/api/csp-report.ts`, `src/server/csp/` (parsing, filtering, sanitization, and their tests) and the `report-uri` directive in `next.config.js` are all removed together — the module had no other caller, so nothing is left half-used. `e2e/security-headers.spec.ts`'s report-posting test goes with it. [D-260814c](#d-260814c--ship-the-content-security-policy-report-only-and-accept-unsafe-inline), [D-260815b](#d-260815b--email-content-security-policy-violations-for-the-observation-window), [D-260815h](#d-260815h--promote-the-policy-to-enforcing-in-one-step), [D-260821b](#d-260821b--sanitize-csp-report-fields-before-they-reach-the-runtime-logs) and [D-260821c](#d-260821c--accept-the-missing-rate-limit-on-apicsp-report) are left as published — they were each correct given what was known when decided, and the observation-window evidence they cite (`mapsresources-pa.googleapis.com`, `'wasm-unsafe-eval'`, the `/sw.js` violations) is exactly what justified promoting to enforcing in the first place.
-
-**Revisit if the platform changes what "reporting" would cost.** A durable log sink someone actually monitors, added for an unrelated reason, would change the calculus back — but adding one solely to revive this endpoint was already rejected once on cost grounds in D-260821c, and nothing here reopens that.
+The retired reporting surface and the operational decision trail are maintained privately. The public posture is an enforced policy tested before deployment; it does not operate a public reporting receiver.
 
 ## D-260821f — Assert icon contrast directly, scoped to what axe cannot see
 
@@ -116,50 +100,30 @@ Raised in review: `fetcher` (`../src/utils/common/fetcher.ts`) retried every fai
 
 **Retries are now conditional, not unconditional.** `request` throws a `FetchError` carrying the HTTP status for non-OK responses; `isRetryable` treats network failures (including the abort-driven timeout, which never constructs a `FetchError`) and 5xx/429 responses as worth retrying, and lets every other 4xx propagate on the first attempt. A `404` or a malformed request will not change on a second try, so retrying it only added latency for a response the caller was always going to receive.
 
-**429 was included alongside 5xx, not just 5xx as the review comment's parenthetical suggested.** Both API routes this wraps (`/api/rail-trips`, `/api/img-id`) are same-origin internal endpoints without their own rate limiting today, but a `429` is a textbook transient condition and there is no cost to handling it correctly ahead of need — see [D-260821c](#d-260821c--accept-the-missing-rate-limit-on-apicsp-report) for the separate, already-settled question of whether these endpoints need a limiter of their own.
+**429 was included alongside 5xx, not just 5xx as the review comment's parenthetical suggested.** Both API routes this wraps (`/api/rail-trips`, `/api/img-id`) are same-origin internal endpoints without their own rate limiting today, but a `429` is a textbook transient condition and there is no cost to handling it correctly ahead of need. The separate question of endpoint limiting is settled in a private operational record.
 
 **The timeout moved from 30s to 8s, not to something more conservative.** Both call sites are internal API routes serving fixture data or a lightweight Instagram lookup — there is no reason a healthy response takes anywhere near 30s, and 8s still leaves comfortable headroom above normal latency. Worst case with the default two retries is now bounded at roughly 8s × 3 attempts plus backoff, versus the prior ~90s.
 
-## D-260821d — Disable camera, geolocation, microphone, payment and USB with `Permissions-Policy`
+## D-260821d — Private browser-policy record
 
 - **Status:** Accepted
 - **Decided:** 2026-08-21
 
-Raised as a P3 finding: add a restrictive `Permissions-Policy` for capabilities the site does not use, after confirming Maps does not need geolocation. The header was previously absent entirely, so every browser feature it can gate defaulted to `self` — available to this origin, closed only to embeds.
+The visitor-facing outcome is documented in [Security](security.md#browser-protections). The exact capability scope and review rationale are maintained privately.
 
-**Geolocation was checked rather than assumed**, because `/travel` is the one page with an obvious reason to want it. It does not: `google.maps.Map` is centred on fixture coordinates in `src/fixtures/travel/`, the camera reveal in `Map` eases to the `current: true` city from that same fixture data, and nothing under `src/` calls `navigator.geolocation` or any Maps API that would (`getCurrentPosition`, the Places "nearby" APIs, etc.). The map is a fixed personal history, not a live position — seeing this confirmed the P3 report's premise rather than complicating it.
-
-**Five capabilities, matching the finding, not a maximal lockdown.** `camera`, `geolocation`, `microphone`, `payment` and `usb` are disabled; the [Permissions Policy feature list](https://github.com/w3c/webappsec-permissions-policy/blob/main/features.md) names several dozen more (`fullscreen`, `clipboard-write`, `accelerometer`, …) that this change leaves alone. Auditing every feature this site's dependencies might touch — Mantine, the Maps SDK, BotID — was judged separate work from closing the five named in the finding; a broader pass is better done deliberately, with each addition checked the way geolocation was, than folded into this one silently.
-
-**Empty allowlist (`()`), not `self`.** `self` would still permit the origin's own top-level frames to invoke these APIs; `()` refuses every context, including this one, which is correct precisely because no page or future page has a legitimate reason to request camera, microphone, payment or USB access, or ask a visitor's browser where they are.
-
-## D-260821c — Accept the missing rate limit on `/api/csp-report`
+## D-260821c — Retired private operational record
 
 - **Status:** Accepted
 - **Decided:** 2026-08-21
 
-Raised in review, alongside [D-260821b](#d-260821b--sanitize-csp-report-fields-before-they-reach-the-runtime-logs): `/api/csp-report` has no rate limiting, so an unauthenticated client can flood it for log noise or to exhaust the Hobby plan's function-invocation allowance. The textbook fix — edge or WAF rate limiting — is unavailable here for a reason already on record: [D-260815b](#d-260815b--email-content-security-policy-violations-for-the-observation-window) established that this site runs on a Vercel Hobby plan, which does not offer it.
+This retired endpoint’s risk assessment and alternatives are maintained privately. It does not describe a current public surface.
 
-**An in-memory limiter was not tried again, because it was already tried and rejected for this exact endpoint.** D-260815b's now-deleted `csp-mail` path used one and documented why it does not hold up on this platform — see that entry for the mechanism. Nothing about that constraint changed with promotion to enforcing, so adding one now would knowingly repeat a pattern this codebase has already found ineffective.
-
-**A durable external limiter would actually work, and was judged disproportionate rather than infeasible.** Upstash Redis with `@upstash/ratelimit` is real shared state across invocations, unlike a module-scope counter, and has a free tier. It was set aside anyway: it is a new external service, a new secret and a new dependency, taken on to bound a nuisance whose worst case — temporary log noise in a buffer already documented as unmonitored and rolling over in hours to days, or a temporary Hobby usage ceiling that self-recovers rather than bills — is bounded and reversible on its own. No data is at risk, there is no paying user and no uptime SLA to protect.
-
-**What already bounds the endpoint stays as is.** The 16 KB per-request body cap in `readReportBody` bounds cost per request; this decision is specifically that request _volume_ stays unbounded. Same proportionality standard as [D-260811b](#d-260811b--accept-the-contact-endpoints-automation-only-protection) and D-260815b: judged against what this site actually is, not a generic worst case.
-
-**Revisit if either input changes**: moving to Vercel Pro makes Firewall rate-limit rules free to add and closes this the way the finding originally asked for; observed abuse (rather than a theoretical one) would change the proportionality argument this decision rests on.
-
-## D-260821b — Sanitize CSP report fields before they reach the runtime logs
+## D-260821b — Retired private operational record
 
 - **Status:** Accepted
 - **Decided:** 2026-08-21
 
-`/api/csp-report` is unauthenticated by necessity — see `security.md` — which means every field in a posted report is attacker-controlled all the way into `logViolation`. Before this change, `blockedUri`, `directive`, `documentUri` and `sourceFile` were interpolated into a template literal with no escaping and no per-field length limit, so a forged report carrying a `\n` in `blocked-uri` could splice an arbitrary fake line into the Vercel runtime logs — the whole incident record for CSP violations since [D-260815h](#d-260815h--promote-the-policy-to-enforcing-in-one-step) retired Report-Only. Classic CWE-117 log injection, raised in review.
-
-Two changes, applied together rather than either alone. `sanitizeField` strips C0 control characters and DEL (`0x00`–`0x1f`, `0x7f`) and caps each field at 256 bytes, applied inside `asString` so every field is clean before a `CspViolation` is even constructed — not bolted on at the logging call site, where a second caller could forget it. `logViolation` also switched from string interpolation to `console.warn('CSP violation: ' + JSON.stringify(violation))`: `JSON.stringify` escapes control characters as literal `\n`/`\r` sequences rather than emitting them raw, so even a field that somehow reached logging unsanitized could not break the log into two lines. The two are redundant by design — sanitizing keeps the logged value readable and short, `JSON.stringify` is the actual injection-proof boundary — and neither alone was judged sufficient: sanitizing without structured output still trusts every future field to be sanitized correctly, and structured output without sanitizing lets a single field balloon the log with kilobytes of noise.
-
-**256 bytes, not a smaller or field-specific limit.** None of the four fields has a legitimate reason to be long — `directive` is a fixed CSP keyword, the others are URLs — but `blocked-uri` can legitimately be a `data:` URI truncated by the browser rather than this endpoint, so the cap is generous enough not to discard a real diagnostic value while still bounding the worst case tightly.
-
-**`MAX_REPORT_BYTES` (16 KB, the whole request body) was left as is.** It already bounds total request size before parsing begins, which this change does not duplicate; the new cap is about what ends up in a single log line after parsing, not about request admission.
+This retired endpoint’s defensive handling is maintained privately as part of its historical decision record.
 
 ## D-260821a — Give the mobile icons back some edge clearance, and a colour that survives contrast
 
@@ -212,26 +176,12 @@ The left inset on `/experience` narrows below the `xs` breakpoint by making four
 
 **The container change reaches every page, deliberately.** `Content` wraps all five routes, so each gains the same 32px below `xs`. The padding it removes was duplicated — `Content`'s own `Box` already insets by 24px at that width — so what goes is a second inset inside the first, not the page's margin. `MapError` keeps its own container and is unaffected, being a sibling of `Content` rather than a child.
 
-## D-260816j — Keep CodeQL on default setup, and leave it unrequired
+## D-260816j — Private scanning-configuration record
 
 - **Status:** Accepted
 - **Decided:** 2026-08-16
 
-Code scanning stays on GitHub's default setup rather than a committed workflow, and no CodeQL check run is added to the `main` ruleset. Current behaviour is in [Security](security.md#code-scanning-codeql).
-
-**Maintenance is the argument usually made for default setup, and here it is the weak one.** Dependabot already covers the `github-actions` ecosystem weekly on a grouped pattern, so `github/codeql-action` bumps would arrive inside a pull request it opens anyway. The real cost of a committed workflow is a forced major roughly every year or two, when a deprecation window closes or the workflow syntax moves — not nothing, but not enough to decide on.
-
-**The decision is about control, and this repository needs none of what a workflow buys.** A committed workflow is worth having when the query suite, the language matrix, path filters or the trigger schedule need to differ from the defaults. None does: the surface is a small TypeScript application, the `default` suite on a `remote` threat model is a reasonable fit, and code scanning has never reported an alert. Writing a workflow to restate the defaults adds a file to maintain in exchange for the ability to change settings nobody wants changed.
-
-**A workflow would not have prevented the problem default setup actually caused**, which is the argument that settles it. Enabling default setup also enabled _AI findings_, a preview feature gated on default setup, which failed on every pull request it ever ran on — and that is a repository setting, not a workflow job, so committing a `codeql.yml` would not have given any say over it. The visibility a workflow buys is visibility into the half that was never the problem.
-
-**AI findings was switched off on 2026-08-16**, once its failures were traced. It generates findings for non-CodeQL languages, and everything this repository is scanned for is already CodeQL-covered, so the feature was returning nothing even in the working case. The setting is not exposed by the API and flipping it does not move `code-scanning/default-setup`'s `updated_at`, so [Security](security.md#ai-findings-is-off-and-leaves-no-trace-that-it-ever-was-on) is the only record that it was ever on — the sharpest instance yet of the class of change [D-260816c](#d-260816c--keep-the-ruleset-free-of-bypass-actors-and-accept-the-wedge-risk) and the release checklist exist to catch.
-
-**Requiring the alert gate was considered and rejected on wedge risk, not on principle.** `CodeQL` — the _Code scanning results_ check — is the only one of the four worth requiring; the `Analyze` jobs report that a scan ran rather than what it found, so requiring those would be a gate in name only. The case for requiring the real one is decent: it already runs on every pull request, costs seconds, and the alert baseline is clean, which is the cheapest moment to lock a baseline in. Against it: the ruleset carries no bypass actors by [D-260816c](#d-260816c--keep-the-ruleset-free-of-bypass-actors-and-accept-the-wedge-risk), so a GitHub-side outage on a required check blocks every merge with no way through — and this surface is visibly churning right now, an AI product having been switched on underneath the repository and broken since. A gate that has never had anything to fire on is not worth that.
-
-**Dismissing a false positive is a change made outside git**, which is the other cost of requiring it: the alert would have to be dismissed in the web console before a merge could proceed, and this repository has a documented history of such changes going unrecorded.
-
-**Revisit when the first real alert appears**, which is the event that would make the gate worth its risk. Nothing needs re-deciding before then.
+Code scanning supports normal review. Its provider configuration, operational history, and gate rationale are maintained privately.
 
 ## D-260816i — Watch project coverage without blocking on it
 
@@ -369,22 +319,12 @@ The `main` ruleset has no bypass actors. The Repository admin role briefly held 
 
 **Splitting renames the required check, which is the risk the change actually carries.** `Validate & build` no longer exists, and a ruleset requiring a check that no longer runs blocks every pull request indefinitely. The ruleset was updated to require `Validate`, `Build & browser suite` and `codecov/patch` in the same window as the merge — see [Project History](project-history.md).
 
-## D-260815h — Promote the policy to enforcing in one step
+## D-260815h — Private browser-policy rollout record
 
 - **Status:** Accepted
 - **Decided:** 2026-08-15
 
-The header key in `next.config.js` becomes `Content-Security-Policy`. Report-Only is retired rather than kept alongside, and the planned intermediate step — enforcing only `frame-ancestors`, `base-uri`, `form-action` and `object-src` next to a Report-Only header — is skipped.
-
-**The intermediate step existed to hedge an unverified allowlist, and the allowlist is now verified.** Every page and every lazy path was exercised across Chromium, Firefox and Safari against the corrected policy on 2026-08-15, with the map driven until it rendered in vector mode and the YouTube embed actually played. Keeping the hedge would have meant running two headers whose reports are indistinguishable — `src/server/csp/` records neither `disposition` nor which header fired — and doing parser, log and email work to tell them apart, purely to support a state that would then be dismantled. Three deploys and a temporary feature, instead of one deploy and none.
-
-**Sequencing was the real risk, not the allowlist.** Promotion had to follow [D-260815f](#d-260815f--cache-only-same-origin-requests-so-the-service-worker-stops-rewriting-the-policy) reaching real clients. A visitor still running the previous worker re-issues cross-origin requests from inside it, where `connect-src` decides, so enforcing while those workers were live would have blocked Maps sprites and Google Fonts for precisely the people who had used the site before. Under Report-Only the same condition was log noise. This is why the two changes ship as separate deploys, and why the `/sw.js` reports tailing off was the signal to proceed.
-
-**`frame-ancestors 'none'` is enforced without ever having been observed.** Safari discards the directive in a report-only policy ([CSP Level 2](https://www.w3.org/TR/CSP2/#directive-frame-ancestors)), so no amount of further observation could have produced evidence for it — the message it logged on every page was the absence of evidence, not a finding. Enforcing it is safe by construction rather than by report: `X-Frame-Options: DENY` has enforced the identical rule throughout, so anything legitimate that framed the site was already broken. That header stays for the same reason.
-
-**`report-uri` stays, and matters more than before.** An enforcing policy's violations are broken pages rather than observations, so the endpoint changes from a rollout instrument into the fastest route from "something looks wrong" to the directive and URL responsible.
-
-**The accepted exposure is unchanged.** `'unsafe-inline'` remains permanent on `script-src` and `style-src` while BotID renders a nonce-less inline script and every page is statically prerendered ([D-260814c](#d-260814c--ship-the-content-security-policy-report-only-and-accept-unsafe-inline)). Promotion does not narrow that; it makes the host allowlists and the document directives real.
+The policy is enforcing. The rollout sequencing, exact configuration, and residual trade-offs are maintained privately.
 
 ## D-260815g — Precache the `/_offline` document, which the build manifest omits
 
@@ -395,32 +335,18 @@ The header key in `next.config.js` becomes `Content-Security-Policy`. Report-Onl
 
 **The manifest contained the offline page's JavaScript chunk but not its HTML.** `@serwist/next` builds the list from two sources: webpack assets, and a glob over `public/`. A Pages Router route is prerendered to `.next/server/pages/_offline.html`, and the plugin's `exclude` drops everything under `server/` — so `/_next/static/chunks/pages/_offline-<hash>.js` was precached and the document was not. `PrecacheFallbackPlugin` answers by calling `matchPrecache('/_offline')`, which returned `undefined`, so the plugin returned `undefined` and the navigation failed with `ERR_FAILED`.
 
-**This was a real defect, not a consequence of [D-260815f](#d-260815f--cache-only-same-origin-requests-so-the-service-worker-stops-rewriting-the-policy).** Confirmed by rebuilding against the unmodified `defaultCache` worker and re-running the new spec: it fails identically. The two changes landed together because the offline coverage added alongside the same-origin worker is what surfaced it.
+**This was a real defect, not a consequence of the related private browser-policy change.** Confirmed by rebuilding against the unmodified `defaultCache` worker and re-running the new spec: it fails identically. The two changes landed together because the offline coverage added alongside the same-origin worker is what surfaced it.
 
 **Why it went unnoticed.** The release checklist carried "`/_offline` serves when offline" as a manual check, and a manual check performed on a page that had already been visited passes on the runtime cache without the fallback ever being consulted. The failure needs an offline navigation to a route the worker has never seen — which is precisely the case a person testing their own site is least likely to produce. `e2e/service-worker.spec.ts` now covers both, and the distinction between them is the point of having two tests rather than one.
 
 **The revision is the build timestamp**, `NEXT_PUBLIC_LAST_MODIFIED`, already computed in `next.config.js` for the footer. A precache entry with a null revision is treated as immutable, so the offline page would never update; the timestamp changes every build, which is exactly the invalidation this needs. Webpack replaces the expression with a string literal, so no `process` reference reaches the worker — verified in the built output, because a surviving reference would be a `ReferenceError` that stops the worker installing at all.
 
-## D-260815f — Cache only same-origin requests, so the service worker stops rewriting the policy
+## D-260815f — Private offline-delivery record
 
 - **Status:** Accepted
 - **Decided:** 2026-08-15
 
-`service-worker/index.ts` supplies its own two-entry `runtimeCaching` list, both entries gated on `sameOrigin`, in place of Serwist's `defaultCache`. Cross-origin requests match nothing and are never intercepted.
-
-**The reason is Content Security Policy, not caching.** A request the worker handles is re-issued with `fetch()` from inside the worker, and a worker has no `img-src`, `style-src` or `font-src` — every fetch there is governed by `connect-src` alone. `defaultCache` ends with a `NetworkOnly` catch-all matching `/.*/i`, preceded by a `!sameOrigin` `NetworkFirst`, so **every** subresource on the site passed through the worker and was judged against `connect-src`. The per-destination directives only ever applied on a visitor's first, pre-worker load.
-
-**This was found in production, not reasoned about.** Nine of the thirteen violation reports from the 2026-08-15 observation window carry `document-uri: /sw.js`: five Maps sprites on `maps.gstatic.com` that `img-src https://*.gstatic.com` already allows, three Google Fonts stylesheets that `style-src https://fonts.googleapis.com` already allows, and one style-table request. Each was permitted for the destination it actually had and refused for the destination the worker gave it.
-
-**The alternative was to widen `connect-src` to the union of the other fetch directives.** Four lines, no behaviour change, and it would have worked — but it makes `connect-src` meaningless as a distinct directive, and it couples the policy to a third-party default list: any change to `defaultCache`, or any new host the Maps SDK reaches for, reopens the same gap. Removing the interception removes the class of problem.
-
-**Doing it before promotion is what makes it cheap.** A worker change reaches returning visitors only once the new worker activates, so there is a window where clients on the old worker keep reporting these violations. Under Report-Only that is noise in the log. After promotion it would be broken pages.
-
-**`runtimeCaching` cannot simply be dropped.** Serwist wires `fallbacks.entries` in as a `PrecacheFallbackPlugin` attached to the handlers supplied through `runtimeCaching`, and skips that step entirely when the option is absent — so an empty list means no `/_offline` page, with no error to notice. The list had to be replaced, not removed.
-
-**Offline behaviour is unchanged, and most of what was dropped was inert here.** Page HTML is not precached — only `/_next/static/**`, `public/**` and `/_offline` are — so a visited page works offline because the same-origin `NetworkFirst` cached it in passing, and an unvisited one falls back to `/_offline`. Both survive. The discarded rules were third-party ones, which cannot make this site usable without a network: Maps requires one by definition, and the fonts were vendored in [D-260814a](#d-260814a--vendor-what-the-build-cannot-proceed-without). Of the rest, the three RSC rules never matched a Pages Router app at all, and there is no `/api/auth`, no audio and no video. The kept `/_next/image` entry is deliberate: `StaleWhileRevalidate` preserves current behaviour for `FixedBackground`'s photo, which is the deliberate LCP element.
-
-**The cost is owning the list**, mitigated by `e2e/service-worker.spec.ts`, which now covers offline in both directions — the fallback for an unvisited route and the runtime cache for a visited one. That was previously a manual check, and it is the assertion that would catch a matcher which stops matching navigations.
+The service worker preserves the public offline experience without broadening browser-policy exposure. Its cache configuration and regression rationale are maintained privately.
 
 ## D-260815i — Wait for the Chromium fix instead of working around the Android navigation bar
 
@@ -486,7 +412,7 @@ This project is deliberately documentation-heavy — the [release checklist](rel
 
 **`paths-ignore` was rejected before it was tried.** A workflow filtered out that way never reports, and a required check that never reports leaves a pull request pending forever — so it would silently break the branch protection now in place on `main`. The filter is an `if:` inside the workflow, so the jobs still run, or skip, and still report success. That is the whole reason for the shape, and [D-260816b](#d-260816b--split-ci-into-concurrent-jobs-with-the-classification-in-its-own) relies on the same asymmetry at job granularity.
 
-**The exclusion list is CI's, not Vercel's, and copying would have been the obvious mistake.** Vercel asks whether a change can reach a visitor; CI asks whether a change can affect lint, types, tests or the build. `e2e/` and `playwright.config.ts` are excluded from the deploy ([D-260815a](#d-260815a--give-the-service-worker-its-own-playwright-project-rather-than-unblocking-it-everywhere)) and are precisely the paths whose change _must_ run the browser suite. Verified against real commits rather than reasoned about: replaying the classification, [#173](https://github.com/henetiriki/portfolio/pull/173) takes the full path on `e2e/` alone while Vercel skipped it, and [#166](https://github.com/henetiriki/portfolio/pull/166) takes the full path on `.gitignore` alone — which is in neither list, on both sides, because it decides what the build has to work with.
+**The exclusion list is CI's, not Vercel's, and copying would have been the obvious mistake.** Vercel asks whether a change can reach a visitor; CI asks whether a change can affect lint, types, tests or the build. `e2e/` and `playwright.config.ts` are excluded from the deploy and are precisely the paths whose change _must_ run the browser suite. Verified against real commits rather than reasoned about: replaying the classification, [#173](https://github.com/henetiriki/portfolio/pull/173) takes the full path on `e2e/` alone while Vercel skipped it, and [#166](https://github.com/henetiriki/portfolio/pull/166) takes the full path on `.gitignore` alone — which is in neither list, on both sides, because it decides what the build has to work with.
 
 **One `git diff`, matching `vercel.json`'s shape, and it fails open.** `HEAD^` is the base tip on a pull request — the checked-out ref is the merge commit — and the previous tip on a push to `main`, so a single command covers both events; the checkout carries `fetch-depth: 2` for that parent. Any failure to resolve it exits non-zero and the change is treated as not documentation-only, so the failure mode is a needless full run rather than a missed check. The same direction `vercel.json` chose.
 
@@ -494,43 +420,19 @@ This project is deliberately documentation-heavy — the [release checklist](rel
 
 **Resolved the same day it was raised, and applied on 2026-08-16: the Jest run and the Codecov upload are no longer gated.** Skipping them was this decision's one concession to the roadmap's original shape, written before anyone priced the run — the unit suite takes seconds locally, against a production build and a ~270 MB browser download. It is a few percent of the saving, and paying it removes the branch-protection edge case rather than betting on Codecov's behaviour with no upload. Sequenced onto publication because that is when a required check first existed to be blocked; the shape of the cheap path is otherwise unchanged.
 
-## D-260815b — Email Content Security Policy violations for the observation window
+## D-260815b — Private temporary-observation record
 
 - **Status:** Accepted, and deliberately temporary — delete with the Report-Only window
 - **Decided:** 2026-08-15
 
-`/api/csp-report` logs one line per violation to the Vercel runtime logs, which are a rolling buffer measured in hours to days. The promotion decision in [D-260814c](#d-260814c--ship-the-content-security-policy-report-only-and-accept-unsafe-inline) needs weeks of evidence, so the reports only exist if someone happens to look while they are still there. Emailing them, reusing the Nodemailer transport the contact form already has, makes them durable without adding a service, a dependency or a dashboard.
+This was a temporary observation mechanism, now retired. Its operating details and closure rationale are maintained privately.
 
-**It is written to be deleted, and the shape follows from that.** One directory, `src/server/csp-mail/`, one import and one call in the endpoint. Removal is deleting the directory, the import and the call; nothing else knows it exists. The contact code it borrows is untouched.
-
-**Off unless deliberately switched on.** `CSP_VIOLATION_EMAILS` must be exactly `true`; anything else, including absent, is off. This is not a default-on feature with an escape hatch — the window opens on purpose, and previews and both test environments stay off for free. It is read at module load, so flipping it on Vercel needs a redeploy.
-
-**The endpoint cannot be authenticated, and everything else follows from that.** Browsers post CSP reports without JavaScript, so BotID cannot sign them and no token can be required. What the endpoint accepts is therefore whatever anyone chooses to post at it, and this change turns that into outbound mail.
-
-- **Deduplication is a noise control and must not be described as a defence.** The dedup set and the cap of 20 emails per instance are module-scope state, which survives only on a warm instance; under a flood Vercel scales out and resets both precisely when they would matter. They exist so one real page load cannot produce forty emails.
-- **The defence that would work is edge rate limiting, and it is unavailable** on a Hobby plan. Accepted knowingly: cap, then log-only, with the environment toggle as the real kill switch.
-- **Report fields reach a mail header, so they are sanitised rather than trusted.** Every field is collapsed to a single line and truncated before it is used, because a report carrying `\r\n` in its directive is otherwise a header-injection route. The mail is plain text, so no escaping question arises in the body either.
-
-**The send is awaited before the `204`, which costs the endpoint about four seconds per report.** Measured 2026-08-15 against real Gmail SMTP: 4.0s, effectively all of it the TLS handshake and `AUTH` for a transport built per call. Not awaiting would be faster and wrong — Vercel can freeze the instance once the response is finished, so a detached send may never complete. Browsers fire reports and ignore the response, so nothing user-facing degrades; it is still a reason to keep the window short rather than leaving the toggle on indefinitely.
-
-**Residual risk, accepted with the numbers in front of us.** The Workspace sender allows roughly 2,000 messages a day and is shared with the contact form, which has no separate identity available. A flood during a monitoring window could burn the day's quota and take contact delivery down until the toggle is flipped. Judged acceptable against a barely-used form, a window that only opens deliberately, and no other way to make the reports durable — the same proportionality as [D-260811b](#d-260811b--accept-the-contact-endpoints-automation-only-protection).
-
-**Delivery to a `+csp` alias, plus a fixed `[CSP]` subject prefix**, so the mail filter can key on the recipient rather than pattern-matching a subject. Both are derived in code from `GMAIL_SENDER_EMAIL` rather than configured, which keeps the switch to one variable.
-
-## D-260815a — Give the service worker its own Playwright project rather than unblocking it everywhere
+## D-260815a — Private browser-coverage record
 
 - **Status:** Accepted
 - **Decided:** 2026-08-15
 
-Service-worker registration needed browser coverage, and the suite sets `serviceWorkers: 'block'` globally. The cheap change is to drop that line; the reason not to is that the block is load-bearing rather than incidental. An unblocked worker precaches pages, so a later spec can pass against a response an earlier spec caused to be cached — a suite that is green because it is stale, which is worse than one that is red.
-
-The registration spec therefore runs in a third project, `service-worker-chromium`, which is the only place `serviceWorkers: 'allow'` appears. Playwright gives every test its own browser context, so the precache cannot outlive the test that created it, and no other project ever starts a worker at all. Routing is by filename via `testMatch`/`testIgnore`, the same mechanism the viewport-specific specs already use, so the run still reports zero skips.
-
-**Two assertions, because "it registered" is not the property that matters.** A worker scoped below the origin root registers happily and controls nothing, and a worker that starts without a fetch handler serves nothing — both look like success from the registration promise alone. The spec pins the scope and script URL, waits for `navigator.serviceWorker.controller` to be set without reloading — which is what `clientsClaim` in `service-worker/index.ts` buys, and the reason a first visit is not left unhandled — and then asserts a reload is answered by the worker. That last check is made discriminating by asserting the _first_ navigation is **not** from the worker: in a fresh context nothing is registered yet, so a `fromServiceWorker()` that returned true either way would prove nothing.
-
-**A regression here appears as a timeout, not a failed assertion.** `navigator.serviceWorker.ready` never settles when registration does not happen, so there is nothing to compare. Verified by re-running the project with `serviceWorkers: 'block'`: both tests time out rather than failing informatively. Accepted — the alternative is racing a fixed deadline against a promise that may legitimately be slow, which trades a clear failure for a flaky one.
-
-This also retires the one Content Security Policy directive that had never been exercised. `worker-src 'self' blob:` was unreachable precisely because the suite blocked service workers, which made this a prerequisite for [promoting the policy](roadmap.md) rather than the low-priority item it had been.
+Browser coverage isolates stateful offline behaviour. The test configuration and policy-validation detail are maintained privately.
 
 ## D-260814e — Let each worktree install its own dependencies
 
@@ -563,32 +465,12 @@ Identifiers are now derived from the decision date, which is a fact about the de
 
 **This removes the expensive half of the conflict, not the conflict.** Two branches appending to this file still collide textually. What changes is the resolution: previously "renumber, then grep the whole repository for inbound links", now "keep both, newest first".
 
-## D-260814c — Ship the Content Security Policy Report-Only, and accept `unsafe-inline`
+## D-260814c — Private historical browser-policy record
 
 - **Status:** Accepted
 - **Decided:** 2026-08-14
 
-The policy in `next.config.js` ships as `Content-Security-Policy-Report-Only`, with violations posted to `/api/csp-report` and logged. Promotion to an enforcing header is a separate, deliberate decision — the browser suite asserts the enforcing header is _absent_ so it cannot happen by accident.
-
-**`script-src` and `style-src` both carry `'unsafe-inline'`, and that is not a temporary concession.** Two independent reasons, either of which alone would be sufficient:
-
-- **BotID emits an inline script with no nonce hook.** `BotIdClient` renders `<script dangerouslySetInnerHTML>` with the protected-route configuration interpolated into it. The component accepts no `nonce` prop, so the only alternatives are dropping bot protection or hashing a value that changes whenever the route list does.
-- **Every page is statically prerendered.** There is no `getServerSideProps` or `getStaticProps` anywhere in `src/pages`, so `_document`'s `getInitialProps` does not run per request. A nonce minted at build time is a constant, which is not a nonce. Making nonces work would mean forcing every route to render per request — a real cost to a site whose pages are otherwise static, to protect against inline injection on a site with no user-generated content.
-
-What the policy still buys is worth having on its own: `frame-ancestors`, `base-uri`, `form-action` and `object-src 'none'` are unaffected by inline, and the host allowlists still block `<script src>` pointing anywhere off the list. Those are the directives the browser suite pins.
-
-**Every non-obvious source was observed rather than assumed**, except where noted:
-
-- `https://www.google.com` in `frame-src` is the YouTube embed's own nested frame, seen as a real Report-Only violation on `/experience`.
-- `va.vercel-scripts.com` and `vitals.vercel-insights.com` are the **development** endpoints for Vercel Analytics and Speed Insights. In production both load same-origin from `/_vercel/…`, so `'self'` already covers them; the hosts are listed so local development does not generate noise that has to be re-triaged every time.
-- BotID needs no host of its own. It loads its challenge from a same-origin path that `withBotId` rewrites to `api.vercel.com` server-side, so the browser only ever sees `'self'`.
-- `maps.googleapis.com` is allowlisted explicitly rather than discovered, for the reason recorded when this work was planned: a client-side blocker already fails a Maps `gen_204` probe on `/travel`, and a blocked probe cannot be distinguished from our own policy blocking it.
-
-**`report-to` is deliberately absent, and this was tested rather than reasoned about.** It is the non-deprecated successor to `report-uri`, and Chrome prefers it when both are present. Adding it alongside `Reporting-Endpoints: csp-endpoint="/api/csp-report"` stopped reports arriving altogether: the Reporting API requires an absolute endpoint URL, so the relative one was discarded, and Chrome had already stopped honouring `report-uri`. Making it absolute would mean building the URL from `HOST`, which on preview deployments points at production — preview violations would land in production logs, cross-origin, needing CORS. `report-uri` is deprecated but works today, and it is verified end to end by the browser suite. Revisit only with an absolute, per-environment URL.
-
-**Reports from browser extensions are dropped at the endpoint.** Extensions inject scripts into every page and violate the policy constantly, and nothing in this repository can fix that. Left in, they would swamp the only signal the promotion decision is supposed to rest on.
-
-The endpoint is unauthenticated by necessity, since browsers post reports without JavaScript. It is capped at 16 KB per request, parses defensively and only writes a log line, which is judged proportionate for a personal site — the same posture as [D-260811b](#d-260811b--accept-the-contact-endpoints-automation-only-protection).
+The exact historical policy, reporting design, source allowlists, and rationale are maintained privately. Current public behaviour is described in [Security](security.md#browser-protections).
 
 ## D-260814b — Enforce shell hygiene with a hook rather than a convention
 
@@ -632,16 +514,12 @@ An asset the build cannot complete without belongs in the repository, together w
 
 The cost is that vendored assets do not update themselves, so each carries a written refresh procedure next to it rather than an implicit "whatever the CDN serves today". Prefer that cost: a stale font is a visible, deliberate choice, while a fetch is an invisible dependency that only announces itself when it breaks.
 
-## D-260811b — Accept the contact endpoint's automation-only protection
+## D-260811b — Private contact-protection record
 
 - **Status:** Accepted
 - **Decided:** 2026-08-11
 
-[D-260809b](#d-260809b--treat-the-contact-endpoint-as-a-stable-public-boundary) treats the contact endpoint as a stable public boundary, which makes the absence of request-rate limiting worth stating rather than leaving as an unexamined gap.
-
-Protection is deliberately automation-focused: bot verification plus a secondary signal, bounded field limits and a stable generic error schema. There is no per-client rate limit, so a determined human can still submit repeatedly. This is accepted for a personal site with a single recipient, where the cost of abuse is nuisance email rather than data exposure or spend, and where a rate limiter would need shared state that the current stateless deployment does not have.
-
-Revisit if submissions are ever abused in practice, if the endpoint gains a costlier side effect than one email, or if the deployment acquires a natural coordination point. Prefer the platform's own edge rate limiting over application state if so.
+The contact form provides server-side validation and automated-abuse protection. Its exact controls, accepted limitations, and review criteria are maintained privately.
 
 ## D-260811a — Keep the package manager's supply-chain defaults
 

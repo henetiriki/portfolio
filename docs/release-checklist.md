@@ -40,8 +40,8 @@ Run against the diff, every time — not only when the change looks security-rel
 - [ ] **Any new `NEXT_PUBLIC_*` value is intended to be public.** That prefix inlines the value into the client bundle at build time, so it ships to every visitor and is readable with view-source. Treat adding one as publishing it.
 - [ ] **Any new value in the CI workflow's `env` block is intended to be public.** `ci.yml` is committed, so those values are as exposed as the rest of the repository.
 - [ ] **No real personal data has been added to fixtures, tests or documentation** — other people's names, addresses, emails or photographs.
-- [ ] **A new third-party host or asset URL has been considered for abuse, not just for secrecy.** A public URL can still be an abuse vector: the Cloudinary delivery host is necessarily public, and it allowed unsigned on-the-fly transformations that consume account credits until strict transformations was enabled — see [Security](security.md#accepted-exposure). Ask what an anonymous caller can _do_ with the endpoint, not only what they can read.
-- [ ] If anything sensitive ever _was_ committed, treat rotation as the fix. Removing it in a later commit does not remove it from history, and the repository is public, so history is readable by anyone. Push protection should stop a recognised credential before it lands, but it is a backstop rather than a reason to skip this check.
+- [ ] **A new third-party host or asset URL has been considered for abuse, not just for secrecy.** Ask what an anonymous caller can do with it, not only what they can read; keep the exact assessment in the private maintainer runbook.
+- [ ] If anything sensitive ever was committed, treat rotation as the fix. Removing it in a later commit does not remove it from history, and automated protections are a backstop rather than a reason to skip this check.
 
 ### Documentation sweep
 

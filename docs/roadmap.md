@@ -37,6 +37,3 @@ Last reviewed: 2026-08-16.
   - A recurring reminder (e.g. a scheduled task) to re-research current Apple hardware against the table, on a fixed interval.
   - Timed to Apple's own announcement cadence (new iPhones each September, iPads less predictably) rather than an arbitrary interval.
   - Cross-referencing a third-party device-size list another PWA tool maintains (e.g. `pwa-asset-generator`, iosres.com) as a starting point during that review, rather than researching from zero each time — unverified how current or trustworthy any such list actually is.
-
-- [ ] **Reconsider `'unsafe-inline'` in `style-src`.** The script-side allowance was removed without losing static prerendering in [D-260821k](decisions.md#d-260821k--remove-unsafe-inline-from-script-src-without-giving-up-static-prerendering). Mantine still renders its CSS variables, utility classes and responsive style props inline, so closing the remaining style-side allowance means replacing those runtime styles with static CSS. **Not obviously worth doing**; recorded so the reasoning is not rediscovered, not because it is planned.
-  - The rest of the policy is enforcing and no longer under observation. Current behaviour is in [Security](security.md#content-security-policy); the promotion itself is [D-260815h](decisions.md#d-260815h--promote-the-policy-to-enforcing-in-one-step).
