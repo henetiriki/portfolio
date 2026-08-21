@@ -18,7 +18,9 @@ const markdownFiles = [
 ].sort();
 
 const relative = filePath => path.relative(projectRoot, filePath);
-const readLines = filePath => fs.readFileSync(filePath, 'utf8').split('\n');
+const readLines = filePath =>
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `filePath` only ever comes from `markdownFiles`, itself built from `readdirSync` over this repository's own `docs/` and root directories
+  fs.readFileSync(filePath, 'utf8').split('\n');
 
 // Mirrors GitHub's heading slugger closely enough for this project's ASCII
 // prose: lowercase, drop anything that isn't a word character/hyphen/space,
@@ -119,6 +121,7 @@ for (const filePath of markdownFiles) {
 
       const resolvedPath = path.resolve(path.dirname(filePath), rawPath);
 
+      // eslint-disable-next-line security/detect-non-literal-fs-filename -- `resolvedPath` is a link target parsed from this repository's own committed Markdown, resolved against the linking file's own directory
       if (!fs.existsSync(resolvedPath)) {
         errors.push(
           `${relative(filePath)}:${lineNumber}: broken link "${rawPath}" — file does not exist`
