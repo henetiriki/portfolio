@@ -94,6 +94,10 @@ jobs:
         if: needs.classify.outputs.docs_only != 'true'
         run: yarn css-vars:check
 
+      - name: Check generated PWA icons and splash images
+        if: needs.classify.outputs.docs_only != 'true'
+        run: yarn icons:check
+
       - name: Lint
         if: needs.classify.outputs.docs_only != 'true'
         run: yarn eslint:check

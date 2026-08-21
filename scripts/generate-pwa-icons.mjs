@@ -193,18 +193,76 @@ for (const [file, target] of splashTargets()) {
   iconTargets.set(file, { ...target, background: NAVY, scale: SPLASH_SCALE });
 }
 
-fs.mkdirSync(outputDir, { recursive: true });
+// Only the splash files are table-driven — the static icon list above never
+// changes size — so an "orphan" (a generated file with no target) can only
+// arise here, when a device is removed from SPLASH_DEVICES.
+const SPLASH_FILENAME = /^apple-splash-\d+-\d+\.png$/;
 
-let written = 0;
+const writeAll = async targets => {
+  fs.mkdirSync(outputDir, { recursive: true });
 
-for (const [file, target] of iconTargets) {
-  const buffer = await renderIcon(target);
+  for (const [file, target] of targets) {
+    const buffer = await renderIcon(target);
 
-  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `file` is always a key from the static tables above, never external input
-  fs.writeFileSync(path.join(outputDir, file), buffer);
-  written += 1;
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- `file` is always a key from the static tables above, never external input
+    fs.writeFileSync(path.join(outputDir, file), buffer);
+  }
+
+  console.log(
+    `Generated ${targets.size} icon and splash assets in ${path.relative(projectRoot, outputDir)}`
+  );
+};
+
+/**
+ * Verifies internal consistency between `SPLASH_DEVICES`/`ouwl.svg` and the
+ * committed assets — not device *coverage*, which has no source to check
+ * against and is deliberately left to manual review. See
+ * docs/decisions.md#d-260821i.
+ */
+const checkAll = async targets => {
+  const problems = [];
+
+  for (const [file, target] of targets) {
+    const expected = await renderIcon(target);
+    const filePath = path.join(outputDir, file);
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- `filePath` is always built from the same static tables as writeAll above
+    const actual = fs.existsSync(filePath)
+      ? // eslint-disable-next-line security/detect-non-literal-fs-filename -- `filePath` is always built from the same static tables as writeAll above
+        fs.readFileSync(filePath)
+      : null;
+
+    if (!actual) {
+      problems.push(`missing: ${file}`);
+    } else if (!expected.equals(actual)) {
+      problems.push(`stale: ${file}`);
+    }
+  }
+
+  if (fs.existsSync(outputDir)) {
+    for (const name of fs.readdirSync(outputDir)) {
+      if (SPLASH_FILENAME.test(name) && !targets.has(name)) {
+        problems.push(`orphaned: ${name} (no matching SPLASH_DEVICES entry)`);
+      }
+    }
+  }
+
+  if (problems.length > 0) {
+    console.error(
+      'PWA icon and splash assets are out of date with SPLASH_DEVICES and ouwl.svg. Run yarn icons:generate.'
+    );
+
+    for (const problem of problems.sort()) {
+      console.error(`  ${problem}`);
+    }
+
+    process.exitCode = 1;
+  } else {
+    console.log(`All ${targets.size} icon and splash assets are up to date.`);
+  }
+};
+
+if (process.argv.includes('--check')) {
+  await checkAll(iconTargets);
+} else {
+  await writeAll(iconTargets);
 }
-
-console.log(
-  `Generated ${written} icon and splash assets in ${path.relative(projectRoot, outputDir)}`
-);
