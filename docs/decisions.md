@@ -12,6 +12,21 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260821c — Accept the missing rate limit on `/api/csp-report`
+
+- **Status:** Accepted
+- **Decided:** 2026-08-21
+
+Raised in review, alongside [D-260821b](#d-260821b--sanitize-csp-report-fields-before-they-reach-the-runtime-logs): `/api/csp-report` has no rate limiting, so an unauthenticated client can flood it for log noise or to exhaust the Hobby plan's function-invocation allowance. The textbook fix — edge or WAF rate limiting — is unavailable here for a reason already on record: [D-260815b](#d-260815b--email-content-security-policy-violations-for-the-observation-window) established that this site runs on a Vercel Hobby plan, which does not offer it.
+
+**An in-memory limiter was not tried again, because it was already tried and rejected for this exact endpoint.** D-260815b's now-deleted `csp-mail` path used one and documented why it does not hold up on this platform — see that entry for the mechanism. Nothing about that constraint changed with promotion to enforcing, so adding one now would knowingly repeat a pattern this codebase has already found ineffective.
+
+**A durable external limiter would actually work, and was judged disproportionate rather than infeasible.** Upstash Redis with `@upstash/ratelimit` is real shared state across invocations, unlike a module-scope counter, and has a free tier. It was set aside anyway: it is a new external service, a new secret and a new dependency, taken on to bound a nuisance whose worst case — temporary log noise in a buffer already documented as unmonitored and rolling over in hours to days, or a temporary Hobby usage ceiling that self-recovers rather than bills — is bounded and reversible on its own. No data is at risk, there is no paying user and no uptime SLA to protect.
+
+**What already bounds the endpoint stays as is.** The 16 KB per-request body cap in [`readReportBody`](../src/server/csp/report.ts) bounds cost per request; this decision is specifically that request _volume_ stays unbounded. Same proportionality standard as [D-260811b](#d-260811b--accept-the-contact-endpoints-automation-only-protection) and D-260815b: judged against what this site actually is, not a generic worst case.
+
+**Revisit if either input changes**: moving to Vercel Pro makes Firewall rate-limit rules free to add and closes this the way the finding originally asked for; observed abuse (rather than a theoretical one) would change the proportionality argument this decision rests on.
+
 ## D-260821b — Sanitize CSP report fields before they reach the runtime logs
 
 - **Status:** Accepted
