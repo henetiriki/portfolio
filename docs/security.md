@@ -10,17 +10,19 @@ The per-change procedure — what to check in a diff before opening a pull reque
 
 `next.config.js` sets a fixed `securityHeaders` array on every route through `headers()`, with `source: '/:path*'`:
 
-| Header                      | Value                                          |
-| --------------------------- | ---------------------------------------------- |
-| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` |
-| `X-Frame-Options`           | `DENY`                                         |
-| `X-Content-Type-Options`    | `nosniff`                                      |
-| `X-DNS-Prefetch-Control`    | `on`                                           |
-| `Referrer-Policy`           | `strict-origin-when-cross-origin`              |
-| `Content-Security-Policy`   | the policy below                               |
+| Header                      | Value                                                          |
+| --------------------------- | -------------------------------------------------------------- |
+| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload`                 |
+| `X-Frame-Options`           | `DENY`                                                         |
+| `X-Content-Type-Options`    | `nosniff`                                                      |
+| `X-DNS-Prefetch-Control`    | `on`                                                           |
+| `Referrer-Policy`           | `strict-origin-when-cross-origin`                              |
+| `Permissions-Policy`        | `camera=(), geolocation=(), microphone=(), payment=(), usb=()` |
+| `Content-Security-Policy`   | the policy below                                               |
 
 - **`X-XSS-Protection` is deliberately absent.** It is deprecated, no current browser implements it, and its `1; mode=block` value was itself exploitable in legacy browsers. The Content Security Policy is the modern replacement.
 - **`nosniff` applies to `/:path*` and cannot be carved out.** Next merges header rules rather than letting a later rule unset an earlier one, which matters when a dev-only warning tempts someone to weaken it — see [Development Workflow](development.md#known-dev-only-console-errors-nextjs-16).
+- **`Permissions-Policy` disables five browser capabilities entirely, with an empty allowlist rather than `self`.** Nothing on the site is a candidate to ever need them, so there is no origin — this one included — worth carving out. `geolocation` is the one that needed checking rather than assuming: `/travel` renders a fixed set of fixture markers and polylines (see [Travel / Google Maps Feature](travel-feature.md)), never the visitor's own position, and nothing under `src/` calls the Geolocation API. The other four (`camera`, `microphone`, `payment`, `usb`) have no feature on the site that could use them at all. The list is deliberately not exhaustive of every policy-controlled feature — it covers the sensitive/hardware-adjacent capabilities worth naming explicitly, not a maximal lockdown. See [D-260821d](decisions.md#d-260821d--disable-camera-geolocation-microphone-payment-and-usb-with-permissions-policy).
 
 ## Content Security Policy
 
@@ -56,7 +58,7 @@ The policy **enforces**, shipping as `Content-Security-Policy`, built from the `
 
 ### Browser coverage
 
-`e2e/security-headers.spec.ts` asserts that the enforcing header reaches every content route, that Report-Only is absent so the two never ship together, that the inline-independent directives and the real origins survive unescaped, and that `/api/csp-report` answers a real report body with `204`. See [Browser regression suite](development.md#browser-regression-suite).
+`e2e/security-headers.spec.ts` asserts that the enforcing header reaches every content route, that Report-Only is absent so the two never ship together, that the inline-independent directives and the real origins survive unescaped, and that `/api/csp-report` answers a real report body with `204`. It also asserts `Permissions-Policy` disables all five capabilities on every content route. See [Browser regression suite](development.md#browser-regression-suite).
 
 `e2e/service-worker.spec.ts` is the only thing that exercises `worker-src`, by registering a real service worker under the deployed policy — see [D-260815a](decisions.md#d-260815a--give-the-service-worker-its-own-playwright-project-rather-than-unblocking-it-everywhere). It asserts nothing about the policy directly; the evidence is that the run produces no violation.
 

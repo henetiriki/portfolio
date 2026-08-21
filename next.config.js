@@ -122,6 +122,15 @@ const securityHeaders = [
     key: 'Referrer-Policy',
     value: 'strict-origin-when-cross-origin',
   },
+  // Every capability below is disabled entirely (empty allowlist), including
+  // for this origin itself. Nothing under src/ or the Maps SDK it loads calls
+  // any of these — the map is a fixed set of fixture markers/polylines, not a
+  // live position, so geolocation is unneeded rather than merely unused. See
+  // docs/security.md.
+  {
+    key: 'Permissions-Policy',
+    value: 'camera=(), geolocation=(), microphone=(), payment=(), usb=()',
+  },
 ];
 
 const baseConfig = withBotId({
