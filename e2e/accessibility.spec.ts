@@ -121,4 +121,29 @@ test.describe('icon contrast axe cannot see', () => {
       NON_TEXT_CONTRAST_MINIMUM
     );
   });
+
+  test('the scroll-to-top control clears its hovered background too', async ({
+    page,
+  }) => {
+    // Navigation.module.css swaps the background on :hover through a plain
+    // CSS rule Mantine's own colour computation never sees, so the resting
+    // state above proves nothing about this one. Real pointer input is
+    // required — a dispatched event does not make an element match :hover.
+    await page.goto('/experience');
+    await waitForHydration(page);
+    await page.mouse.wheel(0, 600);
+
+    const control = page.getByRole('button', { name: 'Scroll to top' });
+
+    await expect(control).toBeVisible();
+    await control.hover();
+
+    const { background, foreground } = await page
+      .locator('svg.tabler-icon-arrow-move-up')
+      .evaluate(readIconContrastColours);
+
+    expect(contrastRatio(foreground, background)).toBeGreaterThanOrEqual(
+      NON_TEXT_CONTRAST_MINIMUM
+    );
+  });
 });
