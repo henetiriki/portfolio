@@ -9,6 +9,7 @@ export const TimelineHeading: FC<{ icon: JSX.Element; title: string }> = ({
     <Flex
       align='center'
       bg='shamrock'
+      c='black-russian.4'
       h={{ base: '2rem', xs: '2.5rem' }}
       justify='center'
       ml={{ base: -3, xs: 0 }}
