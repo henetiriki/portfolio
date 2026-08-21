@@ -12,6 +12,25 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260821h — Reproduce the public-directory precache scan to exclude the Apple splash images
+
+- **Status:** Accepted
+- **Decided:** 2026-08-21
+
+`@serwist/next` precaches everything in `public/` by default, which meant the 42 Apple splash images ([D-260815e](#d-260815e--generate-the-pwa-icon-and-splash-set-from-one-vector-master)) were shipping into every installed app's offline cache to serve at most one file — iOS fetches its splash directly at launch, not through any page the service worker's `runtimeCaching` list would see. The [roadmap](roadmap.md) called excluding them "the obvious win."
+
+**No configuration option does this, and two looked like they would before being read closely.** `globPublicPatterns` is `@serwist/next`'s only lever over what it scans from `public/`, and it takes positive include patterns exclusively — the `glob` package underneath dropped `!`-prefixed negation in major version 6, so there is no pattern that means "everything except this." `manifestTransforms` looked like the real answer, until tracing the call through `@serwist/webpack-plugin` into `@serwist/build`'s `transformManifest`: transforms run against `fileDetails` — webpack's own compiled JS/CSS assets only — and `additionalPrecacheEntries` (which is how `public/`'s scanned files actually reach the manifest) is appended in a later step transforms never see. Both findings came from reading the installed packages' source directly, since neither behaviour is documented.
+
+**The fix is supplying `additionalPrecacheEntries` ourselves**, in `next.config.js`: a recursive walk of `public/`, MD5-hashed per file into `{url, revision}`, filtered to drop `apple-splash-\d+-\d+\.png` and mirror `@serwist/next`'s own hardcoded ignores (`sw.js`, `sw.js.map`, `swe-worker-*.js`). Providing this option at all skips the library's built-in scan entirely — there is no way to layer an exclusion on top of it, only to replace it, which is why the reproduction has to be complete rather than partial.
+
+**The first version precached a stray `.DS_Store`.** `glob` ignores dotfiles by default; `fs.readdirSync` does not, and this machine's own Finder-browsed `public/.DS_Store` (gitignored, never committed) surfaced the gap immediately in the generated manifest. It would not have reproduced from a clean CI checkout, but the reimplementation was incomplete regardless of whether this particular instance of the bug was ever observable in production. Fixed by excluding any file whose name starts with `.`; dot-directories were not handled, since none exist in `public/` today and handling a case that cannot happen was judged not worth the extra code.
+
+**Verified against the live registered worker's `caches` API, not the built file's text.** `service-worker.spec.ts` opens the precache cache after registration, asserts a known manifest icon is still in it and no splash image is, and was confirmed to fail — splash images present — with the exclusion reverted.
+
+**Whether iOS's home-screen splash still renders offline is not verified by this change, and is recorded as open rather than assumed.** `apple-touch-startup-image` is a WebKit-only, OS-level mechanism no Chromium-based tool can observe, and available documentation of whether it shares any cache with a page's own service worker is thin and inconsistent rather than authoritative either way. See the roadmap for the real-device manual check this leaves outstanding, and the fallback if it fails: hand back `additionalPrecacheEntries` for the splash images specifically, not a full revert.
+
+**Revisit if `@serwist/next` ever exposes an exclude option for `globPublicPatterns`.** That would let this reproduction collapse back into the one-line config it should have been.
+
 ## D-260821g — Remove the CSP violation reporting endpoint and directive
 
 - **Status:** Accepted

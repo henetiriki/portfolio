@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 
+const crypto = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
 const { withBotId } = require('botid/next/config');
 
 const lastModified = new Intl.DateTimeFormat('en-ZA', {
@@ -206,6 +209,51 @@ const baseConfig = withBotId({
   },
 });
 
+// The 42 Apple splash images: iOS fetches at most one of them directly at
+// launch, outside any fetch the service worker could intercept, so they have
+// no business filling the offline precache — see docs/pwa-seo.md and the
+// splash-matrix item in docs/roadmap.md.
+const SPLASH_IMAGE = /^apple-splash-\d+-\d+\.png$/;
+
+// @serwist/next's own public-directory scan (`globPublicPatterns`, default
+// `['**/*']`) takes only positive include patterns — there is no exclude
+// option for it, and the underlying `glob` package dropped `!`-prefixed
+// pattern negation in v6. Supplying `additionalPrecacheEntries` ourselves is
+// the only way to narrow what it precaches from `public/`; doing so skips
+// its scan entirely, so this has to reproduce it in full, minus the splash
+// images, rather than layer on top of it.
+const publicDir = path.join(__dirname, 'public');
+
+const getPublicPrecacheEntries = () =>
+  fs
+    .readdirSync(publicDir, { recursive: true, withFileTypes: true })
+    .filter(
+      entry =>
+        entry.isFile() &&
+        // `glob` ignores dotfiles by default (no `dot: true` here), which
+        // `readdirSync` does not — without this, a local `.DS_Store` ends up
+        // precached on a build run straight from a Finder-browsed checkout.
+        !entry.name.startsWith('.') &&
+        // Mirrors @serwist/next's own hardcoded ignores for its build output.
+        !/^sw\.js(\.map)?$/.test(entry.name) &&
+        !entry.name.startsWith('swe-worker-') &&
+        !SPLASH_IMAGE.test(entry.name)
+    )
+    .map(entry => {
+      const absolutePath = path.join(entry.parentPath, entry.name);
+      const relativePath = path
+        .relative(publicDir, absolutePath)
+        .split(path.sep)
+        .join('/');
+      const revision = crypto
+        .createHash('md5')
+        // eslint-disable-next-line security/detect-non-literal-fs-filename -- `absolutePath` is always a real path this same readdirSync just returned, never external input
+        .update(fs.readFileSync(absolutePath))
+        .digest('hex');
+
+      return { revision, url: `/${relativePath}` };
+    });
+
 // @serwist/next is ESM-only (no CJS build), so it can't be `require()`d from
 // this CommonJS config file — a dynamic `import()` inside an async config
 // function is Next.js's own documented escape hatch for this.
@@ -223,6 +271,7 @@ module.exports = async () => {
 
   const { default: withSerwistInit } = await import('@serwist/next');
   const withSerwist = withSerwistInit({
+    additionalPrecacheEntries: getPublicPrecacheEntries(),
     swDest: 'public/sw.js',
     swSrc: 'service-worker/index.ts',
   });
