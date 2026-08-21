@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-21 — Sanitize CSP report fields before they reach the runtime logs
+
+- **`logViolation` no longer trusts an attacker-controlled field to behave like a single-line string** — [D-260821b](decisions.md#d-260821b--sanitize-csp-report-fields-before-they-reach-the-runtime-logs). `/api/csp-report` is unauthenticated by necessity, so before this change a forged report carrying a `\n` in `blocked-uri` could splice a fake line into the Vercel runtime logs that are the whole incident record for CSP violations post-enforcement.
+- **Two independent guards, not one.** `sanitizeField` strips control characters and caps every field at 256 bytes inside `asString`, so a `CspViolation` can't be constructed with a dirty field in the first place; `logViolation` separately switched to `console.warn('CSP violation: ' + JSON.stringify(violation))`, so even an unsanitized value couldn't break a log line in two.
+- **Found in review of the endpoint, not from an incident.** The endpoint itself was judged still necessary and proportionately scoped when raised — see [security.md](security.md#violation-reporting-apicsp-report) — the missing sanitization was the one gap in it.
+
 ## 2026-08-21 — Extend the browser suite with reduced motion and the footer's own scroll-to-top
 
 - **Two roadmap candidates landed in one pass**: a `reducedMotion: 'reduce'` project variant, and coverage for the footer's own `scrollToTop` call site, which shares `pageTopRef` with the header button's but fires from a nav link's `onClick` rather than a dedicated control.

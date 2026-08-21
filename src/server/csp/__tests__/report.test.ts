@@ -77,6 +77,43 @@ describe('parseViolations', () => {
     ]);
   });
 
+  it('strips control characters a forged report could use to inject log lines', () => {
+    const raw = reportUriBody({
+      'blocked-uri': 'https://evil.example/x.js\n[FAKE] admin session opened',
+      'document-uri': 'https://www.ouwl.house/travel',
+      'effective-directive': 'script-src',
+    });
+
+    expect(parseViolations(raw)).toEqual([
+      {
+        blockedUri: 'https://evil.example/x.js[FAKE] admin session opened',
+        directive: 'script-src',
+        documentUri: 'https://www.ouwl.house/travel',
+        sourceFile: undefined,
+      },
+    ]);
+  });
+
+  it('caps a field at the accepted length', () => {
+    const raw = reportUriBody({
+      'blocked-uri': 'x'.repeat(300),
+      'document-uri': 'https://www.ouwl.house/travel',
+      'effective-directive': 'script-src',
+    });
+
+    expect(parseViolations(raw)[0]?.blockedUri).toHaveLength(256);
+  });
+
+  it('marks a field as unknown when sanitizing leaves it empty', () => {
+    const raw = reportUriBody({
+      'blocked-uri': '\n\r\t',
+      'document-uri': 'https://www.ouwl.house/travel',
+      'effective-directive': 'script-src',
+    });
+
+    expect(parseViolations(raw)[0]?.blockedUri).toBe('unknown');
+  });
+
   it.each([
     ['malformed JSON', 'not json at all'],
     ['a payload without a csp-report key', '{"other":true}'],
@@ -119,7 +156,7 @@ describe('isReportable', () => {
 });
 
 describe('logViolation', () => {
-  it('names the directive, the blocked source and the page', () => {
+  it('logs the violation as a single structured line', () => {
     logViolation({
       blockedUri: 'https://evil.example/x.js',
       directive: 'script-src',
@@ -127,11 +164,16 @@ describe('logViolation', () => {
     });
 
     expect(console.warn).toHaveBeenCalledWith(
-      'CSP violation: script-src blocked https://evil.example/x.js on https://www.ouwl.house/travel'
+      'CSP violation: ' +
+        JSON.stringify({
+          blockedUri: 'https://evil.example/x.js',
+          directive: 'script-src',
+          documentUri: 'https://www.ouwl.house/travel',
+        })
     );
   });
 
-  it('appends the source file when the browser reports one', () => {
+  it('includes the source file when the browser reports one', () => {
     logViolation({
       blockedUri: 'inline',
       directive: 'style-src-attr',
@@ -140,7 +182,13 @@ describe('logViolation', () => {
     });
 
     expect(console.warn).toHaveBeenCalledWith(
-      'CSP violation: style-src-attr blocked inline on https://www.ouwl.house/ from https://www.ouwl.house/_next/static/chunk.js'
+      'CSP violation: ' +
+        JSON.stringify({
+          blockedUri: 'inline',
+          directive: 'style-src-attr',
+          documentUri: 'https://www.ouwl.house/',
+          sourceFile: 'https://www.ouwl.house/_next/static/chunk.js',
+        })
     );
   });
 });
