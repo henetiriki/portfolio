@@ -12,6 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260821a — Give the mobile icons back some edge clearance, and a colour that survives contrast
+
+- **Status:** Accepted
+- **Decided:** 2026-08-21
+
+`TimelineHeading`'s section icons sat 12px left of their `xs`+ position on mobile, moved there by [D-260816k](#d-260816k--reclaim-the-timelines-gutter-from-the-container-not-from-the-rail) to buy the timeline's readable column more width. Review found them sitting too close to the screen edge at that offset — the rail now moves back 5px (base margin `8px` → `13px`) and the icons shrink `2.5rem` → `2rem` below `xs`, with the icon's own negative margin recalculated so it stays exactly centred on the rail, the invariant `experience-gutter.mobile.spec.ts` already guards.
+
+**An SVG connector was tried first, and dropped once a simpler fix was asked for directly.** The initial approach kept the icon at full size and drew a curved path bridging it to the rail wherever the two didn't line up — accurate to the original sketch that prompted the work, but heavier than the problem needed: a second component-local coordinate system to keep in sync with `Timeline`'s own margin, and a CSS module purely to hide it above `xs`. Discarded in favour of resizing the icon once asked to reduce it instead of bridging the gap.
+
+**Shrinking the icon while keeping `align='end'` traded one alignment problem for another.** With the icon and title bottom-pinned, a shorter icon still met the rail flush — nothing about the icon-to-rail relationship changed — but the icon's visual centre dropped relative to the heading text, since it no longer filled the row's full height the way the unchanged 40px icon happened to. `align={{ base: 'center', xs: 'end' }}` fixes the heading alignment (desktop's icon still fills its row, so `align='end'` there is untouched) but reopens the icon-to-rail gap this time — closed by giving `Timeline` a matching `mt={{ base: -8 }}`, which moves the whole rail box up as one unit rather than touching anything inside it. Every dot's position relative to its own bubble is unaffected by construction: only the block's position on the page moved.
+
+**The icon's colour was a separate, unrelated finding from the same review.** White on the circle's own rendered background (`shamrock.4`, `#27E278`) is 1.72:1 — under the 3:1 WCAG 1.4.11 floor for meaningful UI graphics, let alone 4.5:1 for text. `axe`, both in the e2e suite and re-run directly against the page to confirm, reports zero violations either way: its `color-contrast` rule evaluates text nodes, and this is an SVG icon with `stroke="currentColor"`, which the rule never inspects. `black-russian.4` (`#080A20`) comes out to 11.39:1 against the same background and is now the icon colour, applied via `c` on the wrapping `Flex` so `currentColor` resolves through to the icon's stroke.
+
 ## D-260818a — Pull the text outside the type scale onto it, per call site
 
 - **Status:** Accepted
