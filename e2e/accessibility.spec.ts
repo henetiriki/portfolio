@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test';
 import {
   CONTENT_ROUTES,
   blockGoogleMaps,
+  contrastRatio,
   waitForHydration,
 } from './support/helpers';
 
@@ -37,4 +38,112 @@ test.describe('accessibility', () => {
       ).toEqual([]);
     });
   }
+});
+
+/**
+ * Contrast for icons axe cannot see: its `color-contrast` rule only
+ * evaluates text nodes, so an SVG painted with `stroke="currentColor"` passes
+ * regardless of how badly it fails — see docs/decisions.md#d-260821a, where
+ * exactly that let a 1.72:1 icon through for weeks.
+ *
+ * Scoped to icons rendered on a background colour distinct from the page's
+ * own — a Mantine `filled`/coloured-circle treatment with no adjacent text
+ * sharing that exact pairing. An icon that only ever sits next to text of its
+ * own colour (the outline buttons on `/portfolio` and the 404/500 pages, the
+ * footer's social links) is already provable from that text's own axe
+ * result, so it is not repeated here. Icons rendered onto the live Google
+ * Map are excluded for the opposite reason: the map tiles are real imagery
+ * with no fixed colour to assert against.
+ *
+ * WCAG 1.4.11 sets 3:1, not 4.5:1, for non-text UI components.
+ */
+const NON_TEXT_CONTRAST_MINIMUM = 3;
+
+/**
+ * Runs inside the page, so it cannot reference anything from module scope.
+ * Walks up from the icon for the first non-transparent background, since the
+ * element that paints it is not always the icon's immediate parent.
+ */
+const readIconContrastColours = (icon: Element) => {
+  const foreground = getComputedStyle(icon).color;
+  let node: Element | null = icon;
+
+  while (node) {
+    const { backgroundColor } = getComputedStyle(node);
+
+    if (
+      backgroundColor !== 'rgba(0, 0, 0, 0)' &&
+      backgroundColor !== 'transparent'
+    ) {
+      return { background: backgroundColor, foreground };
+    }
+
+    node = node.parentElement;
+  }
+
+  throw new Error('No painted background found above this icon');
+};
+
+test.describe('icon contrast axe cannot see', () => {
+  test('the experience timeline icons clear the circle behind them', async ({
+    page,
+  }) => {
+    await blockGoogleMaps(page);
+    await page.goto('/experience');
+    await waitForHydration(page);
+
+    for (const iconClass of ['tabler-icon-briefcase', 'tabler-icon-school']) {
+      const { background, foreground } = await page
+        .locator(`svg.${iconClass}`)
+        .evaluate(readIconContrastColours);
+
+      expect(contrastRatio(foreground, background)).toBeGreaterThanOrEqual(
+        NON_TEXT_CONTRAST_MINIMUM
+      );
+    }
+  });
+
+  test('the scroll-to-top control clears its filled background', async ({
+    page,
+  }) => {
+    await page.goto('/experience');
+    await waitForHydration(page);
+    await page.mouse.wheel(0, 600);
+    await expect(
+      page.getByRole('button', { name: 'Scroll to top' })
+    ).toBeVisible();
+
+    const { background, foreground } = await page
+      .locator('svg.tabler-icon-arrow-move-up')
+      .evaluate(readIconContrastColours);
+
+    expect(contrastRatio(foreground, background)).toBeGreaterThanOrEqual(
+      NON_TEXT_CONTRAST_MINIMUM
+    );
+  });
+
+  test('the scroll-to-top control clears its hovered background too', async ({
+    page,
+  }) => {
+    // Navigation.module.css swaps the background on :hover through a plain
+    // CSS rule Mantine's own colour computation never sees, so the resting
+    // state above proves nothing about this one. Real pointer input is
+    // required — a dispatched event does not make an element match :hover.
+    await page.goto('/experience');
+    await waitForHydration(page);
+    await page.mouse.wheel(0, 600);
+
+    const control = page.getByRole('button', { name: 'Scroll to top' });
+
+    await expect(control).toBeVisible();
+    await control.hover();
+
+    const { background, foreground } = await page
+      .locator('svg.tabler-icon-arrow-move-up')
+      .evaluate(readIconContrastColours);
+
+    expect(contrastRatio(foreground, background)).toBeGreaterThanOrEqual(
+      NON_TEXT_CONTRAST_MINIMUM
+    );
+  });
 });
