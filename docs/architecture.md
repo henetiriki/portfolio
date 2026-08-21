@@ -11,7 +11,7 @@
 | Styling                  | CSS Modules + CSS variables (`postcss-preset-mantine`, `postcss-simple-vars`)           |
 | Icons                    | `@tabler/icons-react`                                                                   |
 | Maps                     | `@googlemaps/js-api-loader` (Google Maps JavaScript API)                                |
-| Email                    | `nodemailer` over Gmail SMTP                                                            |
+| Email                    | Server-side mail delivery                                                               |
 | Contact abuse protection | Client and server-side checks                                                           |
 | PWA                      | Serwist (every production build; never in development)                                  |
 | Sitemap/robots           | `next-sitemap` (runs as a `build` step)                                                 |

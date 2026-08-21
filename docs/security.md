@@ -34,10 +34,6 @@ Automated dependency updates and code scanning support normal code review. They 
 
 Code scanning is enabled as a supporting control. Its exact setup, review status, and operational history are maintained privately.
 
-### AI findings is off, and leaves no trace that it ever was on
-
-Optional scanning features and their operating history are maintained privately. The public posture is that automated review supports, but does not replace, normal review.
-
 ## Configuration and secrets
 
 Deployment credentials and server-only configuration are kept outside the repository. Values intentionally exposed to browser code are treated as public identifiers and should be restricted at their respective providers where possible.
