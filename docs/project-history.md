@@ -2,6 +2,14 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-21 — Check that documentation links resolve, in CI
+
+- **A full documentation audit found four dead links, and none were caught by the release checklist's own cross-link check.** Three cited a `security.md` section deleted the same day by [D-260821g](decisions.md#d-260821g--remove-the-csp-violation-reporting-endpoint-and-directive), one cited a source file the same decision deleted. All four are fixed by de-linking rather than repointing, since nothing replaces the deleted content and the surrounding sentences stay accurate as written.
+- **`yarn docs:check-links` (`scripts/check-doc-links.mjs`) now runs in CI on every pull request, including a documentation-only one** — [D-260821j](decisions.md#d-260821j--check-internal-documentation-links-in-ci-rather-than-relying-on-the-release-sweep). It walks `docs/*.md` and the root Markdown files, checks every relative link's target exists, and for a `.md` target with a `#fragment` checks that fragment against a GitHub-style slug of the target's own headings.
+- **The checker caught a fifth dead link the manual audit had missed**, on its first real run: `decisions.md` still linked to `src/server/csp/report.ts`, deleted by the same CSP-reporting removal. Confirmation that the tool earns its place rather than just formalising what a careful read already found.
+- **The slug algorithm was built against this project's own documented traps, not against clean examples.** The 2026-08-15 entry below already records that GitHub keeps underscores when slugging a heading, and every decision heading's em dash produces a double hyphen (`d-260821i--rely-on-...`) that a whitespace-collapsing slugifier would silently merge into one. Both were verified to slug correctly before the checker was trusted.
+- **Ungated, unlike `css-vars:check`/`icons:check`.** Those two skip on a documentation-only change because they check generated source artifacts prose can't affect; this one exists to check docs, so it runs alongside `prettier:check` as the other step that never skips.
+
 ## 2026-08-21 — Check the splash matrix for internal consistency, and name what a check can't do
 
 - **`yarn icons:check` closes the splash-matrix roadmap item's last automatable piece.** Added to `scripts/generate-pwa-icons.mjs` alongside its existing generate mode, mirroring `css-vars:check`'s pattern: regenerate everything in memory, diff against what's committed, exit non-zero on any mismatch. Wired into CI the same way and gated the same way — skipped on documentation-only changes.
@@ -47,7 +55,7 @@ This is the concise record of completed project work. It is not a substitute for
 
 - **`logViolation` no longer trusts an attacker-controlled field to behave like a single-line string** — [D-260821b](decisions.md#d-260821b--sanitize-csp-report-fields-before-they-reach-the-runtime-logs). `/api/csp-report` is unauthenticated by necessity, so before this change a forged report carrying a `\n` in `blocked-uri` could splice a fake line into the Vercel runtime logs that are the whole incident record for CSP violations post-enforcement.
 - **Two independent guards, not one.** `sanitizeField` strips control characters and caps every field at 256 bytes inside `asString`, so a `CspViolation` can't be constructed with a dirty field in the first place; `logViolation` separately switched to `console.warn('CSP violation: ' + JSON.stringify(violation))`, so even an unsanitized value couldn't break a log line in two.
-- **Found in review of the endpoint, not from an incident.** The endpoint itself was judged still necessary and proportionately scoped when raised — see [security.md](security.md#violation-reporting-apicsp-report) — the missing sanitization was the one gap in it.
+- **Found in review of the endpoint, not from an incident.** The endpoint itself was judged still necessary and proportionately scoped when raised — see `security.md` — the missing sanitization was the one gap in it.
 
 ## 2026-08-21 — Commit the PWA icon and splash generator, since it had never been
 
