@@ -18,10 +18,6 @@ Last reviewed: 2026-08-16.
   - **Option: compare against the merge base with `main`** on previews, so the command judges the whole branch. The only option that keeps a preview skip and fixes mixed pushes. **It cannot be applied unconditionally**: on `main` the merge base is `HEAD` itself, the diff is always empty, and production would silently stop deploying. It would also depend on `origin/main` existing in Vercel's checkout, which is shallow — unverified, and the reason this option is least trusted.
   - **Verify on a throwaway branch before changing anything.** Whether the environment variable is even set during the ignore step is unconfirmed, and the expensive direction of being wrong is a missed production deploy reported as success.
 
-- [ ] **Extend the browser regression suite.** The harness and its first specs have landed — see [Development Workflow](development.md#browser-regression-suite). Remaining candidates, still deliberately narrow:
-  - Consider a reduced-motion pass (`prefers-reduced-motion`), since the map reveal, marker drop and smooth scrolling all branch on it. Playwright can set it per project via `use.reducedMotion`, so this is a project variant rather than new specs.
-  - Consider covering the footer's own scroll-to-top control, which shares `pageTopRef` with the header's but has a separate call site.
-
 ## Framework & dependency upgrades
 
 - [ ] **Adopt the native TypeScript 7 toolchain when ecosystem support is ready — blocked.** The project now uses TypeScript 6, the supported JavaScript-based bridge release, with its configuration deprecations already removed. The 2026-08-09 TypeScript `7.0.2` trial still failed before compilation because Yarn's built-in compatibility patch expected `lib/_tsc.js`, which the native Go distribution does not ship; `typescript-eslint@8.66` also requires TypeScript `<6.1.0`. Recheck only when Yarn supports the native distribution and TypeScript-ESLint supports its compiler API strategy; both conditions are required.

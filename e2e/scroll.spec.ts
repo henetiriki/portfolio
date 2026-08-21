@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
-import { blockGoogleMaps, waitForHydration } from './support/helpers';
+import {
+  blockGoogleMaps,
+  captureScrollIntoView,
+  waitForHydration,
+} from './support/helpers';
 import type { Page } from '@playwright/test';
 
 /**
@@ -54,5 +58,37 @@ test.describe('scroll behaviour', () => {
 
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
     await expect(control).toBeHidden();
+  });
+});
+
+/**
+ * `Footer` calls the same `useScrollTo` hook as the header button above, but
+ * from each nav link's `onClick` rather than a dedicated control — a separate
+ * call site sharing `pageTopRef`, which the describe block above cannot
+ * exercise. This gets its own describe, without the shared `beforeEach`,
+ * because `captureScrollIntoView` has to run before the page ever navigates.
+ *
+ * Asserted via the call itself rather than the resulting `scrollY`: the
+ * link's own navigation, even back to the same route, resets scroll position
+ * on its own, so a `scrollY`-based assertion would pass whether or not
+ * `onClick` ever ran.
+ */
+test.describe('footer scroll-to-top', () => {
+  test("clicking a footer nav link triggers the page's own scroll-to-top", async ({
+    page,
+  }) => {
+    const behaviors = await captureScrollIntoView(page);
+
+    await blockGoogleMaps(page);
+
+    await page.goto('/experience');
+    await waitForHydration(page);
+
+    await page
+      .locator('footer')
+      .getByRole('link', { exact: true, name: 'Experience' })
+      .click();
+
+    await expect.poll(() => behaviors).toEqual(['smooth']);
   });
 });

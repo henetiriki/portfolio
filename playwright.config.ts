@@ -12,6 +12,10 @@ const isCI = !!process.env.CI;
 // the project that lets a service worker register, and nowhere else.
 const SERVICE_WORKER_SPEC = /service-worker\.spec\.ts$/;
 
+// Routed by filename, like the specs above — this one runs only in the
+// project that emulates `prefers-reduced-motion: reduce`, and nowhere else.
+const REDUCED_MOTION_SPEC = /reduced-motion\.spec\.ts$/;
+
 export default defineConfig({
   // Deliberately narrower than the Jest suite: this exists to catch real
   // browser behaviour (layout, focus order, hydration, contrast) that jsdom
@@ -27,14 +31,22 @@ export default defineConfig({
     // count, which is exactly when a genuinely skipped test slips past.
     {
       name: 'desktop-chromium',
-      testIgnore: [/\.mobile\.spec\.ts$/, SERVICE_WORKER_SPEC],
+      testIgnore: [
+        /\.mobile\.spec\.ts$/,
+        SERVICE_WORKER_SPEC,
+        REDUCED_MOTION_SPEC,
+      ],
       use: { ...devices['Desktop Chrome'] },
     },
     {
       // The mobile drawer has needed several rounds of fixes historically, so
       // it gets a real touch-enabled viewport rather than a resized desktop.
       name: 'mobile-chromium',
-      testIgnore: [/\.desktop\.spec\.ts$/, SERVICE_WORKER_SPEC],
+      testIgnore: [
+        /\.desktop\.spec\.ts$/,
+        SERVICE_WORKER_SPEC,
+        REDUCED_MOTION_SPEC,
+      ],
       use: { ...devices['Pixel 7'] },
     },
     {
@@ -45,6 +57,18 @@ export default defineConfig({
       name: 'service-worker-chromium',
       testMatch: SERVICE_WORKER_SPEC,
       use: { ...devices['Desktop Chrome'], serviceWorkers: 'allow' },
+    },
+    {
+      // The one project that emulates `prefers-reduced-motion: reduce`, so it
+      // is also the only place that setting could plausibly leak into another
+      // spec's result — kept to its own filename-routed spec for the same
+      // reason the service-worker project is isolated above.
+      name: 'reduced-motion-chromium',
+      testMatch: REDUCED_MOTION_SPEC,
+      use: {
+        ...devices['Desktop Chrome'],
+        contextOptions: { reducedMotion: 'reduce' },
+      },
     },
   ],
   reporter: isCI ? [['github'], ['html', { open: 'never' }]] : [['list']],

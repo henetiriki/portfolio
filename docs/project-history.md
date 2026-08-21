@@ -2,6 +2,13 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-21 — Extend the browser suite with reduced motion and the footer's own scroll-to-top
+
+- **Two roadmap candidates landed in one pass**: a `reducedMotion: 'reduce'` project variant, and coverage for the footer's own `scrollToTop` call site, which shares `pageTopRef` with the header button's but fires from a nav link's `onClick` rather than a dedicated control.
+- **Reduced-motion coverage has to observe the call itself, because the destination is identical either way** — `scrollY` ends at 0 whether `scrollIntoView` ran with `'auto'` or `'smooth'`. `captureScrollIntoView` (`e2e/support/helpers.ts`) patches `Element.prototype.scrollIntoView` to record the `behavior` a real navigation receives; `reduced-motion.spec.ts` runs in its own filename-routed project, `reduced-motion-chromium`, and asserts `'auto'`.
+- **The first version of the footer test was vacuous, and only deliberately breaking the code caught it.** Clicking a footer nav link back to the current route resets `scrollY` to 0 on its own, through Next's router — a `scrollY`-based assertion kept passing with `onClick={scrollToTop}` deleted from `Footer` entirely. Replaced with the same `captureScrollIntoView` capture, asserting the call happened rather than its side effect; confirmed to fail without the prop and pass with it restored, the same way the reduced-motion assertion was confirmed to fail without `reducedMotion: 'reduce'` set.
+- Both additions keep the suite at zero skips: `reduced-motion.spec.ts` is routed to its project by filename, the same convention the mobile/desktop/service-worker specs already use.
+
 ## 2026-08-21 — Give the mobile timeline icons back some edge clearance, and a colour that survives contrast
 
 - **The section icons moved 5px back from the screen edge and shrank `2.5rem` → `2rem` below `xs`** — [D-260821a](decisions.md#d-260821a--give-the-mobile-icons-back-some-edge-clearance-and-a-colour-that-survives-contrast). Review judged the 12px offset from [D-260816k](decisions.md#d-260816k--reclaim-the-timelines-gutter-from-the-container-not-from-the-rail) too tight; the net offset is now 7px.
