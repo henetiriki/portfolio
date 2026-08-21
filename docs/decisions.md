@@ -12,6 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260821e — Bound the fetcher's retries to transient failures and cut the per-attempt timeout
+
+- **Status:** Accepted
+- **Decided:** 2026-08-21
+
+Raised in review: `fetcher` (`../src/utils/common/fetcher.ts`) retried every failure indiscriminately — a `404` or a malformed request got the same three attempts as a dropped connection — and each attempt carried a 30s `AbortController` timeout, so a client stuck on repeated timeouts could block its caller for up to roughly 90s (`30s × 3` attempts, backoff on top) before the default two retries were exhausted.
+
+**Retries are now conditional, not unconditional.** `request` throws a `FetchError` carrying the HTTP status for non-OK responses; `isRetryable` treats network failures (including the abort-driven timeout, which never constructs a `FetchError`) and 5xx/429 responses as worth retrying, and lets every other 4xx propagate on the first attempt. A `404` or a malformed request will not change on a second try, so retrying it only added latency for a response the caller was always going to receive.
+
+**429 was included alongside 5xx, not just 5xx as the review comment's parenthetical suggested.** Both API routes this wraps (`/api/rail-trips`, `/api/img-id`) are same-origin internal endpoints without their own rate limiting today, but a `429` is a textbook transient condition and there is no cost to handling it correctly ahead of need — see [D-260821c](#d-260821c--accept-the-missing-rate-limit-on-apicsp-report) for the separate, already-settled question of whether these endpoints need a limiter of their own.
+
+**The timeout moved from 30s to 8s, not to something more conservative.** Both call sites are internal API routes serving fixture data or a lightweight Instagram lookup — there is no reason a healthy response takes anywhere near 30s, and 8s still leaves comfortable headroom above normal latency. Worst case with the default two retries is now bounded at roughly 8s × 3 attempts plus backoff, versus the prior ~90s.
+
 ## D-260821d — Disable camera, geolocation, microphone, payment and USB with `Permissions-Policy`
 
 - **Status:** Accepted

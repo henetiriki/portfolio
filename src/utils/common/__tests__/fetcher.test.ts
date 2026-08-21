@@ -73,6 +73,36 @@ describe('fetcher', () => {
     expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
+  it('retries a 429 response with exponential backoff', async () => {
+    jest.useFakeTimers();
+
+    const json = jest.fn().mockResolvedValue({ hello: 'world' });
+    const text = jest.fn().mockResolvedValue('Too many requests');
+
+    global.fetch = jest
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 429, text })
+      .mockResolvedValueOnce({ json, ok: true });
+
+    const response = fetcher('/api/test');
+
+    await jest.advanceTimersByTimeAsync(250);
+
+    await expect(response).resolves.toEqual({ hello: 'world' });
+    expect(global.fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('does not retry a non-retryable 4xx response', async () => {
+    const text = jest.fn().mockResolvedValue('Not found');
+
+    global.fetch = jest
+      .fn()
+      .mockResolvedValue({ ok: false, status: 404, text });
+
+    await expect(fetcher('/api/test')).rejects.toEqual(new Error('Not found'));
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
   it('normalizes non-Error network rejections', async () => {
     global.fetch = jest.fn().mockRejectedValue('offline');
 
@@ -92,7 +122,7 @@ describe('fetcher', () => {
     expect(clearTimeoutSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('aborts and rejects an in-flight request after 30 seconds', async () => {
+  it('aborts and rejects an in-flight request after 8 seconds', async () => {
     jest.useFakeTimers();
 
     global.fetch = jest.fn((_url, init?: RequestInit) => {
@@ -110,7 +140,7 @@ describe('fetcher', () => {
       name: 'AbortError',
     });
 
-    await jest.advanceTimersByTimeAsync(30000);
+    await jest.advanceTimersByTimeAsync(8000);
 
     await rejection;
   });

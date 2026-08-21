@@ -1,7 +1,17 @@
 import { cancelableDelay, delay } from '@utils/common/delay';
 
-const fetchTimeout = 30000;
+const fetchTimeout = 8000;
 const retryDelay = 250;
+const retryableStatuses = new Set([429]);
+
+class FetchError extends Error {
+  readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
 
 const abortController = (): {
   controller: AbortController;
@@ -28,8 +38,9 @@ const request = async <T>(url: string): Promise<T> => {
     if (!response.ok) {
       const message = await response.text();
 
-      throw new Error(
-        message || `Request failed with status ${response.status}`
+      throw new FetchError(
+        message || `Request failed with status ${response.status}`,
+        response.status
       );
     }
 
@@ -42,6 +53,11 @@ const request = async <T>(url: string): Promise<T> => {
 const asError = (error: unknown): Error =>
   error instanceof Error ? error : new Error(String(error));
 
+const isRetryable = (error: unknown): boolean =>
+  !(error instanceof FetchError) ||
+  error.status >= 500 ||
+  retryableStatuses.has(error.status);
+
 const fetchWithRetry = async <T>(
   url: string,
   retries: number,
@@ -50,7 +66,7 @@ const fetchWithRetry = async <T>(
   try {
     return await request<T>(url);
   } catch (error) {
-    if (retries <= 0) {
+    if (retries <= 0 || !isRetryable(error)) {
       throw asError(error);
     }
 
