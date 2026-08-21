@@ -12,6 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260821i — Rely on manual review for splash-device coverage, not an automated check
+
+- **Status:** Accepted
+- **Decided:** 2026-08-21
+
+The [roadmap](roadmap.md) framed the splash matrix's staleness as one problem with one fix: "a check that fails when a known device class is unmatched." It is actually two problems, and only one of them is a check.
+
+**No source exists for a check to run against.** `SPLASH_DEVICES`' point sizes were "verified per device rather than extrapolated" when the set was rebuilt ([D-260815e](#d-260815e--generate-the-pwa-icon-and-splash-set-from-one-vector-master)), which on inspection means manual research against Apple's specifications at the time — no source is cited, because there is no single authoritative, machine-readable one to cite. Apple publishes device specifications as human-readable documentation, not a feed. A CI check can only compare the repository against itself; it has nothing external to diff a new iPhone's screen size against. The four-year gap the previous set carried was exactly this failure mode, and nothing proposed here closes it.
+
+**What a check can do is verify internal consistency**: that every entry in `SPLASH_DEVICES` has a matching generated asset, and every generated asset matches a table entry — catching a hand-edit to one without the other, or a deleted file. That is real, fully automatable, and does not depend on knowing what Apple has shipped. It remains open on the roadmap as its own task, separate from device coverage.
+
+**Device coverage — noticing that Apple shipped a new screen size at all — has no automatable path**, and is left as periodic manual review rather than false-advertised as solved. Candidate mechanisms for prompting that review are listed on the roadmap rather than chosen here; none has been decided.
+
 ## D-260821h — Reproduce the public-directory precache scan to exclude the Apple splash images
 
 - **Status:** Accepted
