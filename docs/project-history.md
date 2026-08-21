@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-21 — Assert icon contrast directly, scoped to what axe cannot see
+
+- **Closed the gap D-260821a documented but did not fix** — [D-260821f](decisions.md#d-260821f--assert-icon-contrast-directly-scoped-to-what-axe-cannot-see). `accessibility.spec.ts` now reads an icon's computed colour, walks up for the first painted background, and checks the ratio against WCAG 1.4.11's 3:1 floor — the exact check axe's text-only `color-contrast` rule cannot perform on an SVG with `stroke="currentColor"`.
+- **Both tests were proven to fail before being trusted.** Reintroducing the original 1.72:1 timeline-icon bug reproduces that ratio almost exactly; forcing the scroll-to-top icon onto its own background colour produces exactly 1.
+- **Scope came from a full survey, not just the one icon under review.** The timeline icons and the scroll-to-top control share the same blind spot (`stroke="currentColor"` on a coloured circle, no adjacent text of that pairing) and are covered; outline-button icons are provably covered already by the axe check on their own adjacent text, and the travel map's markers are excluded because they paint onto live imagery with no fixed background to assert against.
+
 ## 2026-08-21 — Disable unused browser capabilities with `Permissions-Policy`
 
 - **The site now ships a `Permissions-Policy` header disabling `camera`, `geolocation`, `microphone`, `payment` and `usb` with an empty allowlist** — [D-260821d](decisions.md#d-260821d--disable-camera-geolocation-microphone-payment-and-usb-with-permissions-policy). Raised as a P3 finding; the header was previously absent.

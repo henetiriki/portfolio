@@ -12,6 +12,20 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260821f — Assert icon contrast directly, scoped to what axe cannot see
+
+- **Status:** Accepted
+- **Decided:** 2026-08-21
+
+Raised in review of [D-260821a](#d-260821a--give-the-mobile-icons-back-some-edge-clearance-and-a-colour-that-survives-contrast): that decision fixed a 1.72:1 icon and documented why axe never caught it — `color-contrast` only evaluates text nodes, and the icon is an SVG with `stroke="currentColor"`. Documenting the blind spot did not close it; nothing in the suite would have caught a second regression either. `accessibility.spec.ts` now reads each icon's computed `color`, walks up for the first painted `background-color`, and checks the ratio against WCAG 1.4.11's 3:1 floor for non-text UI. Both new tests were confirmed to fail before being trusted: reintroducing the original bug reproduces 1.7162439…:1 almost exactly, and forcing the scroll-to-top icon to its own background colour produces exactly 1.
+
+**Scope was widened past the one icon the review named, then deliberately narrowed again.** Every `@tabler/icons-react` usage in `src/` was surveyed for the same shape of risk. Two shared it: the experience timeline's section icons (the original bug) and the header's scroll-to-top control, both a `stroke="currentColor"` icon on a Mantine `filled`/coloured-circle background with no adjacent text of that exact pairing — the specific condition axe cannot see. Everything else surveyed was left out, and for a reason each time rather than by omission:
+
+- **The outline buttons on `/portfolio`, the error pages, and the footer's social links** pair the icon with visible text in the identical colour, in the identical location. If that pairing's contrast breaks, the text breaks with it, and axe already checks the text. Adding an icon-specific assertion here would duplicate a check that already exists rather than close a gap.
+- **The travel map's markers** (`Marker.tsx`, `MarkerLegend.tsx`) are excluded on the opposite basis: they are `fill`-based, not `stroke="currentColor"`, and `Marker.tsx` in particular paints onto live Google Maps imagery with no fixed background to assert a ratio against — the same reason WCAG itself carves out an exception for map content.
+
+**The two new tests live beside the axe pass in `accessibility.spec.ts` rather than in a new file**, because the file's own purpose — catching what jsdom and, here, axe itself cannot — is exactly what they extend. See [Development Workflow](development.md#browser-regression-suite) for the survived-vs-excluded reasoning restated for future additions, and `e2e/support/helpers.ts`'s `contrastRatio` for the WCAG relative-luminance math, kept general rather than tied to either call site.
+
 ## D-260821e — Bound the fetcher's retries to transient failures and cut the per-attempt timeout
 
 - **Status:** Accepted

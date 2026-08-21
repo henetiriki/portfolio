@@ -86,6 +86,33 @@ export const collectConsoleErrors = (page: Page) => {
 };
 
 /**
+ * WCAG relative luminance and contrast ratio, from computed `rgb()`/`rgba()`
+ * colour strings. https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
+ *
+ * Exists because `axe-core`'s `color-contrast` rule only evaluates text
+ * nodes — an SVG icon painted with `stroke="currentColor"` is invisible to
+ * it regardless of how badly it fails. See docs/decisions.md#d-260821a.
+ */
+export const contrastRatio = (a: string, b: string): number => {
+  const relativeLuminance = (colour: string): number => {
+    const [r, g, b] = colour.match(/[\d.]+/g)?.map(Number) ?? [0, 0, 0];
+    const channel = (value: number) => {
+      const srgb = value / 255;
+
+      return srgb <= 0.03928 ? srgb / 12.92 : ((srgb + 0.055) / 1.055) ** 2.4;
+    };
+
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+  };
+
+  const [lighter, darker] = [relativeLuminance(a), relativeLuminance(b)].sort(
+    (x, y) => y - x
+  );
+
+  return (lighter + 0.05) / (darker + 0.05);
+};
+
+/**
  * Console output the suite expects, for reasons outside the app's control.
  *
  * - Maps requests are deliberately aborted (see `blockGoogleMaps`).
