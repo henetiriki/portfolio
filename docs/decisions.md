@@ -12,6 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260821d — Disable camera, geolocation, microphone, payment and USB with `Permissions-Policy`
+
+- **Status:** Accepted
+- **Decided:** 2026-08-21
+
+Raised as a P3 finding: add a restrictive `Permissions-Policy` for capabilities the site does not use, after confirming Maps does not need geolocation. The header was previously absent entirely, so every browser feature it can gate defaulted to `self` — available to this origin, closed only to embeds.
+
+**Geolocation was checked rather than assumed**, because `/travel` is the one page with an obvious reason to want it. It does not: `google.maps.Map` is centred on fixture coordinates in `src/fixtures/travel/`, the camera reveal in `Map` eases to the `current: true` city from that same fixture data, and nothing under `src/` calls `navigator.geolocation` or any Maps API that would (`getCurrentPosition`, the Places "nearby" APIs, etc.). The map is a fixed personal history, not a live position — seeing this confirmed the P3 report's premise rather than complicating it.
+
+**Five capabilities, matching the finding, not a maximal lockdown.** `camera`, `geolocation`, `microphone`, `payment` and `usb` are disabled; the [Permissions Policy feature list](https://github.com/w3c/webappsec-permissions-policy/blob/main/features.md) names several dozen more (`fullscreen`, `clipboard-write`, `accelerometer`, …) that this change leaves alone. Auditing every feature this site's dependencies might touch — Mantine, the Maps SDK, BotID — was judged separate work from closing the five named in the finding; a broader pass is better done deliberately, with each addition checked the way geolocation was, than folded into this one silently.
+
+**Empty allowlist (`()`), not `self`.** `self` would still permit the origin's own top-level frames to invoke these APIs; `()` refuses every context, including this one, which is correct precisely because no page or future page has a legitimate reason to request camera, microphone, payment or USB access, or ask a visitor's browser where they are.
+
 ## D-260821c — Accept the missing rate limit on `/api/csp-report`
 
 - **Status:** Accepted

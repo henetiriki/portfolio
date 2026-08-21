@@ -85,3 +85,21 @@ test.describe('content security policy', () => {
     expect(response.status()).toBe(204);
   });
 });
+
+test.describe('permissions policy', () => {
+  for (const { path } of CONTENT_ROUTES) {
+    test(`${path} disables unused capabilities`, async ({ request }) => {
+      const headers = (await request.get(path)).headers();
+      const policy = headers['permissions-policy'];
+
+      expect(policy).toBeTruthy();
+      // Empty allowlists, not `self` — nothing on the site, this origin
+      // included, is a candidate to ever need these.
+      expect(policy).toContain('camera=()');
+      expect(policy).toContain('geolocation=()');
+      expect(policy).toContain('microphone=()');
+      expect(policy).toContain('payment=()');
+      expect(policy).toContain('usb=()');
+    });
+  }
+});

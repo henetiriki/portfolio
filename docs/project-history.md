@@ -2,6 +2,11 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-21 — Disable unused browser capabilities with `Permissions-Policy`
+
+- **The site now ships a `Permissions-Policy` header disabling `camera`, `geolocation`, `microphone`, `payment` and `usb` with an empty allowlist** — [D-260821d](decisions.md#d-260821d--disable-camera-geolocation-microphone-payment-and-usb-with-permissions-policy). Raised as a P3 finding; the header was previously absent.
+- **Geolocation was verified rather than assumed unneeded.** `/travel` centres and reveals its map from fixed fixture coordinates, and nothing under `src/` calls `navigator.geolocation` or a Maps API that would.
+
 ## 2026-08-21 — Accept the missing rate limit on `/api/csp-report`
 
 - **Raised as a follow-up to the CSP report sanitization work, and closed as an accepted risk rather than a fix** — [D-260821c](decisions.md#d-260821c--accept-the-missing-rate-limit-on-apicsp-report). The endpoint has no rate limiting, but the textbook mitigation (edge/WAF rate limiting) is unavailable on the Vercel Hobby plan this site runs on, and a weaker alternative was already tried and rejected for this endpoint's now-deleted mail path.
