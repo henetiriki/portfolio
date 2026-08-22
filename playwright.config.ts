@@ -15,6 +15,7 @@ const SERVICE_WORKER_SPEC = /service-worker\.spec\.ts$/;
 // Routed by filename, like the specs above — this one runs only in the
 // project that emulates `prefers-reduced-motion: reduce`, and nowhere else.
 const REDUCED_MOTION_SPEC = /reduced-motion\.spec\.ts$/;
+const VISUAL_TEST_TAG = /@visual/;
 
 export default defineConfig({
   // Deliberately narrower than the Jest suite: this exists to catch real
@@ -25,6 +26,7 @@ export default defineConfig({
   },
   forbidOnly: isCI,
   fullyParallel: true,
+  grepInvert: isCI ? undefined : VISUAL_TEST_TAG,
   projects: [
     // Viewport-specific specs are routed by filename rather than skipped at
     // runtime. A permanently skipped test teaches you to ignore the skip

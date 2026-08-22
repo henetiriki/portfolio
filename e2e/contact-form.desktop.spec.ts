@@ -7,22 +7,26 @@ test.describe('desktop contact validation', () => {
     await page.goto('/contact');
   });
 
-  test('matches the approved invalid-form state', async ({ page }) => {
-    const form = page.locator('form');
+  test(
+    'matches the approved invalid-form state',
+    { tag: '@visual' },
+    async ({ page }) => {
+      const form = page.locator('form');
 
-    await expect(page.locator('img[src*="BZ4QGdOn6SP"]')).toBeVisible();
-    await form.getByRole('button', { name: 'Send' }).click();
+      await expect(page.locator('img[src*="BZ4QGdOn6SP"]')).toBeVisible();
+      await form.getByRole('button', { name: 'Send' }).click();
 
-    await expect(page.getByText('Please enter your name')).toBeVisible();
-    await expect(page.getByText('Please enter a valid email')).toBeVisible();
-    await expect(page.getByText('Please enter your message')).toBeVisible();
+      await expect(page.getByText('Please enter your name')).toBeVisible();
+      await expect(page.getByText('Please enter a valid email')).toBeVisible();
+      await expect(page.getByText('Please enter your message')).toBeVisible();
 
-    await form.evaluate(element =>
-      window.scrollBy({ top: element.getBoundingClientRect().top - 96 })
-    );
+      await form.evaluate(element =>
+        window.scrollBy({ top: element.getBoundingClientRect().top - 96 })
+      );
 
-    await expect(form).toHaveScreenshot('invalid-contact-form.png', {
-      animations: 'disabled',
-    });
-  });
+      await expect(form).toHaveScreenshot('invalid-contact-form.png', {
+        animations: 'disabled',
+      });
+    }
+  );
 });

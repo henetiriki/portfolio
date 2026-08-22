@@ -10,6 +10,7 @@ This is the concise record of completed project work. It is not a substitute for
 
 - **The visual suite now guards five stable, first-party layouts:** desktop navigation, the open mobile drawer, desktop portfolio cards, invalid desktop contact validation, and the initial mobile experience timeline. The contact and timeline assertions close the roadmap item; dynamic imagery, Maps and third-party embeds remain deliberately outside screenshot baselines.
 - **The rotating background is pinned only inside the visual specs.** Each assertion follows the production code path, but intercepts the image-ID request before navigation so Linux-generated baselines compare the same photo on every run.
+- **Screenshot comparisons run only where their Linux baselines are authoritative.** The `@visual` tag excludes them from local `yarn test:e2e`, while CI and the manual updater include them; local browser runs therefore retain behavioural coverage without platform-specific pixel failures.
 - **The manual updater's bot commit creates a new pull-request head.** Where repository policy holds pull-request workflow runs for approval, that new CI run must be approved before it can verify the baseline; this operational step is now stated in the development workflow.
 
 ## 2026-08-22 — Add a guarded visual-baseline updater
