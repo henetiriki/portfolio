@@ -22,6 +22,21 @@ export const CONTENT_ROUTES = [
 export const blockGoogleMaps = (page: Page) =>
   page.route('**://*.googleapis.com/**', (route: Route) => route.abort());
 
+const VISUAL_BACKGROUND_IMAGE_ID = 'BZ4QGdOn6SP';
+
+/**
+ * Keep screenshot assertions independent of the production image rotation.
+ *
+ * FixedBackground asks this endpoint for one configured image after hydration.
+ * Intercepting the request before navigation preserves the production code
+ * path, while letting visual specs compare the same rendered background on
+ * every run without narrowing the image pool used by the rest of CI.
+ */
+export const pinVisualBackground = (page: Page) =>
+  page.route('**/api/img-id', route =>
+    route.fulfill({ json: { imgId: VISUAL_BACKGROUND_IMAGE_ID } })
+  );
+
 /**
  * Record every `behavior` passed to `Element.prototype.scrollIntoView`.
  *

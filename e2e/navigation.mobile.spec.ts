@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { blockGoogleMaps } from './support/helpers';
+import { blockGoogleMaps, pinVisualBackground } from './support/helpers';
 
 /**
  * Mobile-only: `playwright.config.ts` routes `*.mobile.spec.ts` to the mobile
@@ -16,6 +16,7 @@ import { blockGoogleMaps } from './support/helpers';
 test.describe('mobile drawer', () => {
   test.beforeEach(async ({ page }) => {
     await blockGoogleMaps(page);
+    await pinVisualBackground(page);
     await page.goto('/');
   });
 
@@ -29,6 +30,14 @@ test.describe('mobile drawer', () => {
 
     await page.getByRole('button', { name: 'Close menu' }).click();
     await expect(drawer).toBeHidden();
+  });
+
+  test('matches the approved open drawer', async ({ page }) => {
+    await page.getByRole('button', { name: 'Open menu' }).click();
+
+    await expect(page.getByRole('dialog')).toHaveScreenshot('open-drawer.png', {
+      animations: 'disabled',
+    });
   });
 
   test('navigates and closes itself when a link is chosen', async ({
