@@ -47,6 +47,10 @@ The `/travel` page renders an interactive Google Map plotting places the site ow
 
 The travel map uses browser-visible map configuration supplied at build time. Its provider-side restrictions, configuration names, and local setup are maintained privately; see [Runtime Configuration](environment-variables.md) for safe-handling guidance.
 
+## Production smoke check
+
+The regular browser suite blocks Maps deliberately, so a separate scheduled smoke check visits the deployed `/travel` page. It waits for the real Google Maps script, scrolls the map into view, and verifies Google has rendered its map surface without the page falling back to `MapError`. The check runs daily and may also be started manually; it is diagnostic only and does not gate pull requests or deployment.
+
 ## Modernisation phases
 
 The migration is intentionally split into parity-preserving releases:
