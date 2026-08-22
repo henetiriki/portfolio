@@ -32,13 +32,20 @@ test.describe('mobile drawer', () => {
     await expect(drawer).toBeHidden();
   });
 
-  test('matches the approved open drawer', async ({ page }) => {
-    await page.getByRole('button', { name: 'Open menu' }).click();
+  test(
+    'matches the approved open drawer',
+    { tag: '@visual' },
+    async ({ page }) => {
+      await page.getByRole('button', { name: 'Open menu' }).click();
 
-    await expect(page.getByRole('dialog')).toHaveScreenshot('open-drawer.png', {
-      animations: 'disabled',
-    });
-  });
+      await expect(page.getByRole('dialog')).toHaveScreenshot(
+        'open-drawer.png',
+        {
+          animations: 'disabled',
+        }
+      );
+    }
+  );
 
   test('navigates and closes itself when a link is chosen', async ({
     page,

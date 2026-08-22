@@ -7,17 +7,21 @@ test.describe('desktop portfolio grid', () => {
     await page.goto('/portfolio');
   });
 
-  test('matches the approved card layout', async ({ page }) => {
-    const grid = page
-      .locator('[class*="grid"]')
-      .filter({ hasText: 'Beauty WithIn' });
+  test(
+    'matches the approved card layout',
+    { tag: '@visual' },
+    async ({ page }) => {
+      const grid = page
+        .locator('[class*="grid"]')
+        .filter({ hasText: 'Beauty WithIn' });
 
-    await expect(
-      grid.getByRole('img', { name: 'Reserved for You' })
-    ).toBeVisible();
+      await expect(
+        grid.getByRole('img', { name: 'Reserved for You' })
+      ).toBeVisible();
 
-    await expect(grid).toHaveScreenshot('portfolio-grid.png', {
-      animations: 'disabled',
-    });
-  });
+      await expect(grid).toHaveScreenshot('portfolio-grid.png', {
+        animations: 'disabled',
+      });
+    }
+  );
 });
