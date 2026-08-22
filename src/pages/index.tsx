@@ -29,7 +29,9 @@ const Home: NextPage = (): JSX.Element => {
           <Title order={1} tt='uppercase'>
             Louw Swart
           </Title>
-          <Text fz='lg'>ex-flight attendant turned programmer</Text>
+          <Text fz='lg' mt='xs'>
+            ex-flight attendant turned programmer
+          </Text>
           <Title className={classes.subtitle} order={2} size='h4'>
             I’m a{' '}
             {reduceMotion ? (
