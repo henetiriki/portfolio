@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic';
 import { Content, Header } from '@components/content';
 import { Seo } from '@components/shared';
 import { Legend, MapLoader } from '@components/travel';
-import { description } from '@fixtures/travel';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
@@ -15,9 +14,12 @@ const DynamicMapWrapper = dynamic(
   }
 );
 
+const description =
+  'Places I’ve been and where I’m headed next — an interactive travel map and log from Louw Swart, covering flights, train rides and sailings.';
+
 const Travel: NextPage = (): JSX.Element => (
   <>
-    <Seo description={description} path='/travel' title='Travel' />
+    <Seo description={description} path='/travel' title='Places I’ve Been' />
     <>
       <Header>
         Places I’ve been

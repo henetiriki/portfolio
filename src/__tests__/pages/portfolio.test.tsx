@@ -14,15 +14,15 @@ describe('Portfolio page', () => {
   it('renders a card for every portfolio item', () => {
     render(<Portfolio />);
 
-    portfolioItems.forEach(({ imageUrl, title }) => {
+    portfolioItems.forEach(({ img: { alt, src }, title }) => {
       expect(screen.getByText(title)).toBeInTheDocument();
-      expect(screen.getByRole('img', { name: title })).toHaveAttribute(
+      expect(screen.getByRole('img', { name: alt })).toHaveAttribute(
         'sizes',
         expect.stringContaining('(min-width: 67.5em)')
       );
-      expect(screen.getByRole('img', { name: title })).toHaveAttribute(
+      expect(screen.getByRole('img', { name: alt })).toHaveAttribute(
         'src',
-        expect.stringContaining(encodeURIComponent(imageUrl))
+        expect.stringContaining(encodeURIComponent(src))
       );
     });
   });

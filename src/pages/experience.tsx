@@ -18,11 +18,15 @@ import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
 const seoDescription =
-  'Work and education history for Louw Swart, covering front-end and full-stack roles across banking, government, media and ecommerce.';
+  'Front-end and full-stack development experience since 2008 — React, Angular and Node.js roles across banking, government, media and ecommerce.';
 
 const Experience: NextPage = (): JSX.Element => (
   <>
-    <Seo description={seoDescription} path='/experience' title='Experience' />
+    <Seo
+      description={seoDescription}
+      path='/experience'
+      title='Front-End & Full-Stack Experience'
+    />
     <>
       <Header>
         Experience<span>where I’ve worked so far</span>

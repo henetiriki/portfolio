@@ -48,13 +48,20 @@ export type SocialLink = {
   url: string;
 };
 
+type PortfolioItemAction = {
+  href: string;
+  label: string;
+};
+
+type PortfolioItemImg = {
+  alt: string;
+  src: string;
+};
+
 export type PortfolioItem = {
-  action?: {
-    href: string;
-    label: string;
-  };
+  action?: PortfolioItemAction;
   content: JSX.Element;
-  imageUrl: string;
+  href?: string;
+  img: PortfolioItemImg;
   title: string;
-  url?: string;
 };

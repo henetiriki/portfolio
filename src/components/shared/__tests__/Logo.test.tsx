@@ -6,6 +6,6 @@ describe('Logo', () => {
     render(<Logo />);
 
     expect(screen.getByRole('link')).toHaveAttribute('href', '/');
-    expect(screen.getByAltText('Ouwl')).toBeInTheDocument();
+    expect(screen.getByAltText('Ouwl.house — home')).toBeInTheDocument();
   });
 });
