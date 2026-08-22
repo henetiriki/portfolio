@@ -2,13 +2,13 @@ import { Text } from '@mantine/core';
 import type { FC, PropsWithChildren } from 'react';
 
 type DynamicPolylineText = {
-  color: string;
+  colour: string;
   style: 'dotted' | 'solid';
 };
 
 export const PolylineLegend: FC<DynamicPolylineText & PropsWithChildren> = ({
   children,
-  color,
+  colour,
   style,
 }) => (
   <Text component='p' display='flex' miw='14rem'>
@@ -17,7 +17,7 @@ export const PolylineLegend: FC<DynamicPolylineText & PropsWithChildren> = ({
       h='1em'
       ml={5}
       mr={7}
-      style={{ borderBottom: `3px ${style} ${color}` }}
+      style={{ borderBottom: `3px ${style} ${colour}` }}
       w={12}
     />{' '}
     {children}

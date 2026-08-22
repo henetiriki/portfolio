@@ -6,7 +6,7 @@ import {
 } from './support/helpers';
 
 /**
- * `useScrollTo` picks `scrollIntoView`'s `behavior` from `useReducedMotion`,
+ * `useScrollTo` picks `scrollIntoView`'s behaviour from `useReducedMotion`,
  * which reads `prefers-reduced-motion` — jsdom has no media query support, so
  * the unit tests can only assert the hook returns the right string, never that
  * a real reduced-motion user gets an instant jump instead of a smooth scroll.
@@ -17,7 +17,7 @@ test.describe('reduced motion', () => {
   test('scroll-to-top jumps instantly instead of scrolling smoothly', async ({
     page,
   }) => {
-    const behaviors = await captureScrollIntoView(page);
+    const behaviours = await captureScrollIntoView(page);
 
     await blockGoogleMaps(page);
 
@@ -28,6 +28,6 @@ test.describe('reduced motion', () => {
     await page.getByRole('button', { name: 'Scroll to top' }).click();
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
 
-    expect(behaviors).toEqual(['auto']);
+    expect(behaviours).toEqual(['auto']);
   });
 });

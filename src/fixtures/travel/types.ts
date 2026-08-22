@@ -5,7 +5,7 @@ export interface Location {
 }
 
 export type MarkerIcon = {
-  color: string;
+  colour: string;
   scale: number;
 };
 

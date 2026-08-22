@@ -54,14 +54,14 @@ const createMarkerElements = () => {
       marker.map = map;
     },
     setOptions: (
-      color: string,
+      colour: string,
       position: google.maps.LatLngLiteral,
       scale: number,
       title: string
     ) => {
       marker.position = position;
       marker.title = title;
-      path.setAttribute('fill', color);
+      path.setAttribute('fill', colour);
       visual.style.transform = `scale(${scale})`;
     },
     setScale: (scale: number) => {
@@ -138,9 +138,9 @@ export const Marker: FC<MarkerProps> = ({
   }, [motion, reportRendered]);
 
   useEffect(() => {
-    setOptions(icon.color, position, markerScale, title);
+    setOptions(icon.colour, position, markerScale, title);
     renderedScaleRef.current = markerScale;
-  }, [icon.color, markerScale, position, setOptions, title]);
+  }, [icon.colour, markerScale, position, setOptions, title]);
 
   useEffect(() => {
     let bounceTimer: ReturnType<typeof setTimeout> | undefined;

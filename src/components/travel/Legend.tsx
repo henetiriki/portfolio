@@ -29,22 +29,22 @@ export const Legend: FC = () => {
         <MarkerLegend icon={airportIcon}>airports</MarkerLegend>
         <MarkerLegend icon={stationIcon}>stations</MarkerLegend>
         <MarkerLegend icon={portIcon}>ports</MarkerLegend>
-        <PolylineLegend color={corn[4]} style='solid'>
+        <PolylineLegend colour={corn[4]} style='solid'>
           flights
         </PolylineLegend>
-        <PolylineLegend color={torchRed[4]} style='solid'>
+        <PolylineLegend colour={torchRed[4]} style='solid'>
           train rides
         </PolylineLegend>
-        <PolylineLegend color={viking[4]} style='solid'>
+        <PolylineLegend colour={viking[4]} style='solid'>
           sailings
         </PolylineLegend>
-        <PolylineLegend color={corn[4]} style='dotted'>
+        <PolylineLegend colour={corn[4]} style='dotted'>
           upcoming flights
         </PolylineLegend>
-        <PolylineLegend color={torchRed[4]} style='dotted'>
+        <PolylineLegend colour={torchRed[4]} style='dotted'>
           upcoming train rides
         </PolylineLegend>
-        <PolylineLegend color={viking[4]} style='dotted'>
+        <PolylineLegend colour={viking[4]} style='dotted'>
           upcoming sailings
         </PolylineLegend>
       </Flex>

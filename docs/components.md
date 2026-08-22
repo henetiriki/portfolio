@@ -1,4 +1,4 @@
-# Component Catalog
+# Component Catalogue
 
 All components are function components (except `ErrorBoundary`) written in TypeScript, styled with Mantine's CSS Modules + CSS variables (see [Styling & Theming](styling-theming.md)). Each feature folder exports through an `index.ts` barrel, imported via the `@components/*` alias.
 
@@ -27,7 +27,7 @@ Renders the optional YouTube embed for a timeline entry, inside a fixed-ratio bo
 | Component                                  | Responsibility                                                                                                                                                                                                                                                                                                  |
 | ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Footer`                                   | Server-rendered wave dividers + primary nav links (`menuItems`) + social links (`socialLinks`, GitHub/LinkedIn/Instagram) + a copyright line and a "last built" timestamp sourced from `process.env.NEXT_PUBLIC_LAST_MODIFIED` (computed at build/boot time in `next.config.js`, Africa/Johannesburg timezone). |
-| `FooterContainer` / `FooterLinksContainer` | Layout-only wrappers (background color / flex arrangement) reused across the two footer bands.                                                                                                                                                                                                                  |
+| `FooterContainer` / `FooterLinksContainer` | Layout-only wrappers (background colour / flex arrangement) reused across the two footer bands.                                                                                                                                                                                                                 |
 
 ## `form/`
 
@@ -54,7 +54,7 @@ Their horizontal spacing is viewport-dependent below the `xs` breakpoint: `Timel
 
 ## `travel/` — Google Maps feature
 
-See [Travel Feature](travel-feature.md) for the full data/behavior spec. Component summary:
+See [Travel Feature](travel-feature.md) for the full data/behaviour spec. Component summary:
 
 | Component                                    | Role                                                                                                                                                                                                                                                                                                                                                    |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -62,7 +62,7 @@ See [Travel Feature](travel-feature.md) for the full data/behavior spec. Compone
 | `Map`                                        | Owns the actual `google.maps.Map` instance, supplies the vector Map ID and other immutable/base `mapOptions()` at construction, applies responsive zoom separately, and performs a fixed-duration, fractional camera reveal to the current city once everything has loaded. Reduced motion jumps to the target; the animation frame cancels on cleanup. |
 | `Marker`                                     | One accessible `google.maps.marker.AdvancedMarkerElement` with a custom SVG child; imperatively drives CSS drop/bounce animation, click → InfoWindow and zoom-responsive DOM scaling, and cancels delayed work/listeners on cleanup. The InfoWindow uses Google's native close/focus behaviour plus timed auto-close.                                   |
 | `Polyline`                                   | One `google.maps.Polyline`, built from either literal `legs` (city-to-city arrays) or encoded `paths` (rail trips); delayed drawing/listeners clean up on unmount and reduced motion draws immediately.                                                                                                                                                 |
-| `Legend` / `MarkerLegend` / `PolylineLegend` | Static key explaining marker/line colors and solid-vs-dotted (past vs upcoming) trips; marker entries share the live markers' exact SVG path, theme color and base scale                                                                                                                                                                                |
+| `Legend` / `MarkerLegend` / `PolylineLegend` | Static key explaining marker/line colours and solid-vs-dotted (past vs upcoming) trips; marker entries share the live markers' exact SVG path, theme colour and base scale                                                                                                                                                                              |
 | `MapLoader` / `MapError`                     | Loading spinner / failure message selected by `useGoogleMaps()`; `MapLoader` is also used by `next/dynamic` while the client-only map bundle loads                                                                                                                                                                                                      |
 
 ## `containers/layout`

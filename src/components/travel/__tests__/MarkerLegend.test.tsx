@@ -3,9 +3,9 @@ import { markerIconPath } from '@fixtures/travel/icons';
 import { render, screen } from '@utils/test/render';
 
 describe('MarkerLegend', () => {
-  it('uses the same path, color and scale as the map marker', () => {
+  it('uses the same path, colour and scale as the map marker', () => {
     const { container } = render(
-      <MarkerLegend icon={{ color: '#123456', scale: 1.25 }}>
+      <MarkerLegend icon={{ colour: '#123456', scale: 1.25 }}>
         current location
       </MarkerLegend>
     );
