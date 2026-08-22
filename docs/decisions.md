@@ -12,6 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260822a — Compare preview changes with the last built preview, not the pull request base
+
+- **Status:** Accepted
+- **Decided:** 2026-08-22
+
+`HEAD^ HEAD` was a safe production comparison because production receives one squash commit per pull request, but it was the wrong boundary for preview deployments: Vercel creates one deployment per push, so a batched push whose tip was documentation could cancel a preview that contained source changes. That left a pull request unable to complete its required manual QA on a preview URL.
+
+**The initial preview now always builds, and subsequent preview pushes compare with `VERCEL_GIT_PREVIOUS_SHA`.** Vercel defines that as the last successful deployment SHA for the project and branch. It is the right practical baseline: once a preview represents the branch, a later documentation-only push can keep using it; a push that adds source since that preview builds. A newly opened documentation-only pull request still builds, which is necessary because no preview URL exists yet.
+
+**Comparing against the pull request's merge base was rejected.** Vercel exposes a pull request ID but not its base SHA, and its Git checkout is shallow. A command depending on `origin/main` or a locally available merge base would therefore either require unverified network/history assumptions or make a missing base decide deployment behaviour. The previous-deployment SHA is supplied for this use and any unavailable reference fails open to a build.
+
+**Production keeps the original comparison.** `VERCEL_ENV=production` still uses `HEAD^ HEAD`; only previews select the per-branch previous SHA. If the required system variables are unavailable, the command exits `1` in both cases, choosing a needless build over a skipped production deploy.
+
 ## D-260821k — Private security implementation record
 
 - **Status:** Accepted

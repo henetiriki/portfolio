@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-22 — Keep preview deployments available without rebuilding every documentation push
+
+- **Every pull request now receives an initial preview deployment**, including a documentation-only one, so its required manual QA has a URL to use. This closes the preview-deploy roadmap item surfaced by [#196](https://github.com/henetiriki/portfolio/pull/196).
+- **Subsequent preview pushes still skip when only excluded paths changed.** `scripts/should-skip-vercel-build.sh` compares the branch with `VERCEL_GIT_PREVIOUS_SHA`, Vercel's last successful deployment for that branch, rather than a one-commit `HEAD^ HEAD` window. A batched source-and-documentation push therefore builds, while a later documentation-only update retains the existing preview.
+- **Production's deploy skip is unchanged.** The production branch continues to compare the just-squashed pull request with its parent; missing system-variable or Git-history state fails open to a build. The rationale for choosing the prior preview over a pull-request merge base is [D-260822a](decisions.md#d-260822a--compare-preview-changes-with-the-last-built-preview-not-the-pull-request-base).
+
 ## 2026-08-21 — Browser-policy implementation update
 
 - The browser policy was strengthened without changing visitor-facing content delivery. The detailed implementation, rationale, and residual trade-offs are maintained privately.
