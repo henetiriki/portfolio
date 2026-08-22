@@ -51,7 +51,7 @@ const Home: NextPage = (): JSX.Element => {
               />
             )}
           </Title>
-          <Text>ex-flight attendant turned programmer</Text>
+          <Text fz='lg'>ex-flight attendant turned programmer</Text>
         </Container>
       </Container>
       <Content>
