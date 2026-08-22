@@ -5,7 +5,7 @@ export const CONTENT_ROUTES = [
   {
     heading: 'Work History',
     path: '/experience',
-    title: 'Front-End Engineering Experience',
+    title: 'Front-End & Full-Stack Experience',
   },
   {
     heading: 'Website portfolio',

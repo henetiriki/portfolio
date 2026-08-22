@@ -25,7 +25,7 @@ const Experience: NextPage = (): JSX.Element => (
     <Seo
       description={seoDescription}
       path='/experience'
-      title='Front-End Engineering Experience'
+      title='Front-End & Full-Stack Experience'
     />
     <>
       <Header>
