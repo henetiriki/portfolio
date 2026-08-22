@@ -17,6 +17,10 @@ test.describe('desktop contact validation', () => {
     await expect(page.getByText('Please enter a valid email')).toBeVisible();
     await expect(page.getByText('Please enter your message')).toBeVisible();
 
+    await form.evaluate(element =>
+      window.scrollBy({ top: element.getBoundingClientRect().top - 96 })
+    );
+
     await expect(form).toHaveScreenshot('invalid-contact-form.png', {
       animations: 'disabled',
     });
