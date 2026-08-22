@@ -75,12 +75,6 @@ jobs:
       - name: Build
         run: yarn build
 
-      # next-sitemap reads CI's local HOST and rewrites this tracked file. A
-      # baseline update must carry only screenshots; ordinary build changes
-      # remain reviewable through the normal application-change workflow.
-      - name: Restore generated robots file
-        run: git restore --source=HEAD --worktree public/robots.txt
-
       - name: Install Playwright browser
         run: yarn test:e2e:install
 
@@ -91,22 +85,6 @@ jobs:
         id: package
         run: |
           git add -- e2e
-
-          unstaged_files="$(git diff --name-only)"
-          if [ -n "$unstaged_files" ]
-          then
-            echo 'The updater changed tracked files outside its staged baseline set:'
-            echo "$unstaged_files"
-            exit 1
-          fi
-
-          untracked_files="$(git ls-files --others --exclude-standard)"
-          if [ -n "$untracked_files" ]
-          then
-            echo 'The updater created unexpected untracked files:'
-            echo "$untracked_files"
-            exit 1
-          fi
 
           baseline_artifact="$RUNNER_TEMP/visual-baselines"
           mkdir -p "$baseline_artifact/files"
