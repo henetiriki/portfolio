@@ -2,6 +2,11 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-22 — Add a guarded visual-baseline updater
+
+- **A manual Actions workflow now prepares reviewed Playwright screenshot baselines on GitHub's Linux runners**, ready for the targeted visual-regression coverage still open on the roadmap. It has no automatic trigger and exits without a commit until a screenshot assertion is introduced.
+- **The workflow runs on the target branch selected in the Actions UI, so it never checks out a user-selected ref from a default-branch context.** The generator has no dependency cache or write token; a separate write-capable job only verifies and applies its PNG artifact without executing branch code. The workflow refuses `main`, accepts only the repository's branch prefixes, stages only PNGs in Playwright snapshot directories, and cannot create or approve a pull request. See [D-260822d](decisions.md#d-260822d--run-visual-baseline-updates-on-the-target-branch-not-a-default-branch-checkout).
+
 ## 2026-08-22 — Schedule manual splash-device coverage review
 
 - **The remaining splash-matrix maintenance task is now a mid-June and mid-October calendar review**, with the same review after any out-of-cycle iPhone or iPad-family announcement. June covers the spring iPad/WWDC window; October follows the September iPhone launch once specifications settle.

@@ -12,6 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260822d — Run visual-baseline updates on the target branch, not a default-branch checkout
+
+- **Status:** Accepted
+- **Decided:** 2026-08-22
+
+**Baseline generation is manual and branch-scoped.** A visual diff needs human review; automatically accepting every changed screenshot would turn a layout regression into its own approval. The updater therefore has no `push` or pull-request trigger, rejects `main`, and commits only PNGs under Playwright's snapshot directories to the named feature branch. The normal CI workflow remains read-only.
+
+**The workflow runs from the branch selected in the Actions UI; it never checks out an operator-supplied ref from a default-branch run.** A manual workflow becomes available on a branch after that branch includes the version merged to `main`. This removes the cross-branch trust boundary that CodeQL correctly identifies as a cache-poisoning risk. The workflow rejects `main`, validates the selected branch's prefix, and does not use a dependency cache, so target-branch build code cannot populate a cache consumed by a trusted run.
+
+**Only the commit job receives `contents: write`, and it never executes target-branch code.** The repository's Actions default remains read-only; the generator has no write token and passes an allowlisted artifact to the commit job. That job rechecks the selected revision and every path before copying PNGs into a clean checkout and pushing the commit. It does not create or approve pull requests, accepts no arbitrary shell input, and fails if a test generated a change outside the baseline PNG allowlist. This keeps CI's Linux render the source of truth without introducing a personal access token or widening the normal CI token.
+
+**Artifact-only handoff was rejected as the permanent path.** It avoids a write-capable job, but makes every legitimate visual change a download/rename/commit round trip and leaves a maintainer deciding whether a locally rendered file matches CI. The workflow's safeguards keep the write surface smaller than a general-purpose bot while preserving the review gate where it belongs: before the manual run.
+
 ## D-260822c — Prompt splash-device coverage review from the calendar, not CI
 
 - **Status:** Accepted
