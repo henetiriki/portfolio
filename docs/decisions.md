@@ -12,6 +12,17 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260822c — Prompt splash-device coverage review from the calendar, not CI
+
+- **Status:** Accepted
+- **Decided:** 2026-08-22
+
+**The calendar carries a mid-June and a mid-October reminder, with a further review after an iPhone or iPad-family announcement outside those windows.** October follows the September iPhone launch once its specifications have settled; June covers the less-predictable spring iPad and WWDC window. This is enough cadence to keep the table current without turning a small, manually researched task into a quarterly ritual.
+
+**A calendar prompt is the right boundary for a personal review with no machine-readable truth.** D-260821i established that a CI check cannot discover an absent device class: Apple offers human-readable specifications, not a feed to compare with `SPLASH_DEVICES`. A scheduled workflow could only open an issue or send a reminder; it would add permissions, operational maintenance and a second inbox without improving the evidence. Adding it to each release checklist was rejected for the inverse reason: it would either impede unrelated releases or disappear during a quiet period.
+
+**The prompt asks an agent to investigate and report, rather than silently edit the table.** It requires Apple sources, comparison of distinct width/height/pixel-ratio triples, and an explicit no-change result; third-party device lists may help locate candidates but are not evidence. A repeated triple needs no asset. Changes remain an explicit maintainer decision, after which the existing generator and `yarn icons:check` cover the implementation and internal consistency. No-change reviews stay in the calendar reminder rather than creating documentation churn in the repository.
+
 ## D-260822b — Use merged commits and Vercel deployments as the release record, rather than tags
 
 - **Status:** Accepted

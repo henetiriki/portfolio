@@ -2,6 +2,11 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-22 — Schedule manual splash-device coverage review
+
+- **The remaining splash-matrix maintenance task is now a mid-June and mid-October calendar review**, with the same review after any out-of-cycle iPhone or iPad-family announcement. June covers the spring iPad/WWDC window; October follows the September iPhone launch once specifications settle.
+- **The reminder carries a copyable research prompt rather than pretending to automate coverage.** It directs an agent to compare Apple-sourced display triples with `SPLASH_DEVICES`, report missing classes and leave the repository untouched unless confirmed additions are requested. The calendar records a no-change review; a confirmed update uses the committed generator and `yarn icons:check`. Rationale: [D-260822c](decisions.md#d-260822c--prompt-splash-device-coverage-review-from-the-calendar-not-ci).
+
 ## 2026-08-22 — Retire release tags and application-version bumps
 
 - **The release-tag roadmap item is closed without adding tags, GitHub Releases or application-version bumps.** A squash merge is already the repository's immutable change identifier, carrying its pull request number; the commit's Vercel status links a completed production deployment to the exact build. The most recent completed deployment, rather than `main`'s tip, answers what is live when a documentation-only merge is ignored.
