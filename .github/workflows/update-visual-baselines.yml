@@ -1,0 +1,255 @@
+name: Update visual baselines
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: Target feature branch that should receive approved PNG baselines
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  cancel-in-progress: false
+  group: visual-baseline-update-${{ inputs.branch }}
+
+# These are the same safe build values used by CI. Production builds do not
+# load .env.test, and the updater needs a built site before Playwright can run.
+env:
+  CUSTOM_APP_DOMAIN: 'example.test'
+  GMAIL_APP_EMAIL: 'owner@example.test'
+  GMAIL_APP_PASSWORD: 'test-app-password'
+  GMAIL_SENDER_EMAIL: 'owner@example.test'
+  GOOGLE_MAPS_API_KEY: 'test-google-maps-api-key'
+  GOOGLE_MAPS_MAP_ID: 'test-google-maps-map-id'
+  HOST: 'http://localhost:3000'
+  HOSTNAME: 'localhost:3000'
+  IMAGE_HOST: 'https://res.cloudinary.com/henetiriki/image/upload/v1664623206/insta'
+  IMAGE_HOST_NAME: 'res.cloudinary.com'
+  IMAGE_HOST_PATH: 'henetiriki/image/upload/v1664623206/insta'
+  IMAGE_HOST_PROTOCOL: 'https'
+  ISTAGRAM_IMAGE_IDS: 'BZ4QGdOn6SP,Bcg0AZwFwv6,B5zAuLqJTEg,CEbEP7XJafW'
+  PROTOCOL: 'https'
+
+jobs:
+  generate:
+    # Run this workflow's reviewed definition from main. Target-branch code is
+    # limited to this read-only job, so it cannot use a write-capable token.
+    if: github.ref_name == 'main' && github.ref_type == 'branch'
+    name: Generate baselines
+    runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.package.outputs.has_changes }}
+      target_sha: ${{ steps.target.outputs.sha }}
+    steps:
+      - name: Validate target branch
+        env:
+          TARGET_BRANCH: ${{ inputs.branch }}
+        run: |
+          git check-ref-format --branch "$TARGET_BRANCH"
+          case "$TARGET_BRANCH" in
+            feature/*|fix/*|docs/*|chore/*) ;;
+            *)
+              echo 'Target branch must use a repository branch prefix.'
+              exit 1
+              ;;
+          esac
+
+      - name: Checkout target branch
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: ${{ inputs.branch }}
+
+      - name: Record target revision
+        id: target
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          cache: 'yarn'
+          cache-dependency-path: 'yarn.lock'
+          node-version-file: '.nvmrc'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build
+        run: yarn build
+
+      - name: Install Playwright browser
+        run: yarn test:e2e:install
+
+      - name: Update visual snapshots
+        run: yarn test:e2e --update-snapshots
+
+      - name: Package approved baseline updates
+        id: package
+        run: |
+          git add -- e2e
+
+          unstaged_files="$(git diff --name-only)"
+          if [ -n "$unstaged_files" ]
+          then
+            echo 'The updater changed tracked files outside its staged baseline set:'
+            echo "$unstaged_files"
+            exit 1
+          fi
+
+          untracked_files="$(git ls-files --others --exclude-standard)"
+          if [ -n "$untracked_files" ]
+          then
+            echo 'The updater created unexpected untracked files:'
+            echo "$untracked_files"
+            exit 1
+          fi
+
+          baseline_artifact="$RUNNER_TEMP/visual-baselines"
+          mkdir -p "$baseline_artifact/files"
+          git diff --cached --no-renames --name-only -z > "$baseline_artifact/changed-files.txt"
+
+          if [ ! -s "$baseline_artifact/changed-files.txt" ]
+          then
+            echo 'No visual baselines changed.'
+            echo 'has_changes=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          while IFS= read -r -d '' baseline_file
+          do
+            case "$baseline_file" in
+              e2e/*.spec.ts-snapshots/*.png) ;;
+              *)
+                echo "Only Playwright PNG baselines may be packaged: $baseline_file"
+                exit 1
+                ;;
+            esac
+            case "$baseline_file" in
+              *'..'*)
+                echo "Unsafe baseline path: $baseline_file"
+                exit 1
+                ;;
+            esac
+          done < "$baseline_artifact/changed-files.txt"
+
+          git diff --cached --diff-filter=ACM --no-renames --name-only -z > "$baseline_artifact/files.txt"
+          git diff --cached --diff-filter=D --name-only -z > "$baseline_artifact/deletions.txt"
+
+          while IFS= read -r -d '' baseline_file
+          do
+            mkdir -p "$baseline_artifact/files/$(dirname "$baseline_file")"
+            cp "$baseline_file" "$baseline_artifact/files/$baseline_file"
+          done < "$baseline_artifact/files.txt"
+
+          echo 'has_changes=true' >> "$GITHUB_OUTPUT"
+
+      - name: Upload baseline updates
+        if: steps.package.outputs.has_changes == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: visual-baselines-${{ steps.target.outputs.sha }}
+          path: ${{ runner.temp }}/visual-baselines
+          retention-days: 1
+
+  commit:
+    if: needs.generate.outputs.has_changes == 'true'
+    name: Commit baselines
+    needs: generate
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: ${{ inputs.branch }}
+
+      - name: Verify target revision
+        env:
+          TARGET_SHA: ${{ needs.generate.outputs.target_sha }}
+        run: |
+          if [ "$(git rev-parse HEAD)" != "$TARGET_SHA" ]
+          then
+            echo 'The target branch changed while baselines were generating. Run the updater again.'
+            exit 1
+          fi
+
+      - name: Download baseline updates
+        uses: actions/download-artifact@v8
+        with:
+          name: visual-baselines-${{ needs.generate.outputs.target_sha }}
+          path: ${{ runner.temp }}/visual-baselines
+
+      - name: Commit approved baseline updates
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_BRANCH: ${{ inputs.branch }}
+        run: |
+          baseline_artifact="$RUNNER_TEMP/visual-baselines"
+
+          validate_baseline_path() {
+            baseline_file="$1"
+            case "$baseline_file" in
+              e2e/*.spec.ts-snapshots/*.png) ;;
+              *)
+                echo "Invalid baseline path: $baseline_file"
+                return 1
+                ;;
+            esac
+            case "$baseline_file" in
+              *'..'*)
+                echo "Unsafe baseline path: $baseline_file"
+                return 1
+                ;;
+            esac
+            baseline_directory="$(dirname "$baseline_file")"
+            while [ "$baseline_directory" != '.' ]
+            do
+              if [ -L "$baseline_directory" ]
+              then
+                echo "Unsafe baseline directory: $baseline_directory"
+                return 1
+              fi
+              baseline_directory="$(dirname "$baseline_directory")"
+            done
+          }
+
+          while IFS= read -r -d '' baseline_file
+          do
+            validate_baseline_path "$baseline_file"
+            if [ ! -f "$baseline_artifact/files/$baseline_file" ] || [ -L "$baseline_artifact/files/$baseline_file" ]
+            then
+              echo "Missing or unsafe baseline artifact: $baseline_file"
+              exit 1
+            fi
+            mkdir -p "$(dirname "$baseline_file")"
+            cp "$baseline_artifact/files/$baseline_file" "$baseline_file"
+          done < "$baseline_artifact/files.txt"
+
+          while IFS= read -r -d '' baseline_file
+          do
+            validate_baseline_path "$baseline_file"
+            rm "$baseline_file"
+          done < "$baseline_artifact/deletions.txt"
+
+          git add -A -- e2e
+          git diff --cached --no-renames --name-only -z > "$RUNNER_TEMP/changed-files.txt"
+
+          while IFS= read -r -d '' baseline_file
+          do
+            validate_baseline_path "$baseline_file"
+          done < "$RUNNER_TEMP/changed-files.txt"
+
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git config user.name 'github-actions[bot]'
+          printf '%s\n' 'test: update visual baselines' > /tmp/visual-baseline-commit.txt
+          git -c core.hooksPath=/dev/null commit -F /tmp/visual-baseline-commit.txt
+          auth_header="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
+          git -c core.hooksPath=/dev/null -c http.https://github.com/.extraheader="AUTHORIZATION: basic $auth_header" push origin "HEAD:refs/heads/$TARGET_BRANCH"

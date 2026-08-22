@@ -110,6 +110,12 @@ The browser suite covers the offline experience in an isolated service-worker pr
 
 **When you verify by hand, check which checkout your dev server is serving, not just whether one is running.** A server started from a different checkout can render normally while omitting the change under review. Confirm the working directory before drawing conclusions from manual testing.
 
+### Visual-baseline updates
+
+`Update visual baselines` is a manual-only GitHub Actions workflow for a future, targeted visual-regression suite. It is intentionally available before any screenshot assertions exist, so it currently runs the browser suite and exits without a commit.
+
+Run it from `main` in the Actions UI, entering the target branch to update. The reviewed workflow definition remains on `main`; it checks out the named branch only after validating that it uses one of the repository's branch prefixes. The generator runs that branch's build and browser suite with a read-only token. A separate job alone receives `contents: write`, verifies and applies its PNG-only artifact without executing branch code, then pushes an approved update back to that same branch. The updater rejects `main`, stages only Playwright PNG baselines under `e2e/`, and never creates or approves a pull request.
+
 The browser binary is installed explicitly (`yarn test:e2e:install`) rather than by a postinstall hook, because install scripts are disabled repository-wide — see [D-260811a](decisions.md#d-260811a--keep-the-package-managers-supply-chain-defaults).
 
 In CI the ~270 MB browser download is cached under a key built from the **installed Playwright version**, resolved at run time from `@playwright/test/package.json`. That is what the download actually tracks; a lockfile-wide key would throw the cache away on every weekly Dependabot bump. The install step itself always runs regardless of a cache hit, because `--with-deps` also installs system font and library packages that live outside the cached browser directory.
