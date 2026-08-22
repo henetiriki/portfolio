@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-22 — Complete the first targeted visual-regression coverage
+
+- **The visual suite now guards five stable, first-party layouts:** desktop navigation, the open mobile drawer, desktop portfolio cards, invalid desktop contact validation, and the initial mobile experience timeline. The contact and timeline assertions close the roadmap item; dynamic imagery, Maps and third-party embeds remain deliberately outside screenshot baselines.
+- **The rotating background is pinned only inside the visual specs.** Each assertion follows the production code path, but intercepts the image-ID request before navigation so Linux-generated baselines compare the same photo on every run.
+- **The manual updater's bot commit creates a new pull-request head.** Where repository policy holds pull-request workflow runs for approval, that new CI run must be approved before it can verify the baseline; this operational step is now stated in the development workflow.
+
 ## 2026-08-22 — Add a guarded visual-baseline updater
 
 - **A manual Actions workflow now prepares reviewed Playwright screenshot baselines on GitHub's Linux runners**, ready for the targeted visual-regression coverage still open on the roadmap. It has no automatic trigger and exits without a commit whenever no baseline changes.
