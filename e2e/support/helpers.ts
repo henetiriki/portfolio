@@ -1,11 +1,19 @@
 import type { Page, Route } from '@playwright/test';
 
 export const CONTENT_ROUTES = [
-  { heading: 'Louw Swart', path: '/', title: 'Portfolio' },
-  { heading: 'Work History', path: '/experience', title: 'Experience' },
-  { heading: 'Website portfolio', path: '/portfolio', title: 'Portfolio' },
-  { heading: 'Travel history', path: '/travel', title: 'Travel' },
-  { heading: 'Contact', path: '/contact', title: 'Contact' },
+  { heading: 'Louw Swart', path: '/', title: 'Front-End Engineer' },
+  {
+    heading: 'Work History',
+    path: '/experience',
+    title: 'Front-End Engineering Experience',
+  },
+  {
+    heading: 'Website portfolio',
+    path: '/portfolio',
+    title: 'Freelance Web Design Portfolio',
+  },
+  { heading: 'Travel history', path: '/travel', title: 'Places I’ve Been' },
+  { heading: 'Contact', path: '/contact', title: 'Get In Touch' },
 ] as const;
 
 /**

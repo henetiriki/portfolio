@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-22 — Give every content page distinct SEO copy and descriptive image alt text
+
+- **Every content page's `title` and `description` now live in the page file itself**, rather than split between pages and `@fixtures/*` — `contact.tsx`, `portfolio.tsx` and `travel.tsx` moved off their fixture-imported `description`, matching the pattern `index.tsx` and `experience.tsx` already used.
+- **Every page `title` is a distinct, keyword-bearing phrase** (`Front-End Engineer`, `Front-End Engineering Experience`, `Freelance Web Design Portfolio`, `Places I’ve Been`, `Get In Touch`), fixing `/` and `/portfolio` previously sharing the identical title. Each page's `description` was also rewritten to be more specific. The on-page `<h1>` text is unchanged. See [D-260822e](decisions.md#d-260822e--colocate-seo-copy-with-its-page-and-give-images-their-own-alt-text).
+- **Portfolio card images and the navigation logo now carry `alt` text describing the image**, rather than repeating the adjacent title/link text. `PortfolioItem.imageUrl: string` became `img: { alt: string; src: string }` in `@fixtures/types`, making per-item alt text a required field instead of a value the page derived from `title`.
+
 ## 2026-08-22 — Add a non-blocking production Google Maps smoke check
 
 - **A separate daily workflow now checks the deployed `/travel` page with the real Google Maps JavaScript API.** It waits for Google's script and rendered map surface after scrolling the lazy map into view, so it exercises deployed browser configuration rather than the mocked SDK in the regular suite.

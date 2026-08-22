@@ -23,7 +23,7 @@ const Home: NextPage = (): JSX.Element => {
 
   return (
     <>
-      <Seo description={description} path='/' title='Portfolio' />
+      <Seo description={description} path='/' title='Front-End Engineer' />
       <Container className={classes.hero} h='75vh' pt='30vh' ta='center'>
         <Container ta='center'>
           <Title order={1} tt='uppercase'>
@@ -113,7 +113,7 @@ const Home: NextPage = (): JSX.Element => {
               maw={400}
               mt={{ base: 'xl', md: 0 }}>
               <Image
-                alt='Louw Swart'
+                alt='Louw Swart, front-end engineer'
                 height={350}
                 placeholder={blurDataURL(350, 350)}
                 src='/images/about/louw.swart.jpg'

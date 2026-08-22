@@ -1,8 +1,5 @@
 import type { PortfolioItem } from '@fixtures/types';
 
-export const description =
-  'Portfolio of freelance work built on the Squarespace platform';
-
 export const portfolioItems: PortfolioItem[] = [
   {
     content: (
@@ -15,9 +12,12 @@ export const portfolioItems: PortfolioItem[] = [
         consultations, deposit payments, and automated client workflows.
       </>
     ),
-    imageUrl: '/images/portfolio/www.beautywithin.au.jpg',
+    href: 'https://www.beautywithin.au',
+    img: {
+      alt: 'Beauty WithIn website homepage — Squarespace site built for a Brisbane aesthetics clinic',
+      src: '/images/portfolio/www.beautywithin.au.jpg',
+    },
     title: 'Beauty WithIn',
-    url: 'https://www.beautywithin.au',
   },
   {
     content: (
@@ -31,9 +31,12 @@ export const portfolioItems: PortfolioItem[] = [
         “simplistic and smart design”.
       </>
     ),
-    imageUrl: '/images/portfolio/www.csarc.co.za.jpg',
+    href: 'https://www.csarc.co.za',
+    img: {
+      alt: 'CSA Architects website homepage — Squarespace portfolio site for a South African architecture firm',
+      src: '/images/portfolio/www.csarc.co.za.jpg',
+    },
     title: 'CSA Architects',
-    url: 'https://www.csarc.co.za',
   },
   {
     action: {
@@ -50,7 +53,10 @@ export const portfolioItems: PortfolioItem[] = [
         build your new <b>Squarespace</b> home.
       </>
     ),
-    imageUrl: '/images/portfolio/coming_soon.jpg',
+    img: {
+      alt: 'Placeholder graphic for an upcoming portfolio project — reserved website slot',
+      src: '/images/portfolio/coming_soon.jpg',
+    },
     title: 'Reserved for You',
   },
 ];

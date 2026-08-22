@@ -45,7 +45,9 @@ describe('Navigation', () => {
       </PortfolioStateProvider>
     );
 
-    expect(screen.getByRole('link', { name: 'Ouwl' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Ouwl.house — home' })
+    ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Travel' })).toBeInTheDocument();
   });
 

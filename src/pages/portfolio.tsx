@@ -4,7 +4,7 @@ import Image from 'next/image';
 import NextLink from 'next/link';
 import { Content, Header } from '@components/content';
 import { Seo } from '@components/shared';
-import { description, portfolioItems } from '@fixtures/portfolio';
+import { portfolioItems } from '@fixtures/portfolio';
 import { blurDataURL } from '@utils/common';
 import classes from './portfolio.module.css';
 
@@ -12,12 +12,19 @@ import type { PortfolioItem } from '@fixtures/types';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
+export const description =
+  'Portfolio of freelance Squarespace web design projects by Louw Swart, including Beauty WithIn (Brisbane aesthetics clinic) and CSA Architects (South Africa).';
+
 const portfolioImageSizes =
   '(min-width: 67.5em) 18.75rem, (min-width: 48em) calc(47.62vw - 4.75rem), (min-width: 36em) calc(100vw - 10rem), calc(100vw - 5rem)';
 
 const Portfolio: NextPage = (): JSX.Element => (
   <>
-    <Seo description={description} path='/portfolio' title='Portfolio' />
+    <Seo
+      description={description}
+      path='/portfolio'
+      title='Freelance Web Design Portfolio'
+    />
     <>
       <Header>
         Portfolio<span>freelance work I’ve done</span>
@@ -27,50 +34,56 @@ const Portfolio: NextPage = (): JSX.Element => (
         <Space h='xl' />
         <Box className={classes.grid}>
           {portfolioItems.map(
-            ({ action, content, imageUrl, title, url }: PortfolioItem) => (
+            ({
+              action,
+              content,
+              href,
+              img: { alt, src },
+              title,
+            }: PortfolioItem) => (
               <Box className={classes.card} key={title}>
                 <Box className={classes.imageWrapper}>
-                  {url && (
+                  {href && (
                     <Anchor
                       className={classes.imageLink}
-                      href={url}
+                      href={href}
                       rel='noopener noreferrer'
                       target='_blank'>
                       <Image
-                        alt={title}
+                        alt={alt}
                         fill
                         placeholder={blurDataURL(350, 192)}
                         sizes={portfolioImageSizes}
-                        src={imageUrl}
+                        src={src}
                         style={{ objectFit: 'cover' }}
                       />
                     </Anchor>
                   )}
-                  {!url && (
+                  {!href && (
                     <Image
-                      alt={title}
+                      alt={alt}
                       fill
                       placeholder={blurDataURL(350, 192)}
                       sizes={portfolioImageSizes}
-                      src={imageUrl}
+                      src={src}
                       style={{ objectFit: 'cover' }}
                     />
                   )}
                 </Box>
                 <Box className={classes.cardBody}>
                   <Title order={3}>
-                    {url && (
+                    {href && (
                       <Anchor
                         c='shamrock'
                         className={classes.titleLink}
-                        href={url}
+                        href={href}
                         inherit
                         rel='noopener noreferrer'
                         target='_blank'>
                         {title}
                       </Anchor>
                     )}
-                    {!url && title}
+                    {!href && title}
                   </Title>
                   <Text className={classes.cardText} component='p'>
                     {content}

@@ -16,7 +16,9 @@ test.describe('desktop portfolio grid', () => {
         .filter({ hasText: 'Beauty WithIn' });
 
       await expect(
-        grid.getByRole('img', { name: 'Reserved for You' })
+        grid.getByRole('img', {
+          name: 'Placeholder graphic for an upcoming portfolio project — reserved website slot',
+        })
       ).toBeVisible();
 
       await expect(grid).toHaveScreenshot('portfolio-grid.png', {

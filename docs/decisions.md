@@ -12,6 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260822e — Colocate SEO copy with its page, and give images their own alt text
+
+- **Status:** Accepted
+- **Decided:** 2026-08-22
+
+**`title` and `description` for every content route now live as a `const` in the page file that renders `Seo`, not split between pages and `@fixtures/*`.** `index.tsx` and `experience.tsx` already defined their description locally; `contact.tsx`, `portfolio.tsx` and `travel.tsx` instead imported it from `@fixtures/contact`/`@fixtures/portfolio`/`@fixtures/travel`. Nothing about a fixture import was wrong, but it split one page's search-facing copy across two files for no benefit — the description is presentation, read by exactly one consumer, not shared data. Making all five pages follow the pattern the other two already used removes the inconsistency rather than picking arbitrarily between it.
+
+**Every page `title` also became a distinct, keyword-bearing phrase instead of the one- or two-word route/nav label** — `Front-End Engineer`, `Front-End Engineering Experience`, `Freelance Web Design Portfolio`, `Places I’ve Been`, `Get In Touch`, replacing `Portfolio`, `Experience`, `Portfolio` (again — `/` and `/portfolio` shared a title), `Travel` and `Contact`. `getSeoMetadata()`'s `"{Page Name} // Louw Swart"` template gave every route a technically-unique `<title>` already, but a search result or browser tab benefits from the page name itself saying what the page is about, and `/` and `/portfolio` having the identical title was the concrete symptom. The on-page `<h1>` (`Header`'s children) is deliberately untouched — it still matches the nav label — so this is a search/social-facing change only, not a rename of the page.
+
+**Portfolio card and navigation-logo images now get `alt` text that describes the image, rather than reusing the adjacent title or link text.** `PortfolioItem.imageUrl: string` became `img: { alt: string; src: string }`, so an alt string is a required, per-item field rather than something the rendering page had to remember to derive (previously `alt={title}` in `portfolio.tsx`). Image search and screen readers both get more value from a caption of what the screenshot actually shows — the client, the site and its purpose — than from a repeat of text already next to the image. `Logo`'s alt moved from `'Ouwl'` to `'Ouwl.house — home'` for the same reason: the tooltip and link already say "Ouwl" contextually, and the alt text is the one description of what the linked image actually does.
+
+**Reusing the title as alt text was not treated as a defect needing a broader audit.** No other image in the codebase (the hero photo, timeline icons, decorative waves) shared this pattern, and `FixedBackground`/decorative images intentionally use empty or context-appropriate alt text already covered by [Misc head-adjacent behaviour](pwa-seo.md#misc-head-adjacent-behaviour). Only the Logo and portfolio cards were changed because only they had alt text mechanically derived from a visible label.
+
 ## D-260822d — Run visual-baseline updates on the target branch, not a default-branch checkout
 
 - **Status:** Accepted
