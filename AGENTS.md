@@ -34,7 +34,7 @@ The permission allowlist in `.claude/settings.json` matches the _entire_ command
 
 This is [Conventional Branch](https://conventionalbranch.org/) minus the prefixes this repository has no use for: `hotfix/` and `release/` both assume a release process this repository does not have — every merge deploys straight to production, so an urgent fix is just a `fix/`, and there is nothing to prepare a release on.
 
-**`docs/` is the one prefix that makes a claim the build can check.** Its scope is exactly CI's [cheap path](docs/release-checklist.md#pull-request), and those paths are excluded from Vercel's `ignoreCommand` too, so a `docs/` branch should always take the cheap CI run and never deploy. One that triggers `Build & browser suite` is misnamed, or has grown beyond what you meant.
+**`docs/` is the one prefix that makes a claim the build can check.** Its scope is exactly CI's [cheap path](docs/release-checklist.md#pull-request), so a `docs/` branch should always take that run. Vercel excludes the same paths after a preview branch has built, but its first preview deliberately builds so the pull request has a manual-QA URL. One that triggers `Build & browser suite` is misnamed, or has grown beyond what you meant.
 
 **The other three are categories, not predictions — `chore/` especially.** Vercel's exclusion list is a list of _paths_, not a notion of what is boring: a dependency bump, an `eslint.config.mjs` edit or a workflow change all deploy like anything else, and a `chore/` touching `e2e/` or `playwright.config.ts` does not. Do not read the prefix as a forecast of what CI and Vercel will do; read the [exclusion lists](docs/release-checklist.md#merge--deploy), which differ from each other on purpose.
 
@@ -129,7 +129,7 @@ Isolation for work that runs alongside something already in progress. They live 
 
 Merging to `main` deploys to production via Vercel. There are no tags or version numbers.
 
-Changes a visitor cannot see skip the build, via `ignoreCommand` in `vercel.json` — the excluded paths and the reasoning are on the [release checklist](docs/release-checklist.md#merge--deploy). Two consequences matter while working:
+Changes a visitor cannot see skip production builds and subsequent preview builds, via `ignoreCommand` in `vercel.json`; every preview branch's first build is deliberate so its pull request has a QA URL. The excluded paths and reasoning are on the [release checklist](docs/release-checklist.md#merge--deploy). Two consequences matter while working:
 
 - **A skip is a `success` status reading _"Canceled by Ignored Build Step"_, not a failure.** It is easy to misread that green tick as a completed build.
 - **CI has its own, shorter list, and the two are not interchangeable.** A change touching only `docs/`, `*.md`, `.claude/` or `.worktreeinclude` gets a [cheap CI path](docs/release-checklist.md#pull-request) — install, `prettier:check`, the Jest run and the coverage upload; the whole `Build & browser suite` job is skipped. `e2e/` and `playwright.config.ts` are excluded from the deploy and deliberately not from CI, because the browser suite is exactly what must run when they change.
