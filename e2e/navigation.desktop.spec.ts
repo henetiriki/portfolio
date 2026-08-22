@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
-import { CONTENT_ROUTES, blockGoogleMaps } from './support/helpers';
+import {
+  CONTENT_ROUTES,
+  blockGoogleMaps,
+  pinVisualBackground,
+} from './support/helpers';
 
 /**
  * Desktop-only counterpart to `navigation.mobile.spec.ts`.
@@ -17,6 +21,7 @@ import { CONTENT_ROUTES, blockGoogleMaps } from './support/helpers';
 test.describe('desktop navigation', () => {
   test.beforeEach(async ({ page }) => {
     await blockGoogleMaps(page);
+    await pinVisualBackground(page);
     await page.goto('/');
   });
 
@@ -47,6 +52,11 @@ test.describe('desktop navigation', () => {
   });
 
   test('matches the approved header layout', async ({ page }) => {
+    await expect(page.locator('img[alt=""]')).toHaveAttribute(
+      'src',
+      /BZ4QGdOn6SP/
+    );
+
     await expect(page.locator('header')).toHaveScreenshot(
       'desktop-header.png',
       {
