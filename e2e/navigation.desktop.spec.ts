@@ -46,6 +46,15 @@ test.describe('desktop navigation', () => {
     await expect(page.getByRole('button', { name: 'Open menu' })).toBeHidden();
   });
 
+  test('matches the approved header layout', async ({ page }) => {
+    await expect(page.locator('header')).toHaveScreenshot(
+      'desktop-header.png',
+      {
+        animations: 'disabled',
+      }
+    );
+  });
+
   test('navigates client-side when an inline link is chosen', async ({
     page,
   }) => {
