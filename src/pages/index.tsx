@@ -42,11 +42,11 @@ const Home: NextPage = (): JSX.Element => {
                 sequence={[
                   'front-end engineer',
                   1000,
-                  'photographer',
+                  'amateur photographer',
                   1000,
                   'plane spotter',
                   1000,
-                  'traveller',
+                  'keen traveller',
                   1000,
                 ]}
                 speed={20}
