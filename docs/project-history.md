@@ -2,6 +2,10 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-22 — Strengthen the home hero's secondary line
+
+- **The career-transition line beneath the animated role now uses the `lg` type token (18px), up from the 16px body default.** It remains one step below the role's 20px `h4` typography, making the two lines read as a deliberate hierarchy while keeping all hero text on the shared scale.
+
 ## 2026-08-22 — Complete the first targeted visual-regression coverage
 
 - **The visual suite now guards five stable, first-party layouts:** desktop navigation, the open mobile drawer, desktop portfolio cards, invalid desktop contact validation, and the initial mobile experience timeline. The contact and timeline assertions close the roadmap item; dynamic imagery, Maps and third-party embeds remain deliberately outside screenshot baselines.
