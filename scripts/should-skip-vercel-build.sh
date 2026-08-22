@@ -10,6 +10,7 @@ readonly DEPLOYMENT_EXCLUSIONS=(
   ':(exclude)playwright.config.ts'
 )
 
+# Vercel treats every non-zero result as a build, but keep that contract explicit.
 compare_deployment_changes() {
   git diff --quiet "$@"
   local status=$?
