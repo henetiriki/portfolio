@@ -12,6 +12,15 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260822f — Hash `public/**` into the CI Next.js build cache key
+
+- **Status:** Accepted
+- **Decided:** 2026-08-22
+
+**The `Cache Next.js build cache` step in `ci.yml` now hashes `public/**` alongside the source globs it already covered.** A pull request that changed only `public/images/portfolio/*.jpg` produced a byte-identical cache key to the prior run, so `actions/cache` restored `.next/cache` — including Next's on-disk image-optimisation cache — untouched. That cache is keyed by request URL and quality, not by the source file's content, and `next.config.js` sets `images.minimumCacheTTL` to a year, so the restored entry was still "fresh" by Next's own reckoning. The browser regression suite's `portfolio-grid.png` comparison rendered against that stale optimised image and passed against the old baseline, silently proving nothing about the new screenshots. A manually run `yarn test:e2e --update-snapshots` (no cache step) built clean and correctly found the diff.
+
+**This is a CI-only defect, not a production one.** Vercel builds every deployment from scratch and does not carry a prior deployment's `.next/cache` forward, so `minimumCacheTTL` cannot serve stale bytes across deploys the way it did across CI runs restoring a shared cache. The fix is scoped to `ci.yml` alone.
+
 ## D-260822e — Colocate SEO copy with its page, and give images their own alt text
 
 - **Status:** Accepted
