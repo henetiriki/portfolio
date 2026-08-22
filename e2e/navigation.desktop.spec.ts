@@ -52,10 +52,7 @@ test.describe('desktop navigation', () => {
   });
 
   test('matches the approved header layout', async ({ page }) => {
-    await expect(page.locator('img[alt=""]')).toHaveAttribute(
-      'src',
-      /BZ4QGdOn6SP/
-    );
+    await expect(page.locator('img[src*="BZ4QGdOn6SP"]')).toBeVisible();
 
     await expect(page.locator('header')).toHaveScreenshot(
       'desktop-header.png',
