@@ -12,7 +12,7 @@ Next.js **Pages Router**. Every file in `src/pages` (excluding `api/`, `_app.tsx
 | `/travel`     | `pages/travel.tsx`     | Interactive Google Map of places visited/lived plus a legend; see [Travel Feature](travel-feature.md)                                |
 | `/contact`    | `pages/contact.tsx`    | Contact form that emails the site owner; see [Contact Feature](contact-feature.md)                                                   |
 
-Every content page supplies its title, route path and description to the shared `Seo` component. That single source derives the `"Page Name // Louw Swart"` title, canonical URL and matching description, Open Graph and Twitter metadata; the default social image is shared until a route provides its own. `_app.tsx` no longer contributes homepage SEO defaults, and keyword metadata is intentionally absent.
+Every content page supplies its title, route path and description to the shared `Seo` component. See [PWA & SEO](pwa-seo.md#seo--meta-tags) for the derived metadata contract and defaults.
 
 Portfolio cards use `next/image` with `fill`. Linked cards give the immediate `Anchor.imageLink` parent a full-height, positioned block containing box; the surrounding grid wrapper alone is not sufficient because `fill` positions against the image's immediate parent. Linked and unlinked images therefore keep the same card dimensions while avoiding Next's invalid-parent warning. Their `sizes` value follows the same single-, two- and three-column breakpoints as the CSS grid and accounts for the content padding/max-width, so Next does not select viewport-width files for card-width images. Cards are not preloaded: the fixed full-viewport background remains the intentional LCP preload.
 
