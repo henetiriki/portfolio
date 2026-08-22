@@ -12,7 +12,7 @@ import type { PortfolioItem } from '@fixtures/types';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
-export const description =
+const description =
   'Portfolio of freelance Squarespace web design projects by Louw Swart, including Beauty WithIn (Brisbane aesthetics clinic) and CSA Architects (South Africa).';
 
 const portfolioImageSizes =

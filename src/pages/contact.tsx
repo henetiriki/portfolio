@@ -4,7 +4,7 @@ import { Seo } from '@components/shared';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
-export const description =
+const description =
   'Contact Louw Swart directly through the form on this page, or connect via GitHub, LinkedIn or Instagram to see code, work history and more.';
 
 const Contact: NextPage = (): JSX.Element => (

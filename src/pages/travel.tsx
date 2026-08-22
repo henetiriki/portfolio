@@ -14,7 +14,7 @@ const DynamicMapWrapper = dynamic(
   }
 );
 
-export const description =
+const description =
   'Places I’ve been and where I’m headed next — an interactive travel map and log from Louw Swart, covering flights, train rides and sailings.';
 
 const Travel: NextPage = (): JSX.Element => (
