@@ -14,7 +14,7 @@ Last reviewed: 2026-08-16.
 
 ## Performance, SEO & platform polish
 
-- [ ] **Extend targeted visual-regression coverage.** The desktop header and open mobile drawer are covered first. Next, add the portfolio grid, contact validation, and the mobile experience timeline; do not snapshot dynamic imagery, Maps, or third-party embeds. The manual baseline updater is ready for branches that include its `main` version: review a layout change on the preview first, then run it on the feature branch to commit only approved Linux-rendered PNG baselines. See [Development Workflow](development.md#visual-baseline-updates).
+- [ ] **Extend targeted visual-regression coverage.** The desktop header, open mobile drawer, and desktop portfolio grid are covered first. Next, add contact validation and the mobile experience timeline; do not snapshot dynamic imagery, Maps, or third-party embeds. The manual baseline updater is ready for branches that include its `main` version: review a layout change on the preview first, then run it on the feature branch to commit only approved Linux-rendered PNG baselines. See [Development Workflow](development.md#visual-baseline-updates).
 
 - [ ] **Confirm the white band behind the Android gesture bar clears once Chrome stable ships the upstream fix.** Nothing to build — the fix merged into Chromium `main` on 2026-08-06 and colours the navigation bar from `theme_color`, already correct here. See [D-260815i](decisions.md#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar).
   - **Earliest realistic check is late September 2026**, since `main` reaches stable in roughly four to ten weeks. Install the app on Android and confirm the region behind the gesture bar is `#080a20`.

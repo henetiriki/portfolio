@@ -112,7 +112,7 @@ The browser suite covers the offline experience in an isolated service-worker pr
 
 ### Visual-baseline updates
 
-`Update visual baselines` is a manual-only GitHub Actions workflow for the targeted visual-regression suite. Its first stable assertions cover the desktop header and the open mobile drawer; visual specs intercept the background-image API before navigation and pin one configured image, rather than letting production rotation make a baseline nondeterministic. Extend the suite only to stable, first-party UI rather than dynamic imagery or third-party embeds.
+`Update visual baselines` is a manual-only GitHub Actions workflow for the targeted visual-regression suite. Its stable assertions cover the desktop header, the open mobile drawer, and the desktop portfolio grid; visual specs intercept the background-image API before navigation and pin one configured image, rather than letting production rotation make a baseline nondeterministic. Extend the suite only to stable, first-party UI rather than dynamic imagery or third-party embeds.
 
 Start it from the target branch in the Actions UI; the workflow is available there once the branch includes the version merged to `main`. It rejects `main` and validates the repository branch prefix before running. The generator runs the selected branch's build and browser suite with a read-only token and no dependency cache. It stages only the `e2e/` tree, then rejects any staged path that is not a Playwright baseline PNG. A separate job alone receives `contents: write`, verifies and applies its PNG-only artifact without executing branch code, then pushes an approved update back to that same branch. The updater never creates or approves a pull request.
 
