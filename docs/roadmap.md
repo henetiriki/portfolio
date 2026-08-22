@@ -4,13 +4,6 @@ Open work only. Completed milestones are recorded in [Project History](project-h
 
 Last reviewed: 2026-08-16.
 
-## Testing & automation
-
-- [ ] **Consider tagging releases, since "what was live when" is currently only recoverable as a commit SHA.** A release here is a squash-merge to `main` that Vercel deploys automatically, with no tag, no version bump and no artefact — see the [release checklist](release-checklist.md). `package.json`'s `version` has never moved and is already documented as inert, so nothing is wrong today; the question is whether each deploy is worth naming.
-  - **What it would buy**: rollback and bisection against what production actually ran rather than against `main`'s history, and a stable identifier for [Project History](project-history.md) entries to cite instead of a date.
-  - **What it would cost**: something has to mint the tag. A workflow on push to `main` is the obvious trigger, but it would fire on documentation-only merges too unless gated the way the [cheap path](release-checklist.md#pull-request) is, and the tag would then be created by CI rather than by whoever merged.
-  - **Vercel already keeps a deployment history** with its own immutable URLs, so part of this exists already. The gap is that those identifiers live outside the repository, so nothing in `git` points at them.
-
 ## Framework & dependency upgrades
 
 - [ ] **Adopt the native TypeScript 7 toolchain when ecosystem support is ready — blocked.** The project now uses TypeScript 6, the supported JavaScript-based bridge release, with its configuration deprecations already removed. The 2026-08-09 TypeScript `7.0.2` trial still failed before compilation because Yarn's built-in compatibility patch expected `lib/_tsc.js`, which the native Go distribution does not ship; `typescript-eslint@8.66` also requires TypeScript `<6.1.0`. Recheck only when Yarn supports the native distribution and TypeScript-ESLint supports its compiler API strategy; both conditions are required.

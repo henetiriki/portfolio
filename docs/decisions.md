@@ -12,6 +12,17 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260822b — Use merged commits and Vercel deployments as the release record, rather than tags
+
+- **Status:** Accepted
+- **Decided:** 2026-08-22
+
+**A squash merge is already the repository's immutable release identifier.** It gives every change one `main` commit with its pull request number and review history. The commit's Vercel status distinguishes a completed deployment from an ignored build, and its target links directly to the deployment Vercel created. To answer "what was live?", use the most recent completed production deployment rather than assuming `main`'s tip deployed — a documentation-only merge deliberately does not.
+
+**Tags and semantic application versions were rejected.** This site publishes no release artifact and has no external compatibility contract, and `package.json`'s version is inert. A tag would only add a second name to a commit; it would not say whether Vercel actually built or promoted it. Creating tags automatically after a `main` push would either label failed and ignored builds as releases or require deployment-completion automation with credentials, gating and another stateful failure path.
+
+**The initial proposal looked useful because a date alone is not a precise history citation.** The pull request number already supplies that stable reference and links to the review, checks and squash commit. Project History entries may cite the pull request when precision matters; Vercel's deployment record remains the authoritative runtime and rollback reference. Reconsider release numbering only if the project starts publishing artifacts, acquires versioned consumers or needs visitors to report a running build identifier.
+
 ## D-260822a — Compare preview changes with the last built preview, not the pull request base
 
 - **Status:** Accepted
