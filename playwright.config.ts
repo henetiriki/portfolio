@@ -15,6 +15,7 @@ const SERVICE_WORKER_SPEC = /service-worker\.spec\.ts$/;
 // Routed by filename, like the specs above — this one runs only in the
 // project that emulates `prefers-reduced-motion: reduce`, and nowhere else.
 const REDUCED_MOTION_SPEC = /reduced-motion\.spec\.ts$/;
+const MAPS_SMOKE_SPEC = /maps-smoke\.spec\.ts$/;
 const VISUAL_TEST_TAG = /@visual/;
 
 export default defineConfig({
@@ -35,6 +36,7 @@ export default defineConfig({
       name: 'desktop-chromium',
       testIgnore: [
         /\.mobile\.spec\.ts$/,
+        MAPS_SMOKE_SPEC,
         SERVICE_WORKER_SPEC,
         REDUCED_MOTION_SPEC,
       ],
@@ -46,6 +48,7 @@ export default defineConfig({
       name: 'mobile-chromium',
       testIgnore: [
         /\.desktop\.spec\.ts$/,
+        MAPS_SMOKE_SPEC,
         SERVICE_WORKER_SPEC,
         REDUCED_MOTION_SPEC,
       ],

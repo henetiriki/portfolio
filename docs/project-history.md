@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-22 — Add a non-blocking production Google Maps smoke check
+
+- **A separate daily workflow now checks the deployed `/travel` page with the real Google Maps JavaScript API.** It waits for Google's script and rendered map surface after scrolling the lazy map into view, so it exercises deployed browser configuration rather than the mocked SDK in the regular suite.
+- **The check is diagnostic, not a release gate.** It runs only on a schedule or manual dispatch, retries transient failures twice, and uploads Playwright diagnostics only after a final failure; pull requests and deployments remain independent of provider availability.
+- **No Maps credential is stored in GitHub Actions.** The workflow visits the already deployed production page, where the browser-visible configuration is already in use, instead of building an alternative local environment with a less-restricted key.
+
 ## 2026-08-22 — Strengthen the home hero's secondary line
 
 - **The career-transition line now uses the `lg` type token (18px), up from the 16px body default.** It sits between the name and the 20px animated `h4` role, with every value on the shared scale.
