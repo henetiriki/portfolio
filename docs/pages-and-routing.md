@@ -4,13 +4,13 @@ Next.js **Pages Router**. Every file in `src/pages` (excluding `api/`, `_app.tsx
 
 ## Content pages
 
-| Route         | File                   | Purpose                                                                                                                              |
-| ------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `/`           | `pages/index.tsx`      | Home/landing page: name, animated role tagline (`react-type-animation`), bio, open-source contributions list, hobbies, profile photo |
-| `/experience` | `pages/experience.tsx` | Work history (`jobs`) and education (`schools`) rendered as two `Timeline` lists, sourced from `@fixtures/experience`                |
-| `/portfolio`  | `pages/portfolio.tsx`  | Freelance work showcase (Squarespace client sites) as image cards, sourced from `@fixtures/portfolio`                                |
-| `/travel`     | `pages/travel.tsx`     | Interactive Google Map of places visited/lived plus a legend; see [Travel Feature](travel-feature.md)                                |
-| `/contact`    | `pages/contact.tsx`    | Contact form that emails the site owner; see [Contact Feature](contact-feature.md)                                                   |
+| Route         | File                   | Purpose                                                                                                                                                           |
+| ------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`           | `pages/index.tsx`      | Home/landing page: name, animated role tagline (`react-type-animation`), 18px career-transition line, bio, open-source contributions list, hobbies, profile photo |
+| `/experience` | `pages/experience.tsx` | Work history (`jobs`) and education (`schools`) rendered as two `Timeline` lists, sourced from `@fixtures/experience`                                             |
+| `/portfolio`  | `pages/portfolio.tsx`  | Freelance work showcase (Squarespace client sites) as image cards, sourced from `@fixtures/portfolio`                                                             |
+| `/travel`     | `pages/travel.tsx`     | Interactive Google Map of places visited/lived plus a legend; see [Travel Feature](travel-feature.md)                                                             |
+| `/contact`    | `pages/contact.tsx`    | Contact form that emails the site owner; see [Contact Feature](contact-feature.md)                                                                                |
 
 Every content page supplies its title, route path and description to the shared `Seo` component. See [PWA & SEO](pwa-seo.md#seo--meta-tags) for the derived metadata contract and defaults.
 
