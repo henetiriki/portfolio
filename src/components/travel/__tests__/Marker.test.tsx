@@ -19,7 +19,7 @@ jest.mock('@mantine/hooks', () => ({
 installGoogleMapsMock();
 
 const icon = {
-  color: '#ff0000',
+  colour: '#ff0000',
   scale: 1,
 };
 
@@ -80,7 +80,7 @@ describe('Marker', () => {
       position: { lat: 1, lng: 2 },
       title: 'A title',
     });
-    expect(path).toHaveAttribute('fill', icon.color);
+    expect(path).toHaveAttribute('fill', icon.colour);
     expect(path).toHaveAttribute('fill-opacity', '0.95');
     expect(visual).toHaveStyle({ transform: 'scale(1)' });
   });

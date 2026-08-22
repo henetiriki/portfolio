@@ -7,10 +7,10 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - [Architecture](architecture.md) — tech stack, directory layout, request lifecycle, path aliases
 - [Pages & Routing](pages-and-routing.md) — every route, its purpose, and the redirects in `next.config.js`
 - [State Management](state-management.md) — the single global `PortfolioState` context/reducer
-- [Components](components.md) — component catalog grouped by feature area
+- [Components](components.md) — component catalogue grouped by feature area
 - [Travel / Google Maps Feature](travel-feature.md) — how the interactive map, markers and polylines work
 - [Contact Feature](contact-feature.md) — visitor experience and high-level server handling for messages
-- [Styling & Theming](styling-theming.md) — Mantine theme, custom color palette, CSS Modules setup
+- [Styling & Theming](styling-theming.md) — Mantine theme, custom colour palette, CSS Modules setup
 - [PWA & SEO](pwa-seo.md) — manifest, service worker, meta tags, sitemap/robots
 - [Security](security.md) — public security posture and private reporting route
 - [Runtime Configuration](environment-variables.md) — safe handling and local setup guidance

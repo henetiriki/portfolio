@@ -38,12 +38,12 @@ export const pinVisualBackground = (page: Page) =>
   );
 
 /**
- * Record every `behavior` passed to `Element.prototype.scrollIntoView`.
+ * Record every behaviour passed to `Element.prototype.scrollIntoView`.
  *
  * `useScrollTo` (see src/hooks/useScrollTo.ts) is the only caller of
  * `scrollIntoView` in the app, from two separate call sites — the header's
  * scroll-to-top button and the footer's nav links. Patching the prototype
- * catches both, and is the only way to observe the `behavior` argument at
+ * catches both, and is the only way to observe the behaviour argument at
  * all: the resulting scroll position cannot tell `'smooth'` from `'auto'`
  * apart, and a footer link's own navigation can move `scrollY` to 0 by
  * itself, independent of whether `scrollToTop` ran.
@@ -52,10 +52,10 @@ export const pinVisualBackground = (page: Page) =>
  * `addInitScript` only take effect on navigations that start after them.
  */
 export const captureScrollIntoView = async (page: Page) => {
-  const behaviors: string[] = [];
+  const behaviours: string[] = [];
 
-  await page.exposeFunction('__onScrollIntoView', (behavior: string) => {
-    behaviors.push(behavior);
+  await page.exposeFunction('__onScrollIntoView', (behaviour: string) => {
+    behaviours.push(behaviour);
   });
   await page.addInitScript(() => {
     const original = Element.prototype.scrollIntoView;
@@ -64,19 +64,19 @@ export const captureScrollIntoView = async (page: Page) => {
       this: Element,
       options?: boolean | ScrollIntoViewOptions
     ) {
-      const behavior =
+      const behaviour =
         options && typeof options === 'object'
           ? (options.behavior ?? 'auto')
           : 'auto';
 
       // @ts-expect-error -- injected by page.exposeFunction, not a real DOM global
-      window.__onScrollIntoView(behavior);
+      window.__onScrollIntoView(behaviour);
 
       return original.call(this, options as ScrollIntoViewOptions);
     };
   });
 
-  return behaviors;
+  return behaviours;
 };
 
 /**

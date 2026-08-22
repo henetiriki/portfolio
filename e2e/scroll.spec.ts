@@ -77,7 +77,7 @@ test.describe('footer scroll-to-top', () => {
   test("clicking a footer nav link triggers the page's own scroll-to-top", async ({
     page,
   }) => {
-    const behaviors = await captureScrollIntoView(page);
+    const behaviours = await captureScrollIntoView(page);
 
     await blockGoogleMaps(page);
 
@@ -89,6 +89,6 @@ test.describe('footer scroll-to-top', () => {
       .getByRole('link', { exact: true, name: 'Experience' })
       .click();
 
-    await expect.poll(() => behaviors).toEqual(['smooth']);
+    await expect.poll(() => behaviours).toEqual(['smooth']);
   });
 });

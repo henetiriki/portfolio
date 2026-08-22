@@ -41,7 +41,7 @@ src/
   server/
     contact/       Server-only logic for the contact form (validation, templating, sending)
   state/           React Context + reducer (single global app state)
-  styles/          Mantine theme + custom color palette
+  styles/          Mantine theme + custom colour palette
   utils/           Small pure helpers, split into `common/` (client-safe) and page-specific
     common/         fetcher, delay, blurDataURL, randomItem, getNodeText, upperFirst
     test/           Jest-only helpers: the custom RTL render, the Maps SDK mock, API context

@@ -16,7 +16,7 @@ export const MarkerLegend: FC<PropsWithChildren & { icon: MarkerIcon }> = ({
         focusable='false'
         style={{ transform: `scale(${icon.scale})` }}
         viewBox='0 0 24 24'>
-        <path d={markerIconPath} fill={icon.color} fillOpacity={0.95} />
+        <path d={markerIconPath} fill={icon.colour} fillOpacity={0.95} />
       </svg>
     </span>{' '}
     {children}
