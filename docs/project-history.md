@@ -4,7 +4,7 @@ This is the concise record of completed project work. It is not a substitute for
 
 ## 2026-08-22 — Strengthen the home hero's secondary line
 
-- **The career-transition line beneath the animated role now uses the `lg` type token (18px), up from the 16px body default.** It remains one step below the role's 20px `h4` typography, making the two lines read as a deliberate hierarchy while keeping all hero text on the shared scale.
+- **The career-transition line now uses the `lg` type token (18px), up from the 16px body default.** It sits between the name and the 20px animated `h4` role, with every value on the shared scale.
 
 ## 2026-08-22 — Complete the first targeted visual-regression coverage
 
