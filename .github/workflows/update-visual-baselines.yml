@@ -75,6 +75,12 @@ jobs:
       - name: Build
         run: yarn build
 
+      # next-sitemap reads CI's local HOST and rewrites this tracked file. A
+      # baseline update must carry only screenshots; ordinary build changes
+      # remain reviewable through the normal application-change workflow.
+      - name: Restore generated robots file
+        run: git restore --source=HEAD --worktree public/robots.txt
+
       - name: Install Playwright browser
         run: yarn test:e2e:install
 
