@@ -6,6 +6,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import { Transition } from '@components/content';
 import { Navigation } from '@components/nav';
 import { BotIdInitializer, ErrorBoundary } from '@components/shared';
 import { Layout } from '@containers/layout';
@@ -20,13 +21,6 @@ import type { JSX } from 'react';
 
 const DynamicFixedBackground = dynamic(
   () => import('@components/content').then(mod => mod.FixedBackground),
-  {
-    ssr: false,
-  }
-);
-
-const DynamicTransition = dynamic(
-  () => import('@components/content').then(mod => mod.Transition),
   {
     ssr: false,
   }
@@ -52,7 +46,7 @@ const Portfolio: NextPage<AppProps> = ({
             className={`${bodyFont.variable} ${headingFont.variable}`}
             h='100%'>
             <PortfolioStateProvider>
-              {isLoading && <DynamicTransition />}
+              {isLoading && <Transition />}
               <DynamicFixedBackground />
               <Navigation />
               <Layout>

@@ -20,9 +20,9 @@ describe('Home page', () => {
       screen.getByRole('heading', { level: 1, name: /louw swart/i })
     ).toBeInTheDocument();
 
-    // the animated role tagline is a next/dynamic (ssr: false) component that
-    // resolves asynchronously — wait for it so the test settles cleanly
-    // instead of leaving a pending act() warning behind
+    // the animated role tagline is a next/dynamic component that resolves
+    // asynchronously — wait for it so the test settles cleanly instead of
+    // leaving a pending act() warning behind
     expect(await screen.findByText('ex-flight attendant turned programmer'));
   });
 
