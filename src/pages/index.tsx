@@ -60,7 +60,6 @@ const Home: NextPage = (): JSX.Element => {
                     1000,
                   ]}
                   speed={20}
-                  wrapper='span'
                 />
               </span>
             )}
