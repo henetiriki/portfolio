@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-24 — Remove unneeded `ssr: false` from two `next/dynamic` components
+
+- **The home page's animated role tagline (`react-type-animation`) no longer sets `ssr: false`.** Its only top-level `document` access is guarded (`typeof document !== 'undefined'`) and every DOM/`requestAnimationFrame` write happens inside effects, so it was already SSR-safe; it stays a `next/dynamic` import (now with `preRenderFirstString`, so the first string paints immediately) purely for the code-split, since visitors with `prefers-reduced-motion` never render it at all.
+- **`_app.tsx`'s route-transition overlay (`Transition`) is now a plain static import, not `next/dynamic` at all.** It never actually reached the server either way — `useLoading` always starts `false` — but it is trivial first-party markup with no bundle-size case for splitting it out, and doing so delayed the overlay behind a chunk fetch on the very first route change, working against its purpose as instant navigation feedback.
+- `FixedBackground` and the travel page's `MapWrapper` keep `ssr: false`, for real reasons: the former calls `useLayoutEffect` (which errors during SSR) and has nothing meaningful to render server-side since its background image id is only known after a client-only fetch; the latter is gated behind an external `google` script that only exists client-side, and the code-split keeps that dependency out of what hydration has to wait on.
+
 ## 2026-08-22 — Give every content page distinct SEO copy and descriptive image alt text
 
 - **Every content page's `title` and `description` now live in the page file itself**, rather than split between pages and `@fixtures/*` — `contact.tsx`, `portfolio.tsx` and `travel.tsx` moved off their fixture-imported `description`, matching the pattern `index.tsx` and `experience.tsx` already used.
