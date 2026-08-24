@@ -5,13 +5,15 @@ import Image from 'next/image';
 import { Content } from '@components/content';
 import { Seo } from '@components/shared';
 import { openSourceContrs } from '@fixtures/home';
+import { useArticleAgreement } from '@hooks';
 import { blurDataURL } from '@utils/common';
 import classes from './index.module.css';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
-const DynamicTypeAnimation = dynamic(() =>
-  import('react-type-animation').then(mod => mod.TypeAnimation)
+const DynamicTypeAnimation = dynamic(
+  () => import('react-type-animation').then(mod => mod.TypeAnimation),
+  { ssr: false }
 );
 
 const description =
@@ -19,6 +21,7 @@ const description =
 
 const Home: NextPage = (): JSX.Element => {
   const reduceMotion = useReducedMotion();
+  const [article, typeAnimationRef] = useArticleAgreement();
 
   return (
     <>
@@ -32,26 +35,33 @@ const Home: NextPage = (): JSX.Element => {
             ex-flight attendant turned programmer
           </Text>
           <Title className={classes.subtitle} order={2} size='h4'>
-            I’m a{' '}
+            I’m {article}{' '}
             {reduceMotion ? (
               <span>front-end engineer</span>
             ) : (
-              <DynamicTypeAnimation
-                preRenderFirstString
-                repeat={Infinity}
-                sequence={[
-                  'front-end engineer',
-                  1000,
-                  'amateur photographer',
-                  1000,
-                  'plane spotter',
-                  1000,
-                  'keen traveller',
-                  1000,
-                ]}
-                speed={20}
-                wrapper='span'
-              />
+              <span ref={typeAnimationRef}>
+                <DynamicTypeAnimation
+                  preRenderFirstString
+                  repeat={Infinity}
+                  sequence={[
+                    'front-end engineer',
+                    1000,
+                    'amateur photographer',
+                    1000,
+                    'plane spotter',
+                    1000,
+                    'Garden Route local',
+                    1000,
+                    'open-source contributor',
+                    1000,
+                    'Android enthusiast',
+                    1000,
+                    'avid traveller',
+                    1000,
+                  ]}
+                  speed={20}
+                />
+              </span>
             )}
           </Title>
         </Container>

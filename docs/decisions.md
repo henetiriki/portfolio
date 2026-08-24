@@ -12,6 +12,17 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260824a — Restore `ssr: false` on the animated tagline, and verify `next/dynamic` changes against `yarn dev` too
+
+- **Status:** Accepted; partially reverses the same day's earlier removal of `ssr: false` from `DynamicTypeAnimation` (see [Project History](project-history.md#2026-08-24--grammatical-agreement-for-the-animated-tagline-and-a-correction-to-the-same-days-ssr-false-removal))
+- **Decided:** 2026-08-24
+
+**`DynamicTypeAnimation` (`index.tsx`) needs `ssr: false` again.** Removing it was reasoned correctly as far as it went — `react-type-animation` guards its only top-level `document` access and confines DOM/`requestAnimationFrame` writes to effects, so it cannot crash during server rendering — but SSR-safe and hydration-safe turned out not to be the same claim. Next pre-resolves every `next/dynamic` import before rendering on the server, so the server HTML contains the component's real output (`preRenderFirstString`'s first sequence string). On the client, hydration can run before that same chunk has finished fetching, in which case `next/dynamic`'s default loading state renders `null` — a genuine mismatch against what the server sent, not a false-positive warning. `next build`'s webpack output emits a preload link for the anticipated chunk, so the fetch is normally won before hydration and it was never observed there; `next dev`'s Turbopack compiles the chunk on first request and reliably lost the race after 2–6 seconds.
+
+**This was found while building unrelated grammar-agreement work on the same tagline** (see [Project History](project-history.md#2026-08-24--grammatical-agreement-for-the-animated-tagline-and-a-correction-to-the-same-days-ssr-false-removal)), by manually running `yarn dev` and reloading — not by the automated suite, which builds and serves production output exclusively (see the [dev/prod bundler gap](release-checklist.md#known-gaps) this already documents as a category). `preRenderFirstString` is kept regardless: it still removes an empty-then-typing flash once the client-only chunk resolves.
+
+**Verify any change to a `next/dynamic` component's `ssr` option against `yarn dev`, not only a production build.** The two bundlers' chunk-loading timing differs enough that a hydration race can be invisible in one and reliable in the other; `test:e2e` alone will not catch it, because it only ever exercises the production build.
+
 ## D-260822f — Hash `public/**` into the CI Next.js build cache key, with no restore-keys fallback
 
 - **Status:** Accepted
