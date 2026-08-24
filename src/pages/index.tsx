@@ -10,9 +10,8 @@ import classes from './index.module.css';
 import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
-const DynamicTypeAnimation = dynamic(
-  () => import('react-type-animation').then(mod => mod.TypeAnimation),
-  { ssr: false }
+const DynamicTypeAnimation = dynamic(() =>
+  import('react-type-animation').then(mod => mod.TypeAnimation)
 );
 
 const description =
@@ -38,6 +37,7 @@ const Home: NextPage = (): JSX.Element => {
               <span>front-end engineer</span>
             ) : (
               <DynamicTypeAnimation
+                preRenderFirstString
                 repeat={Infinity}
                 sequence={[
                   'front-end engineer',
