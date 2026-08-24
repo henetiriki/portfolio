@@ -50,13 +50,13 @@ const Home: NextPage = (): JSX.Element => {
                     1000,
                     'plane spotter',
                     1000,
-                    'avid traveller',
+                    'Garden Route local',
                     1000,
                     'open-source contributor',
                     1000,
-                    'Garden Route local',
-                    1000,
                     'Android enthusiast',
+                    1000,
+                    'avid traveller',
                     1000,
                   ]}
                   speed={20}
