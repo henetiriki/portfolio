@@ -1,6 +1,32 @@
-.map {
+.mapContainer {
+  background-color: var(--mantine-color-black-russian-4);
   height: 65vh;
+  position: relative;
   width: 100%;
+}
+
+.map {
+  height: 100%;
+  width: 100%;
+}
+
+/* see docs/travel-feature.md#loading-placeholder */
+.placeholder {
+  filter: blur(12px);
+  opacity: 1;
+  transform: scale(1.1);
+  transition: opacity 300ms ease;
+}
+
+.placeholderHidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .placeholder {
+    transition: none;
+  }
 }
 
 .map :global(.gm-style-iw-chr > .gm-ui-hover-effect) {

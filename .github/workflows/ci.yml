@@ -25,6 +25,7 @@ env:
   GMAIL_SENDER_EMAIL: 'owner@example.test'
   GOOGLE_MAPS_API_KEY: 'test-google-maps-api-key'
   GOOGLE_MAPS_MAP_ID: 'test-google-maps-map-id'
+  GOOGLE_MAPS_STATIC_MAP_ID: 'test-google-maps-static-map-id'
   HOST: 'http://localhost:3000'
   HOSTNAME: 'localhost:3000'
   IMAGE_HOST: 'https://res.cloudinary.com/henetiriki/image/upload/v1664623206/insta'

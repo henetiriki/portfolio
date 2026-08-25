@@ -10,6 +10,7 @@ import {
 } from 'react';
 import { MAP_MAX_MOBILE, currentCityPoint, mapOptions } from '@fixtures/travel';
 import classes from './Map.module.css';
+import { MapPlaceholder } from './MapPlaceholder';
 import type { FC, PropsWithChildren } from 'react';
 
 const mapRevealDuration = 2000;
@@ -157,7 +158,10 @@ export const Map: FC<MapProps> = ({ children, layersRendered, onReady }) => {
 
   return (
     <>
-      <div className={classes.map} id='map' ref={mapRef} />
+      <div className={classes.mapContainer}>
+        <div className={classes.map} id='map' ref={mapRef} />
+        <MapPlaceholder rendered={mapRendered} />
+      </div>
       {Children.map(children, child => {
         if (map && infoWindow && mapRendered && isValidElement(child)) {
           // set the map prop on the child component
