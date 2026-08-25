@@ -2,6 +2,11 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-25 — Blurred static-map placeholder for the travel page
+
+- **The `/travel` map no longer shows a flat, empty container while Google's vector tiles load.** `Map` now overlays a blurred Maps Static API image over `#map`, faded out once the existing `tilesloaded`-driven `mapRendered` flag goes true. See [D-260825a](decisions.md#d-260825a--blur-the-real-static-map-for-the-travel-pages-loading-placeholder-on-a-second-raster-map-id) for why it needs its own raster Map ID, why the request is one fixed-size image rather than per-viewport, and why the zoom (and the blur technique) went through a wrong first attempt before landing here.
+- **`mapConfig.ts` gained `MAP_STATIC_SIZE` and `staticMapUrl`, and `mapOptions()`'s inline centre became a shared `mapCenter` constant** so the static request and the live map can't drift onto different coordinates. `next.config.js` re-exposes the new `GOOGLE_MAPS_STATIC_MAP_ID` alongside the existing map env vars and allow-lists `maps.googleapis.com/maps/api/staticmap` for `next/image`.
+
 ## 2026-08-24 — Grammatical agreement for the animated tagline, and a correction to the same day's `ssr: false` removal
 
 - **The home hero's "I'm a/an {role}" now always uses the right article.** The rotating role (`front-end engineer`, `amateur photographer`, `plane spotter`, `avid traveller`) is typed in by `react-type-animation`, which exposes no callback for which sequence entry is showing and no way to mark up part of its own text a different colour, so the leading article has to stay outside the animated, shamrock-coloured span. The new `useArticleAgreement` hook (`src/hooks/useArticleAgreement.ts`) resolves this by watching the animated span's rendered text with a `MutationObserver` and deriving "a"/"an" from whichever letter is actually showing, rather than trying to track the library's own (randomised, unreplicable) typing timings.

@@ -138,6 +138,23 @@ describe('Map', () => {
     expect(onReady).toHaveBeenCalledTimes(1);
   });
 
+  it('hides the static placeholder once tiles have loaded', () => {
+    const { container } = renderMap();
+    const [map] = MockMap.instances;
+
+    expect(container.querySelector('img')?.className).not.toMatch(
+      /placeholderHidden/
+    );
+
+    act(() => {
+      triggerMapsEvent(map, 'tilesloaded');
+    });
+
+    expect(container.querySelector('img')?.className).toMatch(
+      /placeholderHidden/
+    );
+  });
+
   it('does not reveal the map until its layers have rendered', async () => {
     renderMap();
     const [map] = MockMap.instances;

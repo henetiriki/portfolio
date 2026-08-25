@@ -12,6 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260825a — Blur the real static map for the travel page's loading placeholder, on a second raster Map ID
+
+- **Status:** Accepted
+- **Decided:** 2026-08-25
+
+**`Map` now overlays a Maps Static API image on `#map` until `tilesloaded` fires, in place of the flat container background a visitor previously saw while the vector tiles were still loading.** The Static Maps API cannot reuse the live map's existing `NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID`: it only accepts **raster** map IDs, while the live map deliberately runs a **vector** one (see the "Map ID and cloud style" phase in [travel-feature.md](travel-feature.md#modernisation-phases)). A second Map ID (`NEXT_PUBLIC_GOOGLE_MAPS_STATIC_MAP_ID`), scoped to raster and pointed at the same published cloud style, was created for this alone.
+
+**The request is one fixed 640×400 image (Static Maps' own per-request maximum, before `scale=2` doubles the returned pixels) at a single centre/zoom, reused for every visitor and viewport**, rather than a request sized to the actual container. A per-viewport image would mean a unique, uncacheable Static Maps URL per visitor's window size for a component on screen for at most a second or two — not worth the cost for what is a coarse loading placeholder, not a pixel-accurate preview.
+
+**Matching the live map's own zoom value (2) was the obviously-right first choice and was wrong.** The live vector map is rendered at real viewport width — often 1500px or more — so at zoom 2 (world width `256 × 2^zoom` = 1024px) it comfortably shows most of the globe. The static request is capped at 640px wide, so the same zoom 2 showed only ~62% of the world's width, `object-fit: cover` cropped the rest, and the result read as noticeably more zoomed-in than the live map once tiles arrived — confirmed by direct visual comparison of the two. Zoom 1 (world width 512px) fits inside 640px with room to spare and reads as the same near-whole-world framing the live map settles on.
+
+**The blur itself is a `filter: blur(12px)` on the real static image, not the shimmer gradient `blurDataURL()` already used for `FixedBackground`'s photo.** The shimmer was tried first as the established pattern, but a generic animated gradient sweep bears no resemblance to a map and read as broken rather than as a blurred preview once seen next to the real thing. Blurring the actual (already small, already low-detail) static image is both simpler — no separate placeholder asset or `blurDataURL`-vs-`placeholder='blur'` prop bookkeeping — and legible as "the map, softened" rather than "a loading skeleton." `transform: scale(1.1)` keeps the blur's edge sampling inside the element instead of fringing the container boundary, and the container's own background (`--mantine-color-black-russian-4`, matching `global.css`'s page background) is the fallback for anything the scaled, blurred image doesn't quite cover.
+
 ## D-260824a — Restore `ssr: false` on the animated tagline, and verify `next/dynamic` changes against `yarn dev` too
 
 - **Status:** Accepted; partially reverses the same day's earlier removal of `ssr: false` from `DynamicTypeAnimation` (see [Project History](project-history.md#2026-08-24--grammatical-agreement-for-the-animated-tagline-and-a-correction-to-the-same-days-ssr-false-removal))
