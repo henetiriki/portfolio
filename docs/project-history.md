@@ -2,6 +2,11 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-25 — Extract `MapWrapper`'s intersection and layer-completion tracking into hooks
+
+- **Two new hooks in `src/hooks/`: `useIntersectedOnce` and `useLayerCompletion`.** `MapWrapper` previously carried both concerns as inline state, refs and effects alongside its own map-specific rendering logic. `useIntersectedOnce(threshold)` is a small, fully generic "has this element intersected the viewport once" hook; `useLayerCompletion({ expectedLayerIds, layersStarted, railTripsSettled })` tracks completion of an arbitrary set of IDs and is the piece `MapWrapper` used to track every marker/polyline's `onRendered` callback. Both are pure extractions — `MapWrapper`'s own existing behavioural tests pass unchanged against the refactored component — and each now also has direct, isolated unit tests rather than being exercised only indirectly through `MapWrapper`'s full render/click behaviour.
+- **`MapWrapper`'s `IntersectionObserver` threshold moved to a named `INTERSECTION_THRESHOLD` constant**, replacing the `0.8` magic number at its call site.
+
 ## 2026-08-25 — Fix a caught render error crashing the whole app instead of showing the fallback
 
 - **`_app.tsx` now nests `ErrorBoundary` inside `MantineProvider`, not the other way round.** With the old order, catching an error replaced the entire Mantine tree with `ErrorBoundary`'s own fallback, which itself renders a Mantine `Title` — throwing a second, uncaught "MantineProvider was not found" error and escaping to Next's raw crash page instead of the intended "Oops" message. See [D-260825b](decisions.md#d-260825b--nest-errorboundary-inside-mantineprovider-scope-a-second-boundary-to-the-map-and-centre-the-root-fallback).
