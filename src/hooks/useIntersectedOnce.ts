@@ -22,7 +22,12 @@ export const useIntersectedOnce = (
 
       const observer = new IntersectionObserver(
         ([entry]) => {
-          if (entry?.isIntersecting) {
+          // The observer's own `threshold` option only governs which ratios
+          // trigger a callback — the callback fired on first observation
+          // still reports whatever ratio is current, isIntersecting true at
+          // any ratio above 0. Checking the ratio itself is what actually
+          // enforces the configured threshold.
+          if (entry && entry.intersectionRatio >= threshold) {
             setHasIntersected(true);
             observer.disconnect();
             observerRef.current = null;

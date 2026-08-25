@@ -12,6 +12,12 @@ Last reviewed: 2026-08-16.
 
 - [ ] **Upgrade Node.js 24 to 26 on or after 2026-10-28.** The project follows Active LTS releases, and Node 26 does not reach that status until then. Confirm Vercel support first, then update `engines.node`, `.nvmrc` and `@types/node` together and validate installation, native dependencies, the full suite and both build modes on the new runtime. See [D-260806a](decisions.md#d-260806a--track-active-lts-nodejs-releases).
 
+## CI & security hardening
+
+- [ ] **Pin `ci.yml` and `maps-smoke.yml`'s `actions/*` references to commit SHAs, matching `update-visual-baselines.yml`.** Neither workflow currently grants `contents: write`, so this is defence in depth rather than closing an active gap — see [D-260825d](decisions.md#d-260825d--pin-update-visual-baselinesymls-actions-to-commit-shas-not-the-rest-of-the-repo-yet).
+
+- [ ] **Upgrade ESLint off `9.39.5`.** `yarn npm audit --all` flags it as a deprecated, no-longer-supported version (moderate severity); it's a development-only dependency so there's no production exposure, but it's currently excluded from Dependabot's automated major-version updates (see `.github/dependabot.yml`'s `ignore` list) pending a coordinated config/plugin compatibility pass.
+
 ## Performance, SEO & platform polish
 
 - [ ] **Confirm the white band behind the Android gesture bar clears once Chrome stable ships the upstream fix.** Nothing to build — the fix merged into Chromium `main` on 2026-08-06 and colours the navigation bar from `theme_color`, already correct here. See [D-260815i](decisions.md#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar).

@@ -9,7 +9,7 @@ describe('MapPlaceholder', () => {
 
     expect(img).toHaveAttribute('alt', '');
     expect(img?.getAttribute('src')).toContain(
-      encodeURIComponent('https://maps.googleapis.com/maps/api/staticmap')
+      encodeURIComponent('/api/static-map')
     );
   });
 

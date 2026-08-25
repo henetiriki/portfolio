@@ -17,10 +17,15 @@ describe('useIntersectedOnce', () => {
     }) as unknown as typeof IntersectionObserver;
   });
 
-  const triggerIntersection = (isIntersecting: boolean) => {
+  const triggerIntersection = (intersectionRatio: number) => {
     act(() => {
       intersectionCallback?.(
-        [{ isIntersecting } as IntersectionObserverEntry],
+        [
+          {
+            intersectionRatio,
+            isIntersecting: intersectionRatio > 0,
+          } as IntersectionObserverEntry,
+        ],
         {} as IntersectionObserver
       );
     });
@@ -47,14 +52,14 @@ describe('useIntersectedOnce', () => {
     );
   });
 
-  it('sets hasIntersected and disconnects once the node intersects', () => {
+  it('sets hasIntersected and disconnects once the ratio reaches the threshold', () => {
     const { result } = renderHook(() => useIntersectedOnce(0.8));
     const node = document.createElement('div');
 
     act(() => {
       result.current.ref(node);
     });
-    triggerIntersection(true);
+    triggerIntersection(0.8);
 
     expect(result.current.hasIntersected).toBe(true);
     expect(disconnect).toHaveBeenCalled();
@@ -67,9 +72,22 @@ describe('useIntersectedOnce', () => {
     act(() => {
       result.current.ref(node);
     });
-    triggerIntersection(false);
+    triggerIntersection(0);
 
     expect(result.current.hasIntersected).toBe(false);
+  });
+
+  it('does not set hasIntersected while isIntersecting is true but the ratio is below the threshold (regression test: the observer delivers its first callback at whatever ratio is current, not only at the configured threshold)', () => {
+    const { result } = renderHook(() => useIntersectedOnce(0.8));
+    const node = document.createElement('div');
+
+    act(() => {
+      result.current.ref(node);
+    });
+    triggerIntersection(0.1);
+
+    expect(result.current.hasIntersected).toBe(false);
+    expect(disconnect).not.toHaveBeenCalled();
   });
 
   it('disconnects a previous observer when ref is called again', () => {
@@ -93,7 +111,7 @@ describe('useIntersectedOnce', () => {
     act(() => {
       result.current.ref(document.createElement('div'));
     });
-    triggerIntersection(true);
+    triggerIntersection(0.8);
     (global.IntersectionObserver as jest.Mock).mockClear();
 
     act(() => {

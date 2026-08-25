@@ -12,6 +12,37 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260825e — Check `intersectionRatio` against the threshold in `useIntersectedOnce`, not `isIntersecting`
+
+- **Status:** Accepted
+- **Decided:** 2026-08-25
+
+**A code review of the week's changes flagged that `useIntersectedOnce`'s observer callback checked `entry.isIntersecting`, not the configured `threshold`.** `MapWrapper` calls it with `0.8` specifically to defer marker/polyline rendering until the map is mostly on screen, but `isIntersecting` is `true` at any ratio above zero — it does not mean "past the configured threshold". The `threshold` option passed to `IntersectionObserver` governs which ratio changes generate a callback at all, but the very first callback delivered after `observe()` still reports whatever ratio is current at that moment, regardless of the configured threshold; only later callbacks are gated on crossing it. So a map scrolled even slightly into view could latch `hasIntersected` immediately, well before 80% visibility.
+
+**The unit test could not have caught this**, and reproduced the same gap independently in `MapWrapper.test.tsx`: both test files' hand-written `IntersectionObserver` mocks set only `isIntersecting` on the fake entry, never `intersectionRatio`, so the assertion "intersecting → `hasIntersected` becomes true" passed regardless of which field production code actually checked. Both mocks now construct `{ intersectionRatio, isIntersecting: intersectionRatio > 0 }`, and `useIntersectedOnce.test.ts` gained an explicit regression case: `isIntersecting: true` at a ratio below the threshold must not set `hasIntersected`.
+
+**Practical impact was likely small** — the two thresholds in production use are `0.8` (`MapWrapper`) and none of the code exercises a rapid partial-then-full scroll into view in a way that would have made the gap visually obvious — but the fix is one line and the bug pattern (an `IntersectionObserver`'s first callback reporting the current ratio rather than a threshold crossing) is a generic enough gotcha to be worth recording for any future `threshold`-based observer in this codebase.
+
+## D-260825d — Pin `update-visual-baselines.yml`'s actions to commit SHAs, not the rest of the repo yet
+
+- **Status:** Accepted
+- **Decided:** 2026-08-25
+
+**A code review of the week's changes flagged that `update-visual-baselines.yml`'s `commit` job uses mutable version tags (`actions/checkout@v7`, `actions/download-artifact@v8`) while holding `contents: write` and pushing to a repository branch with `github.token`.** A repointed tag on a compromised action would run with write access to the repo, which GitHub's own secure-use guidance identifies as the reason a commit SHA — the one immutable reference — is the recommended pin for exactly this kind of job. All five `actions/*` references in this file (both the `generate` and `commit` jobs) are now pinned to SHAs with a trailing `# vN` comment, so Dependabot's existing `github-actions` update group continues to open version-bump PRs against them without any config change.
+
+**`ci.yml` and `maps-smoke.yml` still use version tags and were left alone.** Neither workflow grants `contents: write` anywhere — `ci.yml`'s `validate` job has `id-token: write` for Codecov's OIDC upload, not repository write access — so a repointed tag there could not push content, only run within a read-only checkout. Pinning them is still worth doing for defence in depth, but it is a smaller, independent piece of work rather than something this fix should absorb; see the roadmap.
+
+## D-260825c — Proxy the static map request through an API route instead of a client-visible Google URL
+
+- **Status:** Accepted
+- **Decided:** 2026-08-25
+
+**A code review of the week's changes flagged that `staticMapUrl` (introduced in [D-260825a](#d-260825a--blur-the-real-static-map-for-the-travel-pages-loading-placeholder-on-a-second-raster-map-id)) put the Maps API key in a plain, copy-pasteable query string rendered straight into the placeholder's `<img>` `src`.** The key was already client-visible for the Maps JS SDK, which is expected and unavoidable for a browser-loaded script, but embedding it a second time in a static, unsigned URL gave anyone viewing page source a working credential for a separate billable Google product (the Static Maps API) with no referrer check in the way — a JS SDK key's HTTP-referrer restriction only constrains script loads from an authorised page, not a raw HTTP request built from a copied URL.
+
+**The fix moves the request server-side rather than signing the client-visible URL.** Google's own guidance for public Static Maps usage is a signed URL, but signing only stops parameter tampering (`center`/`zoom`/`size`) — the key itself still ends up in the URL the browser fetches. `pages/api/static-map.ts` instead fetches the fixed image from Google using the raw, non-`NEXT_PUBLIC_` `GOOGLE_MAPS_API_KEY`/`GOOGLE_MAPS_STATIC_MAP_ID` and streams the bytes back itself, so the key never reaches the client for this call at all. `mapConfig.ts`'s `staticMapUrl` is now the fixed local path `/api/static-map`; `next.config.js` no longer re-exposes `NEXT_PUBLIC_GOOGLE_MAPS_STATIC_MAP_ID` or allow-lists `maps.googleapis.com/maps/api/staticmap` under `images.remotePatterns`, since the request is same-origin.
+
+**The request is still one fixed image, so it is cached as `public, max-age=31536000, immutable`** — identical to how `next.config.js`'s own `images.minimumCacheTTL` treats the site's other optimised images — rather than re-fetching Google on every visit.
+
 ## D-260825b — Nest `ErrorBoundary` inside `MantineProvider`, scope a second boundary to the map, and centre the root fallback
 
 - **Status:** Accepted
