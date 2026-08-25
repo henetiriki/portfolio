@@ -38,6 +38,25 @@ describe('ErrorBoundary', () => {
     consoleError.mockRestore();
   });
 
+  it('renders a caller-supplied fallback instead of the default message', () => {
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    render(
+      <ErrorBoundary fallback={<div>Custom fallback</div>}>
+        <ProblemChild />
+      </ErrorBoundary>
+    );
+
+    expect(screen.getByText('Custom fallback')).toBeInTheDocument();
+    expect(
+      screen.queryByText('Oops, something went wrong!')
+    ).not.toBeInTheDocument();
+
+    consoleError.mockRestore();
+  });
+
   it('renders its fallback correctly when nested inside MantineProvider, as _app.tsx composes it', () => {
     const consoleError = jest
       .spyOn(console, 'error')

@@ -4,8 +4,10 @@ This is the concise record of completed project work. It is not a substitute for
 
 ## 2026-08-25 — Fix a caught render error crashing the whole app instead of showing the fallback
 
-- **`_app.tsx` now nests `ErrorBoundary` inside `MantineProvider`, not the other way round.** With the old order, catching an error replaced the entire Mantine tree with `ErrorBoundary`'s own fallback, which itself renders a Mantine `Title` — throwing a second, uncaught "MantineProvider was not found" error and escaping to Next's raw crash page instead of the intended "Oops" message. See [D-260825b](decisions.md#d-260825b--nest-errorboundary-inside-mantineprovider-not-the-other-way-round).
+- **`_app.tsx` now nests `ErrorBoundary` inside `MantineProvider`, not the other way round.** With the old order, catching an error replaced the entire Mantine tree with `ErrorBoundary`'s own fallback, which itself renders a Mantine `Title` — throwing a second, uncaught "MantineProvider was not found" error and escaping to Next's raw crash page instead of the intended "Oops" message. See [D-260825b](decisions.md#d-260825b--nest-errorboundary-inside-mantineprovider-scope-a-second-boundary-to-the-map-and-centre-the-root-fallback).
 - **A new `ErrorBoundary` test renders through the raw Testing Library `render`, composed in the corrected order**, rather than relying on the existing test helper that unconditionally wraps every test in `MantineProvider` regardless of the app's real composition — the reason the bug shipped undetected.
+- **`ErrorBoundary` gained an optional `fallback` prop, and `MapWrapper` now wraps its `mapStatus === 'success'` branch in its own instance with the existing `MapError` UI**, so a runtime crash inside the map's render tree (confirmed live: `Marker` failing when the Maps SDK is left in a broken state) degrades to the map's own "failed to load" message instead of taking the whole page down.
+- **The root boundary's default fallback is now centred in the viewport** rather than rendering pinned to the top-left of a blank page.
 
 ## 2026-08-25 — Blurred static-map placeholder for the travel page
 

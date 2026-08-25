@@ -1,5 +1,6 @@
 import { Box } from '@mantine/core';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ErrorBoundary } from '@components/shared';
 import { Map, MapError, MapLoader, Marker, Polyline } from '@components/travel';
 import { cities, markerLocations, tripPolylines } from '@fixtures/travel';
 import { useGoogleMaps, useRailTrips } from '@hooks';
@@ -113,88 +114,93 @@ export const MapWrapper: FC = () => {
       {mapStatus === 'loading' && <MapLoader />}
       {mapStatus === 'failure' && <MapError />}
       {mapStatus === 'success' && (
-        <Box ref={intersectionRef}>
-          <Map layersRendered={layersRendered} onReady={handleMapReady}>
-            {layersStarted &&
-              cities.map(
-                ({ description, icon, position, title }: City, idx: number) => {
-                  const layerId = getLayerId('city', 0, idx);
-
-                  return (
-                    <Marker
-                      description={description}
-                      icon={icon}
-                      idx={idx + 1}
-                      key={layerId}
-                      layerId={layerId}
-                      onRendered={handleLayerRendered}
-                      position={position}
-                      title={title}
-                    />
-                  );
-                }
-              )}
-            {layersStarted &&
-              markerLocations.map(
-                ({ icon, locations }: MarkerLocations, order: number) =>
-                  locations.map((location: Location, idx: number) => {
-                    const layerId = getLayerId('marker', order, idx);
+        <ErrorBoundary fallback={<MapError />}>
+          <Box ref={intersectionRef}>
+            <Map layersRendered={layersRendered} onReady={handleMapReady}>
+              {layersStarted &&
+                cities.map(
+                  (
+                    { description, icon, position, title }: City,
+                    idx: number
+                  ) => {
+                    const layerId = getLayerId('city', 0, idx);
 
                     return (
                       <Marker
-                        {...location}
+                        description={description}
                         icon={icon}
                         idx={idx + 1}
                         key={layerId}
                         layerId={layerId}
                         onRendered={handleLayerRendered}
-                        order={order + 1}
+                        position={position}
+                        title={title}
                       />
                     );
-                  })
-              )}
-            {layersStarted &&
-              tripPolylines.map(
-                ({ polylineOpts, trips }: TripPolylines, order: number) =>
-                  trips.map(
-                    (legs: google.maps.LatLngLiteral[], idx: number) => {
-                      const layerId = getLayerId('trip', order, idx);
+                  }
+                )}
+              {layersStarted &&
+                markerLocations.map(
+                  ({ icon, locations }: MarkerLocations, order: number) =>
+                    locations.map((location: Location, idx: number) => {
+                      const layerId = getLayerId('marker', order, idx);
 
                       return (
-                        <Polyline
+                        <Marker
+                          {...location}
+                          icon={icon}
                           idx={idx + 1}
-                          legs={legs}
-                          {...polylineOpts}
                           key={layerId}
                           layerId={layerId}
                           onRendered={handleLayerRendered}
                           order={order + 1}
                         />
                       );
-                    }
-                  )
-              )}
-            {layersStarted &&
-              railTripPolylines.map(
-                ({ polylineOpts, tripPaths }: TripPaths, order: number) =>
-                  tripPaths.map((paths: string[], idx: number) => {
-                    const layerId = getLayerId('rail', order, idx);
+                    })
+                )}
+              {layersStarted &&
+                tripPolylines.map(
+                  ({ polylineOpts, trips }: TripPolylines, order: number) =>
+                    trips.map(
+                      (legs: google.maps.LatLngLiteral[], idx: number) => {
+                        const layerId = getLayerId('trip', order, idx);
 
-                    return (
-                      <Polyline
-                        idx={railTripPolylines.length + idx + 1}
-                        paths={paths}
-                        {...polylineOpts}
-                        key={layerId}
-                        layerId={layerId}
-                        onRendered={handleLayerRendered}
-                        order={railTripPolylines.length + order + 1}
-                      />
-                    );
-                  })
-              )}
-          </Map>
-        </Box>
+                        return (
+                          <Polyline
+                            idx={idx + 1}
+                            legs={legs}
+                            {...polylineOpts}
+                            key={layerId}
+                            layerId={layerId}
+                            onRendered={handleLayerRendered}
+                            order={order + 1}
+                          />
+                        );
+                      }
+                    )
+                )}
+              {layersStarted &&
+                railTripPolylines.map(
+                  ({ polylineOpts, tripPaths }: TripPaths, order: number) =>
+                    tripPaths.map((paths: string[], idx: number) => {
+                      const layerId = getLayerId('rail', order, idx);
+
+                      return (
+                        <Polyline
+                          idx={railTripPolylines.length + idx + 1}
+                          paths={paths}
+                          {...polylineOpts}
+                          key={layerId}
+                          layerId={layerId}
+                          onRendered={handleLayerRendered}
+                          order={railTripPolylines.length + order + 1}
+                        />
+                      );
+                    })
+                )}
+            </Map>
+          </Box>
+        </ErrorBoundary>
       )}
     </>
   );

@@ -9,6 +9,8 @@ jest.mock('../../../hooks', () => ({
   useGoogleMaps: jest.fn(),
   useRailTrips: jest.fn(),
 }));
+let mockMapShouldThrow = false;
+
 jest.mock('../index', () => ({
   Map: ({
     children,
@@ -17,12 +19,18 @@ jest.mock('../index', () => ({
   }: PropsWithChildren<{
     layersRendered: boolean;
     onReady: () => void;
-  }>) => (
-    <div data-layers-rendered={String(layersRendered)} data-testid='map'>
-      <button data-testid='map-ready' onClick={onReady} type='button' />
-      {children}
-    </div>
-  ),
+  }>) => {
+    if (mockMapShouldThrow) {
+      throw new Error('boom');
+    }
+
+    return (
+      <div data-layers-rendered={String(layersRendered)} data-testid='map'>
+        <button data-testid='map-ready' onClick={onReady} type='button' />
+        {children}
+      </div>
+    );
+  },
   MapError: () => <div>Map failed</div>,
   MapLoader: () => <div>Map loading</div>,
   Marker: ({
@@ -87,6 +95,7 @@ const getLayers = () => [
 describe('MapWrapper', () => {
   beforeEach(() => {
     intersectionCallback = undefined;
+    mockMapShouldThrow = false;
     global.IntersectionObserver = jest.fn(callback => {
       intersectionCallback = callback;
 
@@ -120,6 +129,20 @@ describe('MapWrapper', () => {
     expect(screen.getByText('Map failed')).toBeInTheDocument();
     expect(screen.queryAllByTestId('marker')).toHaveLength(0);
     expect(global.IntersectionObserver).not.toHaveBeenCalled();
+  });
+
+  it('shows the map error fallback, not a page-wide crash, if the map throws while rendering', () => {
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    mockMapShouldThrow = true;
+
+    render(<MapWrapper />);
+
+    expect(screen.getByText('Map failed')).toBeInTheDocument();
+
+    consoleError.mockRestore();
   });
 
   it('waits for base-map readiness after the map becomes visible', () => {

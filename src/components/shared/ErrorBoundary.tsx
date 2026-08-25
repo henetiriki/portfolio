@@ -1,10 +1,17 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment, react/prop-types */
-import { Title } from '@mantine/core';
+import { Flex, Title } from '@mantine/core';
 import { Component } from 'react';
-import type { ErrorInfo, PropsWithChildren } from 'react';
+import type { ErrorInfo, PropsWithChildren, ReactNode } from 'react';
 
-class ErrorBoundary extends Component {
-  constructor(props: PropsWithChildren) {
+type ErrorBoundaryProps = PropsWithChildren<{
+  fallback?: ReactNode;
+}>;
+
+type ErrorBoundaryState = {
+  hasError: boolean;
+};
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
   }
@@ -21,16 +28,16 @@ class ErrorBoundary extends Component {
   }
 
   render() {
-    // @ts-ignore
     if (this.state.hasError) {
       return (
-        <div>
-          <Title order={4}>Oops, something went wrong!</Title>
-        </div>
+        this.props.fallback ?? (
+          <Flex align='center' h='100vh' justify='center' w='100vw'>
+            <Title order={4}>Oops, something went wrong!</Title>
+          </Flex>
+        )
       );
     }
 
-    // @ts-ignore
     return this.props.children;
   }
 }
