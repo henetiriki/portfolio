@@ -16,6 +16,12 @@ Last reviewed: 2026-08-16.
 
 - [ ] **Upgrade ESLint off `9.39.5`.** `yarn npm audit --all` flags it as a deprecated, no-longer-supported version (moderate severity); it's a development-only dependency so there's no production exposure, but it's currently excluded from Dependabot's automated major-version updates (see `.github/dependabot.yml`'s `ignore` list) pending a coordinated config/plugin compatibility pass.
 
+## Code quality follow-ups
+
+- [ ] **Replace `useIntersectedOnce` with `@mantine/hooks`' `useIntersection`.** The hand-rolled hook duplicates an IntersectionObserver wrapper the project already depends on. Not a drop-in swap: Mantine's hook exposes the raw `entry` on every change rather than latching once and disconnecting, so `MapWrapper` (its only consumer) would need to own that one-shot logic itself. Deferred deliberately rather than done alongside the [D-260825e](decisions.md#d-260825e--check-intersectionratio-against-the-threshold-in-useintersectedonce-not-isintersecting) threshold fix, to keep that fix minimal.
+
+- [ ] **Consider phonetic exceptions for `useArticleAgreement`'s vowel-sound check.** `vowelSoundPattern` matches the leading letter, not the leading sound, so a future tagline word like "European" or "MBA" would get the wrong article ("an European"). The current home-page word list doesn't trigger it, and the word list is fully author-controlled with every change subject to this repo's own preview-URL manual QA, so a wrong article would be caught immediately if it ever happened — deliberately left unfixed rather than building exceptions for words that don't exist in the sequence yet.
+
 ## Performance, SEO & platform polish
 
 - [ ] **Confirm the white band behind the Android gesture bar clears once Chrome stable ships the upstream fix.** Nothing to build — the fix merged into Chromium `main` on 2026-08-06 and colours the navigation bar from `theme_color`, already correct here. See [D-260815i](decisions.md#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar).

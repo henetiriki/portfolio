@@ -12,6 +12,17 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260825h — Log a fixed diagnostic from `ErrorBoundary`, and give both its fallbacks a reload button
+
+- **Status:** Accepted
+- **Decided:** 2026-08-25
+
+**Two smaller findings from the same review, both in `ErrorBoundary` and `MapError`, addressed together.** `componentDidCatch` logged the raw `error`/`errorInfo` to the console; that was already a looser practice than the rest of the codebase (`contact.ts` and `useRailTrips` both log only a fixed diagnostic string on failure), but scoping a second `ErrorBoundary` instance around the map this week made it concretely risky rather than just inconsistent — a Google Maps SDK failure's message can embed a request URL, and the client-exposed Maps API key could be in it. `componentDidCatch` now logs `'Component tree crashed:', error.name` — enough to know a crash happened and roughly what kind, matching the established pattern, without the payload.
+
+**Neither fallback offered a way to retry without a full manual reload.** `ErrorBoundary`'s `hasError` is never reset, so once tripped it stays tripped for the life of that mount; a page reload is the only thing that reliably works anyway, since [D-260825b](#d-260825b--nest-errorboundary-inside-mantineprovider-scope-a-second-boundary-to-the-map-and-centre-the-root-fallback)'s root-cause investigation found the Maps SDK left in a broken partial-init state that a React-only state reset would not clear. Both the root boundary's default fallback and `MapError` (the map-scoped fallback) now include a "Reload page" button calling `window.location.reload()`, rather than restructuring `ErrorBoundary`'s `fallback` prop into a render-prop to thread a React-state reset through — the simpler, self-contained fix for a recovery path that has to reload the page regardless.
+
+**Testing `window.location.reload()` under jsdom 30 does not work the way older guidance suggests.** `jest.spyOn`/`Object.defineProperty` against `window.location` or `window.location.reload` both throw (`Cannot redefine property`), because this jsdom version now matches real browsers treating `Location` as unforgeable rather than a plain mutable object. The tests assert the button renders with an accessible name and that clicking it does not throw, rather than asserting the native call happened — extracting an injectable `onReload` seam purely to make that call mockable would be more machinery than a one-line click handler warrants.
+
 ## D-260825g — Pin every GitHub Action reference to a verified release SHA
 
 - **Status:** Accepted

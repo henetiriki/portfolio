@@ -1,6 +1,7 @@
-import { Flex, Title } from '@mantine/core';
+import { Button, Flex, Title } from '@mantine/core';
+import { IconRefresh } from '@tabler/icons-react';
 import { Component } from 'react';
-import type { ErrorInfo, PropsWithChildren, ReactNode } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 
 type ErrorBoundaryProps = PropsWithChildren<{
   fallback?: ReactNode;
@@ -20,19 +21,36 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     return { hasError: true };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.log({
-      error,
-      errorInfo,
-    });
+  componentDidCatch(error: Error) {
+    // A fixed diagnostic, not the raw error/errorInfo: this boundary also
+    // wraps MapWrapper, and a Google Maps SDK failure's message can embed a
+    // request URL carrying the API key — see docs/travel-feature.md#loading-placeholder
+    console.error('Component tree crashed:', error.name);
   }
 
   render() {
     if (this.state.hasError) {
       return (
         this.props.fallback ?? (
-          <Flex align='center' h='100vh' justify='center' w='100vw'>
+          <Flex
+            align='center'
+            direction='column'
+            gap='md'
+            h='100vh'
+            justify='center'
+            px='md'
+            w='100vw'>
             <Title order={4}>Oops, something went wrong!</Title>
+            <Button
+              color='shamrock.4'
+              leftSection={<IconRefresh size={21} />}
+              onClick={() => window.location.reload()}
+              radius='lg'
+              size='lg'
+              variant='outline'
+              w={{ base: '100%', md: '25%', sm: '35%' }}>
+              Reload page
+            </Button>
           </Flex>
         )
       );
