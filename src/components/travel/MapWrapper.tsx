@@ -1,9 +1,14 @@
 import { Box } from '@mantine/core';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { ErrorBoundary } from '@components/shared';
 import { Map, MapError, MapLoader, Marker, Polyline } from '@components/travel';
 import { cities, markerLocations, tripPolylines } from '@fixtures/travel';
-import { useGoogleMaps, useRailTrips } from '@hooks';
+import {
+  useGoogleMaps,
+  useIntersectedOnce,
+  useLayerCompletion,
+  useRailTrips,
+} from '@hooks';
 import type {
   City,
   Location,
@@ -14,6 +19,8 @@ import type {
 import type { FC } from 'react';
 
 type LayerType = 'city' | 'marker' | 'rail' | 'trip';
+
+const INTERSECTION_THRESHOLD = 0.8;
 
 const getLayerId = (type: LayerType, order: number, idx: number): string =>
   `${type}-${order}-${idx}`;
@@ -31,11 +38,9 @@ const staticLayerIds = [
 export const MapWrapper: FC = () => {
   const mapStatus = useGoogleMaps();
   const { railTripPolylines, settled: railTripsSettled } = useRailTrips();
-  const [layersVisible, setLayersVisible] = useState(false);
   const [mapReady, setMapReady] = useState(false);
-  const [layersRendered, setLayersRendered] = useState(false);
-  const completedLayerIdsRef = useRef(new Set<string>());
-  const observerRef = useRef<IntersectionObserver | null>(null);
+  const { hasIntersected: layersVisible, ref: intersectionRef } =
+    useIntersectedOnce(INTERSECTION_THRESHOLD);
 
   const railLayerIds = useMemo(
     () =>
@@ -44,70 +49,23 @@ export const MapWrapper: FC = () => {
       ),
     [railTripPolylines]
   );
+
   const expectedLayerIds = useMemo(
     () => [...staticLayerIds, ...railLayerIds],
     [railLayerIds]
   );
+
   const layersStarted = layersVisible && mapReady;
 
-  const finishLayersIfComplete = useCallback(() => {
-    if (!layersStarted || !railTripsSettled) {
-      return;
-    }
-
-    const completedLayerIds = completedLayerIdsRef.current;
-
-    if (expectedLayerIds.every(layerId => completedLayerIds.has(layerId))) {
-      setLayersRendered(true);
-    }
-  }, [expectedLayerIds, layersStarted, railTripsSettled]);
-
-  const handleLayerRendered = useCallback(
-    (layerId: string) => {
-      completedLayerIdsRef.current.add(layerId);
-      finishLayersIfComplete();
-    },
-    [finishLayersIfComplete]
-  );
-
-  useEffect(() => {
-    finishLayersIfComplete();
-  }, [
+  const { handleLayerRendered, layersRendered } = useLayerCompletion({
     expectedLayerIds,
-    finishLayersIfComplete,
     layersStarted,
     railTripsSettled,
-  ]);
+  });
 
   const handleMapReady = useCallback(() => {
     setMapReady(true);
   }, []);
-
-  const intersectionRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      observerRef.current?.disconnect();
-      observerRef.current = null;
-
-      if (!node || layersVisible) {
-        return;
-      }
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry?.isIntersecting) {
-            setLayersVisible(true);
-            observer.disconnect();
-            observerRef.current = null;
-          }
-        },
-        { threshold: 0.8 }
-      );
-
-      observer.observe(node);
-      observerRef.current = observer;
-    },
-    [layersVisible]
-  );
 
   return (
     <>

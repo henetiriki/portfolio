@@ -2,6 +2,8 @@ export * from './types';
 export * from './useArticleAgreement';
 export * from './useIgImgId';
 export * from './useGoogleMaps';
+export * from './useIntersectedOnce';
+export * from './useLayerCompletion';
 export * from './useLoading';
 export * from './useMantineForm';
 export * from './useRailTrips';
