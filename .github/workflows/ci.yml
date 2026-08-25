@@ -48,7 +48,7 @@ jobs:
       docs_only: ${{ steps.change.outputs.docs_only }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           # Two commits, because the step below diffs HEAD against HEAD^.
           fetch-depth: 2
@@ -76,10 +76,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up Node
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           cache: 'yarn'
           cache-dependency-path: 'yarn.lock'
@@ -140,7 +140,7 @@ jobs:
         if: >-
           github.event_name != 'pull_request' ||
           github.event.pull_request.head.repo.full_name == github.repository
-        uses: codecov/codecov-action@v7
+        uses: codecov/codecov-action@a99c28d3f0da835de33ff2feb2e15691c7b9641f # v7
         with:
           disable_search: true
           fail_ci_if_error: true
@@ -159,10 +159,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up Node
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           cache: 'yarn'
           cache-dependency-path: 'yarn.lock'
@@ -178,7 +178,7 @@ jobs:
       # file's content — see D-260822f. An exact key or a clean build are the
       # only two outcomes that cannot serve a stale optimised image.
       - name: Cache Next.js build cache
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: ${{ github.workspace }}/.next/cache
           key: ${{ runner.os }}-nextjs-${{ hashFiles('yarn.lock') }}-${{ hashFiles('next.config.js', 'postcss.config.cjs', 'tsconfig.json', 'src/**/*.js', 'src/**/*.jsx', 'src/**/*.ts', 'src/**/*.tsx', 'src/**/*.css', 'service-worker/**/*.ts', 'public/**') }}
@@ -207,7 +207,7 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Cache Playwright browser
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
           path: ~/.cache/ms-playwright
@@ -222,7 +222,7 @@ jobs:
 
       - name: Upload Playwright report on failure
         if: failure()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: playwright-report
           path: playwright-report/

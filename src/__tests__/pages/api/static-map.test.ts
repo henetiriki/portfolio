@@ -39,7 +39,7 @@ describe('static-map API handler', () => {
     expect(setHeader).toHaveBeenCalledWith('Content-Type', 'image/png');
     expect(setHeader).toHaveBeenCalledWith(
       'Cache-Control',
-      'public, max-age=31536000, immutable'
+      'public, max-age=31536000, s-maxage=31536000, immutable'
     );
     expect(status).toHaveBeenCalledWith(200);
     expect(end).toHaveBeenCalledWith(image);
@@ -84,6 +84,51 @@ describe('static-map API handler', () => {
     );
     expect(status).toHaveBeenCalledWith(502);
     expect(json).toHaveBeenCalledWith({ error: 'Static map unavailable' });
+  });
+
+  it('responds 502 without caching when reading the upstream image fails', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      arrayBuffer: () => Promise.reject(new Error('connection closed')),
+      headers: new Headers({ 'content-type': 'image/png' }),
+      ok: true,
+    }) as unknown as typeof fetch;
+
+    const { json, req, res, setHeader, status } = createMockApiContext(
+      undefined,
+      { method: 'GET' }
+    );
+
+    await handler(req, res);
+
+    expect(setHeader).toHaveBeenCalledWith(
+      'Cache-Control',
+      'private, no-store'
+    );
+    expect(status).toHaveBeenCalledWith(502);
+    expect(json).toHaveBeenCalledWith({ error: 'Static map unavailable' });
+  });
+
+  it('rejects query parameters without calling the upstream API', async () => {
+    const fetchMock = jest.fn();
+
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { json, req, res, setHeader, status } = createMockApiContext(
+      undefined,
+      { method: 'GET', query: { cacheBust: '1' } }
+    );
+
+    await handler(req, res);
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(setHeader).toHaveBeenCalledWith(
+      'Cache-Control',
+      'private, no-store'
+    );
+    expect(status).toHaveBeenCalledWith(400);
+    expect(json).toHaveBeenCalledWith({
+      error: 'Query parameters are not allowed',
+    });
   });
 
   it('rejects non-GET methods without calling the upstream API', async () => {

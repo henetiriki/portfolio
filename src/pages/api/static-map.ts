@@ -3,6 +3,10 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 type ApiError = { error: string };
 
+const ONE_YEAR_IN_SECONDS = 31536000;
+const NO_STORE_CACHE_CONTROL = 'private, no-store';
+const STATIC_MAP_CACHE_CONTROL = `public, max-age=${ONE_YEAR_IN_SECONDS}, s-maxage=${ONE_YEAR_IN_SECONDS}, immutable`;
+
 const upstreamUrl = () =>
   `https://maps.googleapis.com/maps/api/staticmap?${new URLSearchParams({
     center: STATIC_MAP_CENTER,
@@ -19,39 +23,41 @@ const handler = async (
 ) => {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
-    res.setHeader('Cache-Control', 'private, no-store');
+    res.setHeader('Cache-Control', NO_STORE_CACHE_CONTROL);
     res.status(405).json({ error: 'Method not allowed' });
 
     return;
   }
 
-  let upstreamResponse: Response;
+  if (Object.keys(req.query ?? {}).length > 0) {
+    res.setHeader('Cache-Control', NO_STORE_CACHE_CONTROL);
+    res.status(400).json({ error: 'Query parameters are not allowed' });
+
+    return;
+  }
+
+  let contentType: string;
+  let image: Buffer;
 
   try {
-    upstreamResponse = await fetch(upstreamUrl());
+    const upstreamResponse = await fetch(upstreamUrl());
+
+    if (!upstreamResponse.ok) {
+      throw new Error('Static map request failed');
+    }
+
+    contentType = upstreamResponse.headers.get('content-type') ?? 'image/png';
+    image = Buffer.from(await upstreamResponse.arrayBuffer());
   } catch {
     console.error('Static map request failed');
-    res.setHeader('Cache-Control', 'private, no-store');
+    res.setHeader('Cache-Control', NO_STORE_CACHE_CONTROL);
     res.status(502).json({ error: 'Static map unavailable' });
 
     return;
   }
 
-  if (!upstreamResponse.ok) {
-    console.error('Static map request failed');
-    res.setHeader('Cache-Control', 'private, no-store');
-    res.status(502).json({ error: 'Static map unavailable' });
-
-    return;
-  }
-
-  const image = Buffer.from(await upstreamResponse.arrayBuffer());
-
-  res.setHeader(
-    'Content-Type',
-    upstreamResponse.headers.get('content-type') ?? 'image/png'
-  );
-  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+  res.setHeader('Content-Type', contentType);
+  res.setHeader('Cache-Control', STATIC_MAP_CACHE_CONTROL);
   res.status(200).end(image);
 };
 

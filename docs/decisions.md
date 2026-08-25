@@ -12,6 +12,24 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260825g — Pin every GitHub Action reference to a verified release SHA
+
+- **Status:** Accepted
+- **Decided:** 2026-08-25
+
+**The initial pinning pass covered only `update-visual-baselines.yml`, because its commit job holds `contents: write`; review correctly noted that the remaining version tags in `ci.yml` and `maps-smoke.yml` still leave a supply-chain integrity gap.** Their permissions are deliberately narrow, but a mutable action tag can still execute unreviewed code in the CI environment and access the credentials granted to that job, including CI's Codecov OIDC token.
+
+**Every `uses:` reference in the three workflows is now a verified full SHA with a trailing `# vN` comment.** That preserves human-readable release intent and lets Dependabot's existing GitHub Actions updates continue to propose the corresponding immutable-pin changes, while making every checked-in reference immutable between updates.
+
+## D-260825f — Cache and canonicalise the static-map proxy before it can be abused as an upstream request amplifier
+
+- **Status:** Accepted
+- **Decided:** 2026-08-25
+
+**Review of the first static-map proxy found that its `Cache-Control` header only set browser `max-age`, not the `s-maxage` Vercel Functions require before the CDN caches a dynamic response.** A new visitor — or a direct request that ignores its browser cache — would therefore execute the API route and generate another paid Maps Static API request. The route accepts no input, but a public fixed proxy must still be cheap at the edge before that fixedness is a useful defence.
+
+**Successful responses now set both one-year `max-age` and `s-maxage`, making the canonical response cacheable in both the browser and Vercel's CDN.** Requests with any query parameter receive an uncached 400 response before the upstream request, so a caller cannot construct a distinct cache key such as `/api/static-map?cacheBust=...` to force more origin work. Upstream body-read failures now also follow the existing fixed, uncached 502 path rather than escaping as an unhandled function error.
+
 ## D-260825e — Check `intersectionRatio` against the threshold in `useIntersectedOnce`, not `isIntersecting`
 
 - **Status:** Accepted

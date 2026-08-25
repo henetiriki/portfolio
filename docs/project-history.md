@@ -2,6 +2,14 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-25 — Pin every CI and production-smoke GitHub Action to its release SHA
+
+- **`ci.yml` and `maps-smoke.yml` now use verified, full commit SHAs for every action, matching the visual-baseline updater.** This completes the defence-in-depth follow-up after the write-capable workflow was pinned first: GitHub Actions tags are mutable, so a SHA is the only reviewed, immutable action reference. The trailing `# vN` comments retain the release name for review and Dependabot. See [D-260825g](decisions.md#d-260825g--pin-every-github-action-reference-to-a-verified-release-sha).
+
+## 2026-08-25 — Harden the static-map proxy against paid upstream request amplification
+
+- **`/api/static-map` now caches its fixed image at both the browser and Vercel CDN for a year, using `max-age` and `s-maxage`.** The first proxy version set browser caching only, which left every new or direct request to execute the function and spend a Maps Static API request. It also rejects query parameters before contacting Google, so cache-busting URLs cannot turn the fixed proxy into an origin-work multiplier. Upstream body-read failures now also return the same uncached 502 response as other upstream failures. See [D-260825f](decisions.md#d-260825f--cache-and-canonicalise-the-static-map-proxy-before-it-can-be-abused-as-an-upstream-request-amplifier).
+
 ## 2026-08-25 — Fix `useIntersectedOnce` checking `isIntersecting` instead of the configured threshold
 
 - **`useIntersectedOnce`'s observer callback now checks `entry.intersectionRatio >= threshold`, not `entry.isIntersecting`.** `isIntersecting` is true at any ratio above zero, not only once the configured threshold is reached, so `MapWrapper`'s `0.8` gate could latch as soon as the map was barely on screen rather than mostly visible. See [D-260825e](decisions.md#d-260825e--check-intersectionratio-against-the-threshold-in-useintersectedonce-not-isintersecting).

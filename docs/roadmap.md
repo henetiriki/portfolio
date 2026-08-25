@@ -14,8 +14,6 @@ Last reviewed: 2026-08-16.
 
 ## CI & security hardening
 
-- [ ] **Pin `ci.yml` and `maps-smoke.yml`'s `actions/*` references to commit SHAs, matching `update-visual-baselines.yml`.** Neither workflow currently grants `contents: write`, so this is defence in depth rather than closing an active gap — see [D-260825d](decisions.md#d-260825d--pin-update-visual-baselinesymls-actions-to-commit-shas-not-the-rest-of-the-repo-yet).
-
 - [ ] **Upgrade ESLint off `9.39.5`.** `yarn npm audit --all` flags it as a deprecated, no-longer-supported version (moderate severity); it's a development-only dependency so there's no production exposure, but it's currently excluded from Dependabot's automated major-version updates (see `.github/dependabot.yml`'s `ignore` list) pending a coordinated config/plugin compatibility pass.
 
 ## Performance, SEO & platform polish
