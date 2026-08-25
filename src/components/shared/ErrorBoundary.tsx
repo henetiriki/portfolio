@@ -1,4 +1,5 @@
 import { Button, Flex, Title } from '@mantine/core';
+import { IconRefresh } from '@tabler/icons-react';
 import { Component } from 'react';
 import type { PropsWithChildren, ReactNode } from 'react';
 
@@ -37,12 +38,17 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
             gap='md'
             h='100vh'
             justify='center'
+            px='md'
             w='100vw'>
             <Title order={4}>Oops, something went wrong!</Title>
             <Button
+              color='shamrock.4'
+              leftSection={<IconRefresh size={21} />}
               onClick={() => window.location.reload()}
               radius='lg'
-              variant='outline'>
+              size='lg'
+              variant='outline'
+              w={{ base: '100%', md: '25%', sm: '35%' }}>
               Reload page
             </Button>
           </Flex>

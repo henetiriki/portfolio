@@ -1,4 +1,5 @@
 import { Box, Button, Container, Space, Text, Title } from '@mantine/core';
+import { IconRefresh } from '@tabler/icons-react';
 import classes from './Map.module.css';
 import type { FC } from 'react';
 
@@ -9,9 +10,13 @@ export const MapError: FC = () => (
       <Text>The map failed to load - please try again later.</Text>
       <Space h='md' />
       <Button
+        color='shamrock.4'
+        leftSection={<IconRefresh size={21} />}
         onClick={() => window.location.reload()}
         radius='lg'
-        variant='outline'>
+        size='lg'
+        variant='outline'
+        w={{ base: '100%', md: '25%', sm: '35%' }}>
         Reload page
       </Button>
     </Container>
