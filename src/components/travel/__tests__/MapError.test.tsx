@@ -1,6 +1,6 @@
 import mapClasses from '@components/travel/Map.module.css';
 import { MapError } from '@components/travel/MapError';
-import { render, screen } from '@utils/test/render';
+import { fireEvent, render, screen } from '@utils/test/render';
 
 describe('MapError', () => {
   it('renders the fallback heading and message', () => {
@@ -18,5 +18,13 @@ describe('MapError', () => {
     expect(
       container.querySelector(`.${mapClasses.mapContainer}`)
     ).toBeInTheDocument();
+  });
+
+  it('renders a reload button and clicking it does not throw', () => {
+    render(<MapError />);
+
+    expect(() =>
+      fireEvent.click(screen.getByRole('button', { name: 'Reload page' }))
+    ).not.toThrow();
   });
 });

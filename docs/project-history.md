@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-25 — Stop logging raw errors from `ErrorBoundary`, and add a reload button to both its fallbacks
+
+- **`ErrorBoundary.componentDidCatch` now logs a fixed diagnostic (`error.name`), not the raw `error`/`errorInfo`.** The map-scoped boundary can catch a Google Maps SDK failure whose message embeds a request URL, potentially carrying the client-exposed API key. See [D-260825h](decisions.md#d-260825h--log-a-fixed-diagnostic-from-errorboundary-and-give-both-its-fallbacks-a-reload-button).
+- **Both `ErrorBoundary`'s default fallback and `MapError` now include a "Reload page" button.** `hasError` is never reset on its own, and a page reload is the only thing that reliably clears the broken SDK state a map crash leaves behind.
+- **`docs/styling-theming.md` and `docs/components.md` corrected to match `_document.tsx`'s actual `data-mantine-color-scheme` attribute** (Mantine's `<ColorSchemeScript>` was dropped when `'unsafe-inline'` left `script-src`, but the styling doc still described the old setup) and `ErrorBoundary`/`MapError`'s current logging and fallback content.
+
 ## 2026-08-25 — Pin every CI and production-smoke GitHub Action to its release SHA
 
 - **`ci.yml` and `maps-smoke.yml` now use verified, full commit SHAs for every action, matching the visual-baseline updater.** This completes the defence-in-depth follow-up after the write-capable workflow was pinned first: GitHub Actions tags are mutable, so a SHA is the only reviewed, immutable action reference. The trailing `# vN` comments retain the release name for review and Dependabot. See [D-260825g](decisions.md#d-260825g--pin-every-github-action-reference-to-a-verified-release-sha).

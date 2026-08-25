@@ -1,4 +1,4 @@
-import { Box, Container, Text, Title } from '@mantine/core';
+import { Box, Button, Container, Space, Text, Title } from '@mantine/core';
 import classes from './Map.module.css';
 import type { FC } from 'react';
 
@@ -7,6 +7,13 @@ export const MapError: FC = () => (
     <Container px={{ base: 0, xs: 'md' }}>
       <Title order={2}>Something’s gone wrong</Title>
       <Text>The map failed to load - please try again later.</Text>
+      <Space h='md' />
+      <Button
+        onClick={() => window.location.reload()}
+        radius='lg'
+        variant='outline'>
+        Reload page
+      </Button>
     </Container>
   </Box>
 );
