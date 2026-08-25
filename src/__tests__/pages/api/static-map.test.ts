@@ -2,10 +2,25 @@ import handler from '@pages/api/static-map';
 import { createMockApiContext } from '@utils/test/apiContext';
 
 const originalFetch = global.fetch;
+const originalGoogleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
+const originalGoogleMapsStaticMapId = process.env.GOOGLE_MAPS_STATIC_MAP_ID;
 
 describe('static-map API handler', () => {
   afterEach(() => {
     global.fetch = originalFetch;
+
+    if (originalGoogleMapsApiKey === undefined) {
+      delete process.env.GOOGLE_MAPS_API_KEY;
+    } else {
+      process.env.GOOGLE_MAPS_API_KEY = originalGoogleMapsApiKey;
+    }
+
+    if (originalGoogleMapsStaticMapId === undefined) {
+      delete process.env.GOOGLE_MAPS_STATIC_MAP_ID;
+    } else {
+      process.env.GOOGLE_MAPS_STATIC_MAP_ID = originalGoogleMapsStaticMapId;
+    }
+
     jest.restoreAllMocks();
   });
 
@@ -63,6 +78,38 @@ describe('static-map API handler', () => {
     );
     expect(status).toHaveBeenCalledWith(502);
     expect(json).toHaveBeenCalledWith({ error: 'Static map unavailable' });
+  });
+
+  it('falls back to empty configuration values and the PNG type', async () => {
+    const image = Buffer.from('fake-png-bytes');
+    const imageArrayBuffer = image.buffer.slice(
+      image.byteOffset,
+      image.byteOffset + image.byteLength
+    );
+    const fetchMock = jest.fn().mockResolvedValue({
+      arrayBuffer: () => Promise.resolve(imageArrayBuffer),
+      headers: new Headers(),
+      ok: true,
+    });
+
+    delete process.env.GOOGLE_MAPS_API_KEY;
+    delete process.env.GOOGLE_MAPS_STATIC_MAP_ID;
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { end, req, res, setHeader, status } = createMockApiContext(
+      undefined,
+      { method: 'GET' }
+    );
+
+    await handler(req, res);
+
+    const requestedUrl = new URL(fetchMock.mock.calls[0]?.[0] as string);
+
+    expect(requestedUrl.searchParams.get('key')).toBe('');
+    expect(requestedUrl.searchParams.get('map_id')).toBe('');
+    expect(setHeader).toHaveBeenCalledWith('Content-Type', 'image/png');
+    expect(status).toHaveBeenCalledWith(200);
+    expect(end).toHaveBeenCalledWith(image);
   });
 
   it('responds 502 without caching when the upstream response is not ok', async () => {
