@@ -69,10 +69,15 @@ jest.mock('../index', () => ({
 
 let intersectionCallback: IntersectionObserverCallback | undefined;
 
-const triggerIntersection = (isIntersecting: boolean) => {
+const triggerIntersection = (intersectionRatio: number) => {
   act(() => {
     intersectionCallback?.(
-      [{ isIntersecting } as IntersectionObserverEntry],
+      [
+        {
+          intersectionRatio,
+          isIntersecting: intersectionRatio > 0,
+        } as IntersectionObserverEntry,
+      ],
       {} as IntersectionObserver
     );
   });
@@ -83,7 +88,7 @@ const reportMapReady = () => {
 };
 
 const startLayers = () => {
-  triggerIntersection(true);
+  triggerIntersection(0.8);
   reportMapReady();
 };
 
@@ -148,7 +153,7 @@ describe('MapWrapper', () => {
   it('waits for base-map readiness after the map becomes visible', () => {
     render(<MapWrapper />);
 
-    triggerIntersection(true);
+    triggerIntersection(0.8);
     expect(screen.queryAllByTestId('marker')).toHaveLength(0);
 
     reportMapReady();
@@ -165,7 +170,7 @@ describe('MapWrapper', () => {
     reportMapReady();
     expect(screen.queryAllByTestId('marker')).toHaveLength(0);
 
-    triggerIntersection(true);
+    triggerIntersection(0.8);
 
     expect(screen.getAllByTestId('marker').length).toBeGreaterThan(
       cities.length
@@ -176,7 +181,7 @@ describe('MapWrapper', () => {
   it('keeps the map layers mounted after the first intersection', () => {
     render(<MapWrapper />);
     startLayers();
-    triggerIntersection(false);
+    triggerIntersection(0);
 
     expect(screen.getAllByTestId('marker').length).toBeGreaterThan(
       cities.length

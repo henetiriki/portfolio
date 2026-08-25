@@ -1,0 +1,199 @@
+import handler from '@pages/api/static-map';
+import { createMockApiContext } from '@utils/test/apiContext';
+
+const originalFetch = global.fetch;
+const originalGoogleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
+const originalGoogleMapsStaticMapId = process.env.GOOGLE_MAPS_STATIC_MAP_ID;
+
+describe('static-map API handler', () => {
+  afterEach(() => {
+    global.fetch = originalFetch;
+
+    if (originalGoogleMapsApiKey === undefined) {
+      delete process.env.GOOGLE_MAPS_API_KEY;
+    } else {
+      process.env.GOOGLE_MAPS_API_KEY = originalGoogleMapsApiKey;
+    }
+
+    if (originalGoogleMapsStaticMapId === undefined) {
+      delete process.env.GOOGLE_MAPS_STATIC_MAP_ID;
+    } else {
+      process.env.GOOGLE_MAPS_STATIC_MAP_ID = originalGoogleMapsStaticMapId;
+    }
+
+    jest.restoreAllMocks();
+  });
+
+  it('proxies the upstream image without exposing the API key to the client', async () => {
+    const image = Buffer.from('fake-png-bytes');
+    // Buffer.from(string) can return a view into a shared, larger pooled
+    // ArrayBuffer, so the mock must slice out exactly this Buffer's own
+    // range rather than handing back the whole underlying pool.
+    const imageArrayBuffer = image.buffer.slice(
+      image.byteOffset,
+      image.byteOffset + image.byteLength
+    );
+    const fetchMock = jest.fn().mockResolvedValue({
+      arrayBuffer: () => Promise.resolve(imageArrayBuffer),
+      headers: new Headers({ 'content-type': 'image/png' }),
+      ok: true,
+    });
+
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { end, req, res, setHeader, status } = createMockApiContext(
+      undefined,
+      { method: 'GET' }
+    );
+
+    await handler(req, res);
+
+    const requestedUrl = fetchMock.mock.calls[0]?.[0] as string;
+
+    expect(requestedUrl).toContain('maps.googleapis.com/maps/api/staticmap');
+    expect(setHeader).toHaveBeenCalledWith('Content-Type', 'image/png');
+    expect(setHeader).toHaveBeenCalledWith(
+      'Cache-Control',
+      'public, max-age=31536000, s-maxage=31536000, immutable'
+    );
+    expect(status).toHaveBeenCalledWith(200);
+    expect(end).toHaveBeenCalledWith(image);
+  });
+
+  it('responds 502 without caching when the upstream request fails outright', async () => {
+    global.fetch = jest
+      .fn()
+      .mockRejectedValue(new Error('network down')) as unknown as typeof fetch;
+
+    const { json, req, res, setHeader, status } = createMockApiContext(
+      undefined,
+      { method: 'GET' }
+    );
+
+    await handler(req, res);
+
+    expect(setHeader).toHaveBeenCalledWith(
+      'Cache-Control',
+      'private, no-store'
+    );
+    expect(status).toHaveBeenCalledWith(502);
+    expect(json).toHaveBeenCalledWith({ error: 'Static map unavailable' });
+  });
+
+  it('falls back to empty configuration values and the PNG type', async () => {
+    const image = Buffer.from('fake-png-bytes');
+    const imageArrayBuffer = image.buffer.slice(
+      image.byteOffset,
+      image.byteOffset + image.byteLength
+    );
+    const fetchMock = jest.fn().mockResolvedValue({
+      arrayBuffer: () => Promise.resolve(imageArrayBuffer),
+      headers: new Headers(),
+      ok: true,
+    });
+
+    delete process.env.GOOGLE_MAPS_API_KEY;
+    delete process.env.GOOGLE_MAPS_STATIC_MAP_ID;
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { end, req, res, setHeader, status } = createMockApiContext(
+      undefined,
+      { method: 'GET' }
+    );
+
+    await handler(req, res);
+
+    const requestedUrl = new URL(fetchMock.mock.calls[0]?.[0] as string);
+
+    expect(requestedUrl.searchParams.get('key')).toBe('');
+    expect(requestedUrl.searchParams.get('map_id')).toBe('');
+    expect(setHeader).toHaveBeenCalledWith('Content-Type', 'image/png');
+    expect(status).toHaveBeenCalledWith(200);
+    expect(end).toHaveBeenCalledWith(image);
+  });
+
+  it('responds 502 without caching when the upstream response is not ok', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      headers: new Headers(),
+      ok: false,
+    }) as unknown as typeof fetch;
+
+    const { json, req, res, setHeader, status } = createMockApiContext(
+      undefined,
+      { method: 'GET' }
+    );
+
+    await handler(req, res);
+
+    expect(setHeader).toHaveBeenCalledWith(
+      'Cache-Control',
+      'private, no-store'
+    );
+    expect(status).toHaveBeenCalledWith(502);
+    expect(json).toHaveBeenCalledWith({ error: 'Static map unavailable' });
+  });
+
+  it('responds 502 without caching when reading the upstream image fails', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      arrayBuffer: () => Promise.reject(new Error('connection closed')),
+      headers: new Headers({ 'content-type': 'image/png' }),
+      ok: true,
+    }) as unknown as typeof fetch;
+
+    const { json, req, res, setHeader, status } = createMockApiContext(
+      undefined,
+      { method: 'GET' }
+    );
+
+    await handler(req, res);
+
+    expect(setHeader).toHaveBeenCalledWith(
+      'Cache-Control',
+      'private, no-store'
+    );
+    expect(status).toHaveBeenCalledWith(502);
+    expect(json).toHaveBeenCalledWith({ error: 'Static map unavailable' });
+  });
+
+  it('rejects query parameters without calling the upstream API', async () => {
+    const fetchMock = jest.fn();
+
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { json, req, res, setHeader, status } = createMockApiContext(
+      undefined,
+      { method: 'GET', query: { cacheBust: '1' } }
+    );
+
+    await handler(req, res);
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(setHeader).toHaveBeenCalledWith(
+      'Cache-Control',
+      'private, no-store'
+    );
+    expect(status).toHaveBeenCalledWith(400);
+    expect(json).toHaveBeenCalledWith({
+      error: 'Query parameters are not allowed',
+    });
+  });
+
+  it('rejects non-GET methods without calling the upstream API', async () => {
+    const fetchMock = jest.fn();
+
+    global.fetch = fetchMock as unknown as typeof fetch;
+
+    const { json, req, res, setHeader, status } = createMockApiContext();
+
+    await handler(req, res);
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(setHeader).toHaveBeenCalledWith('Allow', 'GET');
+    expect(setHeader).toHaveBeenCalledWith(
+      'Cache-Control',
+      'private, no-store'
+    );
+    expect(status).toHaveBeenCalledWith(405);
+    expect(json).toHaveBeenCalledWith({ error: 'Method not allowed' });
+  });
+});

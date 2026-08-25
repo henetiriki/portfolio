@@ -2,6 +2,29 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-25 — Pin every CI and production-smoke GitHub Action to its release SHA
+
+- **`ci.yml` and `maps-smoke.yml` now use verified, full commit SHAs for every action, matching the visual-baseline updater.** This completes the defence-in-depth follow-up after the write-capable workflow was pinned first: GitHub Actions tags are mutable, so a SHA is the only reviewed, immutable action reference. The trailing `# vN` comments retain the release name for review and Dependabot. See [D-260825g](decisions.md#d-260825g--pin-every-github-action-reference-to-a-verified-release-sha).
+
+## 2026-08-25 — Harden the static-map proxy against paid upstream request amplification
+
+- **`/api/static-map` now caches its fixed image at both the browser and Vercel CDN for a year, using `max-age` and `s-maxage`.** The first proxy version set browser caching only, which left every new or direct request to execute the function and spend a Maps Static API request. It also rejects query parameters before contacting Google, so cache-busting URLs cannot turn the fixed proxy into an origin-work multiplier. Upstream body-read failures now also return the same uncached 502 response as other upstream failures. See [D-260825f](decisions.md#d-260825f--cache-and-canonicalise-the-static-map-proxy-before-it-can-be-abused-as-an-upstream-request-amplifier).
+
+## 2026-08-25 — Fix `useIntersectedOnce` checking `isIntersecting` instead of the configured threshold
+
+- **`useIntersectedOnce`'s observer callback now checks `entry.intersectionRatio >= threshold`, not `entry.isIntersecting`.** `isIntersecting` is true at any ratio above zero, not only once the configured threshold is reached, so `MapWrapper`'s `0.8` gate could latch as soon as the map was barely on screen rather than mostly visible. See [D-260825e](decisions.md#d-260825e--check-intersectionratio-against-the-threshold-in-useintersectedonce-not-isintersecting).
+- **Both `useIntersectedOnce.test.ts` and `MapWrapper.test.tsx`'s hand-written `IntersectionObserver` mocks now set `intersectionRatio` alongside `isIntersecting`**, and a new regression test asserts that `isIntersecting: true` below the threshold does not set `hasIntersected` — the gap the previous mocks could not have caught.
+
+## 2026-08-25 — Pin the visual-baseline-updater workflow's actions to commit SHAs
+
+- **`update-visual-baselines.yml`'s five `actions/*` references are now pinned to commit SHAs (`# vN` comment retained for readability)**, rather than mutable version tags, after a review flagged that its `commit` job holds `contents: write` while still using tags. Dependabot's existing `github-actions` group continues to track and bump the pinned SHAs. See [D-260825d](decisions.md#d-260825d--pin-update-visual-baselinesymls-actions-to-commit-shas-not-the-rest-of-the-repo-yet).
+- **`ci.yml` and `maps-smoke.yml` were deliberately left on tags** — neither grants `contents: write` — with pinning them tracked separately in the roadmap.
+
+## 2026-08-25 — Proxy the travel page's static map request through an API route
+
+- **The Maps API key no longer appears in the loading placeholder's `<img>` `src`.** A review of the week's commits caught that `staticMapUrl` embedded the client-exposed key in a plain, unsigned Google Static Maps URL — a working credential for a second billable Google API, copy-pasteable straight out of page source. `pages/api/static-map.ts` now fetches that fixed image server-side with the raw `GOOGLE_MAPS_API_KEY`/`GOOGLE_MAPS_STATIC_MAP_ID` and streams it back; `staticMapUrl` is the fixed local path `/api/static-map`, cached `public, max-age=31536000, immutable`. See [D-260825c](decisions.md#d-260825c--proxy-the-static-map-request-through-an-api-route-instead-of-a-client-visible-google-url).
+- **`next.config.js` no longer re-exposes `NEXT_PUBLIC_GOOGLE_MAPS_STATIC_MAP_ID` or allow-lists `maps.googleapis.com/maps/api/staticmap`** under `images.remotePatterns`, since the client now only ever requests the same-origin proxy path.
+
 ## 2026-08-25 — Extract `MapWrapper`'s intersection and layer-completion tracking into hooks
 
 - **Two new hooks in `src/hooks/`: `useIntersectedOnce` and `useLayerCompletion`.** `MapWrapper` previously carried both concerns as inline state, refs and effects alongside its own map-specific rendering logic. `useIntersectedOnce(threshold)` is a small, fully generic "has this element intersected the viewport once" hook; `useLayerCompletion({ expectedLayerIds, layersStarted, railTripsSettled })` tracks completion of an arbitrary set of IDs and is the piece `MapWrapper` used to track every marker/polyline's `onRendered` callback. Both are pure extractions — `MapWrapper`'s own existing behavioural tests pass unchanged against the refactored component — and each now also has direct, isolated unit tests rather than being exercised only indirectly through `MapWrapper`'s full render/click behaviour.

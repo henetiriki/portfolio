@@ -140,8 +140,6 @@ const baseConfig = withBotId({
   env: {
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
     NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID: process.env.GOOGLE_MAPS_MAP_ID,
-    NEXT_PUBLIC_GOOGLE_MAPS_STATIC_MAP_ID:
-      process.env.GOOGLE_MAPS_STATIC_MAP_ID,
     NEXT_PUBLIC_IMAGE_HOST: process.env.IMAGE_HOST,
     NEXT_PUBLIC_LAST_MODIFIED: lastModified,
     NEXT_PUBLIC_SITE_URL: process.env.HOST,
@@ -169,11 +167,6 @@ const baseConfig = withBotId({
         hostname: process.env.IMAGE_HOST_NAME,
         pathname: `/${process.env.IMAGE_HOST_PATH}/*`,
         protocol: process.env.IMAGE_HOST_PROTOCOL,
-      },
-      {
-        hostname: 'maps.googleapis.com',
-        pathname: '/maps/api/staticmap',
-        protocol: 'https',
       },
     ],
   },
