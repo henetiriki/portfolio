@@ -2,6 +2,11 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-25 — Fix a caught render error crashing the whole app instead of showing the fallback
+
+- **`_app.tsx` now nests `ErrorBoundary` inside `MantineProvider`, not the other way round.** With the old order, catching an error replaced the entire Mantine tree with `ErrorBoundary`'s own fallback, which itself renders a Mantine `Title` — throwing a second, uncaught "MantineProvider was not found" error and escaping to Next's raw crash page instead of the intended "Oops" message. See [D-260825b](decisions.md#d-260825b--nest-errorboundary-inside-mantineprovider-not-the-other-way-round).
+- **A new `ErrorBoundary` test renders through the raw Testing Library `render`, composed in the corrected order**, rather than relying on the existing test helper that unconditionally wraps every test in `MantineProvider` regardless of the app's real composition — the reason the bug shipped undetected.
+
 ## 2026-08-25 — Blurred static-map placeholder for the travel page
 
 - **The `/travel` map no longer shows a flat, empty container while Google's vector tiles load.** `Map` now overlays a blurred Maps Static API image over `#map`, faded out once the existing `tilesloaded`-driven `mapRendered` flag goes true. See [D-260825a](decisions.md#d-260825a--blur-the-real-static-map-for-the-travel-pages-loading-placeholder-on-a-second-raster-map-id) for why it needs its own raster Map ID, why the request is one fixed-size image rather than per-viewport, and why the zoom (and the blur technique) went through a wrong first attempt before landing here.

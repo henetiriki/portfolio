@@ -37,8 +37,8 @@ const Portfolio: NextPage<AppProps> = ({
       <Head>
         <meta content='width=device-width, initial-scale=1' name='viewport' />
       </Head>
-      <ErrorBoundary>
-        <MantineProvider forceColorScheme='dark' theme={theme}>
+      <MantineProvider forceColorScheme='dark' theme={theme}>
+        <ErrorBoundary>
           <BotIdInitializer />
           <Box
             bd={0}
@@ -55,8 +55,8 @@ const Portfolio: NextPage<AppProps> = ({
             </PortfolioStateProvider>
           </Box>
           <Notifications position='bottom-center' />
-        </MantineProvider>
-      </ErrorBoundary>
+        </ErrorBoundary>
+      </MantineProvider>
       <Analytics />
       <SpeedInsights />
     </>
