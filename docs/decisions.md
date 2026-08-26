@@ -12,6 +12,15 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260826a — Clip the travel map placeholder to its container
+
+- **Status:** Accepted
+- **Decided:** 2026-08-26
+
+[D-260825a](#d-260825a--blur-the-real-static-map-for-the-travel-pages-loading-placeholder-on-a-second-raster-map-id) scaled the blurred placeholder image `1.1×` to keep `filter: blur(12px)`'s edge sampling inside the element, on the stated assumption that `.mapContainer`'s own background would cover whatever the scaled image didn't. That assumption only holds if the container clips its contents — it didn't, so the oversized image painted past `.mapContainer` and the page itself on narrow viewports, and the browser grew a horizontal scrollbar to match. The static map image and the elements after it (the wave, footer) all remained reachable by scrolling sideways.
+
+Added `overflow: hidden` to `.mapContainer`. The scaled placeholder is now clipped to the container it was always meant to stay inside, matching what the original decision described rather than what the CSS actually did. See [Travel / Google Maps Feature](travel-feature.md#loading-placeholder).
+
 ## D-260825h — Log a fixed diagnostic from `ErrorBoundary`, and give both its fallbacks a reload button
 
 - **Status:** Accepted

@@ -2,6 +2,10 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-26 — Fix a horizontal scroll on `/travel`
+
+- **`.mapContainer` now has `overflow: hidden`.** The blurred loading-placeholder image is deliberately scaled `1.1×` so its blur doesn't sample past the element's own edge, but the container never clipped that overflow — on narrow viewports the scaled image bled past the page edge and forced a page-wide horizontal scrollbar. See [D-260826a](decisions.md#d-260826a--clip-the-travel-map-placeholder-to-its-container).
+
 ## 2026-08-25 — Stop logging raw errors from `ErrorBoundary`, and add a reload button to both its fallbacks
 
 - **`ErrorBoundary.componentDidCatch` now logs a fixed diagnostic (`error.name`), not the raw `error`/`errorInfo`.** The map-scoped boundary can catch a Google Maps SDK failure whose message embeds a request URL, potentially carrying the client-exposed API key. See [D-260825h](decisions.md#d-260825h--log-a-fixed-diagnostic-from-errorboundary-and-give-both-its-fallbacks-a-reload-button).

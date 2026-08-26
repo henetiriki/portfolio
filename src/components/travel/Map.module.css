@@ -1,6 +1,7 @@
 .mapContainer {
   background-color: var(--mantine-color-black-russian-4);
   height: 65vh;
+  overflow: hidden;
   position: relative;
   width: 100%;
 }
