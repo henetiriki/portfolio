@@ -2,7 +2,7 @@ import type { ErrorMessage } from '@fixtures/types';
 import type { JSX } from 'react';
 
 export const genericError: JSX.Element = (
-  <>Something unexpected happened - please try again later...</>
+  <>Something unexpected happened — please try again later...</>
 );
 const disallowedChars: JSX.Element = (
   <>

@@ -25,7 +25,7 @@ const Travel: NextPage = (): JSX.Element => (
         Places I’ve been
         <span>
           “you have brains in your head. you have feet in your shoes. you can
-          steer yourself any direction you choose.” - dr. seuss
+          steer yourself any direction you choose.” — dr. seuss
         </span>
       </Header>
       <Content waveBottom={false}>

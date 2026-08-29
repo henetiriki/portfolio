@@ -7,7 +7,7 @@ export const MapError: FC = () => (
   <Box className={classes.mapContainer} p={{ base: '2rem 1.5rem', xs: '4rem' }}>
     <Container px={{ base: 0, xs: 'md' }}>
       <Title order={2}>Something’s gone wrong</Title>
-      <Text>The map failed to load - please try again later.</Text>
+      <Text>The map failed to load — please try again later.</Text>
       <Space h='md' />
       <Button
         color='shamrock.4'

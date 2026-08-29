@@ -56,7 +56,7 @@ test.describe('content routes', () => {
       .scrollIntoViewIfNeeded();
 
     await expect(
-      page.getByText('The map failed to load - please try again later.')
+      page.getByText('The map failed to load — please try again later.')
     ).toBeVisible({ timeout: 15_000 });
   });
 });
