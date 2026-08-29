@@ -120,8 +120,8 @@ export const jobs: Job[] = [
     content: (
       <>
         <Text component='p'>
-          Worked in a team tasked with replacing a bespoke BNZ deposit and home
-          lending pricing application.
+          I worked in a team tasked with replacing a bespoke BNZ deposit and
+          home lending pricing application.
         </Text>
         <Text component='p'>
           The <b>React</b> UI, built using BNZ’s mini-app (
@@ -219,7 +219,7 @@ export const jobs: Job[] = [
           an <b>Auto Delivery</b> service.
         </Text>
         <Text component='p'>
-          The <b>E-commerce platform</b> used a variety of technologies,
+          The <b>e-commerce platform</b> used a variety of technologies,
           including <b>Preact</b>. CI/CD consisted of a combination of{' '}
           <b>Jenkins</b> and <b>GitHub Actions</b>. The stack ran on{' '}
           <b>Google Cloud Platform</b>.
@@ -338,12 +338,12 @@ export const jobs: Job[] = [
     content: (
       <>
         <Text component='p'>
-          I joined Stuff (Fairfax Media) as a <b>Full-Stack Engineer</b> in
+          I joined Stuff (Fairfax Media) as a <b>Full-stack Engineer</b> in
           September 2017, and worked in a team focused on building a new
           curation tool to satisfy several specific editorial tasks.
         </Text>
         <Text component='p'>
-          The application was written in <b>Typescript</b> using <b>Angular</b>{' '}
+          The application was written in <b>TypeScript</b> using <b>Angular</b>{' '}
           and the <b>Angular Material Framework</b> (including <b>Jasmine</b>{' '}
           Unit tests and <b>Protractor</b> E2E tests), served via a{' '}
           <b>Node.js</b> back-end, which interfaced with various Stuff APIs,
@@ -428,7 +428,7 @@ export const jobs: Job[] = [
           <b>
             <i>Westpac One&reg;</i>
           </b>
-          {''}.
+          .
         </Text>
         <Text component='p'>
           The server-side development environment was <b>Java</b>, while the
@@ -479,9 +479,9 @@ export const jobs: Job[] = [
         </Text>
         <Text component='p'>
           The development environment was <b>Java</b>, and frameworks and
-          technologies included <b>Spring MVC</b>, <b>JSP</b>, <b>JQuery</b>,{' '}
+          technologies included <b>Spring MVC</b>, <b>JSP</b>, <b>jQuery</b>,{' '}
           <b>RESTful</b> web services over <b>HTTP</b>, <b>JAX-WS/JAXB</b> web
-          services over <b>SOAP</b>,<b>Hibernate</b> and <b>PostgreSQL</b>.
+          services over <b>SOAP</b>, <b>Hibernate</b> and <b>PostgreSQL</b>.
         </Text>
         <Text component='p'>
           I mainly functioned within the Tax and Localisation team, which
@@ -523,7 +523,7 @@ export const jobs: Job[] = [
           <b>user interface elements</b> as well as <b>web services</b> and{' '}
           <b>back-end integrations</b> for a performance management platform
           (PPM) used in a variety of industries worldwide. The deployment of
-          this <b>multi-tier application</b> consisted of<b>Tomcat</b> &amp;{' '}
+          this <b>multi-tier application</b> consisted of <b>Tomcat</b> &amp;{' '}
           <b>JBoss</b> on the <b>Java EE</b> technology stack.
         </Text>
         <Text component='p'>

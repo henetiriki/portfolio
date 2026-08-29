@@ -18,7 +18,7 @@ import type { NextPage } from 'next';
 import type { JSX } from 'react';
 
 const seoDescription =
-  'Front-end and full-stack development experience since 2008 — React, Angular and Node.js roles across banking, government, media and ecommerce.';
+  'Front-end and full-stack development experience since 2008 — React, Angular and Node.js roles across banking, government, media and e-commerce.';
 
 const Experience: NextPage = (): JSX.Element => (
   <>
