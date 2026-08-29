@@ -59,6 +59,6 @@ describe('Footer', () => {
 
     const year = new Date().getFullYear().toString();
 
-    expect(screen.getByText(`2014 - ${year}`)).toBeInTheDocument();
+    expect(screen.getByText(`2014 – ${year}`)).toBeInTheDocument();
   });
 });
