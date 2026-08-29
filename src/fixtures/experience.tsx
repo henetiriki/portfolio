@@ -117,6 +117,24 @@ export const jobs: Job[] = [
     },
   },
   {
+    accomplishments: (
+      <>
+        <Title order={4} size='h5'>
+          Accomplishments
+        </Title>
+        <Text component='p'>
+          I implemented the role-based access control layer, mapping{' '}
+          <b>Active Directory</b> group membership to screen-level authorisation
+          for each user role.
+        </Text>
+        <Text component='p'>
+          I also drove the micro-front-end’s integration into BNZ’s mini-app
+          platform — leading the registration of its <b>Kong</b> API gateway
+          configuration, and working with the shell team to follow their
+          integration guidelines and documentation practices.
+        </Text>
+      </>
+    ),
     content: (
       <>
         <Text component='p'>
@@ -124,12 +142,12 @@ export const jobs: Job[] = [
           pricing application.
         </Text>
         <Text component='p'>
-          The <b>React</b> UI, built using BNZ’s mini-app (
-          <b>micro-front-end</b>) pattern, interfaced with a BNZ microservice,
-          which in turn integrated with an external system. The application
-          required <b>user access management</b> with different screens for
-          various user roles to be implemented via AD groups. Other technologies
-          included <b>TanStack query</b> (React query) and a bespoke UI library.
+          The <b>React</b> UI followed BNZ’s mini-app (<b>micro-front-end</b>)
+          pattern, composed into the host shell with its navigation entry gated
+          behind a <b>LaunchDarkly</b> flag for controlled rollout. It consumed
+          a BNZ microservice that in turn integrated with an external system.
+          Other technologies included <b>TanStack Query</b> (React Query) and a
+          bespoke component library.
         </Text>
       </>
     ),
