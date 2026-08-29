@@ -73,7 +73,7 @@ export const Footer: FC = (): JSX.Element => {
               target='_blank'>
               @henetiriki
             </Anchor>{' '}
-            <IconCopyright size={11} /> 2014 - {currentYear}
+            <IconCopyright size={11} /> 2014 – {currentYear}
           </Text>
         </Flex>
         <Flex align='center' justify='center'>

@@ -28,13 +28,10 @@ const Home: NextPage = (): JSX.Element => {
       <Seo description={description} path='/' title='Front-End Engineer' />
       <Container className={classes.hero} h='75vh' pt='30vh' ta='center'>
         <Container ta='center'>
-          <Title order={1} tt='uppercase'>
-            Louw Swart
+          <Title className={classes.heroTitle} order={1}>
+            Louw Swart<span>ex-flight attendant turned programmer</span>
           </Title>
-          <Text fz='lg' mt='xs'>
-            ex-flight attendant turned programmer
-          </Text>
-          <Title className={classes.subtitle} order={2} size='h4'>
+          <Title className={classes.subtitle} mt='xl' order={2} size='h4'>
             I’m {article}{' '}
             {reduceMotion ? (
               <span>front-end engineer</span>

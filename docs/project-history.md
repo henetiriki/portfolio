@@ -2,6 +2,13 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-29 — Give the site a consistent dash system
+
+- **Sentence and parenthetical dashes in user-facing copy now use the em-dash `—`**, matching the SEO descriptions, portfolio alt text and the logo, which already did. Spaced hyphens on the home page, the `/travel` header quote and the two "please try again later" error strings were replaced, with the `ContactForm`, `MapError` and `routes` assertions updated alongside.
+- **Numeric and date ranges use the en-dash `–`.** `TimelineFromTo` renders `{from} – {to}` and the footer shows `2014 – {currentYear}`; `Footer.test.tsx` and the `experience-work-history` visual baseline moved with it. This settles the range-dash question the first pass had left open in the roadmap.
+- **`railTrips.ts` route labels were made consistent with the file's own `->` arrow convention** rather than given a dash — six of the twenty-five `trip` annotations used `" - "`. Only `path` is rendered; `trip` is a source-only label.
+- The same pass also fixed two run-together bold spans and a handful of spellings in `experience.tsx`, tightened three entries, dropped the dead Wunderman Thompson link from the Quirk entry, and gave the 2025 BNZ contract an accomplishments block.
+
 ## 2026-08-26 — Fix a horizontal scroll on `/travel`
 
 - **`.mapContainer` now has `overflow: hidden`.** The blurred loading-placeholder image is deliberately scaled `1.1×` so its blur doesn't sample past the element's own edge, but the container never clipped that overflow — on narrow viewports the scaled image bled past the page edge and forced a page-wide horizontal scrollbar. See [D-260826a](decisions.md#d-260826a--clip-the-travel-map-placeholder-to-its-container).

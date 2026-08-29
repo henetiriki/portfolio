@@ -117,19 +117,38 @@ export const jobs: Job[] = [
     },
   },
   {
+    accomplishments: (
+      <>
+        <Title order={4} size='h5'>
+          Accomplishments
+        </Title>
+        <Text component='p'>
+          I implemented the role-based access control layer, mapping{' '}
+          <b>Active Directory</b> group membership to screen-level authorisation
+          for each user role.
+        </Text>
+        <Text component='p'>
+          I also drove the micro-front-end’s integration into BNZ’s mini-app
+          platform — leading the registration of its <b>Kong</b> API gateway
+          configuration, and working with the shell team to follow their
+          integration guidelines and documentation practices.
+        </Text>
+      </>
+    ),
     content: (
       <>
         <Text component='p'>
-          Worked in a team tasked with replacing a bespoke BNZ deposit and home
-          lending pricing application.
+          I worked in the team replacing BNZ’s bespoke deposit and home-lending
+          pricing application.
         </Text>
         <Text component='p'>
-          The <b>React</b> UI, built using BNZ’s mini-app (
-          <b>micro-front-end</b>) pattern, interfaced with a BNZ microservice,
-          which in turn integrated with an external system. The application
-          required <b>user access management</b> with different screens for
-          various user roles to be implemented via AD groups. Other technologies
-          included <b>TanStack query</b> (React query) and a bespoke UI library.
+          The <b>React</b> UI followed BNZ’s mini-app (<b>micro-front-end</b>)
+          pattern, composed into the host shell with its navigation entry gated
+          behind a <b>LaunchDarkly</b> flag for controlled rollout. It consumed
+          a BNZ <b>Spring Boot</b> microservice through a <b>Kong</b> API
+          gateway, and that service in turn integrated with an external system.
+          Other technologies included <b>TanStack Query</b> (React Query) and a
+          bespoke component library.
         </Text>
       </>
     ),
@@ -155,9 +174,9 @@ export const jobs: Job[] = [
           Accomplishments
         </Title>
         <Text component='p'>
-          I built a flexible and customisable template configuration setup that
-          will enable new data collection flows to be rolled out quickly in
-          future.
+          I built a template-driven configuration layer for the data collection
+          forms, so adding a new flow was a configuration change rather than new
+          code.
         </Text>
         <Text component='p'>
           I also assisted QA in setting up Playwright as the E2E test framework,
@@ -219,7 +238,7 @@ export const jobs: Job[] = [
           an <b>Auto Delivery</b> service.
         </Text>
         <Text component='p'>
-          The <b>E-commerce platform</b> used a variety of technologies,
+          The <b>e-commerce platform</b> used a variety of technologies,
           including <b>Preact</b>. CI/CD consisted of a combination of{' '}
           <b>Jenkins</b> and <b>GitHub Actions</b>. The stack ran on{' '}
           <b>Google Cloud Platform</b>.
@@ -338,12 +357,12 @@ export const jobs: Job[] = [
     content: (
       <>
         <Text component='p'>
-          I joined Stuff (Fairfax Media) as a <b>Full-Stack Engineer</b> in
+          I joined Stuff (Fairfax Media) as a <b>Full-stack Engineer</b> in
           September 2017, and worked in a team focused on building a new
           curation tool to satisfy several specific editorial tasks.
         </Text>
         <Text component='p'>
-          The application was written in <b>Typescript</b> using <b>Angular</b>{' '}
+          The application was written in <b>TypeScript</b> using <b>Angular</b>{' '}
           and the <b>Angular Material Framework</b> (including <b>Jasmine</b>{' '}
           Unit tests and <b>Protractor</b> E2E tests), served via a{' '}
           <b>Node.js</b> back-end, which interfaced with various Stuff APIs,
@@ -428,7 +447,7 @@ export const jobs: Job[] = [
           <b>
             <i>Westpac One&reg;</i>
           </b>
-          {''}.
+          .
         </Text>
         <Text component='p'>
           The server-side development environment was <b>Java</b>, while the
@@ -479,9 +498,9 @@ export const jobs: Job[] = [
         </Text>
         <Text component='p'>
           The development environment was <b>Java</b>, and frameworks and
-          technologies included <b>Spring MVC</b>, <b>JSP</b>, <b>JQuery</b>,{' '}
+          technologies included <b>Spring MVC</b>, <b>JSP</b>, <b>jQuery</b>,{' '}
           <b>RESTful</b> web services over <b>HTTP</b>, <b>JAX-WS/JAXB</b> web
-          services over <b>SOAP</b>,<b>Hibernate</b> and <b>PostgreSQL</b>.
+          services over <b>SOAP</b>, <b>Hibernate</b> and <b>PostgreSQL</b>.
         </Text>
         <Text component='p'>
           I mainly functioned within the Tax and Localisation team, which
@@ -523,7 +542,7 @@ export const jobs: Job[] = [
           <b>user interface elements</b> as well as <b>web services</b> and{' '}
           <b>back-end integrations</b> for a performance management platform
           (PPM) used in a variety of industries worldwide. The deployment of
-          this <b>multi-tier application</b> consisted of<b>Tomcat</b> &amp;{' '}
+          this <b>multi-tier application</b> consisted of <b>Tomcat</b> &amp;{' '}
           <b>JBoss</b> on the <b>Java EE</b> technology stack.
         </Text>
         <Text component='p'>
@@ -587,12 +606,7 @@ export const jobs: Job[] = [
     ),
     institution: {
       location: 'Cape Town, South Africa',
-      name: (
-        <>
-          Quirk <span>(now Wunderman Thompson)</span>
-        </>
-      ),
-      url: 'https://www.wundermanthompson.com/south-africa',
+      name: 'Quirk',
     },
     title: 'Software Engineer',
     video: {

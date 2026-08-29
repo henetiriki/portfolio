@@ -22,6 +22,10 @@ Last reviewed: 2026-08-16.
 
 - [ ] **Consider phonetic exceptions for `useArticleAgreement`'s vowel-sound check.** `vowelSoundPattern` matches the leading letter, not the leading sound, so a future tagline word like "European" or "MBA" would get the wrong article ("an European"). The current home-page word list doesn't trigger it, and the word list is fully author-controlled with every change subject to this repo's own preview-URL manual QA, so a wrong article would be caught immediately if it ever happened — deliberately left unfixed rather than building exceptions for words that don't exist in the sequence yet.
 
+## Content & copy
+
+- [ ] **Decide whether the experience-entry prose moves off its flat, factual register.** The job entries in `src/fixtures/experience.tsx` are uniformly declarative ("I joined X as a Y", "I worked in the team replacing…"), while the site's framing — the home bio, the page headers, the icon-only Flight Attendant entry — carries dry wit. Staying factual costs nothing to maintain and ages well, since enthusiasm is timestamped ("I'm excited to start this next chapter" reads oddly once the role is no longer new). Going conversational is a whole-history decision, not a per-entry one, or it leaves a visible seam around 2025. Middle path if revisited: keep entries factual and past-tense by default, allow one voice sentence per entry only where there is a genuine story (the CSA no-prior-Python line is the model), and decide the seam explicitly. Raised during the 2026-08-29 copy pass and deliberately not acted on.
+
 ## Performance, SEO & platform polish
 
 - [ ] **Confirm the white band behind the Android gesture bar clears once Chrome stable ships the upstream fix.** Nothing to build — the fix merged into Chromium `main` on 2026-08-06 and colours the navigation bar from `theme_color`, already correct here. See [D-260815i](decisions.md#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar).
