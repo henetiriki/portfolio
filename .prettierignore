@@ -1,4 +1,5 @@
 .claude/worktrees/
+.worktrees/
 .yarn/
 .next/
 coverage/
