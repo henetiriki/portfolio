@@ -145,7 +145,8 @@ export const jobs: Job[] = [
           The <b>React</b> UI followed BNZ’s mini-app (<b>micro-front-end</b>)
           pattern, composed into the host shell with its navigation entry gated
           behind a <b>LaunchDarkly</b> flag for controlled rollout. It consumed
-          a BNZ microservice that in turn integrated with an external system.
+          a BNZ <b>Spring Boot</b> microservice through a <b>Kong</b> API
+          gateway, and that service in turn integrated with an external system.
           Other technologies included <b>TanStack Query</b> (React Query) and a
           bespoke component library.
         </Text>
