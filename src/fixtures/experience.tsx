@@ -120,8 +120,8 @@ export const jobs: Job[] = [
     content: (
       <>
         <Text component='p'>
-          I worked in a team tasked with replacing a bespoke BNZ deposit and
-          home lending pricing application.
+          I worked in the team replacing BNZ’s bespoke deposit and home-lending
+          pricing application.
         </Text>
         <Text component='p'>
           The <b>React</b> UI, built using BNZ’s mini-app (
@@ -155,9 +155,9 @@ export const jobs: Job[] = [
           Accomplishments
         </Title>
         <Text component='p'>
-          I built a flexible and customisable template configuration setup that
-          will enable new data collection flows to be rolled out quickly in
-          future.
+          I built a template-driven configuration layer for the data collection
+          forms, so adding a new flow was a configuration change rather than new
+          code.
         </Text>
         <Text component='p'>
           I also assisted QA in setting up Playwright as the E2E test framework,
@@ -587,12 +587,7 @@ export const jobs: Job[] = [
     ),
     institution: {
       location: 'Cape Town, South Africa',
-      name: (
-        <>
-          Quirk <span>(now Wunderman Thompson)</span>
-        </>
-      ),
-      url: 'https://www.wundermanthompson.com/south-africa',
+      name: 'Quirk',
     },
     title: 'Software Engineer',
     video: {
