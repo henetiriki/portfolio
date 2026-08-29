@@ -12,6 +12,17 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260829a — Adopt a root-level `.worktrees/` directory as the shared convention
+
+- **Status:** Accepted
+- **Decided:** 2026-08-29
+
+**Claude Code creates worktrees under `.claude/worktrees/`, a path with no override.** The setting to relocate it is an open, unshipped feature request ([anthropics/claude-code#28242](https://github.com/anthropics/claude-code/issues/28242), duplicate of #27282). The only supported way to move it is a `WorktreeCreate` hook that replaces the `git worktree` logic wholesale — and the documented cost is that `.worktreeinclude` then stops being processed, so the `.env*.local` copy that [D-260814e](#d-260814e--let-each-worktree-install-its-own-dependencies) relies on would have to be reimplemented in a bash hook. Not worth it to change a directory name.
+
+**So the two are kept separate.** `.claude/worktrees/` stays as the home for worktrees Claude Code makes for itself (`--worktree`, the `EnterWorktree` tool, isolated subagents), where `.worktreeinclude` keeps working. `.worktrees/` at the repository root is the shared convention for worktrees created by hand with `git worktree add`, by this repo's own tooling, or by another agent that does not read Claude Code's configuration at all — for those tools, "configuring a worktree location" only ever meant a gitignore entry plus a line in `AGENTS.md`.
+
+**`.worktrees/` is wired into the same three ignore lists as `.claude/worktrees/`** — `.gitignore`, `.prettierignore` and `eslint.config.mjs` — for the reasons in [development.md](development.md#linting--formatting): an un-ignored second checkout makes git offer to commit a `160000` gitlink, and makes ESLint and Prettier treat another session's files as project source. CI (`ci.yml`) and the Vercel skip script need no entry: they exclude `.claude` because it holds tracked files, whereas a purely gitignored `.worktrees/` never appears in their `git diff`.
+
 ## D-260826a — Clip the travel map placeholder to its container
 
 - **Status:** Accepted

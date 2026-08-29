@@ -15,6 +15,7 @@ node_modules/
 # agent config
 .claude/worktrees/
 .claude/settings.local.json
+.worktrees/
 
 # testing
 coverage/

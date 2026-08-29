@@ -35,6 +35,7 @@ export default defineConfig(
   {
     ignores: [
       '.claude/worktrees/',
+      '.worktrees/',
       '.yarn/',
       '.next/',
       'coverage/',

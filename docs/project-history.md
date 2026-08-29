@@ -2,6 +2,12 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-08-29 — Adopt a root-level `.worktrees/` directory as a shared convention
+
+- **`.worktrees/` at the repository root is now the documented home for worktrees made by hand or by another agent**, alongside `.claude/worktrees/` where Claude Code creates its own. It is added to `.gitignore`, `.prettierignore` and `eslint.config.mjs`'s `ignores` — the same three lists that already exclude `.claude/worktrees/` — and to the Worktrees section of [`AGENTS.md`](../AGENTS.md) and the linting notes in [`development.md`](development.md).
+- **Claude Code's own worktree location was left at `.claude/worktrees/`.** That path is hardcoded with no setting to move it, and the one mechanism that could — a `WorktreeCreate` hook — would stop `.worktreeinclude` carrying `.env*.local` into new worktrees. Rationale in [D-260829a](decisions.md#d-260829a--adopt-a-root-level-worktrees-directory-as-the-shared-convention).
+- CI and the Vercel skip script needed no change: both exclude `.claude` because it holds tracked files, while a purely gitignored `.worktrees/` never shows up in their `git diff`.
+
 ## 2026-08-29 — Give the site a consistent dash system
 
 - **Sentence and parenthetical dashes in user-facing copy now use the em-dash `—`**, matching the SEO descriptions, portfolio alt text and the logo, which already did. Spaced hyphens on the home page, the `/travel` header quote and the two "please try again later" error strings were replaced, with the `ContactForm`, `MapError` and `routes` assertions updated alongside.
