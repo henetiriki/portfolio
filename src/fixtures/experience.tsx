@@ -7,19 +7,105 @@ export const jobs: Job[] = [
     content: (
       <>
         <Text component='p'>
-          <b>Objective</b>: Executing a planned career pivot and sabbatical,
-          enabling me to spend quality time with family while also undertaking
-          long-delayed travel plans.
+          I’m excited to start this next chapter as a{' '}
+          <b>Software Engineer (Front-end)</b> with{' '}
+          <b>Equal Experts South Africa</b> &mdash; joining their remote-first
+          consultancy network from the Garden Route.
+        </Text>
+      </>
+    ),
+    institution: {
+      location: (
+        <>
+          Garden Route, South Africa <span>(remote)</span>
+        </>
+      ),
+      name: 'Equal Experts',
+      url: 'https://www.equalexperts.com/',
+    },
+    title: 'Software Engineer (Front-end)',
+    year: {
+      from: 'September 2026',
+      to: 'Present',
+    },
+  },
+  {
+    accomplishments: (
+      <>
+        <Title order={4} size='h5'>
+          Accomplishments
+        </Title>
+        <Text component='p'>
+          I took the practice’s admin workflow from six disconnected manual
+          processes to one integrated desktop tool within a single quarter.
         </Text>
         <Text component='p'>
-          <b>Travel</b>: Accomplished a lifelong goal of navigating diverse
-          environments in Chile, Argentina and Patagonia, which definitely
-          enhanced my cultural fluency and adaptability.
+          I also made a deliberate call on the communications piece: AI-drafted
+          emails land as a <b>Graph API</b> draft in the practice owner’s own
+          inbox rather than sending automatically, keeping a human in the loop
+          on anything client-facing.
+        </Text>
+      </>
+    ),
+    content: (
+      <>
+        <Text component='p'>
+          I joined CSA Architects, a founder-led architecture practice,
+          initially as an operations assistant. The role quickly evolved into a
+          hybrid <b>business analyst</b> and <b>product owner</b> position: I
+          identified recurring manual admin bottlenecks across the practice and
+          directed the design and build of a desktop automation suite to
+          eliminate them.
         </Text>
         <Text component='p'>
-          <b>Preparation</b>: Currently finalising a relocation to South Africa
-          after 14 years in New Zealand; fully equipped and available for
-          remote-first roles in the <b>GMT+2</b> timezone.
+          The application itself was built in <b>Python</b> with a{' '}
+          <b>Tkinter</b> interface, developed using AI-assisted tooling (
+          <b>Claude</b> and <b>Codex</b>) &mdash; despite having no prior Python
+          background, I wrote the specifications, reviewed the generated code,
+          and tested iteratively against real project data. It integrates with{' '}
+          <b>Toggl</b> for time tracking, <b>Xero</b> for invoicing and
+          statements via a custom-built template, <b>Mitti</b> for site
+          inspections, the <b>Microsoft Graph API</b> to draft client emails
+          directly into the practice’s Outlook mailbox, and the{' '}
+          <b>OpenAI API</b> for meeting-minute generation from transcripts and
+          weekly client update drafting, alongside automated completion of
+          repetitive legislative and municipal <b>PDF forms</b> from centrally
+          captured project metadata.
+        </Text>
+      </>
+    ),
+    institution: {
+      location: 'Mossel Bay, South Africa',
+      name: 'CSA Architects',
+      url: 'https://www.csarc.co.za',
+    },
+    title: (
+      <>
+        Technical Business Analyst / Solutions Developer <span>(contract)</span>
+      </>
+    ),
+    year: {
+      from: 'June 2026',
+      to: 'August 2026',
+    },
+  },
+  {
+    content: (
+      <>
+        <Text component='p'>
+          <b>Objective</b>: Executed a planned career pivot and sabbatical,
+          taking time to focus on family while completing long-delayed travel
+          plans.
+        </Text>
+        <Text component='p'>
+          <b>Travel</b>: Achieved a lifelong goal of navigating diverse
+          environments in Chile, Argentina and Patagonia, which broadened my
+          cultural fluency and adaptability.
+        </Text>
+        <Text component='p'>
+          <b>Preparation</b>: Completed a relocation to South Africa after more
+          than 14 years in New Zealand, settling into the Garden Route ahead of
+          returning to remote-first software delivery work.
         </Text>
       </>
     ),
@@ -30,7 +116,7 @@ export const jobs: Job[] = [
     title: 'International Travel & Family Priorities',
     year: {
       from: 'November 2025',
-      to: 'Present',
+      to: 'May 2026',
     },
   },
   {
