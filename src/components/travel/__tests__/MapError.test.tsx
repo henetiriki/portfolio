@@ -8,7 +8,7 @@ describe('MapError', () => {
 
     expect(screen.getByText('Something’s gone wrong')).toBeInTheDocument();
     expect(
-      screen.getByText('The map failed to load - please try again later.')
+      screen.getByText('The map failed to load — please try again later.')
     ).toBeInTheDocument();
   });
 

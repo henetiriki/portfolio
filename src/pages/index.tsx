@@ -94,7 +94,7 @@ const Home: NextPage = (): JSX.Element => {
             </Text>
             <Text component='p'>
               I am a <b>pragmatic</b> individual with a strong{' '}
-              <b>sense of responsibility</b> - I like to <b>get things done</b>.
+              <b>sense of responsibility</b> — I like to <b>get things done</b>.
             </Text>
             <Title order={4}>Open Source Contributions</Title>
             <Box className={classes.contributions} component='ul' pl='0.75rem'>
@@ -113,7 +113,7 @@ const Home: NextPage = (): JSX.Element => {
             </Box>
             <Title order={4}>Hobbies and Interests</Title>
             <Text component='p'>
-              Photography, Android, travel and plane spotting - not necessarily
+              Photography, Android, travel and plane spotting — not necessarily
               in that order.
             </Text>
           </Box>

@@ -5,14 +5,12 @@ import type { Job, School } from '@fixtures/types';
 export const jobs: Job[] = [
   {
     content: (
-      <>
-        <Text component='p'>
-          I’m excited to start this next chapter as a{' '}
-          <b>Software Engineer (Front-end)</b> with{' '}
-          <b>Equal Experts South Africa</b> &mdash; joining their remote-first
-          consultancy network from the Garden Route.
-        </Text>
-      </>
+      <Text component='p'>
+        I’m excited to start this next chapter as a{' '}
+        <b>Software Engineer (Front-end)</b> with{' '}
+        <b>Equal Experts South Africa</b> — joining their remote-first
+        consultancy network from the Garden Route.
+      </Text>
     ),
     institution: {
       location: (
@@ -40,10 +38,9 @@ export const jobs: Job[] = [
           processes to one integrated desktop tool within a single quarter.
         </Text>
         <Text component='p'>
-          I also made a deliberate call on the communications piece: AI-drafted
-          emails land as a <b>Graph API</b> draft in the practice owner’s own
-          inbox rather than sending automatically, keeping a human in the loop
-          on anything client-facing.
+          I also kept a human in the loop on client-facing communication:
+          AI-drafted emails land as a <b>Microsoft Graph API</b> draft in the
+          practice owner’s Outlook mailbox rather than sending automatically.
         </Text>
       </>
     ),
@@ -60,17 +57,17 @@ export const jobs: Job[] = [
         <Text component='p'>
           The application itself was built in <b>Python</b> with a{' '}
           <b>Tkinter</b> interface, developed using AI-assisted tooling (
-          <b>Claude</b> and <b>Codex</b>) &mdash; despite having no prior Python
+          <b>Claude</b> and <b>Codex</b>) — despite having no prior Python
           background, I wrote the specifications, reviewed the generated code,
           and tested iteratively against real project data. It integrates with{' '}
           <b>Toggl</b> for time tracking, <b>Xero</b> for invoicing and
           statements via a custom-built template, <b>Mitti</b> for site
           inspections, the <b>Microsoft Graph API</b> to draft client emails
-          directly into the practice’s Outlook mailbox, and the{' '}
-          <b>OpenAI API</b> for meeting-minute generation from transcripts and
-          weekly client update drafting, alongside automated completion of
-          repetitive legislative and municipal <b>PDF forms</b> from centrally
-          captured project metadata.
+          directly into the practice owner’s Outlook mailbox, and the{' '}
+          <b>OpenAI API</b> for generating meeting minutes from transcripts and
+          drafting weekly client updates. It also auto-fills repetitive
+          legislative and municipal <b>PDF forms</b> from centrally captured
+          project metadata.
         </Text>
       </>
     ),
@@ -207,7 +204,7 @@ export const jobs: Job[] = [
         </Title>
         <Text component='p'>
           One of my own objectives was <b>mentoring</b> team members on good{' '}
-          <b>SDLC</b> practices and continuous improvement - breaking stories
+          <b>SDLC</b> practices and continuous improvement — breaking stories
           down into small, releasable chunks, writing testable code and focusing
           on a WIP limit.
         </Text>

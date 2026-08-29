@@ -95,7 +95,7 @@ describe('ContactForm', () => {
 
     expect(
       await screen.findByText(
-        'Something unexpected happened - please try again later...'
+        'Something unexpected happened — please try again later...'
       )
     ).toBeInTheDocument();
   });
