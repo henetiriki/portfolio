@@ -6,7 +6,7 @@ export const jobs: Job[] = [
   {
     content: (
       <Text component='p'>
-        Joining <b>Equal Experts South Africa’s</b> remote-first consultancy
+        Joining <b>Equal Experts’ South African</b> remote-first consultancy
         network from the Garden Route.
       </Text>
     ),
