@@ -6,10 +6,8 @@ export const jobs: Job[] = [
   {
     content: (
       <Text component='p'>
-        I’m excited to start this next chapter as a{' '}
-        <b>Software Engineer (Front-end)</b> with{' '}
-        <b>Equal Experts South Africa</b> — joining their remote-first
-        consultancy network from the Garden Route.
+        Joining <b>Equal Experts South Africa’s</b> remote-first consultancy
+        network from the Garden Route.
       </Text>
     ),
     institution: {
@@ -145,9 +143,9 @@ export const jobs: Job[] = [
           The <b>React</b> UI followed BNZ’s mini-app (<b>micro-front-end</b>)
           pattern, composed into the host shell with its navigation entry gated
           behind a <b>LaunchDarkly</b> flag for controlled rollout. It consumed
-          a BNZ <b>Spring Boot</b> microservice through a <b>Kong</b> API
-          gateway, and that service in turn integrated with an external system.
-          Other technologies included <b>TanStack Query</b> (React Query) and a
+          a BNZ <b>Spring Boot</b> microservice via a <b>Kong</b> API gateway,
+          and that service, in turn, integrated with an external system. Other
+          technologies included <b>TanStack Query</b> (React Query) and a
           bespoke component library.
         </Text>
       </>
@@ -194,8 +192,8 @@ export const jobs: Job[] = [
         </Text>
         <Text component='p'>
           Technologies included <b>Angular</b>, <b>Angular Material</b> and a C#
-          backend with an SQL database. <b>GitHub Actions</b> was the CI/CD in
-          use with <b>Playwright</b> used as the E2E framework. The stack was
+          backend with an SQL database. <b>GitHub Actions</b> was the CI/CD
+          pipeline, with <b>Playwright</b> as the E2E framework. The stack was
           deployed on <b>Azure</b> infrastructure.
         </Text>
       </>
