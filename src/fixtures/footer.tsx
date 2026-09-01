@@ -14,7 +14,7 @@ export const socialLinks: SocialLink[] = [
   {
     icon: <IconBrandLinkedin size={20} />,
     title: 'See my LinkedIn here',
-    url: 'https://nz.linkedin.com/in/louwswart/',
+    url: 'https://www.linkedin.com/in/louwswart',
   },
   {
     icon: <IconBrandInstagram size={20} />,
