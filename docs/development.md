@@ -162,6 +162,7 @@ So every commit auto-fixes lint issues and reformats staged files of the listed 
 - The `npm` ecosystem covers this repository's root `package.json` and Yarn 4 lockfile. Minor and patch updates are grouped into separate production- and development-dependency pull requests; major updates remain individual so their migrations and compatibility constraints can be reviewed in isolation. At most five version-update pull requests may remain open for this ecosystem.
 - Roadmap and toolchain blockers are enforced in the configuration rather than left for manual PR closure: routine version updates ignore majors for `typescript` while TypeScript 7 is ecosystem-blocked, `@babel/core` while Jest remains on Babel 7, `@types/node` until the deployed Node runtime moves to its next planned major, and `eslint` because a major requires a coordinated flat-config and plugin compatibility pass. Supported updates within the current major lines continue normally. GitHub does not apply `ignore.update-types` to security updates, so an advisory can still surface instead of being silently hidden. Remove each routine-update ignore only as part of completing its corresponding coordinated upgrade.
 - The `github-actions` ecosystem scans `.github/workflows` from the repository root and groups available Action updates into one pull request, also with a five-PR limit.
+- **Version updates also wait out Dependabot's own default cooldown of three days before being proposed** — a platform default since 2026-07-14, deliberately not configured here, so nothing in this file governs it. It applies to version updates only; a security update is never delayed by it. The practical consequence is that a Dependabot branch can never carry a release young enough for Yarn's own [one-day age gate](#when-yarn-refuses-a-version-as-quarantined) to refuse, so the two never collide.
 - Both checks run on Mondays at 06:00 `Africa/Johannesburg`. Dependabot creates operational pull requests; it is not another CI validation step. Each generated pull request goes through the existing `CI` workflow like any other change.
 
 Dependabot version updates are configured entirely in the repository and do not require a paid GitHub plan. Dependency alerts and security updates are separate repository settings. They surface advisories against pinned dependencies; the configuration in this file only governs routine version updates, which is why the `ignore` entries cannot hide a vulnerability.
@@ -178,6 +179,27 @@ Two conventions make an override reviewable later, and both matter more than the
 **Grepping `yarn.lock` for the overridden version still finds it, and that is not a failed override.** Yarn leaves the dependent's declared descriptor alone — `@serwist/next`'s entry still reads `browserslist: "npm:4.28.6"` — and redirects it at install time, so the proof is the absence of a matching `"browserslist@npm:4.28.6":` **resolution** block, one copy under `node_modules`, and `require.resolve` from the dependent landing on it.
 
 `yarn npm audit --all --recursive` is the check that shows whether an override is still doing anything: it reports the resolved tree, so a stale entry and a working one look different. It also reports npm **deprecation** notices at moderate severity alongside real advisories — most of those arrive through Jest and jsdom with no route to fix them from here, so read the advisory ID before treating one as actionable.
+
+### When Yarn refuses a version as quarantined
+
+```
+➤ YN0016: │ @types/google.maps@npm:^3.66.2: All versions satisfying "^3.66.2" are quarantined
+```
+
+That is `npmMinimalAgeGate` ([D-260811a](decisions.md#d-260811a--keep-the-package-managers-supply-chain-defaults)), which refuses anything published in the last day. It is not a broken package and not a registry problem — the requested range simply had no candidate old enough.
+
+**It only happens on a manual upgrade.** Dependabot's version updates carry a three-day default cooldown, longer than the gate, so a Dependabot branch cannot produce this error. Reaching for a `cooldown` entry in `.github/dependabot.yml` to prevent it is treating the wrong cause.
+
+Two behaviours make the failure look worse than it is:
+
+- **Yarn only errors when _every_ candidate is quarantined.** A range with an older, aged version resolves normally, so the failures are exactly the ranges that were raised to a same-day release — not the whole upgrade.
+- **Resolution fails fast**, so a batch surfaces them one at a time and each fix reveals the next. Check the whole set up front instead, against the versions the ranges actually request:
+
+  ```bash
+  yarn npm info <package> --fields time --json
+  ```
+
+Clear it by waiting out the remaining hours and re-running `yarn install` unchanged, or by leaving that one range where it is and taking the bump on the next pass. Do not set `npmMinimalAgeGate: 0`, and do not lower it repository-wide for one package.
 
 ## Testing
 
