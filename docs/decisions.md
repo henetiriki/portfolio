@@ -12,6 +12,23 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260903d — Lint each code file as it is written, and let ESLint interrupt
+
+- **Status:** Accepted
+- **Decided:** 2026-09-03
+
+Every check here is whole-repo and manual — `eslint .`, `prettier .`, `tsc` across the project — so the first automated signal on a bad edit arrived at [`.husky/pre-commit`](development.md#git-hooks) or later. A `PostToolUse` hook now runs `eslint --fix --no-warn-ignored` on each `.ts`, `.tsx`, `.js`, `.mjs` or `.cjs` file as Claude Code writes it, via [`scripts/eslint-on-edit.mjs`](../scripts/eslint-on-edit.mjs).
+
+**Prettier is deliberately not in it, and the measurement is why.** ESLint costs about 2.6 seconds on a single file here — flat config, `typescript-eslint` and eight plugins, almost all of it startup — against Prettier's 0.12. Cost alone would not settle it; value does. `lint-staged` already runs both at commit, so this hook adds no check that was missing, only an earlier one. Formatting is invisible between edits and is fixed at commit regardless, so running Prettier early buys tidier intermediate states. An ESLint error `--fix` cannot resolve is the opposite: it otherwise surfaces when a commit is attempted, by which point more code sits on top of it.
+
+**The `2.6s × every edit` arithmetic overstates it**, because the hook exits before ESLint starts for any file ESLint does not cover. Markdown, JSON and CSS are most of the edits in a documentation-heavy change, and they cost nothing.
+
+**It is advisory, and that is a property of `PostToolUse` rather than a choice.** The tool has already run when the hook fires, so no blocking decision is honoured; exit 2 puts the report in front of Claude instead. A blocking `Stop` hook running once per turn was designed first and rejected: the feedback would arrive after the work rather than during it, and blocking needs a loop cap — session-keyed signature files, wedge protection — to stop an unfixable rule holding a session open forever. Advisory-mid-turn needs none of that and gets the fix made in place.
+
+**This is the repository's first hook that is a script rather than an inline program**, which revises [D-260814b](#d-260814b--enforce-shell-hygiene-with-a-hook-rather-than-a-convention)'s preference for inline `jq` on the grounds that a script file has "path resolution to get wrong in a worktree". Two things changed: `.claude/` is tracked, so a worktree gets the script, and [`check-agent-config.mjs`](../scripts/check-agent-config.mjs) fails when a hook's `${CLAUDE_PROJECT_DIR}` path does not resolve — verified by pointing this hook at a renamed file and watching CI's check go red. The inline form was never viable here regardless; this is far past what a `jq` one-liner expresses.
+
+**A planned third change was dropped once the schema contradicted the documentation.** The hooks reference documents lifecycle events such as `Stop` taking flat command objects, so the checker was to be taught both shapes. Claude Code's own settings schema requires `{ matcher?, hooks: [...] }` for **every** event — `matcher` optional, `hooks` mandatory — and rejected the flat form on write. There is no second shape to support. What went in instead is a check that `hooks` is present at all: the schema is enforced when Claude Code writes the file, and CI has no Claude Code.
+
 ## D-260903c — Test the agent configuration in CI, rather than only parsing it
 
 - **Status:** Accepted

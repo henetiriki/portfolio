@@ -11,6 +11,19 @@
         ],
         "matcher": "Bash"
       }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "node \"${CLAUDE_PROJECT_DIR}/scripts/eslint-on-edit.mjs\"",
+            "statusMessage": "Linting the edited file",
+            "timeout": 60,
+            "type": "command"
+          }
+        ],
+        "matcher": "Edit|Write"
+      }
     ]
   },
   "permissions": {

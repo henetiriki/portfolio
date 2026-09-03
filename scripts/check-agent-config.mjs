@@ -133,9 +133,20 @@ const runHook = command => {
 const checkHooks = settings => {
   if (settings.hooks === undefined) return;
 
-  for (const [event, matchers] of Object.entries(settings.hooks)) {
-    for (const matcher of matchers) {
-      for (const hook of matcher.hooks ?? []) {
+  for (const [event, entries] of Object.entries(settings.hooks)) {
+    for (const entry of entries) {
+      // Every event takes { matcher?, hooks: [...] } — `matcher` is optional,
+      // `hooks` is not, lifecycle events such as Stop included. Claude Code
+      // validates this when it writes the file, but CI has no Claude Code, and
+      // the old `entry.hooks ?? []` skipped a malformed entry in silence.
+      if (!Array.isArray(entry.hooks)) {
+        errors.push(
+          `.claude/settings.json: a ${event} entry has no "hooks" array. Hooks are always { matcher?, hooks: [...] }, never a bare command object.`
+        );
+        continue;
+      }
+
+      for (const hook of entry.hooks) {
         if (hook.type !== 'command' || !hook.command) {
           errors.push(
             `.claude/settings.json: ${event} hook is not a non-empty command hook`
@@ -160,7 +171,7 @@ const checkHooks = settings => {
           }
         }
 
-        if (matcher.matcher !== 'Bash') continue;
+        if (entry.matcher !== 'Bash') continue;
 
         const outputs = runHook(hook.command);
 
