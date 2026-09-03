@@ -14,46 +14,7 @@
     ]
   },
   "permissions": {
-    "allow": [
-      "Bash(git add *)",
-      "Bash(git check-ignore *)",
-      "Bash(git checkout -b *)",
-      "Bash(git checkout -q main)",
-      "Bash(git checkout main)",
-      "Bash(git commit *)",
-      "Bash(git fetch *)",
-      "Bash(git pull *)",
-      "Bash(npm view *)",
-      "Bash(npx jest *)",
-      "Bash(yarn css-vars:check *)",
-      "Bash(yarn css-vars:check)",
-      "Bash(yarn eslint:check *)",
-      "Bash(yarn eslint:check)",
-      "Bash(yarn explain *)",
-      "Bash(yarn info *)",
-      "Bash(yarn jest *)",
-      "Bash(yarn node --version)",
-      "Bash(yarn npm audit *)",
-      "Bash(yarn npm info *)",
-      "Bash(yarn playwright --version)",
-      "Bash(yarn playwright test --list)",
-      "Bash(yarn prettier:check *)",
-      "Bash(yarn prettier:check)",
-      "Bash(yarn prettier:write *)",
-      "Bash(yarn test *)",
-      "Bash(yarn test:coverage *)",
-      "Bash(yarn test:e2e *)",
-      "Bash(yarn tsc --pretty --noEmit --project service-worker/tsconfig.json)",
-      "Bash(yarn type-check *)",
-      "Bash(yarn type-check)",
-      "Bash(yarn why *)",
-      "mcp__Claude_Browser__find",
-      "mcp__Claude_Browser__get_page_text",
-      "mcp__Claude_Browser__preview_logs",
-      "mcp__Claude_Browser__read_console_messages",
-      "mcp__Claude_Browser__read_network_requests",
-      "mcp__Claude_Browser__read_page",
-      "mcp__Claude_Browser__tabs_context"
-    ]
+    "allow": [],
+    "ask": ["Bash(gh pr merge *)"]
   }
 }
