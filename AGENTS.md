@@ -71,12 +71,13 @@ yarn eslint:check
 yarn type-check
 yarn prettier:check
 yarn docs:check-links
+yarn agent:check-config
 yarn css-vars:check
 yarn test:coverage
 yarn test:e2e
 ```
 
-- `yarn test:e2e` needs a production build first and serves on **port 3001**. **Port 3000 belongs to `next dev`** — leave whatever is running there alone; it is usually a human watching the change land.
+- `yarn test:e2e` needs a production build first and serves on **port 3002**. One port per owner: **3000 belongs to `next dev`** — leave whatever is running there alone, it is usually a human watching the change land — **3001 to the agent's own preview**, 3002 to the suite. `yarn agent:check-config` fails if those ever collide again.
 - The service worker is a separate TypeScript project: `yarn tsc --pretty --noEmit --project service-worker/tsconfig.json`.
 - Saying **"release ready check"** or **"prepare for release"** means running the pre-merge half of the release checklist, including the documentation sweep in both directions.
 

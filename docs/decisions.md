@@ -12,6 +12,29 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260903c — Test the agent configuration in CI, rather than only parsing it
+
+- **Status:** Accepted
+- **Decided:** 2026-09-03
+
+`.claude/` was the only configuration here with no regression check, and CI gave it the cheapest path of anything in the repository: the directory is on the [documentation-only exclusion list](release-checklist.md#pull-request), so a change to the settings file holding the shell-hygiene hook ran install, `prettier:check` and the Jest run and nothing else. [`scripts/check-agent-config.mjs`](../scripts/check-agent-config.mjs), run by `yarn agent:check-config`, closes that.
+
+**The check executes the hook rather than inspecting it, and that is the whole point.** The hook is a JSON string wrapping a `jq` program wrapping a regex — three escaping layers — and [D-260814b](#d-260814b--enforce-shell-hygiene-with-a-hook-rather-than-a-convention) records that it **fails open**: a broken program exits non-zero, the harness reads that as a hook error rather than a denial, and the command proceeds. So every way this breaks is silent, and a check that merely parsed the JSON or compiled the `jq` would miss the failure that matters most — a program that compiles and returns the wrong verdict. Five commands are fed to the real hook and its answers asserted: `&&`, `;` and `||` refused, a plain command and a pipe allowed. Confirmed by narrowing the regex to `&&` alone, which reproduced exactly the `||` gap D-260814b describes and the check caught it.
+
+Testing a re-implementation of the program would have proved nothing about the program. Running a command string read from a settings file is the cost of testing the real thing, and it is acceptable here because that file is committed and reviewed — the same trust boundary the hook itself already sits on.
+
+**It is ungated in CI**, for the reason [D-260821j](#d-260821j--check-internal-documentation-links-in-ci-rather-than-relying-on-the-release-sweep) gives for the documentation-link check: a `.claude/` change is precisely the case it must not skip. That also settles what to do about the exclusion list — nothing. `.claude/` can stay on it, because an ungated step runs whatever the classification says.
+
+**Three of its assertions encode decisions rather than syntax**, which is what stops them being re-litigated by accident:
+
+- `permissions.allow` must be **empty**, naming [D-260903b](#d-260903b--empty-the-local-allowlist-and-let-the-classifier-see-every-command) in the failure. Adding an entry back means editing the check, which is the point: the list reached several hundred entries by accretion, one "don't ask again" at a time, and nothing ever objected.
+- **No `autoMode` key in either project settings file.** Claude Code never reads `autoMode` from a project file and says nothing about it, so entries would sit in a reviewed file doing nothing — the same shape as the stale visibility entry that started this work.
+- **No `launch.json` port may equal the browser suite's**, parsed from `playwright.config.ts` rather than duplicated. See [D-260816g](#d-260816g--serve-the-browser-suite-on-3001-and-leave-3000-to-next-dev).
+
+**`jq`'s absence fails the check rather than passing it.** The hook fails open when `jq` is missing, which is right for a hook and wrong for its test — a check that skipped itself on a runner without `jq` would report green for a hook it never ran.
+
+**This is not the eval suite the playbook describes**, and does not try to be. It runs no model and asks no judgement; it asserts that deterministic configuration does what it says. The playbook's eval loop earns its keep against prompts and skills, of which this repository has none yet.
+
 ## D-260903b — Empty the local allowlist and let the classifier see every command
 
 - **Status:** Accepted
@@ -477,6 +500,10 @@ Branches are `<prefix>/<hyphenated-description>` with `feature/`, `fix/`, `docs/
 **`reuseExistingServer` is `false` rather than `!isCI`.** On a port nothing else claims there is nothing legitimate to attach to, so reuse can only ever be right by accident. The cost is a server boot on each local run; the gain is that an occupied 3001 fails loudly and immediately.
 
 **Both `.claude/launch.json` servers moved to 3001 too, and that costs Maps in the agent's preview.** Reserving a port is only worth doing if the tooling honours it, and that file is how an agent starts a server. The consequence is real: a dev server on 3001 fails Maps authorisation, so the travel map renders as `MapError` in the browser pane. Accepted because manual QA belongs on the Vercel preview URL rather than an agent's localhost — the [pull request checklist](../AGENTS.md#opening-a-pull-request) says so already. Adding `http://localhost:3001` to the key's allowed referrers would undo the loss and was not done: it widens a credential's origin list for a convenience, and it is a change outside git that would then need [recording](../AGENTS.md#documentation-discipline). _Superseded the same day: the port was added to the key's allowed referrers, so the map renders on 3001 and the loss described above no longer applies. The recording it called for is [Security](security.md#accepted-exposure), which deliberately does not reproduce the list itself._
+
+**Moving `launch.json` onto the suite's port created a collision this entry did not foresee, and the suite moved to 3002 on 2026-09-03.** `reuseExistingServer` is `false`, so an agent preview left running on 3001 made `yarn test:e2e` fail immediately on a port conflict — the loud failure this decision chose, firing for a reason it never intended. The allocation is now one port per owner: **3000 `next dev`, 3001 the agent's preview, 3002 the browser suite**. Nothing about the reasoning above changes; the suite still needs no particular port, and the Maps key's allowed referrers still cover 3001 where the agent's preview stayed. The heading keeps its original numbers because renaming it would break every inbound anchor. [`check-agent-config.mjs`](../scripts/check-agent-config.mjs) now asserts the separation, so this cannot silently regress — see [D-260903c](#d-260903c--test-the-agent-configuration-in-ci-rather-than-only-parsing-it).
+
+**A port was never the whole of the agent-versus-human contention, which only surfaced when the ports were separated.** `launch.json`'s `prod` entry runs `yarn start`, so it coexists with anything. Its **`dev`** entry runs `yarn dev`, and Next 16 takes a lockfile preventing two `next dev` instances on the same project — so the agent's dev preview cannot run alongside a human's `yarn dev` whatever port it is given. That is not fixed here and does not need to be: the entry still works when no dev server is running, and in a worktree, which is a different project directory and therefore a different lock. Manual QA belongs on the Vercel preview URL regardless.
 
 **The compiled output was never the conflict, which took measuring to establish.** Next 16 writes dev output to `.next/dev`, and `next build` clears `.next` with `cache`, `dev`, `lock` and `trace` excluded — `node_modules/next/dist/build/index.js`, the `clean` trace. So a production build alongside a running dev server disturbs nothing, and the port was the whole of the problem. `yarn clean` is the exception, being `rm -rf .next`.
 
