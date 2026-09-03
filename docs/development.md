@@ -166,6 +166,19 @@ So every commit auto-fixes lint issues and reformats staged files of the listed 
 
 Dependabot version updates are configured entirely in the repository and do not require a paid GitHub plan. Dependency alerts and security updates are separate repository settings. They surface advisories against pinned dependencies; the configuration in this file only governs routine version updates, which is why the `ignore` entries cannot hide a vulnerability.
 
+### Overriding a transitive pin
+
+`package.json` has a `resolutions` block for the case Dependabot cannot act on: a dependency that pins a vulnerable transitive package to an **exact** version, with no published release relaxing it. There is one entry, `@serwist/next/browserslist`, and it is a workaround with a removal condition recorded in the [roadmap](roadmap.md#framework--dependency-upgrades) — see [D-260903a](decisions.md#d-260903a--force-serwistnexts-pinned-browserslist-up-to-the-patched-line) for why it exists and what it costs.
+
+Two conventions make an override reviewable later, and both matter more than the entry itself:
+
+- **Scope it to the dependent that is stuck** (`@serwist/next/browserslist`), not the bare package name. A bare override applies to the whole graph and keeps applying long after the dependent it was added for has moved on.
+- **Use a range, not a fixed version.** `^4.28.7` dedupes onto the copy the rest of the graph already resolves, so the lockfile keeps one entry rather than two and the package carries on floating with everything else.
+
+**Grepping `yarn.lock` for the overridden version still finds it, and that is not a failed override.** Yarn leaves the dependent's declared descriptor alone — `@serwist/next`'s entry still reads `browserslist: "npm:4.28.6"` — and redirects it at install time, so the proof is the absence of a matching `"browserslist@npm:4.28.6":` **resolution** block, one copy under `node_modules`, and `require.resolve` from the dependent landing on it.
+
+`yarn npm audit --all --recursive` is the check that shows whether an override is still doing anything: it reports the resolved tree, so a stale entry and a working one look different. It also reports npm **deprecation** notices at moderate severity alongside real advisories — most of those arrive through Jest and jsdom with no route to fix them from here, so read the advisory ID before treating one as actionable.
+
 ## Testing
 
 Two suites with deliberately different jobs: **Jest + React Testing Library** for logic and component behaviour (below), and a **[Playwright browser suite](#browser-regression-suite)** for what jsdom structurally cannot observe. Neither substitutes for the other — the browser suite exists because full Jest coverage did not prevent a documented run of visual regressions.

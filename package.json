@@ -98,6 +98,9 @@
     "typescript-eslint": "^8.68.0",
     "webpack": "^5"
   },
+  "resolutions": {
+    "@serwist/next/browserslist": "^4.28.7"
+  },
   "lint-staged": {
     "**/*.{cjs,js,jsx,mjs,ts,tsx}": [
       "eslint --fix"

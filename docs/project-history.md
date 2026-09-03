@@ -2,6 +2,14 @@
 
 This is the concise record of completed project work. It is not a substitute for Git history and deliberately omits command transcripts, exhaustive compatibility matrices and superseded investigations. Durable rationale lives in [Engineering Decisions](decisions.md); current implementation details live in the topical documentation; unfinished work remains in the [Roadmap](roadmap.md).
 
+## 2026-09-03 — Clear the `browserslist` advisories with a scoped Yarn resolution
+
+- **`package.json` now carries a `resolutions` block with one entry, `"@serwist/next/browserslist": "^4.28.7"`.** Two high-severity advisories covered `<= 4.28.6`; the fix in `4.28.7` had shipped, and every other dependent already floated past it. The one vulnerable copy came from `@serwist/next`'s exact `"browserslist": "4.28.6"` pin, still present in its latest release, so Dependabot had nothing to bump. The lockfile now holds a single `browserslist` at `4.28.8` and `yarn npm audit --all --recursive` reports no advisories. See [D-260903a](decisions.md#d-260903a--force-serwistnexts-pinned-browserslist-up-to-the-patched-line).
+- **The advisories were never reachable here, and the package never reached a browser.** `browserslist` is called once per production build, inside `withSerwistInit`, to choose the esbuild target for the service-worker bundle — a path `next.config.js` gates on `NODE_ENV === 'production'`. Dependabot labelled the alert `runtime` scope because `@serwist/next` is a `dependencies` entry, which is a fact about the manifest rather than about the shipped bundle.
+- **Verified against the artefact the override affects**, not just the lockfile: a full `yarn build` regenerates `public/sw.js` with no new warnings, and the `service-worker-chromium` Playwright specs still register the worker, precache the manifest icons, answer a navigation from the fetch handler and serve a visited route offline.
+- **A sweep of the rest of the graph found no other advisory.** The remaining `yarn npm audit` output is npm deprecation notices — `glob@7` and `inflight` via Jest's `test-exclude`, `whatwg-encoding` via jsdom, none fixable from here — plus the ESLint `9.39.5` support notice the roadmap already tracks.
+- Removing the override once upstream relaxes its pin is [open work in the roadmap](roadmap.md#framework--dependency-upgrades) rather than a note left in `package.json`.
+
 ## 2026-08-29 — Adopt a root-level `.worktrees/` directory as a shared convention
 
 - **`.worktrees/` at the repository root is now the documented home for worktrees made by hand or by another agent**, alongside `.claude/worktrees/` where Claude Code creates its own. It is added to `.gitignore`, `.prettierignore` and `eslint.config.mjs`'s `ignores` — the same three lists that already exclude `.claude/worktrees/` — and to the Worktrees section of [`AGENTS.md`](../AGENTS.md) and the linting notes in [`development.md`](development.md).
