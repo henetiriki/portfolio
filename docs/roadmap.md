@@ -12,6 +12,8 @@ Last reviewed: 2026-08-16.
 
 - [ ] **Upgrade Node.js 24 to 26 on or after 2026-10-28.** The project follows Active LTS releases, and Node 26 does not reach that status until then. Confirm Vercel support first, then update `engines.node`, `.nvmrc` and `@types/node` together and validate installation, native dependencies, the full suite and both build modes on the new runtime. See [D-260806a](decisions.md#d-260806a--track-active-lts-nodejs-releases).
 
+- [ ] **Drop the `@serwist/next/browserslist` resolution once the upstream pin moves.** `package.json` carries a `resolutions` entry forcing `^4.28.7` because `@serwist/next` pins `browserslist` to the vulnerable `4.28.6` exactly, and its latest release still does; see [D-260903a](decisions.md#d-260903a--force-serwistnexts-pinned-browserslist-up-to-the-patched-line). Check it at the next `@serwist/next` upgrade: if the published `dependencies` block names anything `4.28.7` or later, remove the entry, run `yarn install` and confirm `yarn npm audit --all --recursive` stays clean. An override left behind after upstream has moved is worse than none — it pins the graph to a range nobody is watching any more.
+
 ## CI & security hardening
 
 - [ ] **Upgrade ESLint off `9.39.5`.** `yarn npm audit --all` flags it as a deprecated, no-longer-supported version (moderate severity); it's a development-only dependency so there's no production exposure, but it's currently excluded from Dependabot's automated major-version updates (see `.github/dependabot.yml`'s `ignore` list) pending a coordinated config/plugin compatibility pass.

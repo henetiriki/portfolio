@@ -12,6 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260903a — Force `@serwist/next`'s pinned `browserslist` up to the patched line
+
+- **Status:** Accepted
+- **Decided:** 2026-09-03
+
+**Two high-severity advisories against `browserslist` ([GHSA-c83g-rgw3-j3cx](https://github.com/advisories/GHSA-c83g-rgw3-j3cx), [GHSA-73wf-gq98-2v4g](https://github.com/advisories/GHSA-73wf-gq98-2v4g)) cover `<= 4.28.6` and are fixed in `4.28.7`.** A patched version existed the whole time; nothing in the graph was waiting on upstream. Every other dependent — `@babel/helper-compilation-targets`, `autoprefixer` via `postcss-preset-env`, and `webpack` — declares a caret range and already resolved to the patched line. The single vulnerable copy was the nested one `@serwist/next` pins exactly, as `"browserslist": "4.28.6"`. That pin is still present in `9.5.12`, the latest published release, so Dependabot had nothing to propose and the alert would have stayed open indefinitely.
+
+**Neither advisory was reachable from this project, which is why the fix is a lockfile change rather than an incident.** The prototype-write path needs an untrusted `browserslist-stats.json` supplying custom stats, and this repository has no browserslist configuration of any kind. The unbounded-cache path needs a long-lived process issuing many distinct queries; the one call site — `browserslistToEsbuild(browserslist, cwd, MODERN_BROWSERSLIST_TARGET)` inside `withSerwistInit` — runs once per production build to pick the esbuild target for the service-worker bundle, and the process exits immediately afterwards. `next.config.js` gates the whole Serwist branch on `NODE_ENV === 'production'`, so it never runs under `next dev` at all, and `browserslist` appears nowhere in the production output. Dependabot classified the alert as `runtime` scope only because `@serwist/next` sits in `dependencies`; that is where the manifest puts the package, not a claim about the browser bundle.
+
+**A `resolutions` entry overrides the pin without forking or waiting.** It is scoped to `@serwist/next/browserslist` rather than a bare `browserslist`, so it overrides only the descriptor that was actually stuck and leaves the rest of the graph resolving on its own — a bare override would silently outlive the problem it was added for. The value is the range `^4.28.7` rather than a fixed version, so it dedupes onto the copy the other dependents already share, keeps floating with them, and leaves one `browserslist` entry in the lockfile instead of two.
+
+**The cost is overriding a version a vendor pinned deliberately, and it is accepted rather than dismissed.** An exact pin is a statement that the vendor tested that build; `^4.28.7` moves it inside the same minor line, and the production build plus the `service-worker-chromium` Playwright specs — which register the generated worker, precache, and serve a route offline — exercise the artefact the override affects. The override is a workaround with a removal condition, not a permanent configuration, and the [roadmap](roadmap.md#framework--dependency-upgrades) carries dropping it once `@serwist/next` ships a pin of its own on the patched line.
+
 ## D-260829a — Adopt a root-level `.worktrees/` directory as the shared convention
 
 - **Status:** Accepted
