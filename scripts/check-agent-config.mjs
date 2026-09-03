@@ -10,6 +10,7 @@ const claudeDir = path.join(projectRoot, '.claude');
 const SETTINGS = path.join(claudeDir, 'settings.json');
 const LOCAL_SETTINGS = path.join(claudeDir, 'settings.local.json');
 const LAUNCH = path.join(claudeDir, 'launch.json');
+const SKILLS = path.join(claudeDir, 'skills');
 const PLAYWRIGHT_CONFIG = path.join(projectRoot, 'playwright.config.ts');
 
 const SETTINGS_KEYS = ['hooks', 'permissions'];
@@ -193,6 +194,60 @@ const checkHooks = settings => {
   }
 };
 
+// A skill is prose with a YAML header, so nothing compiles it and nothing else
+// checks it. Claude sees only `name` and `description` until it invokes one, so
+// a missing description makes the skill unfindable rather than broken — silent
+// in exactly the direction that matters.
+const checkSkills = () => {
+  if (!exists(SKILLS)) return;
+
+  const directories = fs
+    .readdirSync(SKILLS, { withFileTypes: true })
+    .filter(entry => entry.isDirectory());
+
+  for (const directory of directories) {
+    const skillPath = path.join(SKILLS, directory.name, 'SKILL.md');
+    const label = relative(skillPath);
+
+    if (!exists(skillPath)) {
+      errors.push(
+        `.claude/skills/${directory.name}: has no SKILL.md, so the directory defines no skill`
+      );
+      continue;
+    }
+
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- `skillPath` is built from a directory listing of this repository's own skills
+    const source = fs.readFileSync(skillPath, 'utf8');
+    const frontmatter = source.match(/^---\n([\s\S]*?)\n---\n/);
+
+    if (!frontmatter) {
+      errors.push(`${label}: has no YAML frontmatter block`);
+      continue;
+    }
+
+    const fields = new Map(
+      frontmatter
+        .at(1)
+        .split('\n')
+        .map(line => line.match(/^([a-z-]+):\s*(.*)$/))
+        .filter(Boolean)
+        .map(match => [match.at(1), match.at(2).trim()])
+    );
+
+    if (fields.get('name') !== directory.name) {
+      errors.push(
+        `${label}: frontmatter name "${fields.get('name') ?? ''}" does not match its directory "${directory.name}", which is what the slash command uses`
+      );
+    }
+
+    if (!fields.get('description')) {
+      errors.push(
+        `${label}: has no description. Claude sees only the name and description until it invokes a skill, so without one it never triggers.`
+      );
+    }
+  }
+};
+
 const suitePort = () => {
   const source = fs.readFileSync(PLAYWRIGHT_CONFIG, 'utf8');
   const match = source.match(/^const PORT = (\d+);$/m);
@@ -261,6 +316,8 @@ if (exists(LOCAL_SETTINGS)) {
     checkPermissions(LOCAL_SETTINGS, localSettings.permissions);
   }
 }
+
+checkSkills();
 
 const launch = readJson(LAUNCH);
 

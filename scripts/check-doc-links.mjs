@@ -5,6 +5,23 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
 const docsDir = path.join(projectRoot, 'docs');
+const skillsDir = path.join(projectRoot, '.claude', 'skills');
+
+// Skills live three directories down and link back out, so their relative
+// paths are the easiest thing in the repository to get wrong — and a skill is
+// prose Claude reads, with nothing to compile and nothing else to check it.
+const skillFiles = () => {
+  if (!fs.existsSync(skillsDir)) return [];
+
+  return (
+    fs
+      .readdirSync(skillsDir, { withFileTypes: true })
+      .filter(entry => entry.isDirectory())
+      .map(entry => path.join(skillsDir, entry.name, 'SKILL.md'))
+      // eslint-disable-next-line security/detect-non-literal-fs-filename -- built from a directory listing of this repository's own `.claude/skills/`
+      .filter(filePath => fs.existsSync(filePath))
+  );
+};
 
 const markdownFiles = [
   ...fs
@@ -15,6 +32,7 @@ const markdownFiles = [
     .readdirSync(docsDir)
     .filter(name => name.endsWith('.md'))
     .map(name => path.join(docsDir, name)),
+  ...skillFiles(),
 ].sort();
 
 const relative = filePath => path.relative(projectRoot, filePath);

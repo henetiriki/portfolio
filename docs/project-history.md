@@ -17,6 +17,15 @@ This is the concise record of completed project work. It is not a substitute for
 - **A sweep of the rest of the graph found no other advisory.** The remaining `yarn npm audit` output is npm deprecation notices — `glob@7` and `inflight` via Jest's `test-exclude`, `whatwg-encoding` via jsdom, none fixable from here — plus the ESLint `9.39.5` support notice the roadmap already tracks.
 - Removing the override once upstream relaxes its pin is [open work in the roadmap](roadmap.md#framework--dependency-upgrades) rather than a note left in `package.json`.
 
+## 2026-09-04 — Move the task-shaped procedures into skills
+
+- **Four sections left [`AGENTS.md`](../AGENTS.md) for [`.claude/skills/`](../.claude/skills/)** — opening a pull request, validating a change, working across branches, and worktrees — so their text is no longer read at the start of every session. Claude Code loads a skill only when it invokes one.
+- **Each section keeps its heading with a line and a link**, rather than being deleted. `AGENTS.md` is deliberately the cross-tool file and `.claude/skills/` is Claude Code's alone, so a plain move would have regressed every other agent; a relative path to a Markdown file is something any tool can follow. See [D-260904a](decisions.md#d-260904a--move-the-task-shaped-procedures-into-skills-and-leave-pointers-behind).
+- **What stayed is what is true whatever you are doing**: rebase rather than merge, never `git stash`, and the port-3000 reservation. Facts stayed, procedures went; length was not the criterion.
+- **`check-agent-config.mjs` now validates each skill's frontmatter**, and earned it immediately — a typo'd `descriptio:` key produced a skill that parsed, loaded, and could never have triggered, because Claude sees only a skill's name and description until it invokes one.
+- **`check-doc-links.mjs` now walks `SKILL.md` files too.** They sit three directories down and link back out, so every relative path carries `../../../`, and nothing else in the toolchain reads them. Confirmed against both traps the move creates: a path at the wrong depth, and an anchor pointing at an `AGENTS.md` section that had itself moved.
+- **No skill declares `allowed-tools`.** It pre-approves tools for the turn, which would reopen the permission surface [D-260903b](decisions.md#d-260903b--empty-the-local-allowlist-and-let-the-classifier-see-every-command) deliberately closed, from a file nobody thinks of as permissions.
+
 ## 2026-09-03 — Lint each code file as it is written
 
 - **A `PostToolUse` hook runs `eslint --fix` on every `.ts`, `.tsx`, `.js`, `.mjs` and `.cjs` file Claude Code writes**, reporting anything unfixable back mid-turn rather than leaving it for `.husky/pre-commit`. The extensions come from the `lint-staged` block so the two cannot disagree about what counts as code; docs, JSON and CSS edits cost nothing.
