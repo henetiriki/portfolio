@@ -1,8 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// 3001 rather than 3000, which is left free for `next dev`.
+// One port per owner: 3000 `next dev`, 3001 the agent's preview, 3002 here.
 // See docs/development.md#browser-regression-suite.
-const PORT = 3001;
+const PORT = 3002;
 
 export const BASE_URL = `http://localhost:${PORT}`;
 
@@ -92,7 +92,7 @@ export default defineConfig({
   },
   webServer: {
     // `next start` defaults to 3000, so the port has to be passed as well as
-    // waited on — `url` alone would wait on 3001 for a server bound to 3000.
+    // waited on — `url` alone would wait on 3002 for a server bound to 3000.
     command: `yarn start --port ${PORT}`,
     // Never reused. On a port of its own there is nothing legitimate to attach
     // to, and attaching to a stale server was a repeat source of failures that

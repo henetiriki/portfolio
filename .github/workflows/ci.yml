@@ -118,6 +118,14 @@ jobs:
       - name: Check documentation links
         run: yarn docs:check-links
 
+      # Never gated either, and for the same reason: `.claude/` is on the
+      # documentation-only exclusion list, so a change to the settings file
+      # holding the hook is precisely the case this must not skip. It needs no
+      # build inputs — jq is preinstalled on the runner, and the check fails
+      # rather than passes if it ever is not.
+      - name: Check agent configuration
+        run: yarn agent:check-config
+
       # Never gated: prettier covers the whole tree, so on a documentation-only
       # change it is the one check that applies to what changed.
       - name: Check formatting
