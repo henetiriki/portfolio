@@ -157,6 +157,8 @@ In CI the ~270 MB browser download is cached under a key built from the **instal
 
 So every commit auto-fixes lint issues and reformats staged files of the listed types (including this `/docs` folder's Markdown) before the commit completes.
 
+**For code files this is no longer the first signal.** A `PostToolUse` hook in [`.claude/settings.json`](../.claude/settings.json) runs [`scripts/eslint-on-edit.mjs`](../scripts/eslint-on-edit.mjs) whenever Claude Code writes a file, which lints that one file with `--fix` and reports anything it cannot fix straight back mid-turn. It reads the extensions to cover from the `lint-staged` block above rather than restating them, so the two cannot disagree about what counts as code. Expect a file to be rewritten immediately after an edit — that is the `--fix`. Prettier is deliberately not in that hook; the reasoning, and why it is advisory rather than blocking, is in [D-260903d](decisions.md#d-260903d--lint-each-code-file-as-it-is-written-and-let-eslint-interrupt). It binds Claude Code only, so `lint-staged` remains what enforces this for every other tool and for a commit made by hand.
+
 ## Dependency update automation
 
 `.github/dependabot.yml` enables GitHub-hosted weekly version checks for both dependency surfaces:

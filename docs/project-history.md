@@ -17,6 +17,14 @@ This is the concise record of completed project work. It is not a substitute for
 - **A sweep of the rest of the graph found no other advisory.** The remaining `yarn npm audit` output is npm deprecation notices — `glob@7` and `inflight` via Jest's `test-exclude`, `whatwg-encoding` via jsdom, none fixable from here — plus the ESLint `9.39.5` support notice the roadmap already tracks.
 - Removing the override once upstream relaxes its pin is [open work in the roadmap](roadmap.md#framework--dependency-upgrades) rather than a note left in `package.json`.
 
+## 2026-09-03 — Lint each code file as it is written
+
+- **A `PostToolUse` hook runs `eslint --fix` on every `.ts`, `.tsx`, `.js`, `.mjs` and `.cjs` file Claude Code writes**, reporting anything unfixable back mid-turn rather than leaving it for `.husky/pre-commit`. The extensions come from the `lint-staged` block so the two cannot disagree about what counts as code; docs, JSON and CSS edits cost nothing.
+- **Prettier was deliberately left out**, on measurement rather than preference: ESLint costs about 2.6s on one file against Prettier's 0.12s, but the decisive point is that `lint-staged` already runs both at commit, so early Prettier buys only tidier intermediate states while an early ESLint error saves work stacked on top of it. See [D-260903d](decisions.md#d-260903d--lint-each-code-file-as-it-is-written-and-let-eslint-interrupt).
+- **It is advisory because `PostToolUse` cannot block.** A blocking `Stop` hook running once per turn was designed first and dropped — it would report after the work rather than during it, and would need session-keyed wedge protection to stop an unfixable rule holding a session open.
+- **This is the first hook here that is a script rather than an inline program**, which revises [D-260814b](decisions.md#d-260814b--enforce-shell-hygiene-with-a-hook-rather-than-a-convention)'s preference for inline `jq`. What makes it safe is the path assertion added the same day: pointing the hook at a renamed script turns `yarn agent:check-config` red.
+- **A planned change was dropped when the schema contradicted the documentation.** The hooks reference shows lifecycle events such as `Stop` taking flat command objects; Claude Code's own schema requires `{ matcher?, hooks: [...] }` for every event and rejected the flat form on write. The checker now asserts `hooks` is present instead of supporting a shape that does not exist.
+
 ## 2026-09-03 — Test the agent configuration in CI, and give the browser suite its own port
 
 - **`yarn agent:check-config` validates `.claude/` and runs on every pull request**, ungated, alongside `docs:check-links`. `.claude/` is on CI's documentation-only exclusion list, so until now a change to the file holding the shell-hygiene hook took the cheapest path in the repository. The list stays as it is — an ungated step runs regardless of the classification.
