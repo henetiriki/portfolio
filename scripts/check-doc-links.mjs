@@ -25,14 +25,21 @@ const skillFiles = () => {
 };
 
 // Agents have the same problem one directory shallower, and are flat files
-// rather than a directory each.
-const agentFiles = () => {
-  if (!fs.existsSync(agentsDir)) return [];
+// rather than a directory each — but the walk recurses anyway, because an agent
+// filed in a subdirectory would otherwise have its links checked by nothing at
+// all, which is the failure this script exists to prevent.
+const agentFiles = (directory = agentsDir) => {
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `directory` is `.claude/agents` or a subdirectory of it, reached only by this walk
+  if (!fs.existsSync(directory)) return [];
 
-  return fs
-    .readdirSync(agentsDir, { withFileTypes: true })
-    .filter(entry => entry.isFile() && entry.name.endsWith('.md'))
-    .map(entry => path.join(agentsDir, entry.name));
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- as above
+  return fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
+    const entryPath = path.join(directory, entry.name);
+
+    if (entry.isDirectory()) return agentFiles(entryPath);
+
+    return /\.md$/i.test(entry.name) ? [entryPath] : [];
+  });
 };
 
 const markdownFiles = [

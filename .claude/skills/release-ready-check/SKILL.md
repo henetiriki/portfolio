@@ -23,17 +23,27 @@ It classifies the change and runs what that change can actually affect, in the o
 
 Both are subagents in [`.claude/agents/`](../../agents/), `documentation-sweep` and `sensitive-information-pass`. Each holds `Glob, Grep, Read` and nothing else, so neither **can** fix what it finds — see [D-260904d](../../../docs/decisions.md#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit). Dispatch them together; they read different things and neither waits on the other.
 
-**Hand the secrets pass a diff, not a list of files.** Write it out and do not read it yourself — the redirect is what keeps it out of this context, and added lines are what let the agent tell a dummy value this change introduced from one that was always in `.env.test`:
+**Hand the secrets pass a diff, not a list of files.** Write it out and do not read it yourself — the redirect is what keeps it out of this context, and added lines are what let the agent tell a dummy value this change introduced from one that was always in `.env.test`. Substitute your own scratchpad directory for `<scratchpad>`, and run these as separate calls:
 
 ```bash
-git diff origin/main...HEAD > /path/to/your/scratchpad/diff.patch
+git diff origin/main...HEAD > <scratchpad>/diff.patch
 ```
 
-Give both agents that path. Give the sweep the changed paths too, from `git diff --name-only origin/main...HEAD`.
+```bash
+git diff HEAD >> <scratchpad>/diff.patch
+```
+
+```bash
+git status --porcelain
+```
+
+**The committed range alone would miss the work you are validating**, which is the same trap [`classify-change.mjs`](../../../scripts/classify-change.mjs) already avoids — this check normally runs _before_ committing, so `origin/main...HEAD` sees none of it. The second command adds staged and unstaged changes to tracked files. Untracked files are in neither: `git status --porcelain` marks them `??`, and those paths go to the secrets agent as paths to read in full, because a brand-new file is the likeliest place a key arrives.
+
+Give both agents the diff path. Give the sweep the changed paths, which `node scripts/classify-change.mjs --explain` already prints — it unions the committed range with the working tree for exactly this reason.
 
 **Relay what comes back, and act on it yourself.** A subagent's report is not shown to the user, so summarise it. Neither agent can resolve its own findings, which makes resolving them your job — and for a committed secret the fix is rotation by a person, never quietly deleting the line.
 
-**If an agent cannot be dispatched, do the check yourself.** Agent types are enumerated when a session starts, so one added or renamed during a session is not dispatchable until the next one — which is exactly the session that adds an agent, and exactly when it is tempting to record the step as done. Fall back to performing the brief inline from the [release checklist](../../../docs/release-checklist.md), and say that is what you did. A delegated check that silently did not run is worse than an expensive one.
+**If an agent cannot be dispatched, do the check yourself.** A newly written or renamed agent is not necessarily dispatchable straight away — the session that added these two could not dispatch them at first and could later, without a restart, so treat availability as something to observe rather than predict. Fall back to performing the brief inline from the [release checklist](../../../docs/release-checklist.md), and say that is what you did. A delegated check that silently did not run is worse than an expensive one.
 
 **Three bullets in the sweep stay yours.** Recording changes made outside git, adding newly discovered follow-ups, and writing down work agreed in discussion but not started all take this session as their input. The agent cannot see any of it, so it is scoped out rather than left to report a confident nothing.
 

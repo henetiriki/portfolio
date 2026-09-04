@@ -220,19 +220,46 @@ const checkHooks = settings => {
 // A skill and a subagent are both prose with a YAML header, so nothing compiles
 // either. Returns null when there is no header at all, which is a different
 // failure from a header that parses and is missing a field.
+//
+// A key with no inline value may be followed by a block sequence, which is
+// valid YAML and the shape `tools:` is most likely to be written in by hand.
+// Those items are joined back into the inline form so a caller reads one shape
+// either way — without this, a perfectly restricted agent fails the tools check
+// with a message asserting it declared none.
 const frontmatterFields = source => {
   const frontmatter = source.match(/^---\n([\s\S]*?)\n---\n/);
 
   if (!frontmatter) return null;
 
-  return new Map(
-    frontmatter
-      .at(1)
-      .split('\n')
-      .map(line => line.match(/^([a-z-]+):\s*(.*)$/))
-      .filter(Boolean)
-      .map(match => [match.at(1), match.at(2).trim()])
-  );
+  const fields = new Map();
+  let listKey = null;
+
+  for (const line of frontmatter.at(1).split('\n')) {
+    const field = line.match(/^([a-z-]+):\s*(.*)$/);
+
+    if (field) {
+      const value = field.at(2).trim();
+
+      fields.set(field.at(1), value);
+      listKey = value === '' ? field.at(1) : null;
+      continue;
+    }
+
+    const item = line.match(/^\s*-\s+(.*)$/);
+
+    if (!item || listKey === null) continue;
+
+    const collected = fields.get(listKey);
+
+    fields.set(
+      listKey,
+      collected === ''
+        ? item.at(1).trim()
+        : `${collected}, ${item.at(1).trim()}`
+    );
+  }
+
+  return fields;
 };
 
 // A skill is prose with a YAML header, so nothing compiles it and nothing else
@@ -279,6 +306,21 @@ const checkSkills = () => {
   }
 };
 
+// Recursive, and deliberately so: a file the walk misses is not reported as a
+// problem, it is silently unchecked — so an agent tucked in a subdirectory
+// would carry whatever tools it liked past a green run. The extension test is
+// case-insensitive for the same reason; checking a file that turns out not to
+// be an agent is loud, and skipping one is not.
+const markdownFilesUnder = directory =>
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `directory` is `.claude/agents` or a subdirectory of it, reached only by this walk
+  fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
+    const entryPath = path.join(directory, entry.name);
+
+    if (entry.isDirectory()) return markdownFilesUnder(entryPath);
+
+    return /\.md$/i.test(entry.name) ? [entryPath] : [];
+  });
+
 // An agent's `tools` line is the only thing standing between a reviewer that
 // reports what it found and one that quietly resolves it, and nothing else in
 // this repository would notice the list widening. The two review agents also
@@ -287,14 +329,9 @@ const checkSkills = () => {
 const checkAgents = () => {
   if (!exists(AGENTS)) return;
 
-  const files = fs
-    .readdirSync(AGENTS, { withFileTypes: true })
-    .filter(entry => entry.isFile() && entry.name.endsWith('.md'));
-
-  for (const file of files) {
-    const agentPath = path.join(AGENTS, file.name);
+  for (const agentPath of markdownFilesUnder(AGENTS)) {
     const label = relative(agentPath);
-    const name = file.name.replace(/\.md$/, '');
+    const name = path.basename(agentPath).replace(/\.md$/i, '');
 
     // eslint-disable-next-line security/detect-non-literal-fs-filename -- `agentPath` is built from a directory listing of this repository's own agents
     const fields = frontmatterFields(fs.readFileSync(agentPath, 'utf8'));

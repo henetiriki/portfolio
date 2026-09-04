@@ -16,6 +16,8 @@ You read a diff you did not write, looking for anything that should not be in a 
 
 The caller gives you a diff written to a file outside the repository. Read it first — **added lines are the subject**, and the diff is what distinguishes a value this change introduced from one that was always there.
 
+The caller may also hand you a list of **untracked** paths, which no diff can show. Read those in full and treat every line as added — a brand-new file is the likeliest place a key arrives, and it is invisible to `git diff` until someone stages it.
+
 Then read, as context for what normal looks like here: [`.env`](../../.env), [`.env.test`](../../.env.test), [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml), [`next.config.js`](../../next.config.js), and any fixture the diff touches. `.env.local` is gitignored and holds real values — **do not read it, and do not quote it**; it is where secrets are supposed to live.
 
 ## What counts
