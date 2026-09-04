@@ -17,4 +17,4 @@ The first question exists because that is the gap that actually bit — see the 
 
 The checklist costs nothing at merge time, because `squash_merge_commit_message` is `COMMIT_MESSAGES` — the squash commit is built from commit messages, so it never reaches the history.
 
-**Write the body to a file and pass `--body-file`, never `--body "…"` or a heredoc.** The shell-hygiene hook tests the whole command string, so a semicolon anywhere in the prose refuses the command — and bodies this project asks for are long enough that one usually appears. See [Shell hygiene](../../../AGENTS.md#shell-hygiene).
+**Write the body to a file and pass `--body-file` rather than `--body "…"`.** Not because anything refuses the alternative — the shell-hygiene hook used to, and no longer does — but because a body this long is worth reading before it is posted, which is the same reason `Edit`/`Write` beat a heredoc. Write it to the scratchpad directory. See [Shell hygiene](../../../AGENTS.md#shell-hygiene).

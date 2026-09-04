@@ -17,13 +17,26 @@ const SETTINGS_KEYS = ['hooks', 'permissions'];
 const PERMISSION_KEYS = ['allow', 'ask', 'deny'];
 
 // Each case is the command a hook would receive and whether it must be
-// refused. The pipe case is the documented carve-out — see D-260814b.
+// refused. The pipe is the documented carve-out (D-260814b). The last three are
+// the narrowing (D-260904c) and matter most: the hook refused all three before
+// it became quote-aware, so a rewrite that lost the quote handling would still
+// pass every other case here.
 const HOOK_CASES = [
   { command: 'git add . && rm -rf x', denied: true },
   { command: 'echo one; echo two', denied: true },
   { command: 'echo one || echo two', denied: true },
+  { command: 'git -C /somewhere status', denied: true },
   { command: 'git status', denied: false },
   { command: 'grep foo docs/roadmap.md | head', denied: false },
+  { command: 'git commit -m "Fix the thing; tidy up"', denied: false },
+  {
+    command: "cat <<'EOF' > note.md\nOne thing; then another\nEOF",
+    denied: false,
+  },
+  // Worded so `git` and `-C` are separate tokens inside the quotes: the
+  // shorter `grep "git -C"` passes whether or not the blanking works, because
+  // the opening quote stays welded to `git`.
+  { command: 'grep -n "use git -C here" AGENTS.md', denied: false },
 ];
 
 const errors = [];
@@ -95,7 +108,7 @@ const checkNoAutoMode = (filePath, settings) => {
 
 // Returns one trimmed stdout per HOOK_CASES entry, or null if the command
 // itself failed. A failing command is reported once rather than per case: the
-// usual cause is a broken `jq` program, and five copies of one compile error
+// usual cause is the hook program throwing, and one copy of that error per case
 // buries every other finding. The child's stderr is discarded for the same
 // reason — it is already quoted in the message.
 const runHook = command => {
@@ -113,6 +126,10 @@ const runHook = command => {
         // committed, reviewed settings file.
         execSync(command, {
           encoding: 'utf8',
+          // Claude Code sets this for every hook it runs. The check has to set
+          // it too, or a hook that resolves its script through it exits
+          // non-zero here for a reason that has nothing to do with the hook.
+          env: { ...process.env, CLAUDE_PROJECT_DIR: projectRoot },
           input,
           stdio: ['pipe', 'pipe', 'ignore'],
         }).trim()
@@ -281,14 +298,6 @@ const checkPorts = launch => {
     }
   }
 };
-
-try {
-  execSync('jq --version', { stdio: 'ignore' });
-} catch {
-  errors.push(
-    'jq is not available, so the hook cannot be exercised. The hook itself fails open when jq is missing; this check deliberately does not.'
-  );
-}
 
 const settings = readJson(SETTINGS);
 

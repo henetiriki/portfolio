@@ -9,6 +9,7 @@
   },
   "scripts": {
     "agent:check-config": "node scripts/check-agent-config.mjs",
+    "branch:check": "node scripts/check-branch-name.mjs",
     "build": "next build --webpack && next-sitemap",
     "clean": "rm -rf .next",
     "css-vars:check": "node scripts/generate-mantine-css-variables.mjs --check",

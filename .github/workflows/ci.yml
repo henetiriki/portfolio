@@ -80,6 +80,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
+      # Before the install, so a misnamed branch fails in seconds rather than
+      # after a minute of setup. Pure Node with no dependencies, the same as the
+      # classify job above. Only a pull request has a head ref — the checked-out
+      # ref there is the merge commit and carries no branch name, and a push to
+      # `main` has no branch to check at all. The ref goes through `env` rather
+      # than `${{ }}` inside the script: a branch name is attacker-controlled on
+      # a fork pull request, and interpolation into a `run:` body is injection.
+      - name: Check the branch name
+        if: github.event_name == 'pull_request'
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: node scripts/check-branch-name.mjs --ref "$HEAD_REF"
+
       - name: Set up Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
@@ -122,9 +135,9 @@ jobs:
 
       # Never gated either, and for the same reason: `.claude/` is on the
       # documentation-only exclusion list, so a change to the settings file
-      # holding the hook is precisely the case this must not skip. It needs no
-      # build inputs — jq is preinstalled on the runner, and the check fails
-      # rather than passes if it ever is not.
+      # holding the hooks is precisely the case this must not skip. It needs no
+      # build inputs — it runs the hooks themselves, which are Node scripts in
+      # this repository.
       - name: Check agent configuration
         run: yarn agent:check-config
 

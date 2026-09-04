@@ -5,6 +5,10 @@ import { execFileSync } from 'node:child_process';
 // build and the browser suite, which CI runs in its second job and the release
 // checklist requires before a pull request.
 const CHECKS = [
+  // Not `sourceOnly`: a `docs/` branch has to be prefixed too. First because it
+  // costs one `git rev-parse`, and because a rename is cheapest before there is
+  // a pull request pointing at the old name.
+  { args: ['branch:check'], name: 'Branch name' },
   { args: ['prettier:check'], name: 'Formatting' },
   { args: ['docs:check-links'], name: 'Documentation links' },
   { args: ['agent:check-config'], name: 'Agent configuration' },
