@@ -49,7 +49,7 @@ The description is what the branch is _for_, not what it touches: `chore/free-po
 
 ## Opening a pull request
 
-Every pull request body opens with a two-item human checklist, and the body is written to a file rather than passed inline. The procedure is [`.claude/skills/open-pull-request/SKILL.md`](.claude/skills/open-pull-request/SKILL.md) — read it before opening one.
+Every pull request body opens with a two-question human checklist, and the body is written to a file rather than passed inline. The procedure is [`.claude/skills/open-pull-request/SKILL.md`](.claude/skills/open-pull-request/SKILL.md) — read it before opening one.
 
 ## Validating a change
 
