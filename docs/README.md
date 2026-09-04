@@ -10,7 +10,7 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - [Components](components.md) — component catalogue grouped by feature area
 - [Travel / Google Maps Feature](travel-feature.md) — how the interactive map, markers and polylines work
 - [Contact Feature](contact-feature.md) — visitor experience and high-level server handling for messages
-- [Styling & Theming](styling-theming.md) — Mantine theme, custom colour palette, CSS Modules setup
+- [Styling & Theming](styling-theming.md) — Mantine theme, custom colour palette, CSS Modules setup, and the typographic conventions site copy follows
 - [PWA & SEO](pwa-seo.md) — manifest, service worker, meta tags, sitemap/robots
 - [Security](security.md) — public security posture and private reporting route
 - [Runtime Configuration](environment-variables.md) — safe handling and local setup guidance
@@ -18,7 +18,6 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - [Release Checklist](release-checklist.md) — how a change gets from a feature branch to production
 - [Roadmap](roadmap.md) — open work, known issues, and planned upgrades
 - [Engineering Decisions](decisions.md) — durable technical choices and their rationale
-- [Project History](project-history.md) — concise record of completed milestones
 
 ## At a glance
 

@@ -1,6 +1,6 @@
 # Engineering Decisions
 
-This log records durable choices whose rationale is useful beyond the change that introduced them. It is intentionally selective: current implementation details belong in the topical documentation, completed work belongs in [Project History](project-history.md), and unfinished work belongs in the [Roadmap](roadmap.md).
+This log records durable choices whose rationale is useful beyond the change that introduced them. It is intentionally selective: current implementation details belong in the topical documentation, what changed and when is the pull request's own record, and unfinished work belongs in the [Roadmap](roadmap.md).
 
 ## Identifiers
 
@@ -10,7 +10,28 @@ To mint one: take your decision date, look for that date already in this file, a
 
 **A letter freed by a rename is retired, not recycled.** `D-260816a` was published and then renamed to [D-260815i](#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar), so reusing it would silently point every stale inbound link at an unrelated decision — the one outcome renaming-in-place was avoided to prevent. `D-260816b` is therefore the first decision minted on that date.
 
-Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
+**A letter skipped by accident is also left alone.** `D-260904f` was never minted — `git log -S` finds it in no commit — so it is a gap rather than a retirement, and [D-260904h](#d-260904h--retire-the-history-file-and-fold-its-residue-into-the-decision-it-qualifies) took the next free letter rather than reaching back for it. Reaching back is not wrong, but it would put an `f` above a `g` and imply a minting order that never happened, for a tidiness nothing reads.
+
+Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
+
+## D-260904h — Retire the history file, and fold its residue into the decision it qualifies
+
+- **Status:** Accepted; supersedes [D-260809a](#d-260809a--separate-plans-decisions-and-history)'s three-way split
+- **Decided:** 2026-09-04
+
+`project-history.md` is deleted. The roadmap, this file and the topical documentation remain; what changed and when is the merged pull request's own record.
+
+**The two files looked alike and were wired in completely differently, which is what decided which one goes.** Five anchored links pointed into the history file — three of them from outside the decision log itself — against roughly a hundred citations of decision anchors across nineteen files — including `e2e` specs, `playwright.config.ts`, `scripts/generate-pwa-icons.mjs` and `AGENTS.md`, where a decision is the recorded rationale for a check whose assertion is otherwise bare. Byte count said the two were the same problem; the link graph said one was load-bearing and the other was free-standing.
+
+**This is [D-260809a](#d-260809a--separate-plans-decisions-and-history) recurring one level down.** That decision split the roadmap because it had become "a combined backlog, changelog and migration diary". The diary moved into a file of its own and kept growing at the same rate, which is the part the original split did not anticipate: giving a genre its own file removes the pressure that would otherwise have stopped it.
+
+**"It's all in the git log" is the wrong argument and would have deleted things nothing else held.** The real overlap was with this file — recent sections restated their own decision's reasoning in different words. What the pull request genuinely replaces is the thinner layer: what changed, when, and in which change.
+
+**The residue was much smaller than expected, because the topical docs already held most of it.** The estimate was tens of bullets; six relocations survived contact with reading. The footer's vacuous scroll-to-top test, the exact-link-count guard, the `--with-deps` cache note and every Codecov diagnosis were already in [`development.md`](development.md), often better stated. What genuinely existed nowhere else: the zeroed-layout trap in a hidden browser pane, which had produced a false roadmap item; the site's dash conventions; `useArticleAgreement` and the `next/dynamic` ref that silently never arrives; React 19 hoisting `<link>` out of the render container; LCOV having no statement counter; and the recursion requirement on both `.claude/agents/` walks, now in [D-260904d](#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit). **Read before deleting rather than trusting the estimate** — the estimate was wrong by an order of magnitude, in the direction that would have cost nothing but did not have to be guessed.
+
+**Two shapes short of deletion were rejected.** A thin one-line-per-release index keeps the release-record claim true without rewording anything, and keeps a file every branch edits for a claim the pull request list already answers. Re-scoping the file to wrong turns alone — a `wrong-turns.md` — renames the problem, and strips each wrong turn of the decision that made it one, which is the context that stops it being retried.
+
+**One finding is left for the compaction item rather than acted on here.** A third of decision entries are cited by nothing at all. That orders the pass; it is not a delete list. [D-260809b](#d-260809b--treat-the-contact-endpoint-as-a-stable-public-boundary) is a live constraint nobody has needed to link.
 
 ## D-260904g — Fail on ESLint warnings rather than carrying a tolerated tier
 
@@ -61,6 +82,8 @@ Two steps in the pre-pull-request flow were read-heavy, report-only, and the two
 
 **The tool restriction is the decision; the context saving is the side effect.** Both agents hold `Glob, Grep, Read` and nothing else, so neither _can_ resolve what it found and thereby hide that it found it. That is a guarantee prose cannot give, and it earns most in the secrets pass: the fix for a committed credential is rotation, because removing it in a later commit does not remove it from history, so a reviewer that deletes the line has destroyed the finding rather than acted on it. [`check-agent-config.mjs`](../scripts/check-agent-config.mjs) fails on any agent declaring a tool outside that set, so widening it is a reviewed change to the check rather than an edit to a file nobody reads twice.
 
+**Both walks over `.claude/agents/` recurse, and review caught the first version being flat.** `check-agent-config.mjs` and `check-doc-links.mjs` each read the directory, and a non-recursive read does not report a file in a subdirectory as a problem — it silently does not check it. An agent filed one level down would therefore have carried whatever tools it liked past a green run, which is the single direction a check whose whole purpose is the tool restriction must not fail in. Worth stating because a flat read looks correct against a flat directory, and stays correct right up until it matters.
+
 **This is not a reversal of [D-260904a](#d-260904a--move-the-task-shaped-procedures-into-skills-and-leave-pointers-behind)'s "no skill declares `allowed-tools`", and the distinction is easy to lose.** `allowed-tools` pre-approves tools for the turn that invokes a skill — a permission grant, which would quietly undo [D-260903b](#d-260903b--empty-the-local-allowlist-and-let-the-classifier-see-every-command) from a file nobody thinks of as permissions. A subagent's `tools` only ever _removes_ capability, and leaves every permission check in place for what remains. One widens the surface, the other narrows it.
 
 **Two agents rather than one reviewer with two sections.** The argument for one was that a single load of the diff would serve both. It does not: the sweep is barely a diff reader — it opens the docs the change touches and the workflow and scripts they make claims about — while the diff is the secrets pass's entire subject. They read different inputs and fail in different ways, and a combined report would let a thin half hide behind a thorough one.
@@ -88,7 +111,7 @@ The roadmap asked for three advisory conventions to be promoted to deterministic
 
 **The hook's real cost was an artefact of its test rather than of its rule, and it is fixed at source.** The test was textual, so a `;` inside a quoted argument or a heredoc body was refused too. [`scripts/shell-hygiene.mjs`](../scripts/shell-hygiene.mjs) now blanks quoted spans and heredoc bodies before looking for an operator. D-260814b considered exactly this and rejected it because "a heredoc is precisely where an evasion would hide" — a premise that needs something to evade. It fails open on an unterminated quote, which is the right direction for a convention and would not have been for a control.
 
-**So the `-F`/`--body-file` rule is demoted rather than promoted.** It exists only because the hook refused prose containing a semicolon; `AGENTS.md`, [`open-pull-request`](../.claude/skills/open-pull-request/SKILL.md) and [Project History](project-history.md) all justified it that way. With the cause removed it keeps its independent merit — a long message written to a file is reviewable before it runs, the same reason `Edit`/`Write` beat a heredoc — and nothing enforces it. Enforcing a rule whose stated reason has gone is how a convention outlives its argument, which is the failure this entry exists to avoid repeating.
+**So the `-F`/`--body-file` rule is demoted rather than promoted.** It exists only because the hook refused prose containing a semicolon; `AGENTS.md` and [`open-pull-request`](../.claude/skills/open-pull-request/SKILL.md) both justified it that way. With the cause removed it keeps its independent merit — a long message written to a file is reviewable before it runs, the same reason `Edit`/`Write` beat a heredoc — and nothing enforces it. Enforcing a rule whose stated reason has gone is how a convention outlives its argument, which is the failure this entry exists to avoid repeating.
 
 **The `git -C` ban goes in the hook because there is nowhere else to put it.** It leaves no trace in any artefact, so no git hook or CI job could ever see it — unlike a branch name. Its own justification also needed halving: the allowlist-prefix half is void, and what remains is that `-C` defeats the harness's built-in auto-allow for read-only git, which reads the token after `git` and finds `-C` rather than `status`. That is an ergonomic cost for something the working directory already provides.
 
@@ -318,12 +341,12 @@ Added `overflow: hidden` to `.mapContainer`. The scaled placeholder is now clipp
 
 ## D-260824a — Restore `ssr: false` on the animated tagline, and verify `next/dynamic` changes against `yarn dev` too
 
-- **Status:** Accepted; partially reverses the same day's earlier removal of `ssr: false` from `DynamicTypeAnimation` (see [Project History](project-history.md#2026-08-24--grammatical-agreement-for-the-animated-tagline-and-a-correction-to-the-same-days-ssr-false-removal))
+- **Status:** Accepted; partially reverses the same day's earlier removal of `ssr: false` from `DynamicTypeAnimation`
 - **Decided:** 2026-08-24
 
 **`DynamicTypeAnimation` (`index.tsx`) needs `ssr: false` again.** Removing it was reasoned correctly as far as it went — `react-type-animation` guards its only top-level `document` access and confines DOM/`requestAnimationFrame` writes to effects, so it cannot crash during server rendering — but SSR-safe and hydration-safe turned out not to be the same claim. Next pre-resolves every `next/dynamic` import before rendering on the server, so the server HTML contains the component's real output (`preRenderFirstString`'s first sequence string). On the client, hydration can run before that same chunk has finished fetching, in which case `next/dynamic`'s default loading state renders `null` — a genuine mismatch against what the server sent, not a false-positive warning. `next build`'s webpack output emits a preload link for the anticipated chunk, so the fetch is normally won before hydration and it was never observed there; `next dev`'s Turbopack compiles the chunk on first request and reliably lost the race after 2–6 seconds.
 
-**This was found while building unrelated grammar-agreement work on the same tagline** (see [Project History](project-history.md#2026-08-24--grammatical-agreement-for-the-animated-tagline-and-a-correction-to-the-same-days-ssr-false-removal)), by manually running `yarn dev` and reloading — not by the automated suite, which builds and serves production output exclusively (see the [dev/prod bundler gap](release-checklist.md#known-gaps) this already documents as a category). `preRenderFirstString` is kept regardless: it still removes an empty-then-typing flash once the client-only chunk resolves.
+**This was found while building unrelated grammar-agreement work on the same tagline** (see [Components](components.md)), by manually running `yarn dev` and reloading — not by the automated suite, which builds and serves production output exclusively (see the [dev/prod bundler gap](release-checklist.md#known-gaps) this already documents as a category). `preRenderFirstString` is kept regardless: it still removes an empty-then-typing flash once the client-only chunk resolves.
 
 **Verify any change to a `next/dynamic` component's `ssr` option against `yarn dev`, not only a production build.** The two bundlers' chunk-loading timing differs enough that a hydration race can be invisible in one and reliable in the other; `test:e2e` alone will not catch it, because it only ever exercises the production build.
 
@@ -384,7 +407,7 @@ Added `overflow: hidden` to `.mapContainer`. The scaled placeholder is now clipp
 
 **Tags and semantic application versions were rejected.** This site publishes no release artefact and has no external compatibility contract, and `package.json`'s version is inert. A tag would only add a second name to a commit; it would not say whether Vercel actually built or promoted it. Creating tags automatically after a `main` push would either label failed and ignored builds as releases or require deployment-completion automation with credentials, gating and another stateful failure path.
 
-**The initial proposal looked useful because a date alone is not a precise history citation.** The pull request number already supplies that stable reference and links to the review, checks and squash commit. Project History entries may cite the pull request when precision matters; Vercel's deployment record remains the authoritative runtime and rollback reference. Reconsider release numbering only if the project starts publishing artefacts, acquires versioned consumers or needs visitors to report a running build identifier.
+**The initial proposal looked useful because a date alone is not a precise history citation.** The pull request number already supplies that stable reference and links to the review, checks and squash commit. Cite it wherever a documentation entry needs to be precise about which change something happened in; Vercel's deployment record remains the authoritative runtime and rollback reference. Reconsider release numbering only if the project starts publishing artefacts, acquires versioned consumers or needs visitors to report a running build identifier.
 
 ## D-260822a — Compare preview changes with the last built preview, not the pull request base
 
@@ -417,9 +440,9 @@ A full documentation audit found four dead links: three cited a deleted security
 
 **`scripts/check-doc-links.mjs` follows the existing `css-vars:check`/`icons:check` shape** — no dependencies, walks the docs, fails non-zero on a mismatch — but sits on the opposite side of the docs-only gate. Those two skip on a documentation-only change because they check generated _source_ artefacts that prose cannot affect; this one exists specifically to check docs, so it runs unconditionally alongside `prettier:check`, the other ungated step, per the reasoning already established in [D-260815c](#d-260815c--give-documentation-only-changes-a-cheap-ci-path-rather-than-no-ci-run).
 
-**GitHub's heading-slug algorithm had to be reverse-engineered rather than assumed, because this project has already been burned by it twice.** The 2026-08-15 entry in [Project History](project-history.md) records "GitHub keeps the underscore when it slugs a heading" as a real source of dead links, and every `D-YYMMDDx — Title` decision heading anchors with a double hyphen where the em dash sat (`d-260821i--rely-on-...`), which a naive "collapse whitespace" slugifier would silently merge into one. The checker strips anything that isn't a word character, hyphen or space, then converts each surviving space to a hyphen individually rather than collapsing runs — which is what a heading's em dash needs, since it leaves two adjacent spaces behind when removed. Verified against both known traps, not just clean headings.
+**GitHub's heading-slug algorithm had to be reverse-engineered rather than assumed, because this project has already been burned by it twice.** GitHub keeps the underscore when it slugs a heading, which had already produced four dead links into a decision whose title contains `` `/_offline` ``; and every `D-YYMMDDx — Title` decision heading anchors with a double hyphen where the em dash sat (`d-260821i--rely-on-...`), which a naive "collapse whitespace" slugifier would silently merge into one. The checker strips anything that isn't a word character, hyphen or space, then converts each surviving space to a hyphen individually rather than collapsing runs — which is what a heading's em dash needs, since it leaves two adjacent spaces behind when removed. Verified against both known traps, not just clean headings.
 
-**The four dead links were fixed by de-linking, not by repointing.** `decisions.md`/`project-history.md` entries stay as published once merged — D-260821g already declared the CSP-reporting decisions it superseded correct given what was known when they were written — so rewriting the surrounding sentences was out of scope. A link that pointed at real content when written and lost its target later is a defect in the hyperlink, not in the claim; the fix drops the markdown link syntax and keeps the referenced name as plain text, leaving each sentence's point intact.
+**The four dead links were fixed by de-linking, not by repointing.** A decision entry stays as published once merged — D-260821g already declared the CSP-reporting decisions it superseded correct given what was known when they were written — so rewriting the surrounding sentences was out of scope. A link that pointed at real content when written and lost its target later is a defect in the hyperlink, not in the claim; the fix drops the markdown link syntax and keeps the referenced name as plain text, leaving each sentence's point intact.
 
 ## D-260821i — Rely on manual review for splash-device coverage, not an automated check
 
@@ -691,7 +714,7 @@ The `main` ruleset has no bypass actors. The Repository admin role briefly held 
 
 **Editing the ruleset is the escape hatch, and it is a better one.** The owner can always change the rule, so the protection was never truly locked — the difference is that lifting a rule is deliberate, visible in ruleset history and scoped to the thing that is wrong, whereas a standing bypass silently applies to every rule on every merge. The wedge is also self-announcing: a required check that never reports is obvious, unlike a check that was quietly bypassed.
 
-**Ruleset history is the record.** `gh api repos/<owner>/<repo>/rulesets/<id>/history` retains every version with its full state and the actor who changed it. Nothing in the repository records a settings change, so this is the only place a claim about protection can be checked — and a documentation entry describing settings can be accurate when written and stale an hour later, which is exactly what happened to the publication entry in [Project History](project-history.md).
+**Ruleset history is the record.** `gh api repos/<owner>/<repo>/rulesets/<id>/history` retains every version with its full state and the actor who changed it. Nothing in the repository records a settings change, so this is the only place a claim about protection can be checked — and a documentation entry describing settings can be accurate when written and stale an hour later, which is exactly what happened to the entry recording publication: it described the bypass this decision removed under an hour after it was written.
 
 ## D-260816b — Split CI into concurrent jobs, with the classification in its own
 
@@ -708,7 +731,7 @@ The `main` ruleset has no bypass actors. The Repository admin role briefly held 
 
 **A job skipped by an `if:` satisfies a required check; a workflow skipped by `paths-ignore` does not.** That asymmetry is load-bearing and is the same one D-260815c turned on, now applied at job rather than step granularity: a conditionally skipped job reports success, while a filtered-out workflow never reports and leaves the requirement pending forever. It is why the gated job can be required on `main` at all.
 
-**Splitting renames the required check, which is the risk the change actually carries.** `Validate & build` no longer exists, and a ruleset requiring a check that no longer runs blocks every pull request indefinitely. The ruleset was updated to require `Validate`, `Build & browser suite` and `codecov/patch` in the same window as the merge — see [Project History](project-history.md).
+**Splitting renames the required check, which is the risk the change actually carries.** `Validate & build` no longer exists, and a ruleset requiring a check that no longer runs blocks every pull request indefinitely. The ruleset was updated to require `Validate`, `Build & browser suite` and `codecov/patch` in the same window as the merge.
 
 ## D-260815h — Private browser-policy rollout record
 
@@ -959,12 +982,12 @@ The endpoint validates the method and request shape at runtime, enforces bounded
 
 ## D-260809a — Separate plans, decisions and history
 
-- **Status:** Accepted
+- **Status:** Accepted; the three-way split is superseded by [D-260904h](#d-260904h--retire-the-history-file-and-fold-its-residue-into-the-decision-it-qualifies), which retired the history file. The separation of open work from durable rationale stands; there is no longer a history entry to add.
 - **Decided:** 2026-08-09
 
 The roadmap had become a combined backlog, changelog and migration diary. That preserved context but obscured the work that remained.
 
-The [Roadmap](roadmap.md) now contains open work only. This file records durable rationale, while [Project History](project-history.md) is the concise release record. Detailed operational knowledge stays beside the feature it affects. When work is completed, remove it from the roadmap, update the relevant topical document, and add a short history entry; create or amend a decision only when the rationale is expected to influence future changes.
+The [Roadmap](roadmap.md) now contains open work only. This file records durable rationale, while `project-history.md` is the concise release record. Detailed operational knowledge stays beside the feature it affects. When work is completed, remove it from the roadmap, update the relevant topical document, and add a short history entry; create or amend a decision only when the rationale is expected to influence future changes.
 
 ## D-260808b — Generate CSS declarations for WebStorm without shipping them
 
