@@ -7,6 +7,17 @@ const HEREDOC_START = /<<(?!<)-?\s*(['"]?)([A-Za-z_][\w-]*)\1/;
 
 const CHAIN_OPERATOR = /&&|\|\||;/;
 
+// A `;` that terminates a clause of a compound command is grammar, not a
+// separator: `for … ; do … ; done` is one logical command in exactly the sense
+// a pipeline is, and it takes the same carve-out. Only the terminator itself is
+// blanked, so a body that really does chain — `do echo one; echo two; done` —
+// still carries an unblanked `;` and is still refused.
+const CLAUSE_TERMINATOR = /;(?=\s*(?:do|done|then|elif|else|fi|esac)\b)/g;
+
+// `;;` ends a `case` arm and is never two separators, since `; ;` is a syntax
+// error — so it needs no following keyword to be unambiguous.
+const CASE_TERMINATOR = /;;/g;
+
 const CHAIN_REASON =
   'Chained command blocked. Do not join independent commands with &&, ; or ||. Issue them as separate Bash calls, batching independent ones into a single response so they run in parallel. Pipes are allowed.';
 
@@ -90,10 +101,22 @@ export const codeOnly = command => {
 };
 
 /**
+ * The same code with every clause terminator blanked, leaving only the `;` that
+ * separates one command from the next. Run over `codeOnly`'s output rather than
+ * the raw string, so a keyword inside a quoted argument cannot rescue a real
+ * separator in front of it.
+ */
+export const withoutClauseTerminators = code =>
+  code
+    .replace(CASE_TERMINATOR, blanks(2))
+    .replace(CLAUSE_TERMINATOR, blanks(1));
+
+/**
  * The first `&&`, `||` or `;` the shell would treat as a separator, or null.
  */
 export const chainOperator = command =>
-  codeOnly(command).match(CHAIN_OPERATOR)?.at(0) ?? null;
+  withoutClauseTerminators(codeOnly(command)).match(CHAIN_OPERATOR)?.at(0) ??
+  null;
 
 /**
  * Whether any `git` invocation passes `-C`. Tokenised rather than matched with

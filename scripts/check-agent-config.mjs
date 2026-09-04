@@ -60,6 +60,13 @@ const HOOK_CASES = [
   // shorter `grep "git -C"` passes whether or not the blanking works, because
   // the opening quote stays welded to `git`.
   { command: 'grep -n "use git -C here" AGENTS.md', denied: false },
+  // The compound-command carve-out. The pair matters more than
+  // either half: the first is grammar the hook must allow, the second is a
+  // body that really does chain, and a fix that simply exempted every command
+  // containing `do` would pass the first and fail the second.
+  { command: 'for f in a b; do echo $f; done', denied: false },
+  { command: 'if [ -f x ]; then echo y; fi', denied: false },
+  { command: 'for f in a b; do echo one; echo two; done', denied: true },
 ];
 
 const errors = [];
