@@ -12,6 +12,27 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260904d — Delegate the sweep and the secrets pass to agents that cannot edit
+
+- **Status:** Accepted
+- **Decided:** 2026-09-04
+
+Two steps in the pre-pull-request flow were read-heavy, report-only, and the two most often skipped — the [documentation sweep](release-checklist.md#documentation-sweep) in both directions and the [sensitive-information pass](release-checklist.md#sensitive-information) over the diff. They are now [`documentation-sweep`](../.claude/agents/documentation-sweep.md) and [`sensitive-information-pass`](../.claude/agents/sensitive-information-pass.md), this repository's first subagents.
+
+**The tool restriction is the decision; the context saving is the side effect.** Both agents hold `Glob, Grep, Read` and nothing else, so neither _can_ resolve what it found and thereby hide that it found it. That is a guarantee prose cannot give, and it earns most in the secrets pass: the fix for a committed credential is rotation, because removing it in a later commit does not remove it from history, so a reviewer that deletes the line has destroyed the finding rather than acted on it. [`check-agent-config.mjs`](../scripts/check-agent-config.mjs) fails on any agent declaring a tool outside that set, so widening it is a reviewed change to the check rather than an edit to a file nobody reads twice.
+
+**This is not a reversal of [D-260904a](#d-260904a--move-the-task-shaped-procedures-into-skills-and-leave-pointers-behind)'s "no skill declares `allowed-tools`", and the distinction is easy to lose.** `allowed-tools` pre-approves tools for the turn that invokes a skill — a permission grant, which would quietly undo [D-260903b](#d-260903b--empty-the-local-allowlist-and-let-the-classifier-see-every-command) from a file nobody thinks of as permissions. A subagent's `tools` only ever _removes_ capability, and leaves every permission check in place for what remains. One widens the surface, the other narrows it.
+
+**Two agents rather than one reviewer with two sections.** The argument for one was that a single load of the diff would serve both. It does not: the sweep is barely a diff reader — it opens the docs the change touches and the workflow and scripts they make claims about — while the diff is the secrets pass's entire subject. They read different inputs and fail in different ways, and a combined report would let a thin half hide behind a thorough one.
+
+**The secrets pass is handed a diff written to a file, not a list of changed paths.** The caller redirects `git diff origin/main...HEAD` to a file outside the repository and passes the path, so the content never enters the calling context — which is most of the point of delegating. Whole-file reads were the simpler alternative and were rejected: they show current state rather than what changed, so the agent cannot distinguish a dummy value this change introduced from one that has always been in `.env.test`, and it re-flags every existing one on every run. The signal that matters is exactly the one whole-file reads discard.
+
+**Three bullets of the sweep were deliberately not delegated.** Recording changes made outside git, adding newly discovered follow-ups, and writing down work agreed in discussion but not started all take the _session_ as their input, and a subagent has none of it. Delegating them would produce a confident empty report, which is worse than not asking — the checklist item would look done. They stay with the calling thread, and the agent is told not to mention them.
+
+**A new agent cannot be exercised by the session that writes it**, which was found by trying. Agent types are enumerated when a session starts, so the definitions added here validated and could not be dispatched until a later session — and that is the general case for every future agent, not a one-off. The skill therefore says to perform the brief inline and to say so, rather than record a delegated check that silently did not run. It is also why the [release checklist](release-checklist.md) keeps the full brief in prose rather than reducing the section to "dispatch the agent".
+
+**Both now run on every pre-pull-request validation, not on the phrase "release ready check".** That is the change that actually addresses the skipping the roadmap complained of, and it is affordable only because the reading happens elsewhere. The [release checklist](release-checklist.md) keeps the full brief for each in prose, so a tool with no subagents performs them itself — the same cross-tool shape D-260904a used for skills, for the same reason.
+
 ## D-260904c — Narrow the shell-hygiene hook to shell syntax, and check branch names in CI
 
 - **Status:** Accepted

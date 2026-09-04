@@ -6,6 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
 const docsDir = path.join(projectRoot, 'docs');
 const skillsDir = path.join(projectRoot, '.claude', 'skills');
+const agentsDir = path.join(projectRoot, '.claude', 'agents');
 
 // Skills live three directories down and link back out, so their relative
 // paths are the easiest thing in the repository to get wrong — and a skill is
@@ -23,6 +24,17 @@ const skillFiles = () => {
   );
 };
 
+// Agents have the same problem one directory shallower, and are flat files
+// rather than a directory each.
+const agentFiles = () => {
+  if (!fs.existsSync(agentsDir)) return [];
+
+  return fs
+    .readdirSync(agentsDir, { withFileTypes: true })
+    .filter(entry => entry.isFile() && entry.name.endsWith('.md'))
+    .map(entry => path.join(agentsDir, entry.name));
+};
+
 const markdownFiles = [
   ...fs
     .readdirSync(projectRoot)
@@ -33,6 +45,7 @@ const markdownFiles = [
     .filter(name => name.endsWith('.md'))
     .map(name => path.join(docsDir, name)),
   ...skillFiles(),
+  ...agentFiles(),
 ].sort();
 
 const relative = filePath => path.relative(projectRoot, filePath);

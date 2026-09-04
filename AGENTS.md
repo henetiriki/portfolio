@@ -58,6 +58,8 @@ Every pull request body opens with a two-question human checklist, and the body 
 
 The commands to run before opening a pull request, and what **"release ready check"** or **"prepare for release"** means, are in [`.claude/skills/release-ready-check/SKILL.md`](.claude/skills/release-ready-check/SKILL.md). The full list, including the production build, is in the [release checklist](docs/release-checklist.md).
 
+**Two of those checks are judgement rather than commands**, and Claude Code delegates them to read-only reviewers in [`.claude/agents/`](.claude/agents/): the documentation sweep and the sensitive-information pass. Each holds `Glob, Grep, Read` and nothing else, so a finding reaches a person instead of being quietly fixed — see [D-260904d](docs/decisions.md#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit). A tool without subagents performs both itself; the [release checklist](docs/release-checklist.md) carries the full brief for each and does not depend on the delegation.
+
 **Port 3000 belongs to `next dev`** — leave whatever is running there alone, it is usually a human watching the change land. 3001 is the agent's own preview and 3002 the browser suite; `yarn agent:check-config` fails if those ever collide again.
 
 ## Documentation discipline

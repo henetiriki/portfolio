@@ -10,11 +10,17 @@ const claudeDir = path.join(projectRoot, '.claude');
 const SETTINGS = path.join(claudeDir, 'settings.json');
 const LOCAL_SETTINGS = path.join(claudeDir, 'settings.local.json');
 const LAUNCH = path.join(claudeDir, 'launch.json');
+const AGENTS = path.join(claudeDir, 'agents');
 const SKILLS = path.join(claudeDir, 'skills');
 const PLAYWRIGHT_CONFIG = path.join(projectRoot, 'playwright.config.ts');
 
 const SETTINGS_KEYS = ['hooks', 'permissions'];
 const PERMISSION_KEYS = ['allow', 'ask', 'deny'];
+
+// The whole guarantee a subagent offers here is that it cannot act on what it
+// finds, so the tool list is the load-bearing part of the file rather than
+// configuration around it — see D-260904d.
+const READ_ONLY_TOOLS = ['Glob', 'Grep', 'Read'];
 
 // Each case is the command a hook would receive and whether it must be
 // refused. The pipe is the documented carve-out (D-260814b). The last three are
@@ -211,6 +217,24 @@ const checkHooks = settings => {
   }
 };
 
+// A skill and a subagent are both prose with a YAML header, so nothing compiles
+// either. Returns null when there is no header at all, which is a different
+// failure from a header that parses and is missing a field.
+const frontmatterFields = source => {
+  const frontmatter = source.match(/^---\n([\s\S]*?)\n---\n/);
+
+  if (!frontmatter) return null;
+
+  return new Map(
+    frontmatter
+      .at(1)
+      .split('\n')
+      .map(line => line.match(/^([a-z-]+):\s*(.*)$/))
+      .filter(Boolean)
+      .map(match => [match.at(1), match.at(2).trim()])
+  );
+};
+
 // A skill is prose with a YAML header, so nothing compiles it and nothing else
 // checks it. Claude sees only `name` and `description` until it invokes one, so
 // a missing description makes the skill unfindable rather than broken — silent
@@ -234,22 +258,12 @@ const checkSkills = () => {
     }
 
     // eslint-disable-next-line security/detect-non-literal-fs-filename -- `skillPath` is built from a directory listing of this repository's own skills
-    const source = fs.readFileSync(skillPath, 'utf8');
-    const frontmatter = source.match(/^---\n([\s\S]*?)\n---\n/);
+    const fields = frontmatterFields(fs.readFileSync(skillPath, 'utf8'));
 
-    if (!frontmatter) {
+    if (!fields) {
       errors.push(`${label}: has no YAML frontmatter block`);
       continue;
     }
-
-    const fields = new Map(
-      frontmatter
-        .at(1)
-        .split('\n')
-        .map(line => line.match(/^([a-z-]+):\s*(.*)$/))
-        .filter(Boolean)
-        .map(match => [match.at(1), match.at(2).trim()])
-    );
 
     if (fields.get('name') !== directory.name) {
       errors.push(
@@ -260,6 +274,67 @@ const checkSkills = () => {
     if (!fields.get('description')) {
       errors.push(
         `${label}: has no description. Claude sees only the name and description until it invokes a skill, so without one it never triggers.`
+      );
+    }
+  }
+};
+
+// An agent's `tools` line is the only thing standing between a reviewer that
+// reports what it found and one that quietly resolves it, and nothing else in
+// this repository would notice the list widening. The two review agents also
+// have to be findable: as with a skill, Claude sees only `name` and
+// `description` until it dispatches one.
+const checkAgents = () => {
+  if (!exists(AGENTS)) return;
+
+  const files = fs
+    .readdirSync(AGENTS, { withFileTypes: true })
+    .filter(entry => entry.isFile() && entry.name.endsWith('.md'));
+
+  for (const file of files) {
+    const agentPath = path.join(AGENTS, file.name);
+    const label = relative(agentPath);
+    const name = file.name.replace(/\.md$/, '');
+
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- `agentPath` is built from a directory listing of this repository's own agents
+    const fields = frontmatterFields(fs.readFileSync(agentPath, 'utf8'));
+
+    if (!fields) {
+      errors.push(`${label}: has no YAML frontmatter block`);
+      continue;
+    }
+
+    if (fields.get('name') !== name) {
+      errors.push(
+        `${label}: frontmatter name "${fields.get('name') ?? ''}" does not match its filename "${name}", which is what dispatches it`
+      );
+    }
+
+    if (!fields.get('description')) {
+      errors.push(
+        `${label}: has no description. Claude sees only the name and description until it dispatches an agent, so without one it never triggers.`
+      );
+    }
+
+    const tools = (fields.get('tools') ?? '')
+      .split(',')
+      .map(tool => tool.trim())
+      .filter(Boolean);
+
+    if (tools.length === 0) {
+      errors.push(
+        `${label}: declares no tools, and an agent without a "tools" line inherits every tool the session has — Edit included. See D-260904d.`
+      );
+      continue;
+    }
+
+    checkSorted(`${label} tools`, tools);
+
+    const disallowed = tools.filter(tool => !READ_ONLY_TOOLS.includes(tool));
+
+    if (disallowed.length > 0) {
+      errors.push(
+        `${label}: declares ${disallowed.join(', ')}, outside the read-only set (${READ_ONLY_TOOLS.join(', ')}). These agents report findings for a person to act on, and one holding a writing tool could resolve what it found instead of reporting it — which is the guarantee, not a detail. See D-260904d, and widen this check deliberately rather than the file.`
       );
     }
   }
@@ -326,6 +401,7 @@ if (exists(LOCAL_SETTINGS)) {
   }
 }
 
+checkAgents();
 checkSkills();
 
 const launch = readJson(LAUNCH);
