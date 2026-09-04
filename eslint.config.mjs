@@ -194,5 +194,15 @@ export default defineConfig(
       },
     },
   },
+  // `no-restricted-imports` bans `../` so that cross-folder imports resolve
+  // through an `@alias/*` path. Those aliases are `tsconfig.json` `paths`
+  // entries pointing into `./src/`, and `scripts/` is run directly by node with
+  // no bundler to resolve them — so a relative import is the only option there.
+  {
+    files: ['scripts/**'],
+    rules: {
+      'no-restricted-imports': 'off',
+    },
+  },
   prettier
 );

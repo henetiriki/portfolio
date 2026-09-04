@@ -31,7 +31,8 @@
     "test:e2e:maps-smoke": "playwright test --config=playwright.maps-smoke.config.ts",
     "test:e2e:ui": "playwright test --ui",
     "test:watch": "jest --watch",
-    "type-check": "tsc --pretty --noEmit"
+    "type-check": "tsc --pretty --noEmit",
+    "validate": "node scripts/validate.mjs"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^2.1.1",

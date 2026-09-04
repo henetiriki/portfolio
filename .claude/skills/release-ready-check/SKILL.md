@@ -5,21 +5,17 @@ description: The checks to run before opening a pull request in this repository,
 
 # Validating a change
 
-Run these before opening a pull request; the full list, including the production build, is in the [release checklist](../../../docs/release-checklist.md).
+Run one command before opening a pull request:
 
 ```bash
-yarn eslint:check
-yarn type-check
-yarn prettier:check
-yarn docs:check-links
-yarn agent:check-config
-yarn css-vars:check
-yarn test:coverage
-yarn test:e2e
+yarn validate
 ```
 
+It classifies the change and runs what that change can actually affect, in the order that fails cheapest first. A documentation-only change skips lint, both type-checks, the generated-asset checks, the production build and the browser suite — none of which it can affect — and still runs formatting, the documentation-link check, the agent-configuration check and the Jest suite. Everything else runs the full set. It prints the verdict and what it skipped, so a wrong classification is visible rather than merely cheap.
+
+**The rule is the one CI uses**, from [`scripts/classify-change.mjs`](../../../scripts/classify-change.mjs) — see [D-260904b](../../../docs/decisions.md#d-260904b--decide-documentation-only-once-and-let-both-callers-ask-it). CI re-decides for itself against `HEAD^`, so a wrong skip here costs a round trip rather than a merge. The full checklist, including what happens after the merge, is in the [release checklist](../../../docs/release-checklist.md).
+
 - `yarn test:e2e` needs a production build first and serves on **port 3002**. One port per owner: **3000 belongs to `next dev`** — leave whatever is running there alone, it is usually a human watching the change land — **3001 to the agent's own preview**, 3002 to the suite. `yarn agent:check-config` fails if those ever collide again.
-- The service worker is a separate TypeScript project: `yarn tsc --pretty --noEmit --project service-worker/tsconfig.json`.
 
 ## "Release ready check" and "prepare for release"
 

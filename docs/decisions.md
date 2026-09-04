@@ -12,6 +12,21 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260904b — Decide "documentation-only" once, and let both callers ask it
+
+- **Status:** Accepted
+- **Decided:** 2026-09-04
+
+Three things answered the same question and none of them shared an answer: CI's classify job held its exclusion list inline in [`ci.yml`](../.github/workflows/ci.yml), [`should-skip-vercel-build.sh`](../scripts/should-skip-vercel-build.sh) held a second and deliberately different one, and the `release-ready-check` skill was in effect a third policy of "always run everything" — so a documentation-only change still paid for a production build and the browser suite locally. [`scripts/classify-change.mjs`](../scripts/classify-change.mjs) now holds CI's rule, CI calls it, and `yarn validate` asks it the same question.
+
+**The Vercel gate was left out on purpose.** It could have moved too, and one list would be tidier than two. It stays because its failure mode is the worst one available here — a missed production deploy, reported as a green `success` reading _"Canceled by Ignored Build Step"_ — it cannot be exercised until a real deploy happens, and its inverted exit convention (`0` skips, `1` builds) is easy to get subtly wrong. Three policies becoming two is most of the benefit at none of that risk. The remaining pair are already documented as differing on purpose: Vercel asks whether a visitor could see the change, CI asks whether lint, types, tests or the build could be affected, which is why `e2e/` and `playwright.config.ts` are excluded from one and not the other.
+
+**The base ref differs by caller, and conflating them is how a classifier lies.** `--base <ref>` compares that ref with HEAD and ignores the working tree — that is CI's case, `HEAD^ HEAD`, correct only because merges are squashed so a pull request lands as one commit. With no argument it compares `origin/main...HEAD` **and adds uncommitted work**, which is the local case and precisely what `HEAD^` misses: validation normally runs before committing. A `--head` argument exists so a past commit can be reproduced, since `--base <sha>^` alone would compare it with the current tip and sweep in everything merged since.
+
+**Sharing one classifier costs CI its independent second opinion**, and that is the real trade. Two hand-maintained lists could disagree, but they could not both be wrong in the same way; one shared rule can. It is why `scripts/` now has tests at all — `tsconfig.json`'s `include` is `**/*.ts(x)` only, so `allowJs` never reached a `.mjs` file, and `testMatch` was scoped to `src/`, leaving these scripts the only executable code here with neither type checking nor tests. The predicate is pinned against the git pathspec semantics it replaced, including that `:(exclude)*.md` matched at any depth because git's wildcards cross `/` without `:(glob)` magic.
+
+**The blast radius stays small either way.** CI classifies again for itself on every pull request and the ruleset requires it green, so a wrong local skip costs a round trip rather than a merge. `yarn validate` prints the verdict and what it skipped for the same reason: a wrong answer should look wrong rather than just fast.
+
 ## D-260904a — Move the task-shaped procedures into skills, and leave pointers behind
 
 - **Status:** Accepted

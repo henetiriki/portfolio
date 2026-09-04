@@ -14,16 +14,13 @@ Quick reference for shipping a change to production.
 
 ## Before Opening The PR
 
-Run the fast application checks locally in the same order as CI:
+Run the checks locally:
 
 ```bash
-yarn eslint:check
-yarn type-check
-yarn prettier:check
-yarn test:coverage
+yarn validate
 ```
 
-- [ ] All four pass; coverage stays above the 95% global threshold in `jest.config.js`
+- [ ] It passes. `yarn validate` classifies the change and runs what that change can affect, cheapest first — lint, both type-checks, the generated-asset checks, the build and the browser suite are skipped on a documentation-only change and run on everything else. It prints the verdict and what it skipped. The individual scripts still exist and can be run on their own; the list is in [Development Workflow](development.md#scripts-packagejson). Coverage stays above the 95% global threshold in `jest.config.js`
 - [ ] The pull request's `codecov/patch` check passes at 100%; inspect any GitHub Checks annotations rather than treating the aggregate Jest percentage as coverage of the changed lines. If the status never appears at all, the upload was dropped rather than failed — check Codecov's own state before the workflow, as [Testing](development.md#testing) describes
 - [ ] `yarn docs:check-links` passes. Unlike the two checks below, it runs even on a documentation-only change — it verifies every relative Markdown link and heading anchor across the docs resolves, which is exactly what changes on a docs-only diff.
 - [ ] `yarn css-vars:check` passes. CI runs this after `postinstall` as an integrity check for the generated, gitignored WebStorm stub; it is not a committed-file drift check.
