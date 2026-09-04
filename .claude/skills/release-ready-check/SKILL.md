@@ -39,6 +39,8 @@ git status --porcelain
 
 **The committed range alone would miss the work you are validating**, which is the same trap [`classify-change.mjs`](../../../scripts/classify-change.mjs) already avoids — this check normally runs _before_ committing, so `origin/main...HEAD` sees none of it. The second command adds staged and unstaged changes to tracked files. Untracked files are in neither: `git status --porcelain` marks them `??`, and those paths go to the secrets agent as paths to read in full, because a brand-new file is the likeliest place a key arrives.
 
+**The file is two diffs appended, so a path changed both in a commit and in the working tree appears twice**, in different states. Say so when you hand it over: the later hunks are the current ones, and a reader taking the first as final would report a line that has since been removed.
+
 Give both agents the diff path. Give the sweep the changed paths, which `node scripts/classify-change.mjs --explain` already prints — it unions the committed range with the working tree for exactly this reason.
 
 **Relay what comes back, and act on it yourself.** A subagent's report is not shown to the user, so summarise it. Neither agent can resolve its own findings, which makes resolving them your job — and for a committed secret the fix is rotation by a person, never quietly deleting the line.
