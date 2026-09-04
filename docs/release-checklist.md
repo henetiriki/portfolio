@@ -33,6 +33,8 @@ yarn validate
 
 Run against the diff, every time — not only when the change looks security-related. The expensive mistakes here are accidental.
 
+> Claude Code delegates this to [`sensitive-information-pass`](../.claude/agents/sensitive-information-pass.md), a subagent holding `Glob, Grep, Read` and nothing else. It reports; it cannot edit, which is deliberate — the fix for a committed secret is rotation, and a deletion in a later commit does not remove it from history. See [D-260904d](decisions.md#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit). The list below is that agent's brief and stands on its own for any tool that has no subagents.
+
 - [ ] **Nothing secret is in the diff.** Credentials, API keys, tokens, passwords, private URLs, personal data. Real secrets belong in `.env*.local` (gitignored) and the Vercel dashboard; `.env` and `.env.test` are tracked and must hold only non-secret or dummy values.
 - [ ] **Any new `NEXT_PUBLIC_*` value is intended to be public.** That prefix inlines the value into the client bundle at build time, so it ships to every visitor and is readable with view-source. Treat adding one as publishing it.
 - [ ] **Any new value in the CI workflow's `env` block is intended to be public.** `ci.yml` is committed, so those values are as exposed as the rest of the repository.
@@ -43,6 +45,8 @@ Run against the diff, every time — not only when the change looks security-rel
 ### Documentation sweep
 
 Docs here describe **what exists today**, so they are part of the change, not an afterthought. Check both directions:
+
+> Claude Code delegates the two-directional claim check to [`documentation-sweep`](../.claude/agents/documentation-sweep.md), a subagent under the same read-only restriction as the pass above — findings reach a person rather than being quietly fixed. Three bullets below are deliberately **not** delegated — recording anything changed outside git, adding newly discovered follow-ups, and writing down work agreed but not started. They take the session as their input rather than the tree, and an agent that cannot see it would report a confident nothing. See [D-260904d](decisions.md#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit).
 
 - [ ] **Code → docs**: every behaviour changed in this PR is reflected in the affected doc(s) under `docs/` — no doc still describes the old behaviour
 - [ ] **Docs → code**: claims in the docs you touched still hold against the implementation. Statements about automation are the usual offenders — re-read assertions about what CI runs, what hooks fire, and which files are generated, and verify them against the workflow/config rather than assuming

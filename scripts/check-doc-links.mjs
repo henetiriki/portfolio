@@ -2,10 +2,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { markdownFilesUnder } from './lib/markdown-files.mjs';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
 const docsDir = path.join(projectRoot, 'docs');
 const skillsDir = path.join(projectRoot, '.claude', 'skills');
+const agentsDir = path.join(projectRoot, '.claude', 'agents');
 
 // Skills live three directories down and link back out, so their relative
 // paths are the easiest thing in the repository to get wrong — and a skill is
@@ -33,6 +36,9 @@ const markdownFiles = [
     .filter(name => name.endsWith('.md'))
     .map(name => path.join(docsDir, name)),
   ...skillFiles(),
+  // Agents have the same problem skills do, one directory shallower — see
+  // scripts/lib/markdown-files.mjs, shared with check-agent-config.mjs.
+  ...markdownFilesUnder(agentsDir),
 ].sort();
 
 const relative = filePath => path.relative(projectRoot, filePath);
