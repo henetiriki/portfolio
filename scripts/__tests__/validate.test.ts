@@ -42,7 +42,7 @@ describe('selectChecks', () => {
   it('keeps the real check list ordered cheapest first', () => {
     const { running } = selectChecks(false);
 
-    expect(running.at(0)?.name).toBe('Formatting');
+    expect(running.at(0)?.name).toBe('Branch name');
     expect(running.at(-1)?.name).toBe('Browser suite');
   });
 });
