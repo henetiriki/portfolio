@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { markdownFilesUnder } from './lib/markdown-files.mjs';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
 const docsDir = path.join(projectRoot, 'docs');
@@ -24,24 +26,6 @@ const skillFiles = () => {
   );
 };
 
-// Agents have the same problem one directory shallower, and are flat files
-// rather than a directory each — but the walk recurses anyway, because an agent
-// filed in a subdirectory would otherwise have its links checked by nothing at
-// all, which is the failure this script exists to prevent.
-const agentFiles = (directory = agentsDir) => {
-  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `directory` is `.claude/agents` or a subdirectory of it, reached only by this walk
-  if (!fs.existsSync(directory)) return [];
-
-  // eslint-disable-next-line security/detect-non-literal-fs-filename -- as above
-  return fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
-    const entryPath = path.join(directory, entry.name);
-
-    if (entry.isDirectory()) return agentFiles(entryPath);
-
-    return /\.md$/i.test(entry.name) ? [entryPath] : [];
-  });
-};
-
 const markdownFiles = [
   ...fs
     .readdirSync(projectRoot)
@@ -52,7 +36,9 @@ const markdownFiles = [
     .filter(name => name.endsWith('.md'))
     .map(name => path.join(docsDir, name)),
   ...skillFiles(),
-  ...agentFiles(),
+  // Agents have the same problem skills do, one directory shallower — see
+  // scripts/lib/markdown-files.mjs, shared with check-agent-config.mjs.
+  ...markdownFilesUnder(agentsDir),
 ].sort();
 
 const relative = filePath => path.relative(projectRoot, filePath);

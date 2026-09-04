@@ -3,6 +3,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { markdownFilesUnder } from './lib/markdown-files.mjs';
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
 const claudeDir = path.join(projectRoot, '.claude');
@@ -306,29 +308,13 @@ const checkSkills = () => {
   }
 };
 
-// Recursive, and deliberately so: a file the walk misses is not reported as a
-// problem, it is silently unchecked — so an agent tucked in a subdirectory
-// would carry whatever tools it liked past a green run. The extension test is
-// case-insensitive for the same reason; checking a file that turns out not to
-// be an agent is loud, and skipping one is not.
-const markdownFilesUnder = directory =>
-  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `directory` is `.claude/agents` or a subdirectory of it, reached only by this walk
-  fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
-    const entryPath = path.join(directory, entry.name);
-
-    if (entry.isDirectory()) return markdownFilesUnder(entryPath);
-
-    return /\.md$/i.test(entry.name) ? [entryPath] : [];
-  });
-
 // An agent's `tools` line is the only thing standing between a reviewer that
 // reports what it found and one that quietly resolves it, and nothing else in
 // this repository would notice the list widening. The two review agents also
 // have to be findable: as with a skill, Claude sees only `name` and
-// `description` until it dispatches one.
+// `description` until it dispatches one. The recursive walk itself is shared
+// with check-doc-links.mjs — see scripts/lib/markdown-files.mjs.
 const checkAgents = () => {
-  if (!exists(AGENTS)) return;
-
   for (const agentPath of markdownFilesUnder(AGENTS)) {
     const label = relative(agentPath);
     const name = path.basename(agentPath).replace(/\.md$/i, '');
