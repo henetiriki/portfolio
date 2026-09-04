@@ -6,13 +6,36 @@ This log records durable choices whose rationale is useful beyond the change tha
 
 Each decision is identified by the date it was decided, in the form `D-YYMMDD` plus a letter: `D-260814a`, `D-260814b`. The date is the one recorded in `**Decided:**`, never the merge date, so a rebase cannot change an identifier. The letter is always present, even when a date holds only one decision, and is the next free letter for that date at mint time — normally merge order too, though a corrected date can take one out of that order rather than renumber published identifiers, as [D-260815i](#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar) did. Where the two disagree, the order entries appear in this file is the merge order.
 
-To mint one: take your decision date, look for that date already in this file, and take the next free letter. Nothing needs checking against other branches, and nothing is ever renumbered.
+To mint one: take your decision date, look for that date already in this file, and take the next free letter. Nothing needs checking against other branches, and nothing is ever renumbered. Read [Private operational records](#private-operational-records) as well as the headings — those letters are minted and must not be recycled.
 
 **A letter freed by a rename is retired, not recycled.** `D-260816a` was published and then renamed to [D-260815i](#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar), so reusing it would silently point every stale inbound link at an unrelated decision — the one outcome renaming-in-place was avoided to prevent. `D-260816b` is therefore the first decision minted on that date.
 
 **A letter skipped by accident is also left alone.** `D-260904f` was never minted — `git log -S` finds it in no commit — so it is a gap rather than a retirement, and [D-260904h](#d-260904h--retire-the-history-file-and-fold-its-residue-into-the-decision-it-qualifies) took the next free letter rather than reaching back for it. Reaching back is not wrong, but it would put an `f` above a `g` and imply a minting order that never happened, for a tidiness nothing reads.
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
+
+## Private operational records
+
+Some decisions concern security, browser-policy or operational surfaces whose detail is [maintained privately](../AGENTS.md#private-operational-documentation). Each was published as a heading carrying nothing beyond that statement, so they are listed here instead: the identifiers stay minted and citable, and the index of this file is not one entry longer per record for content it does not hold. A new private record joins the table rather than taking a heading.
+
+The public behaviour each one produced is in the topical documentation, linked below where there is one. The reasoning is not public and cannot be reconstructed from this file — ask the maintainer for the runbook rather than inferring it.
+
+**This section is an index rather than an entry**, so it sits with [Identifiers](#identifiers) above the newest-first run of decisions rather than at its own date. The heading anchors these rows once had — `#d-260821k` and the rest — no longer resolve: a stale link to one now lands at the top of this file instead of at its record. That is the cost of the collapse, and it is why the identifiers themselves stay in the table.
+
+| Identifier  | Subject                                                                                                                                         | Public behaviour                                               |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `D-260821k` | Security implementation, validation evidence and remaining trade-offs                                                                           | [Content Security Policy](security.md#content-security-policy) |
+| `D-260821g` | A retired reporting surface and its operational decision trail; the public posture is an enforced policy operating no public reporting receiver | [Browser protections](security.md#browser-protections)         |
+| `D-260821d` | The browser policy's exact capability scope and review rationale                                                                                | [Browser protections](security.md#browser-protections)         |
+| `D-260821c` | A retired endpoint's risk assessment and alternatives; not a current public surface                                                             | —                                                              |
+| `D-260821b` | A retired endpoint's defensive handling, kept as part of its historical record                                                                  | —                                                              |
+| `D-260816j` | Code scanning's provider configuration, operational history and gate rationale                                                                  | [Code scanning (CodeQL)](security.md#code-scanning-codeql)     |
+| `D-260815h` | The browser policy's rollout sequencing, exact configuration and residual trade-offs; the policy is enforcing                                   | [Browser protections](security.md#browser-protections)         |
+| `D-260815f` | The service worker's cache configuration and regression rationale, without broadening browser-policy exposure                                   | [Progressive Web App](pwa-seo.md#progressive-web-app)          |
+| `D-260815b` | A temporary observation mechanism, now retired, and its closure rationale                                                                       | —                                                              |
+| `D-260815a` | Browser coverage isolating stateful offline behaviour: test configuration and policy-validation detail                                          | [Progressive Web App](pwa-seo.md#progressive-web-app)          |
+| `D-260814c` | The historical browser policy, its reporting design and source allowlists                                                                       | [Browser protections](security.md#browser-protections)         |
+| `D-260811b` | The contact form's exact controls, accepted limitations and review criteria                                                                     | [Contact protection](security.md#contact-protection)           |
 
 ## D-260904h — Retire the history file, and fold its residue into the decision it qualifies
 
@@ -422,13 +445,6 @@ Added `overflow: hidden` to `.mapContainer`. The scaled placeholder is now clipp
 
 **Production keeps the original comparison.** `VERCEL_ENV=production` still uses `HEAD^ HEAD`; only previews select the per-branch previous SHA. If the required system variables are unavailable, the command exits `1` in both cases, choosing a needless build over a skipped production deploy.
 
-## D-260821k — Private security implementation record
-
-- **Status:** Accepted
-- **Decided:** 2026-08-21
-
-The public record retains the decision identifier and outcome. The security implementation, rationale, validation evidence, and remaining trade-offs are maintained privately.
-
 ## D-260821j — Check internal documentation links in CI, rather than relying on the release sweep
 
 - **Status:** Accepted
@@ -478,13 +494,6 @@ The [roadmap](roadmap.md) framed the splash matrix's staleness as one problem wi
 
 **Revisit if `@serwist/next` ever exposes an exclude option for `globPublicPatterns`.** That would let this reproduction collapse back into the one-line config it should have been.
 
-## D-260821g — Private security operations record
-
-- **Status:** Accepted
-- **Decided:** 2026-08-21
-
-The retired reporting surface and the operational decision trail are maintained privately. The public posture is an enforced policy tested before deployment; it does not operate a public reporting receiver.
-
 ## D-260821f — Assert icon contrast directly, scoped to what axe cannot see
 
 - **Status:** Accepted
@@ -513,27 +522,6 @@ Raised in review: `fetcher` (`../src/utils/common/fetcher.ts`) retried every fai
 **429 was included alongside 5xx, not just 5xx as the review comment's parenthetical suggested.** Both API routes this wraps (`/api/rail-trips`, `/api/img-id`) are same-origin internal endpoints without their own rate limiting today, but a `429` is a textbook transient condition and there is no cost to handling it correctly ahead of need. The separate question of endpoint limiting is settled in a private operational record.
 
 **The timeout moved from 30s to 8s, not to something more conservative.** Both call sites are internal API routes serving fixture data or a lightweight Instagram lookup — there is no reason a healthy response takes anywhere near 30s, and 8s still leaves comfortable headroom above normal latency. Worst case with the default two retries is now bounded at roughly 8s × 3 attempts plus backoff, versus the prior ~90s.
-
-## D-260821d — Private browser-policy record
-
-- **Status:** Accepted
-- **Decided:** 2026-08-21
-
-The visitor-facing outcome is documented in [Security](security.md#browser-protections). The exact capability scope and review rationale are maintained privately.
-
-## D-260821c — Retired private operational record
-
-- **Status:** Accepted
-- **Decided:** 2026-08-21
-
-This retired endpoint’s risk assessment and alternatives are maintained privately. It does not describe a current public surface.
-
-## D-260821b — Retired private operational record
-
-- **Status:** Accepted
-- **Decided:** 2026-08-21
-
-This retired endpoint’s defensive handling is maintained privately as part of its historical decision record.
 
 ## D-260821a — Give the mobile icons back some edge clearance, and a colour that survives contrast
 
@@ -585,13 +573,6 @@ The left inset on `/experience` narrows below the `xs` breakpoint by making four
 **The regression spec asserts ratios and relationships, not the values these produced.** The column is asserted against the viewport rather than in pixels, because any future spacing change moves the number without touching the property worth holding. The alignment invariants are asserted directly, since they are what a plausible future fix would trade away for width. The column assertions were confirmed to fail on the previous layout; the invariants pass on both, which is what they are for.
 
 **The container change reaches every page, deliberately.** `Content` wraps all five routes, so each gains the same 32px below `xs`. The padding it removes was duplicated — `Content`'s own `Box` already insets by 24px at that width — so what goes is a second inset inside the first, not the page's margin. `MapError` keeps its own container and is unaffected, being a sibling of `Content` rather than a child.
-
-## D-260816j — Private scanning-configuration record
-
-- **Status:** Accepted
-- **Decided:** 2026-08-16
-
-Code scanning supports normal review. Its provider configuration, operational history, and gate rationale are maintained privately.
 
 ## D-260816i — Watch project coverage without blocking on it
 
@@ -733,13 +714,6 @@ The `main` ruleset has no bypass actors. The Repository admin role briefly held 
 
 **Splitting renames the required check, which is the risk the change actually carries.** `Validate & build` no longer exists, and a ruleset requiring a check that no longer runs blocks every pull request indefinitely. The ruleset was updated to require `Validate`, `Build & browser suite` and `codecov/patch` in the same window as the merge.
 
-## D-260815h — Private browser-policy rollout record
-
-- **Status:** Accepted
-- **Decided:** 2026-08-15
-
-The policy is enforcing. The rollout sequencing, exact configuration, and residual trade-offs are maintained privately.
-
 ## D-260815g — Precache the `/_offline` document, which the build manifest omits
 
 - **Status:** Accepted
@@ -754,13 +728,6 @@ The policy is enforcing. The rollout sequencing, exact configuration, and residu
 **Why it went unnoticed.** The release checklist carried "`/_offline` serves when offline" as a manual check, and a manual check performed on a page that had already been visited passes on the runtime cache without the fallback ever being consulted. The failure needs an offline navigation to a route the worker has never seen — which is precisely the case a person testing their own site is least likely to produce. `e2e/service-worker.spec.ts` now covers both, and the distinction between them is the point of having two tests rather than one.
 
 **The revision is the build timestamp**, `NEXT_PUBLIC_LAST_MODIFIED`, already computed in `next.config.js` for the footer. A precache entry with a null revision is treated as immutable, so the offline page would never update; the timestamp changes every build, which is exactly the invalidation this needs. Webpack replaces the expression with a string literal, so no `process` reference reaches the worker — verified in the built output, because a surviving reference would be a `ReferenceError` that stops the worker installing at all.
-
-## D-260815f — Private offline-delivery record
-
-- **Status:** Accepted
-- **Decided:** 2026-08-15
-
-The service worker preserves the public offline experience without broadening browser-policy exposure. Its cache configuration and regression rationale are maintained privately.
 
 ## D-260815i — Wait for the Chromium fix instead of working around the Android navigation bar
 
@@ -834,20 +801,6 @@ This project is deliberately documentation-heavy — the [release checklist](rel
 
 **Resolved the same day it was raised, and applied on 2026-08-16: the Jest run and the Codecov upload are no longer gated.** Skipping them was this decision's one concession to the roadmap's original shape, written before anyone priced the run — the unit suite takes seconds locally, against a production build and a ~270 MB browser download. It is a few percent of the saving, and paying it removes the branch-protection edge case rather than betting on Codecov's behaviour with no upload. Sequenced onto publication because that is when a required check first existed to be blocked; the shape of the cheap path is otherwise unchanged.
 
-## D-260815b — Private temporary-observation record
-
-- **Status:** Accepted, and deliberately temporary — delete with the Report-Only window
-- **Decided:** 2026-08-15
-
-This was a temporary observation mechanism, now retired. Its operating details and closure rationale are maintained privately.
-
-## D-260815a — Private browser-coverage record
-
-- **Status:** Accepted
-- **Decided:** 2026-08-15
-
-Browser coverage isolates stateful offline behaviour. The test configuration and policy-validation detail are maintained privately.
-
 ## D-260814e — Let each worktree install its own dependencies
 
 - **Status:** Accepted; supersedes the `worktree.symlinkDirectories` setting
@@ -878,13 +831,6 @@ Identifiers are now derived from the decision date, which is a fact about the de
 `D-260814a` was preferred over a timestamp such as `D2608141830` for staying quotable: these identifiers are read aloud and typed into conversation far more often than they are sorted.
 
 **This removes the expensive half of the conflict, not the conflict.** Two branches appending to this file still collide textually. What changes is the resolution: previously "renumber, then grep the whole repository for inbound links", now "keep both, newest first".
-
-## D-260814c — Private historical browser-policy record
-
-- **Status:** Accepted
-- **Decided:** 2026-08-14
-
-The exact historical policy, reporting design, source allowlists, and rationale are maintained privately. Current public behaviour is described in [Security](security.md#browser-protections).
 
 ## D-260814b — Enforce shell hygiene with a hook rather than a convention
 
@@ -935,13 +881,6 @@ What remains is smaller than "the control that keeps the allow and deny lists me
 An asset the build cannot complete without belongs in the repository, together with whatever licence permits it to be there. The web fonts are now committed (see [Styling & Theming](styling-theming.md#fonts)); the same reasoning already applies to the vendored Yarn release under [D-260811a](#d-260811a--keep-the-package-managers-supply-chain-defaults). This is about build inputs, not runtime ones — fetching data at request time is a different question with different failure handling.
 
 The cost is that vendored assets do not update themselves, so each carries a written refresh procedure next to it rather than an implicit "whatever the CDN serves today". Prefer that cost: a stale font is a visible, deliberate choice, while a fetch is an invisible dependency that only announces itself when it breaks.
-
-## D-260811b — Private contact-protection record
-
-- **Status:** Accepted
-- **Decided:** 2026-08-11
-
-The contact form provides server-side validation and automated-abuse protection. Its exact controls, accepted limitations, and review criteria are maintained privately.
 
 ## D-260811a — Keep the package manager's supply-chain defaults
 
