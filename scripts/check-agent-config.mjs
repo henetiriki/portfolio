@@ -24,6 +24,21 @@ const PERMISSION_KEYS = ['allow', 'ask', 'deny'];
 // configuration around it — see D-260904d.
 const READ_ONLY_TOOLS = ['Glob', 'Grep', 'Read'];
 
+// The release-ready check starts a code review by invoking Claude Code's own
+// bundled skill. That is one imperative sentence in a Markdown file, with no
+// script, hook or command behind it — precisely the instruction whose loss
+// nothing else would notice, which per D-260903c makes it something to test
+// rather than to trust. Matched by skill name rather than by a literal
+// `/code-review` string, because the instruction is deliberately written as an
+// imperative: a pasted command string is not documented to reach the Skill
+// tool. See D-260904e.
+const REVIEW_SKILL = 'code-review';
+const RELEASE_READY_SKILL = path.join(
+  SKILLS,
+  'release-ready-check',
+  'SKILL.md'
+);
+
 // Each case is the command a hook would receive and whether it must be
 // refused. The pipe is the documented carve-out (D-260814b). The last three are
 // the narrowing (D-260904c) and matter most: the hook refused all three before
@@ -363,6 +378,42 @@ const checkAgents = () => {
   }
 };
 
+// Every other check here reads shape — frontmatter fields, sorted lists, a path
+// that resolves — or behaviour, by running the hook. This one reads prose, and
+// is the only such case; keep it a named function rather than generalising it
+// into a table until there is a second.
+//
+// What it guards is the skill name disappearing from the body, which is what
+// deleting or rewriting the section does. It cannot tell an instruction from a
+// mention, so a body keeping the name while dropping the imperative still
+// passes — the sentence warning against pasting a `/code-review` string would
+// be enough on its own. Substring matching is the wrong tool for that, and a
+// stricter pattern would break on the rewording this check exists to allow.
+const checkReleaseReadyAsksForReview = () => {
+  const label = relative(RELEASE_READY_SKILL);
+
+  if (!exists(RELEASE_READY_SKILL)) {
+    errors.push(
+      `${label}: is missing, so nothing in the pre-pull-request flow asks for a code review — see D-260904e.`
+    );
+
+    return;
+  }
+
+  // The frontmatter is stripped rather than searched: the description names the
+  // review as well, so matching the whole file would let the body lose the
+  // instruction while this check still passed.
+  const body = fs
+    .readFileSync(RELEASE_READY_SKILL, 'utf8')
+    .replace(/^---\n[\s\S]*?\n---\n/, '');
+
+  if (!body.toLowerCase().includes(REVIEW_SKILL)) {
+    errors.push(
+      `${label}: no longer names the "${REVIEW_SKILL}" skill, so a release-ready check would run \`yarn validate\` and never ask for a review. The wording around it is free, but the skill's own hyphenated name has to survive the rewrite — "code review" as prose does not match, deliberately, because naming the skill is what makes the instruction actionable. If the step is genuinely being dropped, change this check deliberately rather than the file. See D-260904e.`
+    );
+  }
+};
+
 const suitePort = () => {
   const source = fs.readFileSync(PLAYWRIGHT_CONFIG, 'utf8');
   const match = source.match(/^const PORT = (\d+);$/m);
@@ -426,6 +477,7 @@ if (exists(LOCAL_SETTINGS)) {
 
 checkAgents();
 checkSkills();
+checkReleaseReadyAsksForReview();
 
 const launch = readJson(LAUNCH);
 

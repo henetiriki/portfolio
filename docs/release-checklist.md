@@ -4,7 +4,7 @@ Quick reference for shipping a change to production.
 
 **How releases work here:** there are no version numbers, tags, or build artefacts. `package.json` is `private: true` and its `version` (`0.1.0`) is never bumped or published. A "release" is simply **a pull request squash-merged into `main`**, which Vercel's Git integration deploys to production automatically. [Project History](project-history.md) is the concise release record; the [Roadmap](roadmap.md) contains unfinished work only.
 
-> **"Release ready check"** / **"Prepare for release"** — asking for either means: run everything under [Development](#development) and [Before Opening The PR](#before-opening-the-pr), including the full [documentation sweep](#documentation-sweep) in both directions, and report what passes, what fails, and anything that needs a human decision.
+> **"Release ready check"** / **"Prepare for release"** — asking for either means: run everything under [Development](#development) and [Before Opening The PR](#before-opening-the-pr), including the [code review](#code-review) it starts with and the full [documentation sweep](#documentation-sweep) in both directions, and report what passes, what fails, and anything that needs a human decision.
 
 ## Development
 
@@ -14,7 +14,7 @@ Quick reference for shipping a change to production.
 
 ## Before Opening The PR
 
-Run the checks locally:
+Work through [Code review](#code-review) first — it formats the tree and starts the review — then run the checks locally:
 
 ```bash
 yarn validate
@@ -28,6 +28,16 @@ yarn validate
 - [ ] **`yarn build` succeeds and emits a non-empty `public/sw.js`.** There is only one production configuration — the service worker is generated whenever `NODE_ENV` is production, with no flag to set. CI runs the same build and asserts the same output, but run it locally so a failure is not first seen in CI.
 - [ ] **`yarn test:e2e` passes.** Run it _after_ a build: Playwright serves the production output with `yarn start` on port 3002, and always starts that server itself rather than reusing one. It catches what jsdom cannot — layout, focus order, hydration and colour contrast — so a green Jest run is not a substitute. If a spec fails in CI rather than locally, the report is uploaded as a `playwright-report` artefact. See [Browser regression suite](development.md#browser-regression-suite).
 - [ ] Any new `process.env` value is added in the Vercel dashboard, the `env` block in `next.config.js` if the client needs it, and `.env.test` as a dummy. If `next.config.js` requires it during a production build, also add a safe dummy to the CI job's `env` block because CI does not load `.env.test`; `next/jest` does load `.env.test` but does not evaluate the config's client `env` bridge ([environment-variables.md](environment-variables.md)).
+
+### Code review
+
+**Start this before `yarn validate`, not after.** Where it backgrounds it reads the diff while the production build and the browser suite run, and costs almost no wall clock; where it does not — which is not fully predictable — it is serial wherever it sits, and its findings are still worth more before a build has been paid for than after. `yarn validate` does not wait for it and should not be made to, but the two finishing independently is not the same as this section being done: the pull request waits for the review to report even when the checks are already green.
+
+> Claude Code delegates this to its own bundled `code-review` skill, invoked from [`release-ready-check`](../.claude/skills/release-ready-check/SKILL.md) rather than waiting for a person to type it — see [D-260904e](decisions.md#d-260904e--start-the-code-review-from-the-release-ready-check-and-keep-it-claude-code-only). **Unlike the two sections below, there is deliberately no brief here to fall back on.** A review's criteria belong to the reviewing tool, so writing one out would invent a method this repository does not have and would drift from what the skill actually does. A tool without that skill has no equivalent step here and should say so rather than improvise one — the only step on this page that does not survive being read by another tool.
+
+- [ ] **`yarn prettier:write` has run first.** Formatting is the one half of the tree's hygiene that is not already done by the time this runs — [`eslint-on-edit.mjs`](../scripts/eslint-on-edit.mjs) lints each code file as it is written, while `lint-staged` formats at commit time and this check normally runs before committing. An unformatted diff makes the review report what `prettier:check` catches for free a minute later.
+- [ ] **A review has run against the diff and its findings have been read.** They are generic — correctness, reuse, simplification, efficiency — and know nothing of this repository's own disciplines, so this replaces neither the pass nor the sweep below.
+- [ ] **Each finding is fixed or routed.** Fix what is wrong in the change at hand; anything else goes to the [Roadmap](roadmap.md) rather than a commit message, as the sweep already requires. Treat a finding as blocking only where it contradicts something this checklist demands.
 
 ### Sensitive information
 
