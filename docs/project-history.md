@@ -24,6 +24,7 @@ This is the concise record of completed project work. It is not a substitute for
 - **The base ref differs by caller and the script keeps them apart**: `--base <ref>` compares that ref with HEAD and ignores the working tree, which is CI's case; with no argument it compares `origin/main...HEAD` and adds uncommitted work, which is the local case and exactly what `HEAD^` misses.
 - **`scripts/` gained tests, because it had none and no types either.** `tsconfig.json`'s `include` is `**/*.ts(x)` only, so `allowJs` never reached a `.mjs` file, and `testMatch` was scoped to `src/` — leaving these scripts the only executable code here with neither. `testMatch` now covers `scripts/` too; `collectCoverageFrom` stays scoped to `src/`, so the coverage floor is untouched.
 - **Two bugs were found by running it rather than by reading it**: `git status --porcelain` lines were being trimmed before their two-column status was sliced off, which ate the first letter of every modified path, and a historical query needed a `--head` as well as a `--base` or it compared an old commit against the current tip.
+- **Which checks a verdict selects is a pure exported function**, not an inline filter, because the skip path is otherwise only observable on a run that happens to be documentation-only — and on this branch every run was the opposite. The lint hook refusing a `true ||` test hack is what prompted extracting it, which left permanent cover instead of a one-off observation.
 
 ## 2026-09-04 — Move the task-shaped procedures into skills
 

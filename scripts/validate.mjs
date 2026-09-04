@@ -42,34 +42,46 @@ const classify = () => {
   return output.includes('docs_only=true');
 };
 
-const documentationOnly = classify();
-const [running, skipped] = [
-  CHECKS.filter(check => !documentationOnly || !check.sourceOnly),
-  CHECKS.filter(check => documentationOnly && check.sourceOnly),
-];
+/**
+ * Which checks a verdict selects, and which it sets aside. Exported as a pure
+ * function so the split is unit-tested rather than only observed on a run that
+ * happens to be documentation-only.
+ */
+export const selectChecks = (documentationOnly, checks = CHECKS) => ({
+  running: checks.filter(check => !documentationOnly || !check.sourceOnly),
+  skipped: checks.filter(check => documentationOnly && check.sourceOnly),
+});
 
-// Printed rather than silently applied: a wrong classification should be
-// visible in the output, not just cheap.
-if (documentationOnly) {
-  console.log(
-    `\nDocumentation-only change. Skipping ${skipped.length} check(s) that cannot be affected: ${skipped.map(check => check.name).join(', ')}.`
-  );
-  console.log(
-    'CI decides this again for itself, so a wrong skip here costs a round trip rather than a merge.\n'
-  );
-} else {
-  console.log('\nNot documentation-only. Running everything.\n');
-}
+const main = () => {
+  const documentationOnly = classify();
+  const { running, skipped } = selectChecks(documentationOnly);
 
-for (const check of running) {
-  console.log(`── ${check.name}`);
-
-  try {
-    execFileSync('yarn', check.args, { stdio: 'inherit' });
-  } catch {
-    console.error(`\n${check.name} failed. Stopping here.`);
-    process.exit(1);
+  // Printed rather than silently applied: a wrong classification should be
+  // visible in the output, not just cheap.
+  if (documentationOnly) {
+    console.log(
+      `\nDocumentation-only change. Skipping ${skipped.length} check(s) that cannot be affected: ${skipped.map(check => check.name).join(', ')}.`
+    );
+    console.log(
+      'CI decides this again for itself, so a wrong skip here costs a round trip rather than a merge.\n'
+    );
+  } else {
+    console.log('\nNot documentation-only. Running everything.\n');
   }
-}
 
-console.log(`\nAll ${running.length} check(s) passed.`);
+  for (const check of running) {
+    console.log(`── ${check.name}`);
+
+    try {
+      execFileSync('yarn', check.args, { stdio: 'inherit' });
+    } catch {
+      console.error(`\n${check.name} failed. Stopping here.`);
+      process.exit(1);
+    }
+  }
+
+  console.log(`\nAll ${running.length} check(s) passed.`);
+};
+
+// Only run as a CLI. Importing it for tests must not start a validation run.
+if (process.argv.at(1)?.endsWith('validate.mjs')) main();
