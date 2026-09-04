@@ -104,6 +104,7 @@ export const usesGitDashC = command => {
   const tokens = codeOnly(command).split(/\s+/).filter(Boolean);
 
   return tokens.some((token, index) => {
+    // eslint-disable-next-line security/detect-possible-timing-attacks -- the rule matches on the name `token`, which here is one word of a shell command, not a credential; there is nothing secret to leak through comparison timing
     if (token !== 'git') return false;
 
     for (const next of tokens.slice(index + 1)) {

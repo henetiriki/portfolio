@@ -5,6 +5,7 @@ import { execFileSync } from 'node:child_process';
 // release process this repository does not have.
 export const PREFIXES = ['chore', 'docs', 'feature', 'fix'];
 
+// eslint-disable-next-line security/detect-non-literal-regexp -- the only interpolation is `PREFIXES`, a module-level literal array of four lowercase words; no branch name or other input reaches this
 const CONVENTIONAL = new RegExp(
   `^(?:${PREFIXES.join('|')})/[a-z0-9]+(?:-[a-z0-9]+)*$`
 );

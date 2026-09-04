@@ -12,6 +12,19 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260904g — Fail on ESLint warnings rather than carrying a tolerated tier
+
+- **Status:** Accepted
+- **Decided:** 2026-09-04
+
+Two warnings had been standing in `scripts/`, and nothing was ever going to report them: ESLint exits 0 on warnings alone, so `eslint:check` was green, `lint-staged` let them commit, and the `PostToolUse` hook — which reads the CLI's exit code — printed them only when an error happened to be present in the same file. `--max-warnings 0` is now set in all three.
+
+**Three places rather than one, because each is a separate invocation.** `eslint:check` gates `yarn validate` and CI, `lint-staged` gates the commit, and [`eslint-on-edit.mjs`](../scripts/eslint-on-edit.mjs) gates the edit. A flag on any one of them leaves the other two silent. They have to be changed together, and [`development.md`](development.md#linting--formatting) says so.
+
+**The tier is removed, not raised.** A rule worth running is an error; a finding that is genuinely wrong takes a `// eslint-disable-next-line <rule> -- <why>` comment. Both standing warnings were `eslint-plugin-security` heuristics matching on names rather than behaviour — a `RegExp` built from a literal array of four branch prefixes, and a comparison against a variable called `token` that holds one word of a shell command — so both got a comment rather than a config change, which keeps the rules live for the cases they exist for.
+
+**`development.md` had already claimed this was true**, in a sentence about the Next 16 upgrade saying a clean run "reports no warnings". It was accurate when written and had quietly stopped being so, which is the argument for the gate rather than the convention: the claim now cannot drift without a red build.
+
 ## D-260904e — Start the code review from the release-ready check, and keep it Claude Code only
 
 - **Status:** Accepted
