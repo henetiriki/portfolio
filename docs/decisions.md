@@ -12,6 +12,23 @@ To mint one: take your decision date, look for that date already in this file, a
 
 Entries are newest first. Two branches adding a decision still collide textually at the top of the file; the resolution is to keep both, newest first, and for the same date put the later-merged one above — which is how [Project History](project-history.md) already resolves. See [D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence).
 
+## D-260904a — Move the task-shaped procedures into skills, and leave pointers behind
+
+- **Status:** Accepted
+- **Decided:** 2026-09-04
+
+[`AGENTS.md`](../AGENTS.md) is read in full at the start of every session, including sessions that never open a pull request, never rebase and never touch a worktree. Four sections — Opening a pull request, Validating a change, Working across branches, Worktrees — were procedure that applies at exactly one moment, and now live in [`.claude/skills/`](../.claude/skills/), where Claude Code loads a skill's text only when it invokes one.
+
+**The shape is a pointer plus a link, not a move, and the reason is cross-tool.** `AGENTS.md` is deliberately the file every agent reads; `.claude/skills/` is Claude Code's alone. Deleting a section outright would regress Codex and anything else that reads the conventions. So each section keeps its heading with one line and a link, which is the same thing this file already does for `docs/` — another tool follows an ordinary relative path to a Markdown file rather than needing to know what a skill is. A skill that fails to trigger then degrades to a lookup rather than to silence.
+
+**What stayed is what is true whatever you are doing.** The rebase-don't-merge rule, "never `git stash`", and the port-3000 reservation are one-line facts that cost nothing to carry and are needed before you know you need them. The procedures around them went. Judging each line by whether it is a fact or a procedure is the whole of the split; length was not the criterion.
+
+**A `description` is the entire trigger surface.** Claude sees only each skill's name and description until it invokes one — never the body. A skill nobody can invoke is worse than the line it replaced, which is why [`check-agent-config.mjs`](../scripts/check-agent-config.mjs) now fails on a skill with no description or whose `name` does not match its directory. That check earned itself immediately: a typo'd `descriptio:` key produced a skill that parsed, loaded, and could never have triggered.
+
+**No skill declares `allowed-tools`.** The field pre-approves tools for the turn that invokes the skill, which is a permission grant — and [D-260903b](#d-260903b--empty-the-local-allowlist-and-let-the-classifier-see-every-command) emptied every allow list on purpose and turned on `classifyAllShell` so the classifier sees every command. A skill quietly reopening that would undo the decision from a file nobody thinks of as permissions. Nor does any skill set `disable-model-invocation`: automatic triggering is the point, and `/name` works alongside it.
+
+**Skills are the second thing `docs:check-links` had no view of.** A `SKILL.md` sits three directories down and links back out, so every relative path gains `../../../` — the easiest thing in the repository to get wrong, with nothing to compile it and nothing else to check it. [`check-doc-links.mjs`](../scripts/check-doc-links.mjs) now walks them, and was confirmed against both traps the move creates: a path at the wrong depth, and an anchor that pointed at an `AGENTS.md` section which had itself moved.
+
 ## D-260903d — Lint each code file as it is written, and let ESLint interrupt
 
 - **Status:** Accepted

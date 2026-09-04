@@ -49,39 +49,13 @@ The description is what the branch is _for_, not what it touches: `chore/free-po
 
 ## Opening a pull request
 
-**Start every pull request body with the human checklist**, before any explanation:
-
-```markdown
-### Before merging
-
-- [ ] Nothing changed outside git for this work — ruleset, Codecov, Vercel, repository settings — or if something did, it is recorded in the docs in this PR
-- [ ] Manual QA on the **preview URL**, not localhost
-```
-
-Two items, deliberately. The long list is the [release checklist](docs/release-checklist.md), and it is worked through before the pull request is opened rather than read at merge time — a checklist nobody reads is worse than none. These two are here because they are the ones an agent **cannot** answer: the first is knowable only by whoever clicked around in a web console, and the second needs eyes on a running site.
-
-The first item exists because that is the gap that actually bit — see the settings bullet under [Documentation discipline](#documentation-discipline).
-
-A `.github/pull_request_template.md` would not help: `gh pr create --body-file` bypasses templates entirely, so the section has to be written into the body. It costs nothing at merge time either, because `squash_merge_commit_message` is `COMMIT_MESSAGES` — the squash commit is built from commit messages, so the checklist never reaches the history.
+Every pull request body opens with a two-question human checklist, and the body is written to a file rather than passed inline. The procedure is [`.claude/skills/open-pull-request/SKILL.md`](.claude/skills/open-pull-request/SKILL.md) — read it before opening one.
 
 ## Validating a change
 
-Run these before opening a pull request; the full list, including the production build, is in the [release checklist](docs/release-checklist.md).
+The commands to run before opening a pull request, and what **"release ready check"** or **"prepare for release"** means, are in [`.claude/skills/release-ready-check/SKILL.md`](.claude/skills/release-ready-check/SKILL.md). The full list, including the production build, is in the [release checklist](docs/release-checklist.md).
 
-```bash
-yarn eslint:check
-yarn type-check
-yarn prettier:check
-yarn docs:check-links
-yarn agent:check-config
-yarn css-vars:check
-yarn test:coverage
-yarn test:e2e
-```
-
-- `yarn test:e2e` needs a production build first and serves on **port 3002**. One port per owner: **3000 belongs to `next dev`** — leave whatever is running there alone, it is usually a human watching the change land — **3001 to the agent's own preview**, 3002 to the suite. `yarn agent:check-config` fails if those ever collide again.
-- The service worker is a separate TypeScript project: `yarn tsc --pretty --noEmit --project service-worker/tsconfig.json`.
-- Saying **"release ready check"** or **"prepare for release"** means running the pre-merge half of the release checklist, including the documentation sweep in both directions.
+**Port 3000 belongs to `next dev`** — leave whatever is running there alone, it is usually a human watching the change land. 3001 is the agent's own preview and 3002 the browser suite; `yarn agent:check-config` fails if those ever collide again.
 
 ## Documentation discipline
 
@@ -107,25 +81,15 @@ yarn test:e2e
 
 Branches run concurrently here, and `main` is the only integration point. Merges are squashed, so a branch lands as a single commit and its own history does not survive: **rebase onto `origin/main`** rather than merging `main` into a branch, and never merge one branch into another.
 
-- **The conflict surface is three documentation files, not the source.** [`roadmap.md`](docs/roadmap.md), [`project-history.md`](docs/project-history.md) and [`decisions.md`](docs/decisions.md) are touched by nearly every change and each is edited at a fixed anchor, so two branches collide there far more often than in `src/`.
-- **A clean rebase is not evidence.** Rebasing #164 over #165 produced three silent failures and one honest conflict: Git spliced a new section into the middle of one decision, left two identical decision headings, and re-applied an identical `.gitignore` rule a second time — all without a marker. Read the diff of every documentation file after a rebase; do not trust the exit status.
-- **Decision identifiers are dates, so they never collide across branches.** Mint `D-YYMMDD` plus the next free letter for that date — see [Identifiers](docs/decisions.md#identifiers) and [D-260814d](docs/decisions.md#d-260814d--identify-decisions-by-date-rather-than-by-sequence). There is nothing to claim, nothing to check against other pull requests and nothing to renumber, so inbound links cannot break either.
-- **`decisions.md` and `project-history.md` conflicts resolve the same way**: keep both entries, newest date first, and for the same date put the later-merged one on top so each file reads in merge order.
-- **In `roadmap.md`, removal wins** when one branch completes an item another merely edited. Touch `Last reviewed:` only when you have actually reviewed the whole roadmap — otherwise it is a one-line conflict on every branch.
-- **Merge the smaller branch first**, then rebase the other onto it.
-- **A change that rewrites one of those three files wholesale needs a window with no other branches open.** Reorganising a doc every branch touches, or moving content between docs, maximises exactly the conflict the rules above exist to contain. Sequence such changes back to back, merging between, and start parallel work only afterwards.
-- **Re-run [validation](#validating-a-change) after the rebase**, not only before opening the pull request. The ruleset on `main` requires branches to be up to date before merging, so the second branch has to rebase and re-run anyway — the case it exists for is two branches that each pass alone and break together.
+The rest — which three documentation files actually collide and how each resolves, minting a decision identifier, merge order, and why a clean rebase is not evidence — is in [`.claude/skills/work-across-branches/SKILL.md`](.claude/skills/work-across-branches/SKILL.md).
 
 ## Worktrees
 
-Isolation for work that runs alongside something already in progress. There are two locations, both gitignored, prettierignored and ESLint-ignored: **`.claude/worktrees/`** is where Claude Code creates its own (`--worktree`, the `EnterWorktree` tool, isolated subagents) — that path is hardcoded, and it is left there because the only way to move it would stop [`.worktreeinclude`](.worktreeinclude) working. **`.worktrees/`** at the repository root is the shared convention for worktrees made by hand with `git worktree add`, by this repo's tooling, or by another agent; `.worktreeinclude` does not reach these, so copy `.env*.local` in yourself. See [D-260829a](docs/decisions.md#d-260829a--adopt-a-root-level-worktrees-directory-as-the-shared-convention).
+Isolation for work that runs alongside something already in progress. Two locations, both gitignored, prettierignored and ESLint-ignored: **`.claude/worktrees/`** is where Claude Code creates its own, and **`.worktrees/`** at the repository root is the shared convention for worktrees made by hand or by another agent — see [D-260829a](docs/decisions.md#d-260829a--adopt-a-root-level-worktrees-directory-as-the-shared-convention).
 
-- **Run `yarn install` first.** Each worktree owns its dependencies — nothing is shared from the main checkout — so Husky, `lint-staged`, the `yarn` scripts and both builds have nothing to run against until it does. It costs about 12 seconds and roughly 950 MB per worktree, and `postinstall` generates `src/styles/mantine-custom-properties.css`, so `yarn css-vars:check` passes without hand-generating it. See [D-260814e](docs/decisions.md#d-260814e--let-each-worktree-install-its-own-dependencies).
-- **`yarn dev` works, and is the reason for the install.** Nothing needs verifying from the main checkout any more.
-- **Gitignored files do not come with a worktree**, and `.env.local` holds `IMAGE_HOST_NAME`, so without it `next dev` and `yarn build` both abort on `Invalid input at "images.remotePatterns[0]"` before serving. [`.worktreeinclude`](.worktreeinclude) copies `.env*.local` into every worktree Claude Code creates; a worktree made by hand with `git worktree add` under `.worktrees/` is not covered, so copy the file in yourself.
-- **Never `git stash`.** The stash stack is shared across worktrees, so a concurrent session can pop your entry. Set work aside with a WIP commit.
-- **Changes to `.claude/` do not take effect in the session that makes them** — settings are read per directory at session start. Verify hooks and permission rules after the merge, from a session started in the main checkout.
-- **Remove the worktree once its pull request merges.** Nothing expires them. A worktree also holds a lock on its branch, so `git branch -D` fails until it is gone; `git worktree prune` clears a registration whose directory has already been deleted.
+**Never `git stash`.** The stash stack is shared across worktrees, so a concurrent session can pop your entry. Set work aside with a WIP commit.
+
+Everything else — the `yarn install` each worktree needs, the gitignored files that must be copied in, and removal — is in [`.claude/skills/worktree/SKILL.md`](.claude/skills/worktree/SKILL.md).
 
 ## Code conventions
 
@@ -146,6 +110,8 @@ Changes a visitor cannot see skip production builds and subsequent preview build
 ## About this file
 
 This is the source of truth for working conventions — edit it here. [`CLAUDE.md`](CLAUDE.md) at the repository root exists only to import this file and [`docs/README.md`](docs/README.md), because Claude Code loads `CLAUDE.md` automatically and would otherwise start with neither. Keep it to those two imports and the note explaining why; conventions that drift into it stop being visible to every other tool that reads `AGENTS.md`.
+
+**What belongs here, and what belongs in a skill.** This file is read in full at the start of every session, so it holds what is true whatever you are doing: the environment, the conventions, the rules about what gets written down. A procedure that applies at one moment — opening a pull request, validating a change, rebasing, working in a worktree — lives in [`.claude/skills/`](.claude/skills/) instead, where Claude Code loads its text only when the task comes up. Each such section keeps its heading here with a line and a link, so an inbound anchor still resolves and any other tool reads the skill as an ordinary Markdown file at the linked path. See [D-260904a](docs/decisions.md#d-260904a--move-the-task-shaped-procedures-into-skills-and-leave-pointers-behind).
 
 Next.js 16's `next dev` may append a managed block delimited by `BEGIN:nextjs-agent-rules`. Leave it in place and commit it alongside your work; removing it only re-creates an uncommitted change on the next dev run. It is committed below, from the first `next dev` run inside a worktree.
 

@@ -61,7 +61,7 @@ Docs here describe **what exists today**, so they are part of the change, not an
 ## Pull Request
 
 - [ ] PR opened against `main`; CI (`.github/workflows/ci.yml`) is green
-- [ ] The body opens with the two-item human checklist — see [Opening a pull request](../AGENTS.md#opening-a-pull-request). Everything else on this page is worked through before the pull request exists; those two are there because only a person can answer them
+- [ ] The body opens with the two-question human checklist, and each question has an answer ticked. It comes from [`.github/pull_request_template.md`](../.github/pull_request_template.md), which GitHub applies automatically to a pull request raised in the web interface; an agent using `gh pr create --body-file` bypasses templates and copies it in instead — see [Opening a pull request](../AGENTS.md#opening-a-pull-request). Everything else on this page is worked through before the pull request exists; those two are there because only a person can answer them, and each offers both answers so an unticked box cannot pass for "nothing to report"
 - [ ] Vercel preview deployment builds successfully
 - [ ] Manual QA on the **preview URL**, not just localhost — it is the only pre-production environment where the service worker, real env vars, and prerendered output all apply together
 
