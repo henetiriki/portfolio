@@ -83,6 +83,6 @@ Give both agents the diff path. Give the sweep the changed paths, which `node sc
 
 Both phrases mean the same thing: run everything above **and** the rest of the pre-merge half of the [release checklist](../../../docs/release-checklist.md), including the production build. Report what passes, what fails, and anything that needs a human decision.
 
-The sweep is the part that matters most: code → docs, so no doc still describes the old behaviour; and docs → code, so claims in the docs you touched still hold. Completed work is **moved** to [Project History](../../../docs/project-history.md) and **removed** from the [Roadmap](../../../docs/roadmap.md), never ticked in place.
+The sweep is the part that matters most: code → docs, so no doc still describes the old behaviour; and docs → code, so claims in the docs you touched still hold. Completed work is **removed** from the [Roadmap](../../../docs/roadmap.md), never ticked in place — the merged pull request is the record that it happened.
 
 **Re-run this after a rebase**, not only before opening the pull request. The ruleset on `main` requires branches to be up to date before merging, so a second branch has to rebase and re-run anyway — the case it exists for is two branches that each pass alone and break together.

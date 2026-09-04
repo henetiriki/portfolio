@@ -41,6 +41,14 @@ v6's `colorScheme` and `globalStyles` theme keys don't exist in v7. `colorScheme
 - **The header navigation, page sub-headings, timeline entries, map markers and portfolio cards now read these tokens too.** They sized themselves in CSS Modules or inline instead until 2026-08-18, reviewed one call site at a time rather than converted as a set — some restore the exact value that was already there, others deliberately sit a step off body copy. See [D-260818a](decisions.md#d-260818a--pull-the-text-outside-the-type-scale-onto-it-per-call-site).
 - **The home hero's career-transition line is a `<span>` inside the `<h1>`, styled by `Header`'s sub-line rule.** `index.module.css`'s `.heroTitle` does `composes: title from Header.module.css`, so the span renders as a non-uppercase block at `xl` (20px) — the same treatment as the sub-line under every other page's `Header` title. The animated role beneath it uses the `h4` heading token; all three lines read the shared type scale.
 
+### Dashes in copy
+
+Visitor-facing copy uses two dashes, chosen by role rather than by feel, so a spaced hyphen is always a defect rather than a variant.
+
+- **An em dash `—` for a sentence break or a parenthetical.** The portfolio alt text and the logo already used it; the home page, the `/travel` header quote and both "please try again later" error strings were brought onto it. `ContactForm`, `MapError` and the route assertions encode the strings, so changing one means changing its test.
+- **An en dash `–` for a numeric or date range.** `TimelineFromTo` renders `{from} – {to}` and the footer renders `2014 – {currentYear}`; `Footer.test.tsx` and the `experience-work-history` visual baseline both hold the character. A proper name carrying its own unspaced en dash — `Hartsfield–Jackson` in `airports.ts` — is the name's spelling rather than a range, and is left as the name has it.
+- **`railTrips.ts` is the exception, and deliberately.** Its `trip` labels use the file's own `->` arrow convention rather than a dash. Only `path` is rendered — `trip` is a source-only label — so it follows the fixture's internal convention rather than the site's copy rules.
+
 ### Fonts
 
 `src/styles/fonts.ts` loads **Montserrat** (headings) and **Roboto** (body) through `next/font/local`, from two `woff2` files committed under `src/styles/fonts/`. `_document.tsx` applies the generated `bodyFont.variable` and `headingFont.variable` classes to `<html>`, defining `--portfolio-font-heading` and `--portfolio-font-body` without an inline style element; `_app.tsx` also references those classes so Next.js discovers and preloads both files. The Mantine theme consumes the properties and retains the system-font fallbacks. The generated names come from the exported constants, so what appears in DevTools and in the built CSS is `headingFont` and `bodyFont`, not `Montserrat` and `Roboto`.
@@ -135,7 +143,7 @@ Plugin order matters here beyond alphabetical: `postcss-preset-mantine` needs to
 
 ## Post-v7 visual-parity fixes
 
-These surfaced one-by-one during manual page-by-page browser QA after the v7 migration shipped — each is a real v6→v7 behavioral difference, confirmed by comparing computed styles against the live production site, not a guess. Listed here (rather than as CSS comments) per this app's convention of keeping `.css`/`.module.css` files comment-free and putting the "why" in docs instead.
+These surfaced one-by-one during manual page-by-page browser QA after the v7 migration shipped — each is a real v6→v7 behavioural difference, confirmed by comparing computed styles against the live production site, not a guess. Listed here (rather than as CSS comments) per this app's convention of keeping `.css`/`.module.css` files comment-free and putting the "why" in docs instead.
 
 ### `global.css`'s four rules
 
