@@ -58,7 +58,7 @@ export default defineConfig({
       // The one project that lets a service worker register. It is a separate
       // project rather than a relaxed setting on the others because the block
       // below is load-bearing for them, not incidental.
-      // See docs/decisions.md#d-260815a.
+      // See D-260815a in docs/decisions.md#private-operational-records.
       name: 'service-worker-chromium',
       testMatch: SERVICE_WORKER_SPEC,
       use: { ...devices['Desktop Chrome'], serviceWorkers: 'allow' },
