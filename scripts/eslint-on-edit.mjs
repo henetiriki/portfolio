@@ -18,7 +18,7 @@ const eslintExtensions = () => {
     [commands].flat().some(command => command.startsWith('eslint'))
   );
 
-  const braces = entry?.at(0).match(/\{([^}]+)\}/);
+  const braces = entry?.at(0).match(/\{([^}]+)}/);
 
   return braces ? braces.at(1).split(',') : [];
 };
@@ -59,9 +59,14 @@ if (!fs.existsSync(absolute)) process.exit(0);
 try {
   // `--no-warn-ignored` leaves ESLint's own ignore list authoritative and
   // silent, so generated files need no special-casing here.
+  //
+  // `--max-warnings 0` makes a warning exit non-zero, which is the only way it
+  // reaches the report below — ESLint exits 0 on warnings alone, so without it
+  // a new one is printed nowhere and accumulates silently. It matches
+  // `eslint:check` and `lint-staged`, so all three agree on what "clean" means.
   execFileSync(
     path.join(projectRoot, 'node_modules/.bin/eslint'),
-    ['--fix', '--no-warn-ignored', absolute],
+    ['--fix', '--max-warnings', '0', '--no-warn-ignored', absolute],
     { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
   );
 } catch (error) {

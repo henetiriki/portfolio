@@ -41,8 +41,39 @@ describe('chainOperator', () => {
     ['cat <<-EOF > note.md\nOne thing; then another\n\tEOF'],
     // The other casualty D-260814b names: an escaped semicolon is an argument.
     ['find . -name "*.tmp" -exec rm {} \\;'],
+    // Compound commands, refused until the clause-terminator rule. The
+    // semicolons before `do`,
+    // `then`, `done` and `fi` are grammar — a loop is one logical command in
+    // the same sense a pipeline is.
+    ['for f in a b; do echo $f; done'],
+    ['for f in docs/*.md; do wc -w "$f"; done | sort -rn'],
+    ['while read -r line; do echo "$line"; done'],
+    ['until [ -f x ]; do echo waiting; done'],
+    ['if [ -f x ]; then echo y; fi'],
+    ['if [ -f x ]; then echo y; else echo n; fi'],
+    ['if [ -f x ]; then echo y; elif [ -f z ]; then echo z; fi'],
+    // `;;` ends a case arm and is followed by a pattern rather than a keyword,
+    // so it has to be recognised on its own.
+    ['case $x in a) echo 1;; b) echo 2;; esac'],
   ])('allows %s', command => {
     expect(chainOperator(command)).toBeNull();
+  });
+
+  it('still refuses a loop body that chains two independent commands', () => {
+    // The carve-out is for the grammar, not for everything inside it: these are
+    // two actions bundled into one permission verdict, which is the whole of
+    // what the rule exists to prevent.
+    expect(chainOperator('for f in a b; do echo one; echo two; done')).toBe(
+      ';'
+    );
+  });
+
+  it('does not let a quoted keyword after a separator rescue it', () => {
+    // The terminator rule runs over `codeOnly`'s output, so by the time it
+    // looks, this `;` is followed by a blanked span rather than the word
+    // `done`. Matching the raw string would read it as loop grammar and allow
+    // a genuine chain through.
+    expect(chainOperator('rm -rf x; "done"')).toBe(';');
   });
 
   it('fails open on an unterminated quote rather than refusing the rest', () => {

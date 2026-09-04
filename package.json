@@ -16,7 +16,7 @@
     "css-vars:generate": "node scripts/generate-mantine-css-variables.mjs",
     "dev": "NODE_OPTIONS='--inspect --trace-warnings' next dev",
     "docs:check-links": "node scripts/check-doc-links.mjs",
-    "eslint:check": "eslint .",
+    "eslint:check": "eslint . --max-warnings 0",
     "eslint:write": "eslint . --fix",
     "icons:check": "node scripts/generate-pwa-icons.mjs --check",
     "icons:generate": "node scripts/generate-pwa-icons.mjs",
@@ -106,7 +106,7 @@
   },
   "lint-staged": {
     "**/*.{cjs,js,jsx,mjs,ts,tsx}": [
-      "eslint --fix"
+      "eslint --fix --max-warnings 0"
     ],
     "**/*.{cjs,html,js,jsx,json,md,mjs,scss,ts,tsx}": [
       "prettier --ignore-path .prettierignore --write"
