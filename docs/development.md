@@ -7,31 +7,34 @@
 
 ## Scripts (`package.json`)
 
-| Script                              | Command                                                    | Purpose                                                                               |
-| ----------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `agent:check-config`                | `node scripts/check-agent-config.mjs`                      | Validate `.claude/` and each skill, and exercise the shell-hygiene hook               |
-| `build`                             | `next build --webpack && next-sitemap`                     | Production build (webpack — see below), followed by sitemap/robots generation         |
-| `clean`                             | `rm -rf .next`                                             | Wipe the build cache — see the note below before running it alongside a dev server    |
-| `css-vars:check`                    | `node scripts/generate-mantine-css-variables.mjs --check`  | Verify the stub matches `colors.ts` without writing it                                |
-| `css-vars:generate`                 | `node scripts/generate-mantine-css-variables.mjs`          | Regenerate the gitignored WebStorm CSS-variable stub from `colors.ts`                 |
-| `dev`                               | `NODE_OPTIONS='--inspect --trace-warnings' next dev`       | Local dev server (Turbopack) with the Node inspector attached and full warning traces |
-| `docs:check-links`                  | `node scripts/check-doc-links.mjs`                         | Verify every relative Markdown link and heading anchor across the docs resolves       |
-| `eslint:check` / `eslint:write`     | `eslint .` [`--fix`]                                       | Lint / lint and autofix                                                               |
-| `icons:check`                       | `node scripts/generate-pwa-icons.mjs --check`              | Verify committed icons/splash images match `SPLASH_DEVICES` and `ouwl.svg`            |
-| `icons:generate`                    | `node scripts/generate-pwa-icons.mjs`                      | Regenerate every manifest icon and Apple splash image from `ouwl.svg`                 |
-| `postinstall`                       | `yarn css-vars:generate`                                   | Regenerates the WebStorm stub on every install, including in a fresh worktree         |
-| `prepare`                           | `husky install`                                            | Installs git hooks (runs automatically on `yarn install` via the `prepare` lifecycle) |
-| `prettier:check` / `prettier:write` | `prettier . --check/--write --ignore-path .prettierignore` | Formatting                                                                            |
-| `start`                             | `next start`                                               | Serve a production build                                                              |
-| `test`                              | `jest`                                                     | Runs the Jest suite once                                                              |
-| `test:coverage`                     | `jest --coverage`                                          | Jest with a coverage report                                                           |
-| `test:e2e`                          | `playwright test`                                          | Browser regression suite (see below)                                                  |
-| `test:e2e:install`                  | `playwright install --with-deps chromium`                  | Fetch the browser binary (install scripts are disabled, so this is explicit)          |
-| `test:e2e:ui`                       | `playwright test --ui`                                     | Browser suite in Playwright's interactive runner                                      |
-| `test:watch`                        | `jest --watch`                                             | Jest in watch mode                                                                    |
-| `type-check`                        | `tsc --pretty --noEmit`                                    | TypeScript type checking without emitting output                                      |
+| Script                              | Command                                                    | Purpose                                                                                   |
+| ----------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `agent:check-config`                | `node scripts/check-agent-config.mjs`                      | Validate `.claude/` and each skill, and exercise the shell-hygiene hook                   |
+| `build`                             | `next build --webpack && next-sitemap`                     | Production build (webpack — see below), followed by sitemap/robots generation             |
+| `clean`                             | `rm -rf .next`                                             | Wipe the build cache — see the note below before running it alongside a dev server        |
+| `css-vars:check`                    | `node scripts/generate-mantine-css-variables.mjs --check`  | Verify the stub matches `colors.ts` without writing it                                    |
+| `css-vars:generate`                 | `node scripts/generate-mantine-css-variables.mjs`          | Regenerate the gitignored WebStorm CSS-variable stub from `colors.ts`                     |
+| `dev`                               | `NODE_OPTIONS='--inspect --trace-warnings' next dev`       | Local dev server (Turbopack) with the Node inspector attached and full warning traces     |
+| `docs:check-links`                  | `node scripts/check-doc-links.mjs`                         | Verify every relative Markdown link and heading anchor across the docs resolves           |
+| `eslint:check` / `eslint:write`     | `eslint .` [`--fix`]                                       | Lint / lint and autofix                                                                   |
+| `icons:check`                       | `node scripts/generate-pwa-icons.mjs --check`              | Verify committed icons/splash images match `SPLASH_DEVICES` and `ouwl.svg`                |
+| `icons:generate`                    | `node scripts/generate-pwa-icons.mjs`                      | Regenerate every manifest icon and Apple splash image from `ouwl.svg`                     |
+| `postinstall`                       | `yarn css-vars:generate`                                   | Regenerates the WebStorm stub on every install, including in a fresh worktree             |
+| `prepare`                           | `husky install`                                            | Installs git hooks (runs automatically on `yarn install` via the `prepare` lifecycle)     |
+| `prettier:check` / `prettier:write` | `prettier . --check/--write --ignore-path .prettierignore` | Formatting                                                                                |
+| `start`                             | `next start`                                               | Serve a production build                                                                  |
+| `test`                              | `jest`                                                     | Runs the Jest suite once                                                                  |
+| `test:coverage`                     | `jest --coverage`                                          | Jest with a coverage report                                                               |
+| `test:e2e`                          | `playwright test`                                          | Browser regression suite (see below)                                                      |
+| `test:e2e:install`                  | `playwright install --with-deps chromium`                  | Fetch the browser binary (install scripts are disabled, so this is explicit)              |
+| `test:e2e:ui`                       | `playwright test --ui`                                     | Browser suite in Playwright's interactive runner                                          |
+| `test:watch`                        | `jest --watch`                                             | Jest in watch mode                                                                        |
+| `type-check`                        | `tsc --pretty --noEmit`                                    | TypeScript type checking without emitting output                                          |
+| `validate`                          | `node scripts/validate.mjs`                                | Run the checks this change needs, skipping what a documentation-only change cannot affect |
 
 **A production build does not disturb a running dev server, but `yarn clean` does.** Next 16 keeps dev output in `.next/dev`, and `next build` clears `.next` with `cache`, `dev`, `lock` and `trace` excluded — so `yarn build` in one terminal leaves `next dev` in another intact. `yarn clean` is `rm -rf .next`, which takes `.next/dev` with it and leaves the running server serving files that no longer exist. Stop the dev server first, or delete only what you meant to.
+
+**`yarn validate` is the entry point before a pull request.** It asks [`scripts/classify-change.mjs`](../scripts/classify-change.mjs) whether the change is documentation-only — the same rule CI's classify job uses, rather than a second copy — and runs only the checks that change can affect, cheapest first. Locally it compares `origin/main...HEAD` **plus the working tree**, since validation normally runs before committing; CI passes `--base HEAD^`, which ignores the working tree and is correct only because merges are squashed. The Vercel deploy gate keeps its own, deliberately different list in [`should-skip-vercel-build.sh`](../scripts/should-skip-vercel-build.sh) and was left out on purpose — see [D-260904b](decisions.md#d-260904b--decide-documentation-only-once-and-let-both-callers-ask-it).
 
 **`docs:check-links` walks `docs/*.md`, the root Markdown files and every `.claude/skills/*/SKILL.md`, extracts every relative link, and checks the target exists — resolving a `#fragment` against a GitHub-style slug of the target's own headings when the target is a `.md` file.** No dependencies and nothing to generate, so unlike `css-vars:check`/`icons:check` it runs even on a documentation-only change; see [D-260821j](decisions.md#d-260821j--check-internal-documentation-links-in-ci-rather-than-relying-on-the-release-sweep). A same-file anchor (a link whose target is only `#heading`, no path) is checked the same way. Skills are included because a `SKILL.md` sits three directories down and links back out, so every relative path in one carries `../../../` — and nothing else in the toolchain reads those files at all.
 

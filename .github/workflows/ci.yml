@@ -53,14 +53,16 @@ jobs:
           # Two commits, because the step below diffs HEAD against HEAD^.
           fetch-depth: 2
 
+      # The exclusion list lives in the script, not here, so `yarn validate`
+      # answers this the same way locally — see D-260904b. No install runs
+      # before this, so the script has no dependencies and needs none.
       - name: Classify the change
         id: change
         run: |
-          if git diff --quiet HEAD^ HEAD -- . ':(exclude)docs' ':(exclude)*.md' ':(exclude).claude' ':(exclude).worktreeinclude'; then
-            echo 'docs_only=true' >> "$GITHUB_OUTPUT"
+          verdict="$(node scripts/classify-change.mjs --base HEAD^ --explain)"
+          echo "$verdict" >> "$GITHUB_OUTPUT"
+          if [ "$verdict" = 'docs_only=true' ]; then
             echo 'Documentation-only change: `prettier:check` and the Jest run ran, everything else was skipped.' >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo 'docs_only=false' >> "$GITHUB_OUTPUT"
           fi
 
   # Everything that runs against source. Keeps per-step gates rather than one

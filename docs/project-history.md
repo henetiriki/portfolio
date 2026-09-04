@@ -17,6 +17,14 @@ This is the concise record of completed project work. It is not a substitute for
 - **A sweep of the rest of the graph found no other advisory.** The remaining `yarn npm audit` output is npm deprecation notices — `glob@7` and `inflight` via Jest's `test-exclude`, `whatwg-encoding` via jsdom, none fixable from here — plus the ESLint `9.39.5` support notice the roadmap already tracks.
 - Removing the override once upstream relaxes its pin is [open work in the roadmap](roadmap.md#framework--dependency-upgrades) rather than a note left in `package.json`.
 
+## 2026-09-04 — One answer to "is this documentation-only?"
+
+- **`yarn validate` is now the check to run before a pull request.** It classifies the change and runs only what that change can affect, cheapest first, printing the verdict and what it skipped. A documentation-only change no longer pays for a production build and the browser suite; everything else runs the full set.
+- **The rule moved out of `ci.yml` into [`scripts/classify-change.mjs`](../scripts/classify-change.mjs)**, which CI's classify job now calls. Three policies for the same question became two. The Vercel deploy gate was deliberately left alone — its failure mode is a missed production deploy reported as a green `success`, it cannot be exercised until a real deploy, and its inverted exit convention is easy to get wrong. See [D-260904b](decisions.md#d-260904b--decide-documentation-only-once-and-let-both-callers-ask-it).
+- **The base ref differs by caller and the script keeps them apart**: `--base <ref>` compares that ref with HEAD and ignores the working tree, which is CI's case; with no argument it compares `origin/main...HEAD` and adds uncommitted work, which is the local case and exactly what `HEAD^` misses.
+- **`scripts/` gained tests, because it had none and no types either.** `tsconfig.json`'s `include` is `**/*.ts(x)` only, so `allowJs` never reached a `.mjs` file, and `testMatch` was scoped to `src/` — leaving these scripts the only executable code here with neither. `testMatch` now covers `scripts/` too; `collectCoverageFrom` stays scoped to `src/`, so the coverage floor is untouched.
+- **Two bugs were found by running it rather than by reading it**: `git status --porcelain` lines were being trimmed before their two-column status was sliced off, which ate the first letter of every modified path, and a historical query needed a `--head` as well as a `--base` or it compared an old commit against the current tip.
+
 ## 2026-09-04 — Move the task-shaped procedures into skills
 
 - **Four sections left [`AGENTS.md`](../AGENTS.md) for [`.claude/skills/`](../.claude/skills/)** — opening a pull request, validating a change, working across branches, and worktrees — so their text is no longer read at the start of every session. Claude Code loads a skill only when it invokes one.
