@@ -4,7 +4,7 @@ Quick reference for shipping a change to production.
 
 **How releases work here:** there are no version numbers, tags, or build artefacts. `package.json` is `private: true` and its `version` (`0.1.0`) is never bumped or published. A "release" is simply **a pull request squash-merged into `main`**, which Vercel's Git integration deploys to production automatically. The merged pull requests are therefore the release record, and Vercel's own deployment history is the authoritative answer to what is live; the [Roadmap](roadmap.md) contains unfinished work only.
 
-> **"Release ready check"** / **"Prepare for release"** — asking for either means: run everything under [Development](#development) and [Before Opening The PR](#before-opening-the-pr), including the [code review](#code-review) it starts with and the full [documentation sweep](#documentation-sweep) in both directions, and report what passes, what fails, and anything that needs a human decision.
+> **"Release ready check"** / **"Prepare for release"** — asking for either means: work through [Development](#development) and the numbered sequence under [Before Opening The PR](#before-opening-the-pr) in order, including the [code review](#code-review), the [sensitive-information pass](#sensitive-information) and the full [documentation sweep](#documentation-sweep) in both directions, and report what passes, what fails, and anything that needs a human decision.
 
 ## Development
 
@@ -14,13 +14,33 @@ Quick reference for shipping a change to production.
 
 ## Before Opening The PR
 
-Work through [Code review](#code-review) first — it formats the tree and starts the review — then run the checks locally:
+**The order is fixed, and the commits are part of it.** Each step happens once, in this order.
 
-```bash
-yarn validate
-```
+1. **Implement.**
+2. **Commit** the implementation.
+3. **Document** — the topical doc, the [Roadmap](roadmap.md), and a decision entry if the change [earns one](decisions.md#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script).
+4. **Commit** the documentation. A documentation-only change has nothing to separate, so this collapses into step 2.
+5. **Start the [code review](#code-review).** Do not wait for it — where it backgrounds, it reads the diff while the checks run.
+6. **Run `yarn validate`.**
+7. **Dispatch the [sensitive-information pass](#sensitive-information) and the [documentation sweep](#documentation-sweep)**, together.
+8. **Read all three reports**, and fix or route every finding.
+9. **Commit** what they raised, together with anything agreed in conversation rather than found in the tree.
+10. **Re-run `yarn validate`.** Re-dispatch an agent only where step 9 touched a path it had not read.
+11. **Push, and [open the pull request](../AGENTS.md#opening-a-pull-request).**
 
-- [ ] It passes. `yarn validate` classifies the change and runs what that change can affect, cheapest first — lint, both type-checks, the generated-asset checks, the build and the browser suite are skipped on a documentation-only change and run on everything else. It prints the verdict and what it skipped. The individual scripts still exist and can be run on their own; the list is in [Development Workflow](development.md#scripts-packagejson). Coverage stays above the 95% global threshold in `jest.config.js`
+**Three commits rather than one, because the pull request is the only place they survive.** Merges are squashed, so nothing between steps 2 and 9 reaches `main` — and the pull request is exactly where the separation earns its keep, because it distinguishes what you wrote from what review caught. A branch whose step-9 commit is empty is a branch review found nothing on, which is as much a result as a long one.
+
+**Splitting implementation from documentation makes the ratio visible inside a change.** The [proportionality audit](roadmap.md#documentation-weight) that opened this programme could only measure prose against source across whole commits; steps 2 and 4 measure it per change, which is the question that audit actually asks.
+
+**Committing before step 5 is what makes the diff simple.** The review and both agents read one `git diff origin/main...HEAD` instead of a committed range plus a working-tree diff appended to it, with the caveat that a path changed in both appears twice in different states. That complication existed only because nothing was committed yet. It also removes a step this section used to open with: `lint-staged` formats every staged file at commit time, so by step 5 the tree is already formatted and a separate `yarn prettier:write` has nothing left to do.
+
+**Accepted cost: commits made before step 6 are not guaranteed to pass `yarn validate`.** `lint-staged` covers formatting and lint on what it stages, but a type error or a failing test can survive into steps 2 and 4. Within-branch bisectability buys nothing under squash merge, so this is a trade rather than a regression.
+
+**Step 4 does not make documentation an afterthought**, despite arriving after the implementation commit. The opposite: a mandated commit is harder to under-do than prose folded into an implementation diff, where thin documentation is invisible. Docs remain part of the change — the sweep at step 7 fails a change whose docs are missing exactly as it always did.
+
+**This is the shape the pull request ends in, not a prohibition on iterating.** Real work loops — implement, start documenting, find the implementation wrong. Amend, or add a commit, and let the branch arrive at this shape; a procedure that forbids the way work actually happens is one that gets quietly abandoned.
+
+- [ ] `yarn validate` passes. `yarn validate` classifies the change and runs what that change can affect, cheapest first — lint, both type-checks, the generated-asset checks, the build and the browser suite are skipped on a documentation-only change and run on everything else. It prints the verdict and what it skipped. The individual scripts still exist and can be run on their own; the list is in [Development Workflow](development.md#scripts-packagejson). Coverage stays above the 95% global threshold in `jest.config.js`
 - [ ] The pull request's `codecov/patch` check passes at 100%; inspect any GitHub Checks annotations rather than treating the aggregate Jest percentage as coverage of the changed lines. If the status never appears at all, the upload was dropped rather than failed — check Codecov's own state before the workflow, as [Testing](development.md#testing) describes
 - [ ] `yarn docs:check-links` passes. Unlike the two checks below, it runs even on a documentation-only change — it verifies every relative Markdown link and heading anchor across the docs resolves, which is exactly what changes on a docs-only diff.
 - [ ] `yarn css-vars:check` passes. CI runs this after `postinstall` as an integrity check for the generated, gitignored WebStorm stub; it is not a committed-file drift check.
@@ -31,11 +51,11 @@ yarn validate
 
 ### Code review
 
-**Start this before `yarn validate`, not after.** Where it backgrounds it reads the diff while the production build and the browser suite run, and costs almost no wall clock; where it does not — which is not fully predictable — it is serial wherever it sits, and its findings are still worth more before a build has been paid for than after. `yarn validate` does not wait for it and should not be made to, but the two finishing independently is not the same as this section being done: the pull request waits for the review to report even when the checks are already green.
+**Step 5, before `yarn validate` rather than after it.** Where it backgrounds it reads the diff while the production build and the browser suite run, and costs almost no wall clock; where it does not — which is not fully predictable — it is serial wherever it sits, and its findings are still worth more before a build has been paid for than after. `yarn validate` does not wait for it and should not be made to, but the two finishing independently is not the same as this section being done: the pull request waits for the review to report even when the checks are already green.
 
 > Claude Code delegates this to its own bundled `code-review` skill, invoked from [`release-ready-check`](../.claude/skills/release-ready-check/SKILL.md) rather than waiting for a person to type it — see [D-260904e](decisions.md#d-260904e--start-the-code-review-from-the-release-ready-check-and-keep-it-claude-code-only). **Unlike the two sections below, there is deliberately no brief here to fall back on.** A review's criteria belong to the reviewing tool, so writing one out would invent a method this repository does not have and would drift from what the skill actually does. A tool without that skill has no equivalent step here and should say so rather than improvise one — the only step on this page that does not survive being read by another tool.
 
-- [ ] **`yarn prettier:write` has run first.** Formatting is the one half of the tree's hygiene that is not already done by the time this runs — [`eslint-on-edit.mjs`](../scripts/eslint-on-edit.mjs) lints each code file as it is written, while `lint-staged` formats at commit time and this check normally runs before committing. An unformatted diff makes the review report what `prettier:check` catches for free a minute later.
+- [ ] **The tree is already formatted, and nothing here needs to format it.** Both halves of its hygiene are done by the time this runs: [`eslint-on-edit.mjs`](../scripts/eslint-on-edit.mjs) lints each code file as it is written, and `lint-staged` formats at commit time — which now precedes this step rather than following it. This section used to open by running `yarn prettier:write`; committing first is what retired that.
 - [ ] **A review has run against the diff and its findings have been read.** They are generic — correctness, reuse, simplification, efficiency — and know nothing of this repository's own disciplines, so this replaces neither the pass nor the sweep below.
 - [ ] **Each finding is fixed or routed.** Fix what is wrong in the change at hand; anything else goes to the [Roadmap](roadmap.md) rather than a commit message, as the sweep already requires. Treat a finding as blocking only where it contradicts something this checklist demands.
 

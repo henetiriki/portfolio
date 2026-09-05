@@ -41,6 +41,25 @@ The public behaviour each one produced is in the topical documentation, linked b
 | `D-260814c` | The historical browser policy, its reporting design and source allowlists                                                                       | [Browser protections](security.md#browser-protections)         |
 | `D-260811b` | The contact form's exact controls, accepted limitations and review criteria                                                                     | [Contact protection](security.md#contact-protection)           |
 
+## D-260905b — Number the release-ready sequence, and commit before the review runs
+
+- **Status:** Accepted
+- **Decided:** 2026-09-05
+
+The pre-merge flow is now eleven numbered steps in the [release checklist](release-checklist.md#before-opening-the-pr), with three commits inside them: the implementation, then the documentation, then whatever the review and the two agents surface. `release-ready-check` follows that list and holds only what is specific to Claude Code.
+
+**The ordering used to be prose, and prose is why every session ran it differently.** It was distributed across several pages, so each reading reconstructed it — which is not a failure of any one session but of storing a sequence as argument. Two failures on the [D-260905a](#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script) branch made it concrete: the documentation sweep ran twice because nothing said how it relates to acting on its own findings, and the code review reported in prose because the instruction to use `ReportFindings` was not followed. The second is the worse one — the review runs in the main session rather than a subagent, so without that structured report it leaves no trace at all and cannot be told apart from not having run.
+
+**Committing before the review is what the rest falls out of.** A committed diff is one `git diff origin/main...HEAD`, where the old flow needed a committed range plus a working-tree diff appended, and a warning that a path changed in both appears twice in different states. It also retired the `yarn prettier:write` the flow used to open with: `lint-staged` formats at commit time, so by the review step there is nothing left to format. The reason the flow ran before any commit was simply that nobody had asked why.
+
+**Why not one commit, or two.** One is what there was, and it folds an agent's finding into the implementation so nothing records that it was ever made. Two — implementation-plus-docs, then findings — was the first proposal here and is strictly worse than three for a reason the [proportionality audit](roadmap.md#documentation-weight) supplies: that audit could measure prose against source only across whole commits, and separating them measures it inside a single change, which is the question it actually asks. Splitting documentation into its own commit also makes thin documentation visible, where folded into an implementation diff it is not.
+
+**The tension worth stating rather than leaving to be found.** The checklist says documentation is part of the change and not an afterthought, and step 4 does put it after the implementation commit. The counter is that a mandated commit is harder to under-do than prose bundled into a larger diff, and the sweep still fails a change whose documentation is missing. Recorded because someone will otherwise read the contradiction as an oversight.
+
+**Not enforced by a script**, for the same reason as [D-260905a](#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script): a hook could count commits on a branch, but the shape it would check is trivially satisfied by empty commits and the thing worth having — that each commit is a coherent unit — is not machine-checkable. The list is written as the shape a pull request ends in rather than a prohibition on iterating, because a procedure that forbids how work actually happens is one that gets quietly abandoned.
+
+**Accepted cost:** commits made before step 6 are not guaranteed to pass `yarn validate`. `lint-staged` covers formatting and lint on what it stages, but a type error or a failing test can survive. Squash merging means within-branch bisectability buys nothing, so this is a trade rather than a regression.
+
 ## D-260905a — Say what earns a decision entry, and do not enforce it with a script
 
 - **Status:** Accepted; sharpens [D-260809a](#d-260809a--separate-plans-decisions-and-history)'s test rather than replacing it
