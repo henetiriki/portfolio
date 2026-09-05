@@ -87,7 +87,7 @@ Every pull request body opens with a two-question human checklist, and the body 
 
 ## Working across branches
 
-Branches run concurrently here, and `main` is the only integration point. Merges are squashed, so a branch lands as a single commit and its own history does not survive: **rebase onto `origin/main`** rather than merging `main` into a branch, and never merge one branch into another.
+Branches run concurrently here, and `main` is the only integration point. Merges are squashed, so a branch lands as a single commit and its commit graph does not survive — its messages do, concatenated into the squash body by `squash_merge_commit_message: COMMIT_MESSAGES`. So: **rebase onto `origin/main`** rather than merging `main` into a branch, and never merge one branch into another.
 
 The rest — which two documentation files actually collide and how each resolves, minting a decision identifier, merge order, and why a clean rebase is not evidence — is in [`.claude/skills/work-across-branches/SKILL.md`](.claude/skills/work-across-branches/SKILL.md).
 

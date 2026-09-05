@@ -64,6 +64,8 @@ The pre-merge flow is now a numbered sequence in the [release checklist](release
 
 **Not enforced by a script**, for the same reason as [D-260905a](#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script): a hook could count commits on a branch, but the shape it would check is trivially satisfied by empty commits and the thing worth having — that each commit is a coherent unit — is not machine-checkable. The list is written as the shape a pull request ends in rather than a prohibition on iterating, because a procedure that forbids how work actually happens is one that gets quietly abandoned.
 
+**The re-dispatch condition is a deliberately crude proxy, and its value turned out to be indirect.** An agent is re-dispatched where the findings commit touched a path it had not read — checkable, rather than a judgement about whether a re-read is "really" needed, which is how the check gets skipped. On this branch it fired four times and the newly touched file was itself clean every time; what the re-read bought was the comparison, because reading a corrected sentence is what sends a reader to its twin elsewhere. Two of the defects found this way were in files no diff hunk touched. A sharper proxy would be "the commit changed a sentence that also exists in another file", which is what actually predicts a finding here — and which nothing can detect mechanically, so the crude version stays.
+
 **Accepted cost:** commits made before `yarn validate` runs are not guaranteed to pass it. The formatting step and `lint-staged`'s lint cover what they cover, but a type error or a failing test can survive. Squash merging means within-branch bisectability buys nothing, so this is a trade rather than a regression.
 
 ## D-260905a — Say what earns a decision entry, and do not enforce it with a script
@@ -190,7 +192,7 @@ The roadmap asked for three advisory conventions to be promoted to deterministic
 
 ## D-260904b — Decide "documentation-only" once, and let both callers ask it
 
-- **Status:** Accepted
+- **Status:** Accepted; one classifier asked by both callers stands unchanged. The incidental premise below — that validation normally runs before committing — is superseded by [D-260905b](#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs). The local branch still unions the working tree, so the behaviour is unaffected; only the reason given for it has moved.
 - **Decided:** 2026-09-04
 
 Three things answered the same question and none of them shared an answer: CI's classify job held its exclusion list inline in [`ci.yml`](../.github/workflows/ci.yml), [`should-skip-vercel-build.sh`](../scripts/should-skip-vercel-build.sh) held a second and deliberately different one, and the `release-ready-check` skill was in effect a third policy of "always run everything" — so a documentation-only change still paid for a production build and the browser suite locally. [`scripts/classify-change.mjs`](../scripts/classify-change.mjs) now holds CI's rule, CI calls it, and `yarn validate` asks it the same question.
