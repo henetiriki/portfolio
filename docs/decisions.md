@@ -41,6 +41,31 @@ The public behaviour each one produced is in the topical documentation, linked b
 | `D-260814c` | The historical browser policy, its reporting design and source allowlists                                                                       | [Browser protections](security.md#browser-protections)         |
 | `D-260811b` | The contact form's exact controls, accepted limitations and review criteria                                                                     | [Contact protection](security.md#contact-protection)           |
 
+## D-260905c — Comment the call site, and keep the log for what has none
+
+- **Status:** Accepted; reverses the ban on explanatory comments in CSS, CSS Modules and JSX, and narrows [D-260821j](#d-260821j--check-internal-documentation-links-in-ci-rather-than-relying-on-the-release-sweep)'s "an entry stays as published once merged"
+- **Decided:** 2026-09-05
+
+Three rules replace one. A comment goes where the code reads as wrong or arbitrary and says what was discarded; a topical doc holds only what neither code nor comment can; this log keeps what has no call site at all. The tests are in [`AGENTS.md`](../AGENTS.md#documentation-discipline).
+
+**The ban was the right diagnosis and the wrong fix.** It was introduced because long essays were appearing in stylesheets, which was real. Banning comments outright sent every explanation to a document, and a reader about to change a declaration does not have that document open.
+
+**It did not relocate the reasoning; it duplicated it.** [`styling-theming.md`](styling-theming.md#the-document-canvas-background) carried the whole `html`-versus-`body` mechanism, and a second section carried the same explanation again for the same declaration — announcing in its own prose that it was there "per this app's convention of keeping `.css`/`.module.css` files comment-free". Two copies in one file, and the code silent. That is the argument against the ban that no amount of compaction reaches, because compaction shrinks copies rather than removing them.
+
+**Why not simply ask for concision, which is what the ban should have asked for.** Alone it is unenforceable, for the reason [D-260905a](#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script) rejects a word cap: length is gameable and scoring judgement produces a weaker rule wearing its name. What makes it enforceable is the deletion test — a comment that reads as self-contained prose is a document in the wrong place, which a reviewer can apply without counting anything.
+
+**The split that fell out of doing it once.** Mechanism goes to the call site; provenance and cross-file facts go to the topical doc; history stays here. That is why [D-260815d](#d-260815d--paint-the-document-canvas-on-html-not-on-body) shrank to a checked negative result and a mispriced trade.
+
+**Wrong turns divide, and the earlier rule needs reading with that in mind.** [`AGENTS.md`](../AGENTS.md#documentation-discipline) routes a discarded first attempt into the decision it qualifies. That holds where the discard left nothing behind — `viewport-fit=cover` was trialled and abandoned, and there is no line of code to annotate. It does not hold where the discard is visible in what shipped: `body` was the wrong place for the canvas colour, `body` is still there, and the comment beside it is the natural record. **Decide by whether the reader who would repeat the mistake is looking at code or at a file**, not by whether the attempt failed.
+
+**Relocating in bulk was the plan and is rejected; do it opportunistically instead.** The rule above was meant to open a programme moving roughly thirty entries to their call sites. One cluster was done as a spike — five declarations in `global.css` — and it cost eleven defects caused by the move and three review rounds, including a **false claim about the code**: a sentence saying two components opt out of a margin the same way, true of neither once it sat beside them. It had been vague and harmless in a doc for weeks. **A relocation is a rewrite, and its losses are invisible in the diff** because the deletion and the addition are in different files and read as a fair trade. Against that, volume barely moved — the doc lost about what the stylesheet gained. So move an entry only when already working in that code for another reason, and treat the rule above as governing what gets written from now on rather than as a licence to redistribute what exists.
+
+**Compacting an entry in place is safer than relocating it, for the same reason.** The deletion and the addition are in one file and one diff, so a reviewer sees the whole trade at once. That is why shrinking this log stays a [compaction](roadmap.md#documentation-weight) rather than becoming a dispersal.
+
+**Relocating content out of an entry departs from "an entry stays as published once merged".** [D-260821j](#d-260821j--check-internal-documentation-links-in-ci-rather-than-relying-on-the-release-sweep) set that rule to stop dead links being repointed and sentences rewritten around them, and it still holds for that: nothing here is reworded because a link rotted. What is now allowed is narrower — moving a passage to the place it belongs, leaving the heading, the identifier and every inbound anchor untouched. The alternative was leaving each entry whole and duplicating it at the call site, which is the state this change exists to end.
+
+**Not enforced by a script.** The code review reads every diff, and a forty-line comment in a stylesheet is visible at a glance.
+
 ## D-260905b — Number the release-ready sequence, and commit before the review runs
 
 - **Status:** Accepted; supersedes the premise under [D-260904e](#d-260904e--start-the-code-review-from-the-release-ready-check-and-keep-it-claude-code-only)'s formatting step — which is relocated rather than undone — and the two-part diff capture described in [D-260904d](#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit). Both entries' central decisions stand: the review still starts before `yarn validate` and is still Claude Code's alone, and the agents still cannot edit.
@@ -815,16 +840,12 @@ Every icon and splash asset dated from October 2022 and had drifted from the app
 
 ## D-260815d — Paint the document canvas on `html`, not on `body`
 
-- **Status:** Accepted
+- **Status:** Accepted; the mechanism is now commented beside the declarations in [`global.css`](../src/styles/global.css) and the current behaviour is in [Styling & Theming](styling-theming.md#the-document-canvas-background). What stays here is what has no call site.
 - **Decided:** 2026-08-15
 
-The document canvas was transparent: both `html` and `body` computed to `rgba(0, 0, 0, 0)`, so it fell back to the user-agent default — white. The site only ever _looked_ dark because the nav, hero and footer each paint their own backgrounds; anywhere component content did not reach, the white canvas showed through. It is visible as overscroll bounce at either end of an ordinary browser tab, and an opaque canvas is correct on its own merits.
+`html` carries an opaque canvas colour and `body` stays transparent. The canvas is correct on its own merits — without it the user-agent white showed through as overscroll bounce wherever component backgrounds did not reach. **`body` was the first attempt and broke the hero**, which is why the comment beside those declarations says the transparency is load-bearing. Two further things have nowhere in the code to live.
 
 **Correction, 2026-08-15: this did not fix what it was written to fix.** The change was prompted by a white band behind the **Android gesture bar in the installed PWA**, and this decision claimed Chrome derives that region's colour from the document canvas. That holds for a browser tab and **not for an installed app**, whose system navigation bar the browser paints itself. The mechanism was verified in a desktop browser and generalised to a surface that was never tested. Production serves `html: rgb(8, 10, 32)` and the band survived — a checked negative result, and the reason the real cause was found only afterwards. See [D-260815i](#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar).
-
-**The fix has to go on `html`, and putting it on `body` would have broken the hero.** `body { background-color: transparent }` is load-bearing, not an oversight — [`FixedBackground`](styling-theming.md#globalcsss-four-rules) shows through from `position: fixed; z-index: -1`, and CSS paints a block element's own background _after_ negative-z-index descendants. The root element's background is different: it propagates to the canvas and paints beneath everything, negative z-index included. So an opaque `html` sits harmlessly behind the fixed image where an opaque `body` would cover it. The distinction is invisible in the CSS and cost a wrong first attempt to find.
-
-**The value is the token that already equals the manifest.** `--mantine-color-black-russian-4` is `#080A20` — the same value as `theme_color`, `background_color` and the `theme-color` meta tag. Splash, canvas and browser chrome now resolve to one colour from one palette entry rather than three hand-copied hex literals.
 
 **`viewport-fit=cover` was rejected here on reasoning that did not hold.** The stated ground was that it would pull `env(safe-area-inset-*)` handling into every page "for a problem that one declaration already solves" — but the one declaration did not solve it, so the trade was mispriced. It was later trialled and abandoned unfinished; see [D-260815i](#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar).
 

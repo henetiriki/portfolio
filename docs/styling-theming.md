@@ -28,13 +28,13 @@ export const theme = createTheme({
 
 Applied once in `_app.tsx` via `<MantineProvider forceColorScheme='dark' theme={theme}>`, alongside `import '@mantine/core/styles.css'` and `import '@mantine/notifications/styles.css'`. `_document.tsx` sets `data-mantine-color-scheme='dark'` directly on `<Html>` rather than rendering Mantine's `<ColorSchemeScript>` — that component emits an inline `<script>`, which removing `'unsafe-inline'` from `script-src` (see [D-260821k](decisions.md#private-operational-records)) would block. The site is dark-mode only with no light theme or toggle, so the value is a static attribute rather than a script computing it at request time: `forceColorScheme` on the provider keeps the runtime scheme fixed, and the hardcoded attribute keeps the server-rendered document dark before React hydrates, without needing a script to choose between light and dark.
 
-v6's `colorScheme` and `globalStyles` theme keys don't exist in v7. `colorScheme` moved to `MantineProvider`'s `forceColorScheme`/`defaultColorScheme` props (above); the old `globalStyles` callback (letter-spacing on headings, base `html` font-size, `body` defaults) moved to a plain stylesheet, `src/styles/global.css`, imported once in `_app.tsx`. That file also carries four rules that exist purely to restore v6 behaviour — see [`global.css`'s four rules](#globalcsss-four-rules).
+v6's `colorScheme` and `globalStyles` theme keys don't exist in v7. `colorScheme` moved to `MantineProvider`'s `forceColorScheme`/`defaultColorScheme` props (above); the old `globalStyles` callback (letter-spacing on headings, base `html` font-size, `body` defaults) moved to a plain stylesheet, `src/styles/global.css`, imported once in `_app.tsx`. That file also carries rules that exist purely to restore v6 behaviour — see [Post-v7 visual-parity fixes](#post-v7-visual-parity-fixes).
 
 **`defaultRadius: 'sm'` is set deliberately, not incidentally.** Mantine v9 changed its own default from `sm` (4px) to `md` (8px) — confirmed by diffing the shipped `default-theme.mjs` across the v8→v9 boundary (8.3.18 vs 9.x). Every component that doesn't pass an explicit `radius` inherits it, so leaving it unset would have silently rounded the `Tooltip`, notification toasts and `Drawer` more than before. Pinning `sm` preserves the pre-v9 appearance. The buttons and inputs that pass `radius='lg'` (`ContactForm`, `portfolio.tsx`, `ErrorContent`) were never affected either way. **This is a design choice, not a technical constraint** — deleting the line adopts Mantine's newer, rounder default.
 
 ### Type scale
 
-`fontSizes` holds Mantine's own defaults — `xs` 12, `sm` 14, `md` 16, `lg` 18, `xl` 20 — and `body` in [`global.css`](#globalcsss-four-rules) sets a **unitless** `line-height: 1.5`, so leading tracks size instead of being pinned to one value. Both were corrected together on 2026-08-16; the scale had sat one step low since the v7 migration, which put body copy at 14px. See [D-260816f](decisions.md#d-260816f--put-the-type-scale-back-on-mantines-defaults-and-make-leading-a-ratio).
+`fontSizes` holds Mantine's own defaults — `xs` 12, `sm` 14, `md` 16, `lg` 18, `xl` 20 — and `body` in [`global.css`](../src/styles/global.css) sets a **unitless** `line-height: 1.5`, so leading tracks size instead of being pinned to one value. Both were corrected together on 2026-08-16; the scale had sat one step low since the v7 migration, which put body copy at 14px. See [D-260816f](decisions.md#d-260816f--put-the-type-scale-back-on-mantines-defaults-and-make-leading-a-ratio).
 
 - **`Text` and `Input` do not default to the same token.** `Text` defaults to `md`, `Input` and its wrappers to `sm`. That asymmetry is why the contact form passes an explicit `size='lg'`: dropping the prop would render its fields at `sm`, and anything under 16px makes iOS Safari zoom the viewport on focus.
 - **A Mantine component's box does not scale with `fontSizes`.** `--input-height` and `--button-height` are Mantine's own per-size constants (`lg` is `3.125rem` for both), while `--input-fz` and `--button-fz` read from the theme. Changing a token therefore moves the text inside a control without moving the control.
@@ -137,39 +137,20 @@ Plugin order matters here beyond alphabetical: `postcss-preset-mantine` needs to
 
 ## The document canvas background
 
-`global.css` sets `html { background-color: var(--mantine-color-black-russian-4) }` — `#080A20`, the same value as the manifest's `theme_color`/`background_color` and the `theme-color` meta tag. Without it the canvas falls back to the user-agent white, which is invisible on a normal page (the nav, hero and footer paint their own backgrounds) but shows wherever component content does not reach: overscroll bounce in a browser tab, and the strip behind the gesture bar when installed as a PWA on Android.
+`global.css` sets `html { background-color: var(--mantine-color-black-russian-4) }` — `#080A20`, the same value as the manifest's `theme_color`/`background_color` and the `theme-color` meta tag. Without it the canvas falls back to the user-agent white, which is invisible on a normal page (the nav, hero and footer paint their own backgrounds) but shows as overscroll bounce at either end of a browser tab.
 
-**It belongs on `html` and would break the hero on `body`.** The root element's background propagates to the canvas and paints beneath negative-z-index content; a block element's own background paints above it, which is exactly why `body` stays transparent for `FixedBackground` (below). See [D-260815d](decisions.md#d-260815d--paint-the-document-canvas-on-html-not-on-body).
+- **It does not control the strip behind the Android gesture bar in the installed PWA.** That was what the change was written for and it did not work — the browser paints an installed app's system navigation bar itself. See [D-260815d](decisions.md#d-260815d--paint-the-document-canvas-on-html-not-on-body) and [D-260815i](decisions.md#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar).
+
+- **The colour is a palette token, not a repeated literal.** `colors.ts`, `manifest.json` and the `theme-color` meta tag all resolve to the one entry, where three hand-copied hex values would drift apart.
+- **Why it belongs on `html` rather than `body`** is commented beside those two declarations in [`global.css`](../src/styles/global.css).
 
 ## Post-v7 visual-parity fixes
 
-These surfaced one-by-one during manual page-by-page browser QA after the v7 migration shipped — each is a real v6→v7 behavioural difference, confirmed by comparing computed styles against the live production site, not a guess. Listed here (rather than as CSS comments) per this app's convention of keeping `.css`/`.module.css` files comment-free and putting the "why" in docs instead.
+Every rule in this section is a real v6→v7 behavioural difference, found during page-by-page browser QA after the migration shipped and confirmed against production's computed styles — not a guess. That provenance is what this section records; why each rule is written as it is sits in the comment beside it.
 
-### `global.css`'s four rules
+### `global.css`
 
-```css
-body {
-  background-color: transparent;
-  /* ... */
-}
-
-img {
-  vertical-align: middle;
-}
-
-p.mantine-Text-root {
-  margin: 1em 0;
-}
-
-html:root[data-mantine-color-scheme='dark'] {
-  --mantine-color-error: var(--mantine-color-torch-red-2);
-}
-```
-
-- **`body { background-color: transparent }`** — v7's base stylesheet sets an opaque `background-color: var(--mantine-color-body)` on `body` by default (v6's normalize step didn't). `FixedBackground` relies on a `position: fixed; z-index: -1` image to show through everything above it — an opaque `body` background paints in front of that negative-z-index layer and hides it.
-- **`img { vertical-align: middle }`** — standard normalize.css rule that v6's `withNormalizeCSS` included and v7 has no equivalent for. Without it, an inline `<img>` inside a block container (e.g. the logo's `Link` wrapper) reserves extra line-box space below itself for the font's descender, since the browser default is `vertical-align: baseline` — the logo rendered ~7.5px taller than it should and sat misaligned from the rest of the nav.
-- **`p.mantine-Text-root { margin: 1em 0 }`** — v7's base stylesheet sets `margin: 0` unconditionally on every `Text` (and `Anchor`, which shares the base class); v6 never overrode the browser's native `<p>` margin. This restores it, scoped to real `<p>` elements so `Text` used as a `span`, and `Anchor`, are untouched. **It is deliberately broad**, so it also hits label-style `Text` that merely defaults to `<p>` — `TimelineInstitution` and `TimelineLocation` opt back out with their own `mt={0}`/`mb={0}`. Narrowing the selector instead would need a way to distinguish "prose paragraph" from "label rendered as `<p>`" in CSS, and there isn't one; prefer the per-component override for any similar case.
-- **`html:root[data-mantine-color-scheme='dark'] { --mantine-color-error: ... }`** — v7's dark-scheme `--mantine-color-error` is `red-8` (`#e03131`); this app uses the lighter custom `torch-red-2` (`#fc7284`) for validation-error text, borders and required-field asterisks. Overriding the variable beats chasing every component that consumes it, but the selector is the trap: **`:root` is a pseudo-class**, so Mantine's `:root[data-mantine-color-scheme="dark"]` scores `(0,2,0)` and a plain `html[data-mantine-color-scheme='dark']` override scores only `(0,1,1)` — it compiles, the variable exists, and it silently never applies. `html:root[...]` is `(0,2,1)` and wins regardless of stylesheet order.
+Its rules are commented in place, in [`global.css`](../src/styles/global.css).
 
 ### Component-level fixes (not in `global.css`)
 

@@ -1,9 +1,17 @@
 html {
+  /* Opaque here rather than on `body`. The root element's background
+     propagates to the canvas and paints beneath negative-z-index children, so
+     FixedBackground still shows through; an opaque `body` would cover it,
+     because a block element paints its own background after those
+     descendants. */
   background-color: var(--mantine-color-black-russian-4);
   font-size: 16px;
 }
 
 body {
+  /* Load-bearing, not an oversight. Mantine v7's base stylesheet sets an
+     opaque `--mantine-color-body` here where v6 did not, and that paints over
+     FixedBackground's `z-index: -1` layer. See the note on `html`. */
   background-color: transparent;
   color: var(--mantine-color-whisper-0);
   line-height: 1.5;
@@ -24,13 +32,36 @@ h6 {
 }
 
 img {
+  /* v6's `withNormalizeCSS` carried this and v7 has no equivalent. Without it
+     an inline `<img>` in a block container reserves line-box space for the
+     font's descender, since the default is `baseline` — which made the logo
+     render ~7.5px taller than it should and sit misaligned from the nav. */
   vertical-align: middle;
 }
 
 p.mantine-Text-root {
+  /* v7 sets `margin: 0` on every `Text`, and on `Anchor`, which shares the base
+     class; this restores the native `<p>` margin. Scoped to real `<p>`, so
+     `Text` used as a span and `Anchor` are both untouched.
+
+     Deliberately broad, so it also hits label-style `Text` that merely defaults
+     to `<p>` — those opt back out per component (`TimelineInstitution`,
+     `TimelineLocation`). Narrowing the selector would need CSS to tell a prose
+     paragraph from a label rendered as `<p>`, and it cannot; prefer the
+     per-component override for any similar case. */
   margin: 1em 0;
 }
 
 html:root[data-mantine-color-scheme='dark'] {
+  /* v7's dark-scheme default is `red-8` (#e03131); this site uses the lighter
+     `torch-red-2` for error text, borders and required-field asterisks.
+     Overriding the one variable beats setting the colour on every component
+     that consumes it.
+
+     `html:root[…]` rather than `html[…]`, and the doubling is not a typo.
+     `:root` is a pseudo-class, so Mantine's own `:root[data-mantine-color-scheme]`
+     scores (0,2,0) and a plain `html[…]` scores only (0,1,1) — it compiles, the
+     variable exists, and it silently never applies. This scores (0,2,1) and
+     wins regardless of stylesheet order. */
   --mantine-color-error: var(--mantine-color-torch-red-2);
 }
