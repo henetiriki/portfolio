@@ -25,8 +25,9 @@ declare const process: { env: { NEXT_PUBLIC_LAST_MODIFIED?: string } };
 
 // Every matcher is gated on `sameOrigin`, which is the whole point rather than
 // a detail: an intercepted request is re-issued from the worker, where the only
-// fetch directive that applies is `connect-src`. See D-260815f in
-// docs/decisions.md#private-operational-records. The precache route is
+// fetch directive that applies is `connect-src`. See
+// docs/security.md#content-security-policy; D-260815f's reasoning is
+// maintained privately. The precache route is
 // registered before these, so precached assets
 // are unaffected by the strategies below.
 const runtimeCaching: RuntimeCaching[] = [
