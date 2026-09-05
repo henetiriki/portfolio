@@ -2,6 +2,10 @@
 
 This log records durable choices whose rationale is useful beyond the change that introduced them. It is intentionally selective: current implementation details belong in the topical documentation, what changed and when is the pull request's own record, and unfinished work belongs in the [Roadmap](roadmap.md).
 
+**The test is whether the choice would otherwise be re-litigated, not whether the change had a reason.** Every change has a reason; almost none of them need defending twice. An entry earns its place when someone would later arrive at the option that was discarded and have to be told why — so the "why not X" is the part that qualifies it, and an entry that cannot state one is describing behaviour rather than recording a decision. Where the reasoning is only "this is how it works", the topical doc holds it; where it is only "this is what we did", the merged pull request already does.
+
+**The bar applies to entries minted from here on.** Nothing published is withdrawn under it, and no heading is removed to satisfy it — whether an entry that would not be minted today should keep its heading at all is a structural question, still [open work](roadmap.md#documentation-weight), and answering it here by deletion would foreclose it. See [D-260905a](#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script).
+
 ## Identifiers
 
 Each decision is identified by the date it was decided, in the form `D-YYMMDD` plus a letter: `D-260814a`, `D-260814b`. The date is the one recorded in `**Decided:**`, never the merge date, so a rebase cannot change an identifier. The letter is always present, even when a date holds only one decision, and is the next free letter for that date at mint time — normally merge order too, though a corrected date can take one out of that order rather than renumber published identifiers, as [D-260815i](#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar) did. Where the two disagree, the order entries appear in this file is the merge order.
@@ -36,6 +40,19 @@ The public behaviour each one produced is in the topical documentation, linked b
 | `D-260815a` | Browser coverage isolating stateful offline behaviour: test configuration and policy-validation detail                                          | [Progressive Web App](pwa-seo.md#progressive-web-app)          |
 | `D-260814c` | The historical browser policy, its reporting design and source allowlists                                                                       | [Browser protections](security.md#browser-protections)         |
 | `D-260811b` | The contact form's exact controls, accepted limitations and review criteria                                                                     | [Contact protection](security.md#contact-protection)           |
+
+## D-260905a — Say what earns a decision entry, and do not enforce it with a script
+
+- **Status:** Accepted; sharpens [D-260809a](#d-260809a--separate-plans-decisions-and-history)'s test rather than replacing it
+- **Decided:** 2026-09-05
+
+This file's preamble calls it "intentionally selective" and says what belongs elsewhere — the topical docs, the pull request, the roadmap — but until now said nothing about what qualifies an entry, so the claim did no work at the moment one is minted. [D-260809a](#d-260809a--separate-plans-decisions-and-history) came closest, asking for an entry "only when the rationale is expected to influence future changes"; that is a prediction about the future, which nothing can be held to. The test is now stated in [the preamble](#engineering-decisions) as something a draft can fail: an entry is for a choice that would otherwise be re-litigated, and the "why not X" is what qualifies it. It gates what is minted from here on; nothing published is withdrawn, and no heading is removed.
+
+**The identifier scheme is not the friction, and replacing it would not have helped.** Minting `D-YYMMDD` plus a letter feels like a per-change ritual, which invites the conclusion that the scheme is the cost. It is not: dates were chosen precisely because renaming a heading breaks every inbound link ([D-260814d](#d-260814d--identify-decisions-by-date-rather-than-by-sequence)), and the alternative to a mint is a renumber. What makes minting feel like a ritual is how often it happens — the volume, not the scheme. Fixing the volume is the only move that touches the cause.
+
+**Not enforced by a script, deliberately.** A word cap is the obvious mechanism and is the wrong one: it is trivially gamed by writing two short entries instead of one long one, and where it binds honestly it pushes a long argument into being told badly. [D-260814b](#d-260814b--enforce-shell-hygiene-with-a-hook-rather-than-a-convention) is the proof: both of its justifications fell away, and it was possible to see that they had — recorded in [D-260904c](#d-260904c--narrow-the-shell-hygiene-hook-to-shell-syntax-and-check-branch-names-in-ci) — only because the full argument for them was on the page for someone to weigh against what had changed. The entry itself stands, and its hook still runs. A bar on what earns an entry is a judgement, and a judgement a script can score is a different, weaker rule wearing its name.
+
+**Two questions this does not answer**, both [open](roadmap.md#documentation-weight) and deliberately sequenced after it: whether the unit of an entry should stay the change or become the area, and the compaction pass over what is already here. This one needed neither, which is why it went first — it costs no window and stops the accumulation immediately.
 
 ## D-260904h — Retire the history file, and fold its residue into the decision it qualifies
 
@@ -921,7 +938,7 @@ The endpoint validates the method and request shape at runtime, enforces bounded
 
 ## D-260809a — Separate plans, decisions and history
 
-- **Status:** Accepted; the three-way split is superseded by [D-260904h](#d-260904h--retire-the-history-file-and-fold-its-residue-into-the-decision-it-qualifies), which retired the history file. The separation of open work from durable rationale stands; there is no longer a history entry to add.
+- **Status:** Accepted; the three-way split is superseded by [D-260904h](#d-260904h--retire-the-history-file-and-fold-its-residue-into-the-decision-it-qualifies), which retired the history file. The separation of open work from durable rationale stands; there is no longer a history entry to add. The minting test in the last sentence below is sharpened by [D-260905a](#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script).
 - **Decided:** 2026-08-09
 
 The roadmap had become a combined backlog, changelog and migration diary. That preserved context but obscured the work that remained.
