@@ -48,7 +48,7 @@ Raised by the proportionality audit of 2026-09-04, which compared the repository
 
 ## Documentation gaps
 
-- [ ] **Add `validate` and `branch:check` to the script tables.** The root [`README.md`](../README.md)'s table lists neither, and `yarn validate` is the entry point the whole [release sequence](release-checklist.md#before-opening-the-pr) turns on — a reader working from that table would not know it exists. [`development.md`](development.md#scripts-packagejson)'s table also omits `test:e2e:maps-smoke`. Raised by the documentation sweep on [D-260905b](decisions.md#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs); pre-existing rather than caused by it.
+- [ ] **Fill the gaps in both script tables — `validate`, `branch:check` and `test:e2e:maps-smoke`.** The root [`README.md`](../README.md)'s table lists neither, and `yarn validate` is the entry point the whole [release sequence](release-checklist.md#before-opening-the-pr) turns on — a reader working from that table would not know it exists. [`development.md`](development.md#scripts-packagejson)'s table also omits `test:e2e:maps-smoke`. Raised by the documentation sweep on [D-260905b](decisions.md#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs); pre-existing rather than caused by it.
 
 ## Code quality follow-ups
 

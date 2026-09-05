@@ -43,7 +43,7 @@ Both are subagents in [`.claude/agents/`](../../agents/), `documentation-sweep` 
 git diff origin/main...HEAD > <scratchpad>/diff.patch
 ```
 
-**One command, because the implementation and documentation are already committed by now.** This used to append a second `git diff HEAD` for uncommitted work, which left a path changed both in a commit and in the working tree appearing twice in different states — something the agent had to be warned about. Committing before the review retired both the second command and the warning. If you have somehow reached this step with uncommitted changes, commit them rather than appending them.
+**One command, because three commits already precede this** — implementation, documentation, and the code review's findings, that last one being what the ordering exists to guarantee. This used to append a second `git diff HEAD` for uncommitted work, which left a path changed both in a commit and in the working tree appearing twice in different states — something the agent had to be warned about. Committing before the review retired both the second command and the warning. If you have somehow reached this step with uncommitted changes, commit them rather than appending them.
 
 Give both agents the diff path, and give the sweep the changed paths, which `node scripts/classify-change.mjs --explain` already prints.
 

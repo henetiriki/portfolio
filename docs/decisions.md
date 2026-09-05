@@ -113,7 +113,7 @@ Two warnings had been standing in `scripts/`, and nothing was ever going to repo
 
 ## D-260904e — Start the code review from the release-ready check, and keep it Claude Code only
 
-- **Status:** Accepted
+- **Status:** Accepted; the review still starts before `yarn validate` and is still Claude Code's alone, but the premise below for where the formatting step sits — that `lint-staged` covers it at commit time and this check runs before committing — is superseded by [D-260905b](#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs), which commits first and moves the formatting step ahead of the commits.
 - **Decided:** 2026-09-04
 
 [`release-ready-check`](../.claude/skills/release-ready-check/SKILL.md) delegated its checks to `yarn validate` and to the two agents [D-260904d](#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit) added, and nothing in it asked for a code review. One therefore happened only when a person typed `/code-review` — which means rarely, and never as part of the phrase that is supposed to mean "run everything". The skill now starts one itself.
@@ -140,7 +140,7 @@ Two warnings had been standing in `scripts/`, and nothing was ever going to repo
 
 ## D-260904d — Delegate the sweep and the secrets pass to agents that cannot edit
 
-- **Status:** Accepted
+- **Status:** Accepted; the agents and their read-only restriction stand, but the two-part diff capture described below — `git diff origin/main...HEAD` then `git diff HEAD`, with untracked paths handed over separately — is superseded by [D-260905b](#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs), which commits before dispatching and stages with `git add -A`, leaving one diff and no separate list.
 - **Decided:** 2026-09-04
 
 Two steps in the pre-pull-request flow were read-heavy, report-only, and the two most often skipped — the [documentation sweep](release-checklist.md#documentation-sweep) in both directions and the [sensitive-information pass](release-checklist.md#sensitive-information) over the diff. They are now [`documentation-sweep`](../.claude/agents/documentation-sweep.md) and [`sensitive-information-pass`](../.claude/agents/sensitive-information-pass.md), this repository's first subagents.
