@@ -46,8 +46,10 @@ const git = args =>
  *   working tree is deliberately ignored: CI's is clean, and including it would
  *   make the flag useless for asking what a past commit contained.
  * - **No argument**, which is the local case, compares the whole branch against
- *   `origin/main` **and adds uncommitted work**. That is the normal state when
- *   validating before committing, and it is precisely what `HEAD^` misses.
+ *   `origin/main` **and adds uncommitted work**, so it answers correctly whether
+ *   or not the change is committed yet. The release sequence commits before
+ *   validating, but nothing here depends on that and running mid-edit still
+ *   classifies correctly — which is precisely what `HEAD^` cannot do.
  */
 const changedPaths = (base, head) => {
   if (base) return git(['diff', '--name-only', base, head]);

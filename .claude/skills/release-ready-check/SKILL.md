@@ -5,9 +5,9 @@ description: The checks to run before opening a pull request in this repository,
 
 # Validating a change
 
-**The sequence is [`release-checklist.md`](../../../docs/release-checklist.md#before-opening-the-pr), and it is numbered there rather than here.** A numbered list, with the commits as part of the order — implementation, documentation, then whatever review surfaces. Read it and follow it; this file adds only what is specific to Claude Code, and duplicating the ordering would give it two homes and one of them would drift. See [D-260905b](../../../docs/decisions.md#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs).
+**The sequence is [`release-checklist.md`](../../../docs/release-checklist.md#before-opening-the-pr), and it is numbered there rather than here.** A numbered list, with the commits as part of the order — implementation, documentation, the review's findings, then the agents'. Read it and follow it; this file adds only what is specific to Claude Code, and duplicating the ordering would give it two homes and one of them would drift. See [D-260905b](../../../docs/decisions.md#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs).
 
-**"Release ready check" and "prepare for release" both mean the whole sequence**, plus the production build, reporting what passes, what fails, and anything that needs a human decision.
+**"Release ready check" and "prepare for release" both mean the whole sequence**, reporting what passes, what fails, and anything that needs a human decision. The production build is inside it rather than an extra beyond it: `yarn validate` runs `build` and `test:e2e` itself on any change that is not documentation-only.
 
 **Re-run it after a rebase**, not only before opening the pull request. The ruleset on `main` requires branches to be up to date before merging, so a second branch has to rebase and re-run anyway — the case it exists for is two branches that each pass alone and break together.
 
@@ -51,8 +51,8 @@ Give both agents the diff path, and give the sweep the changed paths, which `nod
 
 **If an agent cannot be dispatched, do the check yourself.** A newly written or renamed agent is not necessarily dispatchable straight away — the session that added these two could not dispatch them at first and could later, without a restart, so treat availability as something to observe rather than predict. Fall back to performing the brief inline from the [release checklist](../../../docs/release-checklist.md), and say that is what you did. A delegated check that silently did not run is worse than an expensive one.
 
-**Three bullets in the sweep stay yours.** Recording changes made outside git, adding newly discovered follow-ups, and writing down work agreed in discussion but not started all take this session as their input. The agent cannot see any of it, so it is scoped out rather than left to report a confident nothing. They land in the findings commit along with what the agents themselves raise.
+**Three bullets in the sweep stay yours.** Recording changes made outside git, adding newly discovered follow-ups, and writing down work agreed in discussion but not started all take this session as their input. The agent cannot see any of it, so it is scoped out rather than left to report a confident nothing. They land in the agents' findings commit along with what the agents themselves raise.
 
-## What re-runs after the findings commit
+## What re-runs after the agents' findings commit
 
 `yarn validate` always. An agent only where that commit touched a path that was not in the diff it read — a fix confined to files it has already seen does not earn a second pass, and one that pulls in new surface does. That is a condition you can check rather than a judgement you have to make.
