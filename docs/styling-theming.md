@@ -139,37 +139,17 @@ Plugin order matters here beyond alphabetical: `postcss-preset-mantine` needs to
 
 `global.css` sets `html { background-color: var(--mantine-color-black-russian-4) }` — `#080A20`, the same value as the manifest's `theme_color`/`background_color` and the `theme-color` meta tag. Without it the canvas falls back to the user-agent white, which is invisible on a normal page (the nav, hero and footer paint their own backgrounds) but shows wherever component content does not reach: overscroll bounce in a browser tab, and the strip behind the gesture bar when installed as a PWA on Android.
 
-**It belongs on `html` and would break the hero on `body`.** The root element's background propagates to the canvas and paints beneath negative-z-index content; a block element's own background paints above it, which is exactly why `body` stays transparent for `FixedBackground` (below). See [D-260815d](decisions.md#d-260815d--paint-the-document-canvas-on-html-not-on-body).
+**Why it belongs on `html` and would break the hero on `body` is commented in [`global.css`](../src/styles/global.css)**, beside the two declarations it explains — the mechanism is invisible in the CSS, and `body { background-color: transparent }` reads as an oversight without it. [D-260815d](decisions.md#d-260815d--paint-the-document-canvas-on-html-not-on-body) keeps only what has no call site: that this change was made to fix the Android gesture bar and did not.
 
 ## Post-v7 visual-parity fixes
 
-These surfaced one-by-one during manual page-by-page browser QA after the v7 migration shipped — each is a real v6→v7 behavioural difference, confirmed by comparing computed styles against the live production site, not a guess. Listed here (rather than as CSS comments) per this app's convention of keeping `.css`/`.module.css` files comment-free and putting the "why" in docs instead.
+Each is a real v6→v7 behavioural difference, found during page-by-page browser QA after the migration shipped and confirmed against production's computed styles — not a guess. Why each rule is written as it is sits in the comment beside it.
 
 ### `global.css`'s four rules
 
-```css
-body {
-  background-color: transparent;
-  /* ... */
-}
+Commented in [`global.css`](../src/styles/global.css): `body` transparency, `img` vertical alignment, the `p.mantine-Text-root` margin, and the dark-scheme `--mantine-color-error` override.
 
-img {
-  vertical-align: middle;
-}
-
-p.mantine-Text-root {
-  margin: 1em 0;
-}
-
-html:root[data-mantine-color-scheme='dark'] {
-  --mantine-color-error: var(--mantine-color-torch-red-2);
-}
-```
-
-- **`body { background-color: transparent }`** — v7's base stylesheet sets an opaque `background-color: var(--mantine-color-body)` on `body` by default (v6's normalize step didn't). `FixedBackground` relies on a `position: fixed; z-index: -1` image to show through everything above it — an opaque `body` background paints in front of that negative-z-index layer and hides it.
-- **`img { vertical-align: middle }`** — standard normalize.css rule that v6's `withNormalizeCSS` included and v7 has no equivalent for. Without it, an inline `<img>` inside a block container (e.g. the logo's `Link` wrapper) reserves extra line-box space below itself for the font's descender, since the browser default is `vertical-align: baseline` — the logo rendered ~7.5px taller than it should and sat misaligned from the rest of the nav.
-- **`p.mantine-Text-root { margin: 1em 0 }`** — v7's base stylesheet sets `margin: 0` unconditionally on every `Text` (and `Anchor`, which shares the base class); v6 never overrode the browser's native `<p>` margin. This restores it, scoped to real `<p>` elements so `Text` used as a `span`, and `Anchor`, are untouched. **It is deliberately broad**, so it also hits label-style `Text` that merely defaults to `<p>` — `TimelineInstitution` and `TimelineLocation` opt back out with their own `mt={0}`/`mb={0}`. Narrowing the selector instead would need a way to distinguish "prose paragraph" from "label rendered as `<p>`" in CSS, and there isn't one; prefer the per-component override for any similar case.
-- **`html:root[data-mantine-color-scheme='dark'] { --mantine-color-error: ... }`** — v7's dark-scheme `--mantine-color-error` is `red-8` (`#e03131`); this app uses the lighter custom `torch-red-2` (`#fc7284`) for validation-error text, borders and required-field asterisks. Overriding the variable beats chasing every component that consumes it, but the selector is the trap: **`:root` is a pseudo-class**, so Mantine's `:root[data-mantine-color-scheme="dark"]` scores `(0,2,0)` and a plain `html[data-mantine-color-scheme='dark']` override scores only `(0,1,1)` — it compiles, the variable exists, and it silently never applies. `html:root[...]` is `(0,2,1)` and wins regardless of stylesheet order.
+- **Overriding any Mantine root variable needs `html:root[…]`, not `html[…]`.** `:root` is a pseudo-class, so the plain form loses on specificity — it compiles, defines the variable, and silently never applies. The trap generalises beyond this file.
 
 ### Component-level fixes (not in `global.css`)
 

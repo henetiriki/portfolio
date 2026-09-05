@@ -27,6 +27,8 @@ Also confirm:
 - The root [`README.md`](../../README.md) is still accurate if the stack, scripts or layout changed.
 - **Completed work has been _removed_ from [`docs/roadmap.md`](../../docs/roadmap.md).** The merged pull request records that it happened, so nothing is copied anywhere first. A finished item left in the roadmap, or ticked in place as `[x]`, is a defect. Work that is only partly done stays, narrowed to what actually remains.
 - [`docs/decisions.md`](../../docs/decisions.md) has an entry only where the change makes a choice that would otherwise be re-litigated — one that cannot name the alternative it discarded has not earned its place ([D-260905a](../../docs/decisions.md#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script)). Any entry it adds does not contradict an existing one, and where it looks like a reversal, say which entry it appears to reverse.
+- **Explanatory comments in `src/` are documentation too, and are checked the same way.** A comment describing a declaration that has since changed is the same defect as a stale doc, and nothing mechanical catches it — `yarn docs:check-links` walks Markdown only. Read a changed comment against the code beside it.
+- **No doc restates what a comment already says.** Under [D-260905c](../../docs/decisions.md#d-260905c--comment-the-call-site-and-keep-the-log-for-what-has-none) the mechanism belongs at the call site, the topical doc holds only what spans files, and a summary of a comment is a copy that will drift. Flag the restatement, not the wording.
 - Prose is UK English, and carries no drifting numbers — test totals, file counts, directory sizes. See [`AGENTS.md`](../../AGENTS.md) for both rules.
 
 ## Not your brief
