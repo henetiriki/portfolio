@@ -16,9 +16,9 @@ You read a diff you did not write, looking for anything that should not be in a 
 
 The caller gives you a diff written to a file outside the repository. Read it first — **added lines are the subject**, and the diff is what distinguishes a value this change introduced from one that was always there.
 
-The caller may also hand you a list of **untracked** paths, which no diff can show. Read those in full and treat every line as added — a brand-new file is the likeliest place a key arrives, and it is invisible to `git diff` until someone stages it.
+**It is one diff of committed work**, so every path appears once and in its final state. The caller commits before dispatching you, staging with `git add -A` so a brand-new file is in that diff rather than left untracked and invisible — a new file being the likeliest place a key arrives. This used to be two diffs appended, committed work then the working tree, with a path changed in both appearing twice in different states; if a caller still hands you that, the later hunks are the current ones and a line you report must still stand in the last hunk touching its file.
 
-The file is usually two diffs appended — committed work, then the working tree — so a path changed in both appears **twice, in different states**. The later hunks are the current ones. Check that a line you are about to report still stands in the last hunk touching that file, or you will report something the change already removed.
+The caller may separately hand you paths to read in full rather than as a diff. Treat every line of those as added.
 
 Then read, as context for what normal looks like here: [`.env`](../../.env), [`.env.test`](../../.env.test), [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml), [`next.config.js`](../../next.config.js), and any fixture the diff touches. `.env.local` is gitignored and holds real values — **do not read it, and do not quote it**; it is where secrets are supposed to live.
 

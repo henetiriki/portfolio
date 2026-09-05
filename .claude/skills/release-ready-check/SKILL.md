@@ -5,7 +5,7 @@ description: The checks to run before opening a pull request in this repository,
 
 # Validating a change
 
-**The sequence is [`release-checklist.md`](../../../docs/release-checklist.md#before-opening-the-pr), and it is numbered there rather than here.** Eleven steps, in order, with the commits as part of the order — implementation, documentation, then whatever review surfaces. Read it and follow it; this file adds only what is specific to Claude Code, and duplicating the ordering would give it two homes and one of them would drift. See [D-260905b](../../../docs/decisions.md#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs).
+**The sequence is [`release-checklist.md`](../../../docs/release-checklist.md#before-opening-the-pr), and it is numbered there rather than here.** A numbered list, with the commits as part of the order — implementation, documentation, then whatever review surfaces. Read it and follow it; this file adds only what is specific to Claude Code, and duplicating the ordering would give it two homes and one of them would drift. See [D-260905b](../../../docs/decisions.md#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs).
 
 **"Release ready check" and "prepare for release" both mean the whole sequence**, plus the production build, reporting what passes, what fails, and anything that needs a human decision.
 
@@ -15,7 +15,7 @@ description: The checks to run before opening a pull request in this repository,
 
 **Invoke the bundled `code-review` skill** on the current diff, at its default effort. Ask for it as an instruction naming the skill rather than by pasting a `/code-review` string: it is not documented that a bare command string in a skill body reaches the `Skill` tool, whereas an imperative works either way.
 
-**Report its findings through `ReportFindings`, which is the skill's own contract.** This is the step with no other trace: it runs in this session rather than a subagent, so nothing appears in the interface, and a review summarised only in prose cannot be told apart from not having run one. Restate the findings as `file:line — summary` lines afterwards, as the skill asks.
+**Report its findings through `ReportFindings`, which is the skill's own contract**, and restate them as `file:line — summary` lines afterwards. Do this whether or not it backgrounded: when it runs in this session, that report is the only trace the step leaves — nothing appears in the interface, and a review summarised in prose cannot be told apart from not having run one. When it does background, the report is what its findings come back as anyway.
 
 **Do not count on it backgrounding.** It is documented to run as a background subagent with its own context window, which is where the overlap with `yarn validate` comes from. It has run in the foreground here instead, output landing in the calling context, with none of the three conditions below obviously applying. Treat backgrounding as something to observe on the day rather than to plan around. The ordering holds either way: in the foreground it is serial wherever you put it, and its findings are worth more before you have paid for a build than after.
 

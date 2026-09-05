@@ -14,29 +14,32 @@ Quick reference for shipping a change to production.
 
 ## Before Opening The PR
 
-**The order is fixed, and the commits are part of it.** Each step happens once, in this order.
+**The order is fixed, and the commits are part of it.** Work down the list; only the last two steps loop.
 
 1. **Implement.**
-2. **Commit** the implementation.
-3. **Document** — the topical doc, the [Roadmap](roadmap.md), and a decision entry if the change [earns one](decisions.md#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script).
-4. **Commit** the documentation. A documentation-only change has nothing to separate, so this collapses into step 2.
-5. **Start the [code review](#code-review).** Do not wait for it — where it backgrounds, it reads the diff while the checks run.
-6. **Run `yarn validate`.**
-7. **Dispatch the [sensitive-information pass](#sensitive-information) and the [documentation sweep](#documentation-sweep)**, together.
-8. **Read all three reports**, and fix or route every finding.
-9. **Commit** what they raised, together with anything agreed in conversation rather than found in the tree.
-10. **Re-run `yarn validate`.** Re-dispatch an agent only where step 9 touched a path it had not read.
-11. **Push, and [open the pull request](../AGENTS.md#opening-a-pull-request).**
+2. **Run `yarn prettier:write`.** Cheap, and it covers the file types `lint-staged` does not — see below.
+3. **Commit** the implementation, staging with `git add -A` so a new file is committed rather than left untracked.
+4. **Document** — the topical doc, the [Roadmap](roadmap.md), and a decision entry if the change [earns one](decisions.md#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script).
+5. **Commit** the documentation. A documentation-only change has nothing to separate, so this collapses into step 3.
+6. **Start the [code review](#code-review).** Do not wait for it — where it backgrounds, it reads the diff while the checks run.
+7. **Run `yarn validate`.**
+8. **Dispatch the [sensitive-information pass](#sensitive-information) and the [documentation sweep](#documentation-sweep)**, together, before acting on anything the review has already returned.
+9. **Read all three reports**, and fix or route every finding.
+10. **Commit** what they raised, together with anything agreed in conversation rather than found in the tree.
+11. **Re-run `yarn validate`.** Re-dispatch an agent only where the previous step touched a path it had not read.
+12. **Push, and [open the pull request](../AGENTS.md#opening-a-pull-request).**
 
-**Three commits rather than one, because the pull request is the only place they survive.** Merges are squashed, so nothing between steps 2 and 9 reaches `main` — and the pull request is exactly where the separation earns its keep, because it distinguishes what you wrote from what review caught. A branch that reaches step 11 with no step-9 commit at all is one review found nothing on, which is as much a result as a long one — skip the step rather than committing nothing to record it.
+**Three commits rather than one, because the pull request is the only place they survive.** Merges are squashed, so nothing between steps 3 and 10 reaches `main` — and the pull request is exactly where the separation earns its keep, because it distinguishes what you wrote from what review caught. A branch that reaches step 12 with no step-10 commit at all is one review found nothing on, which is as much a result as a long one — skip the step rather than committing nothing to record it.
 
-**Splitting implementation from documentation makes the ratio visible inside a change.** The [proportionality audit](roadmap.md#documentation-weight) that opened this programme could only measure prose against source across whole commits; steps 2 and 4 measure it per change, which is the question that audit actually asks.
+**Splitting implementation from documentation makes the ratio visible inside a change.** The [proportionality audit](roadmap.md#documentation-weight) that opened this programme could only measure prose against source across whole commits; steps 3 and 5 measure it per change, which is the question that audit actually asks.
 
-**Committing before step 5 is what makes the diff simple.** The review and both agents read one `git diff origin/main...HEAD` instead of a committed range plus a working-tree diff appended to it, with the caveat that a path changed in both appears twice in different states. That complication existed only because nothing was committed yet. It also removes a step this section used to open with: `lint-staged` formats every staged file at commit time, so by step 5 the tree is already formatted and a separate `yarn prettier:write` has nothing left to do.
+**Committing before step 6 is what makes the diff simple.** The review and both agents read one `git diff origin/main...HEAD` instead of a committed range plus a working-tree diff appended to it, with the caveat that a path changed in both appears twice in different states. That complication existed only because nothing was committed yet. Staging with `git add -A` is what keeps it true: a committed range shows no untracked file, so a brand-new one would otherwise reach the agents unseen — and a new file is the likeliest place a key arrives.
 
-**Accepted cost: commits made before step 6 are not guaranteed to pass `yarn validate`.** `lint-staged` covers formatting and lint on what it stages, but a type error or a failing test can survive into steps 2 and 4. Within-branch bisectability buys nothing under squash merge, so this is a trade rather than a regression.
+**Step 2 exists because `lint-staged` does not cover every type `prettier` does.** Its glob is `**/*.{cjs,html,js,jsx,json,md,mjs,scss,ts,tsx}` — no `css`, no `yml`. This repository has tracked `*.module.css` and workflow YAML that `prettier .` checks and `lint-staged` never touches, so without step 2 a styling or workflow change reaches the review unformatted and fails `prettier:check` at step 7 after the commits are already made. Formatting before the first commit rather than before the review is what makes "the committed tree is formatted" true rather than nearly true. Widening that glob is [open work](roadmap.md#ci--security-hardening); until it lands, step 2 is the cover.
 
-**Step 4 does not make documentation an afterthought**, despite arriving after the implementation commit. The opposite: a mandated commit is harder to under-do than prose folded into an implementation diff, where thin documentation is invisible. Docs remain part of the change — the sweep at step 7 fails a change whose docs are missing exactly as it always did.
+**Accepted cost: commits made before step 7 are not guaranteed to pass `yarn validate`.** `lint-staged` covers lint on what it stages and step 2 covers formatting, but a type error or a failing test can survive into steps 3 and 5. Within-branch bisectability buys nothing under squash merge, so this is a trade rather than a regression.
+
+**Step 5 does not make documentation an afterthought**, despite arriving after the implementation commit. The opposite: a mandated commit is harder to under-do than prose folded into an implementation diff, where thin documentation is invisible. Docs remain part of the change — the sweep at step 7 fails a change whose docs are missing exactly as it always did.
 
 **This is the shape the pull request ends in, not a prohibition on iterating.** Real work loops — implement, start documenting, find the implementation wrong. Amend, or add a commit, and let the branch arrive at this shape; a procedure that forbids the way work actually happens is one that gets quietly abandoned.
 
@@ -51,11 +54,11 @@ Quick reference for shipping a change to production.
 
 ### Code review
 
-**Step 5, before `yarn validate` rather than after it.** Where it backgrounds it reads the diff while the production build and the browser suite run, and costs almost no wall clock; where it does not — which is not fully predictable — it is serial wherever it sits, and its findings are still worth more before a build has been paid for than after. `yarn validate` does not wait for it and should not be made to, but the two finishing independently is not the same as this section being done: the pull request waits for the review to report even when the checks are already green.
+**Started before `yarn validate` rather than after it.** Where it backgrounds it reads the diff while the production build and the browser suite run, and costs almost no wall clock; where it does not — which is not fully predictable — it is serial wherever it sits, and its findings are still worth more before a build has been paid for than after. `yarn validate` does not wait for it and should not be made to, but the two finishing independently is not the same as this section being done: the pull request waits for the review to report even when the checks are already green.
 
 > Claude Code delegates this to its own bundled `code-review` skill, invoked from [`release-ready-check`](../.claude/skills/release-ready-check/SKILL.md) rather than waiting for a person to type it — see [D-260904e](decisions.md#d-260904e--start-the-code-review-from-the-release-ready-check-and-keep-it-claude-code-only). **Unlike the two sections below, there is deliberately no brief here to fall back on.** A review's criteria belong to the reviewing tool, so writing one out would invent a method this repository does not have and would drift from what the skill actually does. A tool without that skill has no equivalent step here and should say so rather than improvise one — the only step on this page that does not survive being read by another tool.
 
-- [ ] **The tree is already formatted, and nothing here needs to format it.** Both halves of its hygiene are done by the time this runs: [`eslint-on-edit.mjs`](../scripts/eslint-on-edit.mjs) lints each code file as it is written, and `lint-staged` formats at commit time — which now precedes this step rather than following it. This section used to open by running `yarn prettier:write`; committing first is what retired that.
+- [ ] **The tree is already formatted by the time this runs.** Both halves of its hygiene precede it: [`eslint-on-edit.mjs`](../scripts/eslint-on-edit.mjs) lints each code file as it is written, and formatting is done at step 2 and again by `lint-staged` on what it stages. An unformatted diff makes the review report what `prettier:check` catches for free a minute later, which is why the formatting step moved ahead of the commits rather than being dropped.
 - [ ] **A review has run against the diff and its findings have been read.** They are generic — correctness, reuse, simplification, efficiency — and know nothing of this repository's own disciplines, so this replaces neither the pass nor the sweep below.
 - [ ] **Each finding is fixed or routed.** Fix what is wrong in the change at hand; anything else goes to the [Roadmap](roadmap.md) rather than a commit message, as the sweep already requires. Treat a finding as blocking only where it contradicts something this checklist demands.
 
