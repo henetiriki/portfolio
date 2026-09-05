@@ -43,7 +43,7 @@ The public behaviour each one produced is in the topical documentation, linked b
 
 ## D-260905c — Comment the call site, and keep the log for what has none
 
-- **Status:** Accepted; reverses the ban on explanatory comments in CSS, CSS Modules and JSX
+- **Status:** Accepted; reverses the ban on explanatory comments in CSS, CSS Modules and JSX, and narrows [D-260821j](#d-260821j--check-internal-documentation-links-in-ci-rather-than-relying-on-the-release-sweep)'s "an entry stays as published once merged"
 - **Decided:** 2026-09-05
 
 Three rules replace one. A comment goes where the code reads as wrong or arbitrary and says what was discarded; a topical doc holds only what neither code nor comment can; this log keeps what has no call site at all. The tests are in [`AGENTS.md`](../AGENTS.md#documentation-discipline).
@@ -54,7 +54,11 @@ Three rules replace one. A comment goes where the code reads as wrong or arbitra
 
 **Why not simply ask for concision, which is what the ban should have asked for.** Alone it is unenforceable, for the reason [D-260905a](#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script) rejects a word cap: length is gameable and scoring judgement produces a weaker rule wearing its name. What makes it enforceable is the deletion test — a comment that reads as self-contained prose is a document in the wrong place, which a reviewer can apply without counting anything.
 
-**The split that fell out of doing it once.** Mechanism goes to the call site; provenance and cross-file facts go to the topical doc; history stays here. **A wrong turn has no call site by definition** — the thing that failed was never committed — which is why [D-260815d](#d-260815d--paint-the-document-canvas-on-html-not-on-body) shrank to a checked negative result and a mispriced trade, and why that is the shape of what this log should hold.
+**The split that fell out of doing it once.** Mechanism goes to the call site; provenance and cross-file facts go to the topical doc; history stays here. That is why [D-260815d](#d-260815d--paint-the-document-canvas-on-html-not-on-body) shrank to a checked negative result and a mispriced trade.
+
+**Wrong turns divide, and the earlier rule needs reading with that in mind.** [`AGENTS.md`](../AGENTS.md#documentation-discipline) routes a discarded first attempt into the decision it qualifies. That holds where the discard left nothing behind — `viewport-fit=cover` was trialled and abandoned, and there is no line of code to annotate. It does not hold where the discard is visible in what shipped: `body` was the wrong place for the canvas colour, `body` is still there, and the comment beside it is the natural record. **Decide by whether the reader who would repeat the mistake is looking at code or at a file**, not by whether the attempt failed.
+
+**Relocating content out of an entry departs from "an entry stays as published once merged".** [D-260821j](#d-260821j--check-internal-documentation-links-in-ci-rather-than-relying-on-the-release-sweep) set that rule to stop dead links being repointed and sentences rewritten around them, and it still holds for that: nothing here is reworded because a link rotted. What is now allowed is narrower — moving a passage to the place it belongs, leaving the heading, the identifier and every inbound anchor untouched. The alternative was leaving each entry whole and duplicating it at the call site, which is the state this change exists to end.
 
 **Not enforced by a script.** The code review reads every diff, and a forty-line comment in a stylesheet is visible at a glance.
 

@@ -28,13 +28,13 @@ export const theme = createTheme({
 
 Applied once in `_app.tsx` via `<MantineProvider forceColorScheme='dark' theme={theme}>`, alongside `import '@mantine/core/styles.css'` and `import '@mantine/notifications/styles.css'`. `_document.tsx` sets `data-mantine-color-scheme='dark'` directly on `<Html>` rather than rendering Mantine's `<ColorSchemeScript>` — that component emits an inline `<script>`, which removing `'unsafe-inline'` from `script-src` (see [D-260821k](decisions.md#private-operational-records)) would block. The site is dark-mode only with no light theme or toggle, so the value is a static attribute rather than a script computing it at request time: `forceColorScheme` on the provider keeps the runtime scheme fixed, and the hardcoded attribute keeps the server-rendered document dark before React hydrates, without needing a script to choose between light and dark.
 
-v6's `colorScheme` and `globalStyles` theme keys don't exist in v7. `colorScheme` moved to `MantineProvider`'s `forceColorScheme`/`defaultColorScheme` props (above); the old `globalStyles` callback (letter-spacing on headings, base `html` font-size, `body` defaults) moved to a plain stylesheet, `src/styles/global.css`, imported once in `_app.tsx`. That file also carries four rules that exist purely to restore v6 behaviour — see [`global.css`'s four rules](#globalcsss-four-rules).
+v6's `colorScheme` and `globalStyles` theme keys don't exist in v7. `colorScheme` moved to `MantineProvider`'s `forceColorScheme`/`defaultColorScheme` props (above); the old `globalStyles` callback (letter-spacing on headings, base `html` font-size, `body` defaults) moved to a plain stylesheet, `src/styles/global.css`, imported once in `_app.tsx`. That file also carries rules that exist purely to restore v6 behaviour — see [Post-v7 visual-parity fixes](#post-v7-visual-parity-fixes).
 
 **`defaultRadius: 'sm'` is set deliberately, not incidentally.** Mantine v9 changed its own default from `sm` (4px) to `md` (8px) — confirmed by diffing the shipped `default-theme.mjs` across the v8→v9 boundary (8.3.18 vs 9.x). Every component that doesn't pass an explicit `radius` inherits it, so leaving it unset would have silently rounded the `Tooltip`, notification toasts and `Drawer` more than before. Pinning `sm` preserves the pre-v9 appearance. The buttons and inputs that pass `radius='lg'` (`ContactForm`, `portfolio.tsx`, `ErrorContent`) were never affected either way. **This is a design choice, not a technical constraint** — deleting the line adopts Mantine's newer, rounder default.
 
 ### Type scale
 
-`fontSizes` holds Mantine's own defaults — `xs` 12, `sm` 14, `md` 16, `lg` 18, `xl` 20 — and `body` in [`global.css`](#globalcsss-four-rules) sets a **unitless** `line-height: 1.5`, so leading tracks size instead of being pinned to one value. Both were corrected together on 2026-08-16; the scale had sat one step low since the v7 migration, which put body copy at 14px. See [D-260816f](decisions.md#d-260816f--put-the-type-scale-back-on-mantines-defaults-and-make-leading-a-ratio).
+`fontSizes` holds Mantine's own defaults — `xs` 12, `sm` 14, `md` 16, `lg` 18, `xl` 20 — and `body` in [`global.css`](../src/styles/global.css) sets a **unitless** `line-height: 1.5`, so leading tracks size instead of being pinned to one value. Both were corrected together on 2026-08-16; the scale had sat one step low since the v7 migration, which put body copy at 14px. See [D-260816f](decisions.md#d-260816f--put-the-type-scale-back-on-mantines-defaults-and-make-leading-a-ratio).
 
 - **`Text` and `Input` do not default to the same token.** `Text` defaults to `md`, `Input` and its wrappers to `sm`. That asymmetry is why the contact form passes an explicit `size='lg'`: dropping the prop would render its fields at `sm`, and anything under 16px makes iOS Safari zoom the viewport on focus.
 - **A Mantine component's box does not scale with `fontSizes`.** `--input-height` and `--button-height` are Mantine's own per-size constants (`lg` is `3.125rem` for both), while `--input-fz` and `--button-fz` read from the theme. Changing a token therefore moves the text inside a control without moving the control.
@@ -141,17 +141,16 @@ Plugin order matters here beyond alphabetical: `postcss-preset-mantine` needs to
 
 - **It does not control the strip behind the Android gesture bar in the installed PWA.** That was what the change was written for and it did not work — the browser paints an installed app's system navigation bar itself. See [D-260815d](decisions.md#d-260815d--paint-the-document-canvas-on-html-not-on-body) and [D-260815i](decisions.md#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar).
 
-**Why it belongs on `html` and would break the hero on `body` is commented in [`global.css`](../src/styles/global.css)**, beside the two declarations it explains — the mechanism is invisible in the CSS, and `body { background-color: transparent }` reads as an oversight without it. [D-260815d](decisions.md#d-260815d--paint-the-document-canvas-on-html-not-on-body) keeps only what has no call site: that this change was made to fix the Android gesture bar and did not.
+- **The colour is a palette token, not a repeated literal.** `colors.ts`, `manifest.json` and the `theme-color` meta tag all resolve to the one entry, where three hand-copied hex values would drift apart.
+- **Why it belongs on `html` rather than `body`** is commented beside those two declarations in [`global.css`](../src/styles/global.css).
 
 ## Post-v7 visual-parity fixes
 
-Each is a real v6→v7 behavioural difference, found during page-by-page browser QA after the migration shipped and confirmed against production's computed styles — not a guess. Why each rule is written as it is sits in the comment beside it.
+Every rule in this section is a real v6→v7 behavioural difference, found during page-by-page browser QA after the migration shipped and confirmed against production's computed styles — not a guess. That provenance is what this section records; why each rule is written as it is sits in the comment beside it.
 
-### `global.css`'s four rules
+### `global.css`
 
-Commented in [`global.css`](../src/styles/global.css): `body` transparency, `img` vertical alignment, the `p.mantine-Text-root` margin, and the dark-scheme `--mantine-color-error` override.
-
-- **Overriding any Mantine root variable needs `html:root[…]`, not `html[…]`.** `:root` is a pseudo-class, so the plain form loses on specificity — it compiles, defines the variable, and silently never applies. The trap generalises beyond this file.
+Its rules are commented in place, in [`global.css`](../src/styles/global.css).
 
 ### Component-level fixes (not in `global.css`)
 
