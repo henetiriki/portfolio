@@ -22,8 +22,8 @@ Quick reference for shipping a change to production.
 4. **Document** — the topical doc, the [Roadmap](roadmap.md), and a decision entry if the change [earns one](decisions.md#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script).
 5. **Commit** the documentation. A documentation-only change has nothing to separate, so this collapses into step 3.
 6. **Start the [code review](#code-review).** Do not wait for it — where it backgrounds, it reads the diff while the checks run.
-7. **Run `yarn validate`.**
-8. **Read the review's findings**, fix or route each, and **commit** them.
+7. **Run `yarn validate`.** A failure here is not a review finding and does not wait for step 8 — fix it, fold the fix into whichever commit caused it, and re-run until it passes.
+8. **Read the [code review](#code-review)'s findings** — the review started at step 6, not `yarn validate`'s output — then fix or route each, and **commit** them.
 9. **Dispatch the [sensitive-information pass](#sensitive-information) and the [documentation sweep](#documentation-sweep)**, together.
 10. **Read both reports**, fix or route every finding, and **commit** them, together with anything agreed in conversation rather than found in the tree.
 11. **Re-run `yarn validate`.** Re-dispatch an agent only where the previous step touched a path it had not read.
