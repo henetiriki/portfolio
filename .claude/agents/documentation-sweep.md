@@ -26,7 +26,7 @@ Also confirm:
 - Cross-links between docs resolve, and any new doc is listed in [`docs/README.md`](../../docs/README.md). `yarn docs:check-links` covers relative links and heading anchors mechanically — look for the things it cannot see, such as a link that resolves to the wrong section or prose that names a file that no longer exists.
 - The root [`README.md`](../../README.md) is still accurate if the stack, scripts or layout changed.
 - **Completed work has been _removed_ from [`docs/roadmap.md`](../../docs/roadmap.md).** The merged pull request records that it happened, so nothing is copied anywhere first. A finished item left in the roadmap, or ticked in place as `[x]`, is a defect. Work that is only partly done stays, narrowed to what actually remains.
-- [`docs/decisions.md`](../../docs/decisions.md) has an entry only where the change establishes or revises a durable technical choice, and any entry it adds does not contradict an existing one. Where it looks like a reversal, say which entry it appears to reverse.
+- [`docs/decisions.md`](../../docs/decisions.md) has an entry only where the change makes a choice that would otherwise be re-litigated — one that cannot name the alternative it discarded has not earned its place ([D-260905a](../../docs/decisions.md#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script)). Any entry it adds does not contradict an existing one, and where it looks like a reversal, say which entry it appears to reverse.
 - Prose is UK English, and carries no drifting numbers — test totals, file counts, directory sizes. See [`AGENTS.md`](../../AGENTS.md) for both rules.
 
 ## Not your brief

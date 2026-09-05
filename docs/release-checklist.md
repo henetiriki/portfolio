@@ -67,7 +67,7 @@ Docs here describe **what exists today**, so they are part of the change, not an
 - [ ] **Anything changed outside git is written down here.** Repository settings, the `main` ruleset, Codecov, Vercel — a settings change produces no commit, so nothing pulls this sweep along behind it the way editing a file does, and it is the class of change that reliably goes unrecorded. If a [Roadmap](roadmap.md) item asked for the setting, retire it in the same pass
 - [ ] Any newly discovered follow-up is added to the [Roadmap](roadmap.md) rather than left in a commit message
 - [ ] **Work agreed but not started is in the [Roadmap](roadmap.md) too.** Not just follow-ups found in the code — anything decided in discussion while this change was open. A decision that lives only in a conversation is lost the moment the branch closes, and "add it next time" reliably means never. Write it down in the branch you are already on, even when it is unrelated to the change.
-- [ ] [Engineering Decisions](decisions.md) updated only when the change establishes or revises a durable technical choice
+- [ ] **[Engineering Decisions](decisions.md) updated only where the change makes a choice that would otherwise be re-litigated** — an entry that cannot name the alternative it discarded has not earned its place. See [D-260905a](decisions.md#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script).
 
 ## Pull Request
 
