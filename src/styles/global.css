@@ -43,14 +43,19 @@ p.mantine-Text-root {
   /* v7 sets `margin: 0` on every `Text` and `Anchor`; this restores the native
      `<p>` margin, scoped to real `<p>` so `Text` used as a span is untouched.
      Deliberately broad, so it also hits label-style `Text` — those opt back out
-     per component (`TimelineInstitution`, `TimelineLocation`). Narrowing the
+     with their own `mt={0}`/`mb={0}` (`TimelineInstitution`,
+     `TimelineLocation`). Narrowing the
      selector would need CSS to tell a prose paragraph from a label rendered as
      `<p>`, and it cannot. */
   margin: 1em 0;
 }
 
 html:root[data-mantine-color-scheme='dark'] {
-  /* `html:root[…]` rather than `html[…]`, and the doubling is not a typo.
+  /* Overriding the variable beats setting the colour on every component that
+     consumes it — error text, borders and required-field asterisks all read
+     this one token.
+
+     `html:root[…]` rather than `html[…]`, and the doubling is not a typo.
      `:root` is a pseudo-class, so Mantine's own `:root[data-mantine-color-scheme]`
      scores (0,2,0) and a plain `html[…]` scores only (0,1,1) — it compiles, the
      variable exists, and it silently never applies. This scores (0,2,1) and

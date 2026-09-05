@@ -137,7 +137,9 @@ Plugin order matters here beyond alphabetical: `postcss-preset-mantine` needs to
 
 ## The document canvas background
 
-`global.css` sets `html { background-color: var(--mantine-color-black-russian-4) }` — `#080A20`, the same value as the manifest's `theme_color`/`background_color` and the `theme-color` meta tag. Without it the canvas falls back to the user-agent white, which is invisible on a normal page (the nav, hero and footer paint their own backgrounds) but shows wherever component content does not reach: overscroll bounce in a browser tab, and the strip behind the gesture bar when installed as a PWA on Android.
+`global.css` sets `html { background-color: var(--mantine-color-black-russian-4) }` — `#080A20`, the same value as the manifest's `theme_color`/`background_color` and the `theme-color` meta tag. Without it the canvas falls back to the user-agent white, which is invisible on a normal page (the nav, hero and footer paint their own backgrounds) but shows as overscroll bounce at either end of a browser tab.
+
+- **It does not control the strip behind the Android gesture bar in the installed PWA.** That was what the change was written for and it did not work — the browser paints an installed app's system navigation bar itself. See [D-260815d](decisions.md#d-260815d--paint-the-document-canvas-on-html-not-on-body) and [D-260815i](decisions.md#d-260815i--wait-for-the-chromium-fix-instead-of-working-around-the-android-navigation-bar).
 
 **Why it belongs on `html` and would break the hero on `body` is commented in [`global.css`](../src/styles/global.css)**, beside the two declarations it explains — the mechanism is invisible in the CSS, and `body { background-color: transparent }` reads as an oversight without it. [D-260815d](decisions.md#d-260815d--paint-the-document-canvas-on-html-not-on-body) keeps only what has no call site: that this change was made to fix the Android gesture bar and did not.
 
