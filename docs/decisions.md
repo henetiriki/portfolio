@@ -41,6 +41,35 @@ The public behaviour each one produced is in the topical documentation, linked b
 | `D-260814c` | The historical browser policy, its reporting design and source allowlists                                                                       | [Browser protections](security.md#browser-protections)         |
 | `D-260811b` | The contact form's exact controls, accepted limitations and review criteria                                                                     | [Contact protection](security.md#contact-protection)           |
 
+## D-260905b — Number the release-ready sequence, and commit before the review runs
+
+- **Status:** Accepted; supersedes the premise under [D-260904e](#d-260904e--start-the-code-review-from-the-release-ready-check-and-keep-it-claude-code-only)'s formatting step — which is relocated rather than undone — and the two-part diff capture described in [D-260904d](#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit). Both entries' central decisions stand: the review still starts before `yarn validate` and is still Claude Code's alone, and the agents still cannot edit.
+- **Decided:** 2026-09-05
+
+The pre-merge flow is now a numbered sequence in the [release checklist](release-checklist.md#before-opening-the-pr), with four commits inside it: the implementation, the documentation, the code review's findings, then the two agents'. `release-ready-check` follows that list and holds only what is specific to Claude Code.
+
+**The ordering used to be prose, and prose is why every session ran it differently.** It was distributed across several pages, so each reading reconstructed it — which is not a failure of any one session but of storing a sequence as argument. Two failures on the [D-260905a](#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script) branch made it concrete: the documentation sweep ran twice because nothing said how it relates to acting on its own findings, and the code review reported in prose because the instruction to use `ReportFindings` was not followed. The second is the worse one: whenever the review runs in the main session rather than backgrounding — and which of the two happens is not predictable — that structured report is the only trace it leaves, so without it the step cannot be told apart from not having run.
+
+**Committing before the review is what the rest falls out of.** A committed diff is one `git diff origin/main...HEAD`, where the old flow needed a committed range plus a working-tree diff appended, and a warning that a path changed in both appears twice in different states. The reason the flow ran before any commit was simply that nobody had asked why.
+
+**`yarn prettier:write` was very nearly retired on a false premise, and the sweep caught it.** The argument was that `lint-staged` formats at commit time, so committing first leaves the review nothing to format. Its glob is `**/*.{cjs,html,js,jsx,json,md,mjs,scss,ts,tsx}` — no `css`, no `yml` — while `prettier .` covers both, and this repository tracks `*.module.css` and workflow YAML. On a styling or workflow change the step would have been retired for a guarantee that did not exist. It moved ahead of the first commit instead, which makes "the committed tree is formatted" true rather than nearly true. **Recorded because the retirement looked obviously right from the summary and was wrong in the detail** — the general form of that error is trusting a glob you have not read.
+
+**Staging with `git add -A` is load-bearing, not incidental.** A committed range shows no untracked file, so the old flow's separate `git status --porcelain` list existed to catch exactly what `git diff` cannot see. Committing first removes the need for that list only if new files are actually committed; otherwise a brand-new file — [D-260904d](#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit)'s "likeliest place a key arrives" — reaches the pull request seen by nobody.
+
+**One ordering constraint inside `validate.mjs` is not the obvious one**, and is recorded here because the roadmap item that carried it is now closed. `eslint:check` runs before `test:coverage` because the list is ordered cheapest-first, and that ordering is correct — but not for the reason it appears to be. ESLint is not a transform and `next/jest` never invokes it, so a lint failure cannot stop a test file executing. What makes the order right is that `eslint --fix` rewrites files: fixing after testing means testing a file that is not the one committed.
+
+**Why not fewer commits.** One is what there was, and it folds a finding into the implementation so nothing records it was ever made. Two — implementation-plus-docs, then findings — was the first proposal here, and separating documentation from implementation is what the [proportionality audit](roadmap.md#documentation-weight) needs: it could measure prose against source only across whole commits, where this measures it inside a single change. Splitting also makes thin documentation visible, where folded into an implementation diff it is not. **Splitting the review's findings from the agents' came last and is the one with an operational reason rather than an expressive one**: committing the review's fixes before dispatching the agents is what stops them reading a diff that changes underneath them, which costs a re-dispatch when it happens. That it also separates two different kinds of finding — what is wrong inside the diff, and how the diff sits against the rest of the tree — is a second benefit rather than the argument. Commit count was explicitly not a constraint; had it been, two would have been defensible.
+
+**The tension worth stating rather than leaving to be found.** The checklist says documentation is part of the change and not an afterthought, and the sequence does put it after the implementation commit. The counter is that a mandated commit is harder to under-do than prose bundled into a larger diff, and the sweep still fails a change whose documentation is missing. Recorded because someone will otherwise read the contradiction as an oversight.
+
+**Not enforced by a script**, for the same reason as [D-260905a](#d-260905a--say-what-earns-a-decision-entry-and-do-not-enforce-it-with-a-script): a hook could count commits on a branch, but the shape it would check is trivially satisfied by empty commits and the thing worth having — that each commit is a coherent unit — is not machine-checkable. The list is written as the shape a pull request ends in rather than a prohibition on iterating, because a procedure that forbids how work actually happens is one that gets quietly abandoned.
+
+**The agent passes did not catch the sequence's own ambiguity, and were never going to.** Four sweeps, a code review and two secrets passes ran over this list; the maintainer, reading it once as instructions, found that "read the review's findings" sat directly under `yarn validate` and could be taken as referring to it — and that nothing said what to do when `validate` fails, which is what made the misreading available. The agents were checking cross-file consistency, claims against the tree and numbering integrity, all of which they did well. None was reading the list as someone about to follow it. **A procedure is verified by being followed, not by being audited**, so the review passes are not a substitute for a person walking it once — worth stating because the passes are thorough enough to look like they cover this.
+
+**The re-dispatch condition is a deliberately crude proxy, and its value turned out to be indirect.** An agent is re-dispatched where the findings commit touched a path it had not read — checkable, rather than a judgement about whether a re-read is "really" needed, which is how the check gets skipped. On this branch it fired four times and the newly touched file was itself clean every time; what the re-read bought was the comparison, because reading a corrected sentence is what sends a reader to its twin elsewhere. Two of the defects found this way were in files no diff hunk touched. A sharper proxy would be "the commit changed a sentence that also exists in another file", which is what actually predicts a finding here — and which nothing can detect mechanically, so the crude version stays.
+
+**Accepted cost:** commits made before `yarn validate` runs are not guaranteed to pass it. The formatting step and `lint-staged`'s lint cover what they cover, but a type error or a failing test can survive. Squash merging means within-branch bisectability buys nothing, so this is a trade rather than a regression.
+
 ## D-260905a — Say what earns a decision entry, and do not enforce it with a script
 
 - **Status:** Accepted; sharpens [D-260809a](#d-260809a--separate-plans-decisions-and-history)'s test rather than replacing it
@@ -88,7 +117,7 @@ Two warnings had been standing in `scripts/`, and nothing was ever going to repo
 
 ## D-260904e — Start the code review from the release-ready check, and keep it Claude Code only
 
-- **Status:** Accepted
+- **Status:** Accepted; the review still starts before `yarn validate` and is still Claude Code's alone, but the premise below for where the formatting step sits — that `lint-staged` covers it at commit time and this check runs before committing — is superseded by [D-260905b](#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs), which commits first and moves the formatting step ahead of the commits.
 - **Decided:** 2026-09-04
 
 [`release-ready-check`](../.claude/skills/release-ready-check/SKILL.md) delegated its checks to `yarn validate` and to the two agents [D-260904d](#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit) added, and nothing in it asked for a code review. One therefore happened only when a person typed `/code-review` — which means rarely, and never as part of the phrase that is supposed to mean "run everything". The skill now starts one itself.
@@ -115,7 +144,7 @@ Two warnings had been standing in `scripts/`, and nothing was ever going to repo
 
 ## D-260904d — Delegate the sweep and the secrets pass to agents that cannot edit
 
-- **Status:** Accepted
+- **Status:** Accepted; the agents and their read-only restriction stand, but the two-part diff capture described below — `git diff origin/main...HEAD` then `git diff HEAD`, with untracked paths handed over separately — is superseded by [D-260905b](#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs), which commits before dispatching and stages with `git add -A`, leaving one diff and no separate list.
 - **Decided:** 2026-09-04
 
 Two steps in the pre-pull-request flow were read-heavy, report-only, and the two most often skipped — the [documentation sweep](release-checklist.md#documentation-sweep) in both directions and the [sensitive-information pass](release-checklist.md#sensitive-information) over the diff. They are now [`documentation-sweep`](../.claude/agents/documentation-sweep.md) and [`sensitive-information-pass`](../.claude/agents/sensitive-information-pass.md), this repository's first subagents.
@@ -165,7 +194,7 @@ The roadmap asked for three advisory conventions to be promoted to deterministic
 
 ## D-260904b — Decide "documentation-only" once, and let both callers ask it
 
-- **Status:** Accepted
+- **Status:** Accepted; one classifier asked by both callers stands unchanged. The incidental premise below — that validation normally runs before committing — is superseded by [D-260905b](#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs). The local branch still unions the working tree, so the behaviour is unaffected; only the reason given for it has moved.
 - **Decided:** 2026-09-04
 
 Three things answered the same question and none of them shared an answer: CI's classify job held its exclusion list inline in [`ci.yml`](../.github/workflows/ci.yml), [`should-skip-vercel-build.sh`](../scripts/should-skip-vercel-build.sh) held a second and deliberately different one, and the `release-ready-check` skill was in effect a third policy of "always run everything" — so a documentation-only change still paid for a production build and the browser suite locally. [`scripts/classify-change.mjs`](../scripts/classify-change.mjs) now holds CI's rule, CI calls it, and `yarn validate` asks it the same question.

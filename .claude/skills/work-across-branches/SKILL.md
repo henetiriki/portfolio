@@ -5,7 +5,7 @@ description: How concurrent branches are handled in this repository — rebase o
 
 # Working across branches
 
-Branches run concurrently here, and `main` is the only integration point. Merges are squashed, so a branch lands as a single commit and its own history does not survive: **rebase onto `origin/main`** rather than merging `main` into a branch, and never merge one branch into another.
+Branches run concurrently here, and `main` is the only integration point. Merges are squashed, so a branch lands as a single commit and its commit graph does not survive — its messages do, concatenated into the squash body by `squash_merge_commit_message: COMMIT_MESSAGES`. So: **rebase onto `origin/main`** rather than merging `main` into a branch, and never merge one branch into another.
 
 - **The conflict surface is two documentation files, not the source.** [`roadmap.md`](../../../docs/roadmap.md) and [`decisions.md`](../../../docs/decisions.md) are touched by nearly every change and each is edited at a fixed anchor, so two branches collide there far more often than in `src/`. It was three until `project-history.md` was retired, which is most of what that change bought.
 - **A clean rebase is not evidence.** Rebasing #164 over #165 produced three silent failures and one honest conflict: Git spliced a new section into the middle of one decision, left two identical decision headings, and re-applied an identical `.gitignore` rule a second time — all without a marker. Read the diff of every documentation file after a rebase; do not trust the exit status.
