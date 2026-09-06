@@ -49,10 +49,10 @@ public/            Static assets, PWA manifest, icons, email-adjacent HTML templ
                     portfolio screenshots, wave SVGs, and a tiny hash-redirect script
 e2e/               Playwright browser regression suite, with shared helpers in e2e/support/
 service-worker/    Serwist service-worker source and its own tsconfig (see pwa-seo.md)
-scripts/           Build-adjacent Node scripts (the generated WebStorm CSS-variable stub)
+scripts/           Node scripts: generators, the checks `yarn validate` and CI run, and both Claude Code hooks — with its own `__tests__/`
 ```
 
-Nearly every folder under `src/` also has its own `__tests__/` subfolder alongside the source it covers (e.g. `src/components/travel/__tests__/`). Browser tests sit outside `src/` in `e2e/` because they exercise the built site rather than any one module — see [Development Workflow](development.md#testing) and [Browser regression suite](development.md#browser-regression-suite).
+Nearly every folder under `src/` also has its own `__tests__/` subfolder alongside the source it covers (e.g. `src/components/travel/__tests__/`), and `scripts/` carries one on the same convention — Jest's `testMatch` takes both roots. Browser tests sit outside both in `e2e/` because they exercise the built site rather than any one module — see [Development Workflow](development.md#testing) and [Browser regression suite](development.md#browser-regression-suite).
 
 ## Path aliases
 
@@ -71,7 +71,7 @@ Defined in `tsconfig.json` (`compilerOptions.paths`) and mirrored by ESLint's im
 @utils/*       -> src/utils/*
 ```
 
-Relative parent imports (`../`) are disallowed by ESLint (`no-restricted-imports`); everything crosses folders via these aliases or a local `./` import from an `index.ts` barrel.
+Relative parent imports (`../`) are disallowed by ESLint (`no-restricted-imports`); everything crosses folders via these aliases or a local `./` import from an `index.ts` barrel. `scripts/` is exempted, because node runs those files directly with no bundler to resolve an alias.
 
 ## Request lifecycle
 
