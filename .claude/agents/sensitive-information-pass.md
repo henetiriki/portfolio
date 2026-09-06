@@ -18,7 +18,7 @@ The caller gives you a diff written to a file outside the repository. Read it fi
 
 **It is one diff of committed work**, so every path appears once and in its final state. The caller commits before dispatching you, staging with `git add -A` so a brand-new file is in that diff rather than left untracked and invisible — a new file being the likeliest place a key arrives.
 
-**A renamed file's body is not in that diff.** Git records a move as a similarity index and elides the unchanged bulk, so a large file relocated by the change reaches you as a few lines of path rewriting. Read the file itself wherever that happens: a move is exactly when something long-committed acquires a new index and a new set of readers.
+**A moved file arrives in one of three shapes, and none of them is the whole body in order.** Git records a rename as a similarity index followed by the changed hunks alone, so a large relocated file can still run to hundreds of diff lines while most of itself stays elided. A clean move shows only the two paths. A heavily rewritten one falls below git's rename detection and arrives as a delete plus an add, putting the **entire** body under the new path as added lines — which will flood a read that treats added lines as the subject. Read the file itself in every case: a move is exactly when something long-committed acquires a new index and a new set of readers.
 
 **That staging is the caller's obligation and you cannot check it**, holding no `Bash`. So say in your report which shape you were given and that you are relying on it, and if a change that plainly adds a file shows no new file in the diff, report that rather than assuming it away. A confident all-clear over an untracked file is the one failure this brief cannot survive.
 
