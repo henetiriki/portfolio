@@ -61,7 +61,7 @@ Every pull request body opens with a two-question human checklist, and the body 
 
 **Two of its checks are judgement rather than commands**, and Claude Code delegates them to read-only agents in [`.claude/agents/`](.claude/agents/) so a finding reaches a person instead of being quietly fixed. A tool without subagents performs both itself, from the checklist's own brief — see D-260904d.
 
-**The code review is the one step that does not travel.** It is Claude Code's own bundled skill, asked for rather than invoked, and a review's criteria belong to the reviewing tool — so another tool has no equivalent step here and should say so rather than improvise one. See [the dispatch decision](docs/decisions/2026-09-06-cap-automatic-subagent-dispatch.md).
+**The code review is the one step that does not travel.** It is Claude Code's own bundled skill, dispatched to a subagent with an empty context rather than invoked in the working session, and a review's criteria belong to the reviewing tool — so another tool has no equivalent step here and should say so rather than improvise one. See [the dispatch decision](docs/decisions/2026-09-06-cap-automatic-subagent-dispatch.md).
 
 **Port 3000 belongs to `next dev`** — leave whatever is running there alone, it is usually a human watching the change land. 3001 is the agent's own preview and 3002 the browser suite; `yarn agent:check-config` fails if those ever collide again.
 
