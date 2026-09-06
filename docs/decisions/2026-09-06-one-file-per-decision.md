@@ -31,4 +31,4 @@ Accepted, 2026-09-06.
 
 - Citations across the repository are now bare identifiers rather than links, so nothing fails when one rots. That is only acceptable because the archive is never edited again.
 - [`work-across-branches`](../../.claude/skills/work-across-branches/SKILL.md) lost its minting procedure and half its stated conflict surface.
-- Two questions this does not answer: whether a subagent may auto-dispatch another, and the audit of overlapping content across the rules files and skills.
+- Whether a subagent may auto-dispatch another is raised by this change and settled separately, in [capping automatic subagent dispatch](2026-09-06-cap-automatic-subagent-dispatch.md). One file covering both would have needed superseding at once, which write-once forbids.

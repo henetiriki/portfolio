@@ -33,8 +33,8 @@ const imageHostOrigin =
     : undefined;
 
 // Enforcing. Rationale for every non-obvious source is D-260814c, and the
-// promotion from Report-Only is D-260815h — both private records, listed in
-// docs/decisions.md#private-operational-records.
+// promotion from Report-Only is D-260815h — both maintained privately. See
+// docs/security.md#content-security-policy.
 const contentSecurityPolicyDirectives = {
   'base-uri': ["'self'"],
   // mapsresources-pa is the Maps SDK's style-table host, observed in production
@@ -263,7 +263,7 @@ const getPublicPrecacheEntries = () =>
 // `withSerwistInit` attaches a `webpack` key unconditionally (its own
 // `disable` option is only checked inside that callback), and `next dev` runs
 // Turbopack, which @serwist/next does not support. Returning early keeps a
-// webpack config out of dev entirely. See docs/decisions.md D-260807a.
+// webpack config out of dev entirely. See D-260807a.
 module.exports = async () => {
   if (process.env.NODE_ENV !== 'production') {
     return withBundleAnalyzer(baseConfig);

@@ -24,14 +24,13 @@ const PERMISSION_KEYS = ['allow', 'ask', 'deny'];
 // configuration around it — see D-260904d.
 const READ_ONLY_TOOLS = ['Glob', 'Grep', 'Read'];
 
-// The release-ready check starts a code review by invoking Claude Code's own
-// bundled skill. That is one imperative sentence in a Markdown file, with no
-// script, hook or command behind it — precisely the instruction whose loss
-// nothing else would notice, which per D-260903c makes it something to test
-// rather than to trust. Matched by skill name rather than by a literal
-// `/code-review` string, because the instruction is deliberately written as an
-// imperative: a pasted command string is not documented to reach the Skill
-// tool. See D-260904e.
+// The release-ready check asks for a code review rather than invoking one.
+// That is one imperative sentence in a Markdown file, with no script, hook or
+// command behind it — precisely the instruction whose loss nothing else would
+// notice, which per D-260903c makes it something to test rather than to trust.
+// Matched by skill name because that is what survives the section being
+// reworded; the literal `/code-review` string is what a person types and is
+// free to change form. See the 2026-09-06 subagent-dispatch decision.
 const REVIEW_SKILL = 'code-review';
 const RELEASE_READY_SKILL = path.join(
   SKILLS,
@@ -393,8 +392,8 @@ const checkAgents = () => {
 // What it guards is the skill name disappearing from the body, which is what
 // deleting or rewriting the section does. It cannot tell an instruction from a
 // mention, so a body keeping the name while dropping the imperative still
-// passes — the sentence warning against pasting a `/code-review` string would
-// be enough on its own. Substring matching is the wrong tool for that, and a
+// passes — and the body now describes this very check, so that sentence alone
+// would keep it green. Substring matching is the wrong tool for that, and a
 // stricter pattern would break on the rewording this check exists to allow.
 const checkReleaseReadyAsksForReview = () => {
   const label = relative(RELEASE_READY_SKILL);
