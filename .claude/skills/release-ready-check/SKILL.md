@@ -13,7 +13,7 @@ description: The checks to run before opening a pull request in this repository,
 
 ## The code review
 
-**Ask for it. Do not invoke it.** Say that `/code-review` should be run in a fresh session, report the step as outstanding, and carry on with the sequence — it does not block `yarn validate` or anything after it.
+**Ask for it. Do not invoke it.** Say that `/code-review` should be run in a fresh session, report the step as outstanding, and carry on with the sequence — it does not block `yarn validate`. Dispatching the two agents does wait for its findings, and the [release checklist](../../../docs/release-checklist.md#before-opening-the-pr) is where that ordering is stated.
 
 **A fresh session rather than this one, because backgrounding is not reliable.** The skill is documented to run as a background subagent with its own context window, and has run in the foreground here instead — when the session is non-interactive (`-p` or the Agent SDK), when a review is already in progress, or under `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`, none of which you can check beforehand. A foreground run lands its reading in the calling session, which then re-sends it on every following turn. Nothing in a working session helps it read the diff, and a reviewer that has not watched the work is less anchored to the author's reasoning.
 

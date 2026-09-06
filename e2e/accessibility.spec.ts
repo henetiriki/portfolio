@@ -43,8 +43,8 @@ test.describe('accessibility', () => {
 /**
  * Contrast for icons axe cannot see: its `color-contrast` rule only
  * evaluates text nodes, so an SVG painted with `stroke="currentColor"` passes
- * regardless of how badly it fails — see D-260821a, where
- * exactly that let a 1.72:1 icon through for weeks.
+ * regardless of how badly it fails — see D-260821a, where exactly that let a
+ * 1.72:1 icon through for weeks.
  *
  * Scoped to icons rendered on a background colour distinct from the page's
  * own — a Mantine `filled`/coloured-circle treatment with no adjacent text

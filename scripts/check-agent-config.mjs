@@ -406,16 +406,17 @@ const checkReleaseReadyAsksForReview = () => {
     return;
   }
 
-  // The frontmatter is stripped rather than searched: the description names the
-  // review as well, so matching the whole file would let the body lose the
-  // instruction while this check still passed.
+  // The frontmatter is stripped rather than searched, so a description naming
+  // the review cannot keep this green while the body loses the instruction.
+  // The current description says "code review" as prose and would not match
+  // anyway; the strip is what stops that being one edit away from mattering.
   const body = fs
     .readFileSync(RELEASE_READY_SKILL, 'utf8')
     .replace(/^---\n[\s\S]*?\n---\n/, '');
 
   if (!body.toLowerCase().includes(REVIEW_SKILL)) {
     errors.push(
-      `${label}: no longer names the "${REVIEW_SKILL}" skill, so a release-ready check would run \`yarn validate\` and never ask for a review. The wording around it is free, but the skill's own hyphenated name has to survive the rewrite — "code review" as prose does not match, deliberately, because naming the skill is what makes the instruction actionable. If the step is genuinely being dropped, change this check deliberately rather than the file. See D-260904e.`
+      `${label}: no longer names the "${REVIEW_SKILL}" skill, so a release-ready check would run \`yarn validate\` and never ask for a review. The wording around it is free, but the skill's own hyphenated name has to survive the rewrite — "code review" as prose does not match, deliberately, because naming the skill is what makes the instruction actionable. If the step is genuinely being dropped, change this check deliberately rather than the file. See the 2026-09-06 subagent-dispatch decision.`
     );
   }
 };

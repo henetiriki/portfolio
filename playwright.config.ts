@@ -55,11 +55,10 @@ export default defineConfig({
       use: { ...devices['Pixel 7'] },
     },
     {
-      // The one project that lets a service worker register. It is a separate
-      // project rather than a relaxed setting on the others because the block
-      // below is load-bearing for them, not incidental.
-      // See docs/security.md#browser-coverage; D-260815a's reasoning is
-      // maintained privately.
+      // The one project that lets a service worker register, and separate
+      // rather than a relaxed setting on the others because the block below is
+      // load-bearing for them. See docs/security.md#browser-coverage —
+      // D-260815a, maintained privately.
       name: 'service-worker-chromium',
       testMatch: SERVICE_WORKER_SPEC,
       use: { ...devices['Desktop Chrome'], serviceWorkers: 'allow' },

@@ -50,7 +50,7 @@ const readLines = filePath =>
 // prose: lowercase, drop anything that isn't a word character/hyphen/space,
 // then turn every remaining space into a hyphen one-for-one (not collapsed —
 // an em dash flanked by two spaces has to survive as a double hyphen, which
-// is how every "D-YYMMDDx — Title" decision anchor in this file is actually
+// is how every "D-YYMMDDx — Title" heading in the archived decision log is
 // shaped).
 const slugify = text =>
   text

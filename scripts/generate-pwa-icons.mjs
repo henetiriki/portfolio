@@ -20,8 +20,8 @@ const NAVY = { alpha: 1, b: 32, g: 10, r: 8 };
 const TRANSPARENT = { alpha: 0, b: 0, g: 0, r: 0 };
 
 // The `any` and maskable purposes need deliberately different scale, not just
-// different padding — see D-260815e. Monochrome shares the
-// maskable scale because Android applies the same safe-zone masking to it.
+// different padding — see D-260815e. Monochrome shares the maskable scale
+// because Android applies the same safe-zone masking to it.
 const ANY_SCALE = 0.62;
 const MASKABLE_SCALE = 0.55;
 const SPLASH_SCALE = 0.35;
@@ -110,8 +110,7 @@ const splashTargets = () => {
  *
  * `monochrome` recolours the eye fill to match the owl outline before
  * rendering, collapsing the two-colour mark into the flat single-colour
- * silhouette Android's themed-icon alpha mask needs — see
- * D-260815e.
+ * silhouette Android's themed-icon alpha mask needs — see D-260815e.
  */
 const renderOwl = (size, { monochrome = false } = {}) => {
   const svgText = fs.readFileSync(svgPath, 'utf8');
