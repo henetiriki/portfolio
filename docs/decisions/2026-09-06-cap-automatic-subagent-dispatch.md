@@ -9,7 +9,7 @@
 ## Decision
 
 - The code review is **asked for, not invoked**. The hand-over is a written instruction that dispatches the review to a subagent with an empty context, rather than a bare `/code-review` a person types into the session they are already in — the isolation is the point, not who triggers it. The step is reported outstanding until its findings come back.
-- The two repository agents are dispatched **once per branch, before the pull request**, and again after a rebase only where the rebase changed the diff they read.
+- The two repository agents are dispatched **once per branch, before the pull request**. That is the only run a session starts on its own. A later run — after a rebase, or after a findings commit brings in unread surface — is **suggested and waited on**, however cleanly the condition for it fits.
 - **One automatic hop is the cap.** A session may dispatch those two; nothing they produce dispatches anything further without a person asking.
 
 ## Status
@@ -22,7 +22,7 @@ Accepted, 2026-09-06.
 
 **Why not drop the review altogether**, which was the largest single saving on offer. Its findings are generic and advisory, but they are still the only line-level read of the diff in the sequence — the two agents check documentation claims and secrets, and neither looks at whether the code is correct.
 
-**Why not re-dispatch after every rebase.** A rebase that replays cleanly onto a moved base usually leaves the diff the agents read unchanged, so the old rule bought a re-read of the same content at the price of two fresh contexts. The replacement is a condition rather than a judgement: did the rebase change the diff.
+**Why not re-dispatch after every rebase.** A rebase that replays cleanly onto a moved base usually leaves the diff the agents read unchanged, so the old rule bought a re-read of the same content at the price of two fresh contexts. What replaced it was a condition rather than a judgement — did the rebase change the diff — and **that framing was the mistake, caught the same day it was written.** A session re-dispatched both agents at step 11 because a findings commit had added a path neither had read: the condition genuinely held, the skill said checking it was "a condition you can check rather than a judgement you have to make", and the session read that as leave to spend two fresh contexts unasked. The maintainer stopped both within seconds. The condition still decides what is worth proposing; it never decided who authorises it, and prose that reads as though it does will be acted on that way.
 
 **Why not dispatch on request only**, which is cheaper again. A delegated check that silently did not run is worse than an expensive one, and "release ready" has to mean something without a person remembering each part of it.
 

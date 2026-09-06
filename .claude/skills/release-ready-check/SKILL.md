@@ -35,7 +35,9 @@ description: The checks to run before opening a pull request in this repository,
 
 `yarn validate` cannot perform the [documentation sweep](../../../docs/release-checklist.md#documentation-sweep) or the [sensitive-information pass](../../../docs/release-checklist.md#sensitive-information): both are judgement over prose and a diff. Both are subagents in [`.claude/agents/`](../../agents/), `documentation-sweep` and `sensitive-information-pass`, each holding `Glob, Grep, Read` and nothing else, so neither **can** fix what it finds — see D-260904d.
 
-**Dispatch them once per branch, before the pull request** — together, since they read different things and neither waits on the other. After a rebase, re-dispatch only where the rebase actually changed the diff they read. "Every time, including every rebase" was the earlier rule and mostly bought a re-read of an unchanged diff at the price of two fresh contexts.
+**Dispatch them once per branch, before the pull request** — together, since they read different things and neither waits on the other. That first dispatch is the only one you start on your own.
+
+**Every later run is suggested, never started.** After a rebase, or after a findings commit brings in surface they have not read, say so and wait — name what going without would leave unverified, and let the person decide whether to spend two fresh contexts on it. This is about who authorises the spend rather than whether the re-read is warranted: a condition you can check tells you the run is worth proposing, not that you may take it. "Every time, including every rebase" was the original rule and mostly bought a re-read of unchanged content; a conditional automatic re-dispatch replaced it and was still being taken without asking, which is the part that changed. See the [dispatch decision](../../../docs/decisions/2026-09-06-cap-automatic-subagent-dispatch.md).
 
 **One automatic hop is the cap.** This session may dispatch these two; nothing they produce dispatches anything further without a person asking for it. That holds by construction today — their tool lists cannot invoke an agent, `agent:check-config` fails if those lists change, and `.claude/settings.json` has no `Stop` or `SubagentStop` hook to fire a follow-on command — so the rule exists to stop that machinery being added without a decision.
 
@@ -57,4 +59,6 @@ Give both agents the diff path, and give the sweep the changed paths, which `nod
 
 ## What re-runs after the agents' findings commit
 
-`yarn validate` always. An agent only where that commit touched a path that was not in the diff it read — a fix confined to files it has already seen does not earn a second pass, and one that pulls in new surface does. That is a condition you can check rather than a judgement you have to make.
+`yarn validate` always, and on your own.
+
+**An agent, never on your own.** Where that commit touched a path that was not in the diff it read, the re-read is worth having — a fix confined to files it has already seen does not earn a second pass, and one that pulls in new surface does. Checking that condition is how you decide what to **propose**; proposing it is where your part ends. Report the step as outstanding, and say which paths went unswept, so a branch that ships without the re-run does so knowingly.
