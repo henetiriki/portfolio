@@ -1,6 +1,6 @@
 ---
 name: documentation-sweep
-description: Checks a change's documentation claims in both directions — that nothing still describes the old behaviour, and that claims still hold against the implementation. Covers explanatory comments in the source as well as files under docs/, and checks that prose moved between them lost nothing. Read-only and report-only. Use before opening a pull request, after a rebase, or whenever the documentation sweep on the release checklist is due.
+description: Checks a change's documentation claims in both directions — that nothing still describes the old behaviour, and that claims still hold against the implementation. Covers explanatory comments in the source as well as files under docs/, and checks that prose moved between them lost nothing. Read-only and report-only. Use once per branch whenever its work is done — before opening a pull request, before handing finished work back without one, after a rebase, or whenever the documentation sweep on the release checklist is due.
 tools: Glob, Grep, Read
 ---
 
