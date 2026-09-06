@@ -8,7 +8,7 @@ Quick reference for shipping a change to production.
 
 ## Development
 
-- [ ] Work on a prefixed branch off `main` — `feature/`, `fix/`, `docs/` or `chore/`, then a hyphenated description (e.g. `feature/react-upgrade`). See [Branch names](../AGENTS.md#branch-names). `yarn branch:check` answers this on its own, `yarn validate` runs it first, and CI checks the pull request's head ref — so a misnamed branch fails the `Validate` job rather than reaching review, and renaming it then means reopening the pull request
+- [ ] Work on a prefixed branch off `main` — `feature/`, `fix/`, `docs/` or `chore/`, then a hyphenated description (e.g. `feature/react-upgrade`). `yarn branch:check` answers this on its own and `yarn validate` runs it first; check before pushing, because renaming a branch after the pull request exists means reopening it. See [Branch names](../AGENTS.md#branch-names)
 - [ ] Local Node matches [.nvmrc](../.nvmrc) (`24`) and `engines.node` — run `nvm use` before validating, since a mismatched local runtime can pass checks that CI would fail
 - [ ] New dependencies use the full `^major.minor.patch` range, matching every other entry in `package.json`
 

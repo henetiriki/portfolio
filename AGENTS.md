@@ -57,11 +57,11 @@ Every pull request body opens with a two-question human checklist, and the body 
 
 ## Validating a change
 
-**The sequence is numbered, and the commits are part of it** — implementation, documentation, the code review's findings, then the two agents', each committed in turn. **The review's findings are committed before the agents are dispatched**, so they read a diff that will not change underneath them. It lives in the [release checklist](docs/release-checklist.md#before-opening-the-pr), which is the one copy; [`.claude/skills/release-ready-check/SKILL.md`](.claude/skills/release-ready-check/SKILL.md) follows it and adds only what is specific to Claude Code, and that skill is also what **"release ready check"** and **"prepare for release"** resolve to. See D-260905b.
+**The sequence is the [release checklist](docs/release-checklist.md#before-opening-the-pr), which is the one copy.** [`.claude/skills/release-ready-check/SKILL.md`](.claude/skills/release-ready-check/SKILL.md) follows it, adds only what is specific to Claude Code, and is what **"release ready check"** and **"prepare for release"** resolve to.
 
-**Two of those checks are judgement rather than commands**, and Claude Code delegates them to read-only reviewers in [`.claude/agents/`](.claude/agents/): the documentation sweep and the sensitive-information pass. Each holds `Glob, Grep, Read` and nothing else, so a finding reaches a person instead of being quietly fixed — see D-260904d. A tool without subagents performs both itself; the [release checklist](docs/release-checklist.md) carries the full brief for each and does not depend on the delegation.
+**Two of its checks are judgement rather than commands**, and Claude Code delegates them to read-only agents in [`.claude/agents/`](.claude/agents/) so a finding reaches a person instead of being quietly fixed. A tool without subagents performs both itself, from the checklist's own brief — see D-260904d.
 
-**A third check is not started from here at all, and does not travel.** A code review belongs in that sequence, but Claude Code asks for `/code-review` in a fresh session rather than invoking it: the skill is documented to background into a context of its own and does not reliably do so, and a foreground run pours its reading into whichever session called it. Its findings are generic, so it is advisory and replaces neither of the two above. It is also the one step with no prose brief to fall back on, because a review's criteria belong to the reviewing tool: another tool has no equivalent step here and should say so rather than improvise one. `yarn agent:check-config` asserts the skill body still names the review — a substring test on the skill's own hyphenated name, which catches the section being deleted rather than proving a review runs. See [the dispatch decision](docs/decisions/2026-09-06-cap-automatic-subagent-dispatch.md).
+**The code review is the one step that does not travel.** It is Claude Code's own bundled skill, asked for rather than invoked, and a review's criteria belong to the reviewing tool — so another tool has no equivalent step here and should say so rather than improvise one. See [the dispatch decision](docs/decisions/2026-09-06-cap-automatic-subagent-dispatch.md).
 
 **Port 3000 belongs to `next dev`** — leave whatever is running there alone, it is usually a human watching the change land. 3001 is the agent's own preview and 3002 the browser suite; `yarn agent:check-config` fails if those ever collide again.
 
@@ -90,13 +90,13 @@ Every pull request body opens with a two-question human checklist, and the body 
 
 ## Working across branches
 
-Branches run concurrently here, and `main` is the only integration point. Merges are squashed, so a branch lands as a single commit and its commit graph does not survive — its messages do, concatenated into the squash body by `squash_merge_commit_message: COMMIT_MESSAGES`. So: **rebase onto `origin/main`** rather than merging `main` into a branch, and never merge one branch into another.
+**Rebase onto `origin/main`. Never merge `main` into a branch, and never merge one branch into another.** Merges are squashed, so a branch lands as one commit and its graph does not survive.
 
-The rest — which two documentation files actually collide and how each resolves, minting a decision identifier, merge order, and why a clean rebase is not evidence — is in [`.claude/skills/work-across-branches/SKILL.md`](.claude/skills/work-across-branches/SKILL.md).
+The rest — the conflict surface, merge order, and why a clean rebase is not evidence — is in [`.claude/skills/work-across-branches/SKILL.md`](.claude/skills/work-across-branches/SKILL.md).
 
 ## Worktrees
 
-Isolation for work that runs alongside something already in progress. Two locations, both gitignored, prettierignored and ESLint-ignored: **`.claude/worktrees/`** is where Claude Code creates its own, and **`.worktrees/`** at the repository root is the shared convention for worktrees made by hand or by another agent — see D-260829a.
+Isolation for work running alongside something already in progress. Claude Code creates its own under **`.claude/worktrees/`**; **`.worktrees/`** at the repository root is the shared convention for any made by hand or by another agent — see D-260829a.
 
 **Never `git stash`.** The stash stack is shared across worktrees, so a concurrent session can pop your entry. Set work aside with a WIP commit.
 
@@ -116,7 +116,7 @@ Merging to `main` deploys to production via Vercel. There are no tags or version
 Changes a visitor cannot see skip production builds and subsequent preview builds, via `ignoreCommand` in `vercel.json`; every preview branch's first build is deliberate so its pull request has a QA URL. The excluded paths and reasoning are on the [release checklist](docs/release-checklist.md#merge--deploy). Two consequences matter while working:
 
 - **A skip is a `success` status reading _"Canceled by Ignored Build Step"_, not a failure.** It is easy to misread that green tick as a completed build.
-- **CI has its own, shorter list, and the two are not interchangeable.** A change touching only `docs/`, `*.md`, `.claude/` or `.worktreeinclude` gets a [cheap CI path](docs/release-checklist.md#pull-request) — install, `prettier:check`, the Jest run and the coverage upload; the whole `Build & browser suite` job is skipped. `e2e/` and `playwright.config.ts` are excluded from the deploy and deliberately not from CI, because the browser suite is exactly what must run when they change.
+- **CI has its own, shorter list, and the two are not interchangeable.** `e2e/` and `playwright.config.ts` are excluded from the deploy and deliberately not from CI, because the browser suite is exactly what must run when they change. What each list holds, and what a cheap CI run actually leaves running, is on the [release checklist](docs/release-checklist.md#pull-request).
 
 ## About this file
 
