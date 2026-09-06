@@ -174,7 +174,7 @@ export default defineConfig(
     files: TS_FILES,
     rules: {
       '@typescript-eslint/consistent-type-imports': 'error',
-      '@typescript-eslint/member-ordering': 'warn',
+      '@typescript-eslint/member-ordering': 'error',
       '@typescript-eslint/no-unused-vars': 'error',
       'perfectionist/sort-enums': [
         'error',
