@@ -5,7 +5,7 @@ description: The checks to run before opening a pull request in this repository,
 
 # Validating a change
 
-**The sequence is [`release-checklist.md`](../../../docs/release-checklist.md#before-opening-the-pr), and it is numbered there rather than here.** A numbered list, with the commits as part of the order — implementation, documentation, the review's findings, then the agents'. Read it and follow it; this file adds only what is specific to Claude Code, and duplicating the ordering would give it two homes and one of them would drift. See [D-260905b](../../../docs/decisions.md#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs).
+**The sequence is [`release-checklist.md`](../../../docs/release-checklist.md#before-opening-the-pr), and it is numbered there rather than here.** A numbered list, with the commits as part of the order — implementation, documentation, the review's findings, then the agents'. Read it and follow it; this file adds only what is specific to Claude Code, and duplicating the ordering would give it two homes and one of them would drift. See D-260905b.
 
 **"Release ready check" and "prepare for release" both mean the whole sequence**, reporting what passes, what fails, and anything that needs a human decision. The production build is inside it rather than an extra beyond it: `yarn validate` runs `build` and `test:e2e` itself on any change that is not documentation-only.
 
@@ -19,7 +19,7 @@ description: The checks to run before opening a pull request in this repository,
 
 **Do not count on it backgrounding.** It is documented to run as a background subagent with its own context window, which is where the overlap with `yarn validate` comes from. It has run in the foreground here instead, output landing in the calling context, with none of the three conditions below obviously applying. Treat backgrounding as something to observe on the day rather than to plan around. The ordering holds either way: in the foreground it is serial wherever you put it, and its findings are worth more before you have paid for a build than after.
 
-**Do not wrap it in a subagent of this repository's own.** [D-260904d](../../../docs/decisions.md#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit)'s reasoning inverts here: the sweep and the secrets pass needed agents built here because nothing provided one, while this already runs in its own context, opens the surrounding files for itself and reports through a structured findings list. Another layer would add a hop and lose that list. How broadly it reads is the effort level's business — at the default it is one careful pass over the diff with a cap on findings, and the higher levels widen it.
+**Do not wrap it in a subagent of this repository's own.** D-260904d's reasoning inverts here: the sweep and the secrets pass needed agents built here because nothing provided one, while this already runs in its own context, opens the surrounding files for itself and reports through a structured findings list. Another layer would add a hop and lose that list. How broadly it reads is the effort level's business — at the default it is one careful pass over the diff with a cap on findings, and the higher levels widen it.
 
 **Three behaviours look like faults and are not:**
 
@@ -29,13 +29,13 @@ description: The checks to run before opening a pull request in this repository,
 
 **The findings are advisory, and replace neither agent below.** They are generic — correctness, reuse, simplification, efficiency — and know nothing of this repository's own disciplines. Fix what is wrong in the change at hand, route the rest to the [Roadmap](../../../docs/roadmap.md) rather than a commit message, and treat one as blocking only where it contradicts something the [release checklist](../../../docs/release-checklist.md) demands.
 
-**This step is Claude Code's alone**, and deliberately has no prose brief to fall back on — a review's criteria belong to the reviewing tool, so writing one here would invent a method this repository does not have. A tool without the bundled skill skips it and says so; everything else applies to every tool. See [D-260904e](../../../docs/decisions.md#d-260904e--start-the-code-review-from-the-release-ready-check-and-keep-it-claude-code-only).
+**This step is Claude Code's alone**, and deliberately has no prose brief to fall back on — a review's criteria belong to the reviewing tool, so writing one here would invent a method this repository does not have. A tool without the bundled skill skips it and says so; everything else applies to every tool. See D-260904e.
 
 ## The two agents
 
 `yarn validate` cannot perform the [documentation sweep](../../../docs/release-checklist.md#documentation-sweep) or the [sensitive-information pass](../../../docs/release-checklist.md#sensitive-information): both are judgement over prose and a diff. Dispatch them **every time**, not only when someone says "release ready check". Doing the reading outside this context is what makes that affordable.
 
-Both are subagents in [`.claude/agents/`](../../agents/), `documentation-sweep` and `sensitive-information-pass`. Each holds `Glob, Grep, Read` and nothing else, so neither **can** fix what it finds — see [D-260904d](../../../docs/decisions.md#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit). Dispatch them together; they read different things and neither waits on the other.
+Both are subagents in [`.claude/agents/`](../../agents/), `documentation-sweep` and `sensitive-information-pass`. Each holds `Glob, Grep, Read` and nothing else, so neither **can** fix what it finds — see D-260904d. Dispatch them together; they read different things and neither waits on the other.
 
 **Hand the secrets pass a diff, not a list of files.** Write it out and do not read it yourself — the redirect is what keeps it out of this context, and added lines are what let the agent tell a dummy value this change introduced from one that was always in `.env.test`. Substitute your own scratchpad directory for `<scratchpad>`:
 

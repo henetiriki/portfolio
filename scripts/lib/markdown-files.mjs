@@ -11,7 +11,7 @@ import path from 'node:path';
 // extension test is case-insensitive for the same reason: checking a file
 // that turns out not to be Markdown is loud, and skipping one is not.
 const walk = directory =>
-  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `directory` is always `.claude/agents` or a subdirectory of it, reached only by this walk
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `directory` is always `.claude/agents` or `docs/`, or a subdirectory of one of them, reached only by this walk
   fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
     const entryPath = path.join(directory, entry.name);
 

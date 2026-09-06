@@ -15,12 +15,12 @@ const svgPath = path.join(projectRoot, 'public/images/ouwl.svg');
 const outputDir = path.join(projectRoot, 'public/images/manifest-icons');
 
 // Matches --mantine-color-black-russian-4 / `theme_color` / `background_color`
-// — see docs/decisions.md#d-260815d.
+// — see D-260815d.
 const NAVY = { alpha: 1, b: 32, g: 10, r: 8 };
 const TRANSPARENT = { alpha: 0, b: 0, g: 0, r: 0 };
 
 // The `any` and maskable purposes need deliberately different scale, not just
-// different padding — see docs/decisions.md#d-260815e. Monochrome shares the
+// different padding — see D-260815e. Monochrome shares the
 // maskable scale because Android applies the same safe-zone masking to it.
 const ANY_SCALE = 0.62;
 const MASKABLE_SCALE = 0.55;
@@ -111,7 +111,7 @@ const splashTargets = () => {
  * `monochrome` recolours the eye fill to match the owl outline before
  * rendering, collapsing the two-colour mark into the flat single-colour
  * silhouette Android's themed-icon alpha mask needs — see
- * docs/decisions.md#d-260815e.
+ * D-260815e.
  */
 const renderOwl = (size, { monochrome = false } = {}) => {
   const svgText = fs.readFileSync(svgPath, 'utf8');
@@ -217,7 +217,7 @@ const writeAll = async targets => {
  * Verifies internal consistency between `SPLASH_DEVICES`/`ouwl.svg` and the
  * committed assets — not device *coverage*, which has no source to check
  * against and is deliberately left to manual review. See
- * docs/decisions.md#d-260821i.
+ * D-260821i.
  */
 const checkAll = async targets => {
   const problems = [];

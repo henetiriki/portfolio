@@ -31,10 +31,10 @@ const markdownFiles = [
     .readdirSync(projectRoot)
     .filter(name => name.endsWith('.md'))
     .map(name => path.join(projectRoot, name)),
-  ...fs
-    .readdirSync(docsDir)
-    .filter(name => name.endsWith('.md'))
-    .map(name => path.join(docsDir, name)),
+  // Recursive rather than a flat read: the decision log is a directory of
+  // files rather than one file, so a flat read would leave every decision
+  // silently unchecked instead of reporting it.
+  ...markdownFilesUnder(docsDir),
   ...skillFiles(),
   // Agents have the same problem skills do, one directory shallower — see
   // scripts/lib/markdown-files.mjs, shared with check-agent-config.mjs.

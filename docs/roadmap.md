@@ -1,6 +1,6 @@
 # Roadmap
 
-Open work only. A completed item is simply removed — the merged pull request is the record that it happened, durable rationale goes to [Engineering Decisions](decisions.md), and current behaviour to the topical documentation. Items are grouped by area rather than strict priority; each should normally be delivered as its own scoped change unless a dependency is called out explicitly.
+Open work only. A completed item is simply removed — the merged pull request is the record that it happened, durable rationale goes to [Engineering Decisions](decisions/README.md), and current behaviour to the topical documentation. Items are grouped by area rather than strict priority; each should normally be delivered as its own scoped change unless a dependency is called out explicitly.
 
 Last reviewed: 2026-09-04.
 

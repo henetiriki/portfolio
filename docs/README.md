@@ -17,7 +17,7 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - [Development Workflow](development.md) — scripts, linting, formatting, git hooks
 - [Release Checklist](release-checklist.md) — how a change gets from a feature branch to production
 - [Roadmap](roadmap.md) — open work, known issues, and planned upgrades
-- [Engineering Decisions](decisions.md) — durable technical choices and their rationale
+- [Engineering Decisions](decisions/README.md) — durable technical choices and their rationale
 
 ## At a glance
 

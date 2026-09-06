@@ -23,7 +23,7 @@ import {
  * while a visited route kept working from cache and made the whole thing look
  * healthy. A single test on a visited page passes without the fallback ever
  * being consulted, which is exactly how the manual check missed it.
- * See docs/decisions.md#d-260815g, and docs/pwa-seo.md#progressive-web-app;
+ * See D-260815g, and docs/pwa-seo.md#progressive-web-app;
  * D-260815f's reasoning is maintained privately.
  *
  * A regression here surfaces as a timeout rather than a failed assertion:
