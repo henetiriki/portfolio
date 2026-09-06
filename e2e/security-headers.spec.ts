@@ -11,13 +11,14 @@ import type { APIRequestContext } from '@playwright/test';
  * every value through Next's path-to-regexp compilation. A value that trips
  * that step is dropped from the response with no build warning, and escaping
  * the colons to avoid it instead ships literal backslashes that no browser can
- * parse. Either way the page looks perfectly healthy. See D-260814c in
- * docs/decisions.md#private-operational-records.
+ * parse. Either way the page looks perfectly healthy. See
+ * docs/security.md#response-headers; D-260814c's reasoning is maintained
+ * privately.
  *
  * Enforcing raises the stakes of exactly that failure: a dropped header used to
  * mean losing observation, and now means losing the policy itself while every
- * page still renders. See D-260815h in
- * docs/decisions.md#private-operational-records.
+ * page still renders. See docs/security.md#content-security-policy;
+ * D-260815h's reasoning is maintained privately.
  */
 test.describe('content security policy', () => {
   const headersFor = async (request: APIRequestContext, path = '/') =>

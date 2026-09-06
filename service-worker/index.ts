@@ -23,12 +23,11 @@ declare const self: ServiceWorkerGlobalScope;
 // here because the worker project deliberately has no Node types.
 declare const process: { env: { NEXT_PUBLIC_LAST_MODIFIED?: string } };
 
-// Every matcher is gated on `sameOrigin`, which is the whole point rather than
-// a detail: an intercepted request is re-issued from the worker, where the only
-// fetch directive that applies is `connect-src`. See D-260815f in
-// docs/decisions.md#private-operational-records. The precache route is
-// registered before these, so precached assets
-// are unaffected by the strategies below.
+// Every matcher is gated on `sameOrigin`: an intercepted request is re-issued
+// from the worker, where the only fetch directive that applies is
+// `connect-src`. The precache route is registered before these, so precached
+// assets are unaffected. See docs/security.md#content-security-policy —
+// D-260815f, maintained privately.
 const runtimeCaching: RuntimeCaching[] = [
   {
     handler: new StaleWhileRevalidate({
@@ -58,8 +57,7 @@ const runtimeCaching: RuntimeCaching[] = [
 // The build manifest carries `/_offline`'s JavaScript chunk but never its HTML
 // document: it is prerendered to `.next/server/`, which the Serwist webpack
 // plugin excludes, so nothing else puts the page itself in the precache. Adding
-// it here is what makes the fallback below resolvable at all. See
-// docs/decisions.md D-260815g.
+// it here is what makes the fallback below resolvable at all. See D-260815g.
 const precacheEntries = [
   ...(self.__SW_MANIFEST ?? []),
   { revision: process.env.NEXT_PUBLIC_LAST_MODIFIED ?? null, url: '/_offline' },

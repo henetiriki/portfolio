@@ -12,8 +12,9 @@ import {
  * policy that refuses to start it — produces exactly the same green build. This
  * runs in its own Playwright project, the only one where `serviceWorkers` is
  * left unblocked, so its precache cannot reach any other spec.
- * See docs/development.md#browser-regression-suite, and D-260815a in
- * docs/decisions.md#private-operational-records.
+ * See docs/development.md#browser-regression-suite and
+ * docs/security.md#browser-coverage; D-260815a's reasoning is maintained
+ * privately.
  *
  * Offline is covered here, and the two tests below are deliberately not one.
  * The fallback path and the runtime-cache path fail independently, and only the
@@ -22,8 +23,8 @@ import {
  * while a visited route kept working from cache and made the whole thing look
  * healthy. A single test on a visited page passes without the fallback ever
  * being consulted, which is exactly how the manual check missed it.
- * See docs/decisions.md#d-260815g, and D-260815f in
- * docs/decisions.md#private-operational-records.
+ * See D-260815g, and docs/pwa-seo.md#progressive-web-app;
+ * D-260815f's reasoning is maintained privately.
  *
  * A regression here surfaces as a timeout rather than a failed assertion:
  * `navigator.serviceWorker.ready` never settles when registration does not
