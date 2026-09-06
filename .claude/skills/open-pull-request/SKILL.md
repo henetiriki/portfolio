@@ -1,6 +1,6 @@
 ---
 name: open-pull-request
-description: How to open a pull request in this repository — the two-question human checklist every PR body must start with, and why the body is written to a file and passed with `gh pr create --body-file` rather than inline. Use when opening a pull request, writing a PR description, or asked to push work up for review.
+description: How to open a pull request in this repository — the two-question human checklist every PR body must start with, and why the body is written to a file and passed with `gh pr create --body-file` rather than inline. Use when writing the body of a pull request, or applying the repository's PR template — the final step of raising one, after the checks in `release-ready-check` have been worked through.
 ---
 
 # Opening a pull request
