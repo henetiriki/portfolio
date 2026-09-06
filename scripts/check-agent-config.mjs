@@ -24,7 +24,7 @@ const PERMISSION_KEYS = ['allow', 'ask', 'deny'];
 // configuration around it — see D-260904d.
 const READ_ONLY_TOOLS = ['Glob', 'Grep', 'Read'];
 
-// The release-ready check dispatches a code review rather than invoking one.
+// The release-ready check asks for a code review rather than invoking one.
 // That is one imperative sentence in a Markdown file, with no script, hook or
 // command behind it — precisely the instruction whose loss nothing else would
 // notice, which per D-260903c makes it something to test rather than to trust.
@@ -400,7 +400,7 @@ const checkReleaseReadyAsksForReview = () => {
 
   if (!exists(RELEASE_READY_SKILL)) {
     errors.push(
-      `${label}: is missing, so nothing in the pre-pull-request flow dispatches a code review — see D-260904e.`
+      `${label}: is missing, so nothing in the pre-pull-request flow asks for a code review — see D-260904e.`
     );
 
     return;
@@ -416,7 +416,7 @@ const checkReleaseReadyAsksForReview = () => {
 
   if (!body.toLowerCase().includes(REVIEW_SKILL)) {
     errors.push(
-      `${label}: no longer names the "${REVIEW_SKILL}" skill, so a release-ready check would run \`yarn validate\` and never dispatch a review. The wording around it is free, but the skill's own hyphenated name has to survive the rewrite — "code review" as prose does not match, deliberately, because naming the skill is what makes the instruction actionable. If the step is genuinely being dropped, change this check deliberately rather than the file. See the 2026-09-06 subagent-dispatch decision.`
+      `${label}: no longer names the "${REVIEW_SKILL}" skill, so a release-ready check would run \`yarn validate\` and never ask for a review. The wording around it is free, but the skill's own hyphenated name has to survive the rewrite — "code review" as prose does not match, deliberately, because naming the skill is what makes the instruction actionable. If the step is genuinely being dropped, change this check deliberately rather than the file. See the 2026-09-06 subagent-dispatch decision.`
     );
   }
 };

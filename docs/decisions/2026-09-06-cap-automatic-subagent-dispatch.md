@@ -8,7 +8,7 @@
 
 ## Decision
 
-- The code review is **dispatched cold, not invoked in the working session**. A subagent starting with an empty context invokes the `code-review` skill on the diff, so this session pays for the report rather than the reading. A person runs it instead only where no subagent can be dispatched, or for the `ultra` escalation only a person can launch.
+- The code review is **asked for, not invoked**. The hand-over is a written instruction that dispatches the review to a subagent with an empty context, rather than a bare `/code-review` a person types into the session they are already in — the isolation is the point, not who triggers it. The step is reported outstanding until its findings come back.
 - The two repository agents are dispatched **once per branch, before the pull request**, and again after a rebase only where the rebase changed the diff they read.
 - **One automatic hop is the cap.** A session may dispatch those two; nothing they produce dispatches anything further without a person asking.
 
@@ -18,9 +18,7 @@ Accepted, 2026-09-06.
 
 ## Consequences
 
-**Why not hand it to a person outright**, which is where this first landed. It keeps the reading out of the working session, but it reintroduces exactly the risk the review was pulled into the sequence to remove — that it happens rarely rather than as part of "run everything" — and it turns a bounded wait into a human round trip that stalls everything behind it. A cold dispatch buys the same isolation without either cost. The person's route survives as the fallback, and for the `ultra` escalation, which cannot be launched any other way.
-
-**Why not invoke it in the working session**, which is what the sequence did before. The skill is documented to background into a context of its own and does not reliably do so, and the three conditions that force it into the foreground cannot be checked beforehand — so the cost of a foreground run is unpredictable and paid on every turn afterwards. Dispatching decides that rather than discovering it.
+**Why not leave the review in the sequence.** It was pulled in so that it happened as part of "run everything" rather than rarely, and handing it back reintroduces precisely that risk. Naming it a required step and reporting it outstanding mitigates that; it does not remove it. If reviews stop happening, this is the reason.
 
 **Why not drop the review altogether**, which was the largest single saving on offer. Its findings are generic and advisory, but they are still the only line-level read of the diff in the sequence — the two agents check documentation claims and secrets, and neither looks at whether the code is correct.
 
@@ -31,5 +29,4 @@ Accepted, 2026-09-06.
 **Why write down a cap that nothing here can violate.** Both agents hold `Glob, Grep, Read`, `agent:check-config` fails if that changes, and `.claude/settings.json` has no `Stop` or `SubagentStop` hook to fire a follow-on command. The rule is against that machinery being added without a decision, not against the tree as it stands.
 
 - The cap is a rule rather than a mechanism: nothing fails a build if it is broken.
-- The review's findings arrive as prose rather than through `ReportFindings`, which a subagent cannot reach. That structured list is what the cold dispatch trades away, and relaying the findings is the caller's job.
 - `release-ready-check` loses the paragraphs describing when the review backgrounds and what to do if it does not, which stop mattering once it is not invoked from there.

@@ -1,6 +1,6 @@
 ---
 name: release-ready-check
-description: The checks to run before opening a pull request in this repository, and what a "ready for release check", "prepare for release" or "raise a PR" request means — the numbered sequence, where the commits fall in it, how the code review is dispatched cold, and when the two read-only agents are dispatched. Use when validating a change, before opening a PR, after a rebase, or when asked to check whether something is ready to ship.
+description: The checks to run before opening a pull request in this repository, and what a "ready for release check", "prepare for release" or "raise a PR" request means — the numbered sequence, where the commits fall in it, how the code review is handed to a person, and when the two read-only agents are dispatched. Use when validating a change, before opening a PR, after a rebase, or when asked to check whether something is ready to ship.
 ---
 
 # Validating a change
@@ -13,17 +13,19 @@ description: The checks to run before opening a pull request in this repository,
 
 ## The code review
 
-**Dispatch it cold. Do not invoke it here, and do not ask a person for it.** Send a subagent whose context starts empty, and have it invoke the `code-review` skill on the branch diff at its default effort. Name the skill as an instruction rather than pasting a `/code-review` string — it is not documented that a bare command string in a prompt reaches the `Skill` tool. It does not block `yarn validate`; dispatching the two agents below does wait for its findings, and the [release checklist](../../../docs/release-checklist.md#before-opening-the-pr) is where that ordering is stated.
+**Ask for it. Do not invoke it.** Carry on with the sequence — it does not block `yarn validate`. Dispatching the two agents does wait for its findings, and the [release checklist](../../../docs/release-checklist.md#before-opening-the-pr) is where that ordering is stated.
 
-**A cold context rather than this one, because backgrounding is not reliable.** The skill is documented to run as a background subagent with its own context window, and has run in the foreground here instead — when the session is non-interactive (`-p` or the Agent SDK), when a review is already in progress, or under `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`, none of which you can check beforehand. A foreground run lands its reading in the calling session, which then re-sends it on every following turn. Dispatched cold, this session pays for the report and not the reading. Nothing in a working session helps it read the diff, and a reviewer that has not watched the work is less anchored to the author's reasoning.
+**Hand over an instruction, not a bare `/code-review`.** Typing that alone runs the review in whatever session the person is already in, which is the cost this hand-off exists to avoid — the isolation is what matters, not who triggers it. Write out something they can paste, with the placeholders filled in:
 
-**Tell it what the change is for.** A cold reviewer cannot tell a deliberate comment-only edit from dead code, and will spend its findings on the wrong things. Say what the branch does, name the files whose behaviour actually changed, and say what has already been verified so it does not re-run it.
+> Dispatch a subagent with an empty context and have it invoke the `code-review` skill on `<branch>` against `origin/main` at its default effort. Name the skill as an instruction rather than pasting a `/code-review` string, which is not documented to reach the `Skill` tool from a prompt. Tell it `<what the branch does, which files' behaviour actually changed, and what has already been verified so it does not re-run it>`. Have it report findings as `file:line — summary`, most severe first.
 
-**Its findings come back as prose, not through `ReportFindings`.** Relay them as `file:line — summary` lines and act on each yourself, since a subagent's report is not shown to the user. That structured list is what the cold dispatch trades away.
+**Fill those placeholders in yourself before handing it over.** A cold reviewer cannot tell a deliberate comment-only edit from dead code and will spend its findings on the wrong things. That context is what makes the review useful rather than noise, and it is the half the person cannot supply. Say too if a higher effort level looks worth it, or the `ultra` cloud escalation — only a person can launch that.
 
-**This is one hop, which the cap allows** — a session may dispatch the review and the two agents below; none of them dispatches anything further.
+**Its findings come back as prose, not through `ReportFindings`**, which a subagent cannot reach. Ask for `file:line — summary` lines; acting on each is yours.
 
-**Ask a person instead only where a subagent cannot be dispatched**, or for the `ultra` cloud escalation, which only a person can launch. Report the step outstanding until the findings come back, and never as done: a review summarised in prose cannot be told apart from no review at all.
+**A context of its own rather than this one, because backgrounding is not reliable.** The skill is documented to run as a background subagent with its own context window, and has run in the foreground here instead — when the session is non-interactive (`-p` or the Agent SDK), when a review is already in progress, or under `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`, none of which you can check beforehand. A foreground run lands its reading in the calling session, which then re-sends it on every following turn. Nothing in a working session helps it read the diff, and a reviewer that has not watched the work is less anchored to the author's reasoning.
+
+**Report it as outstanding, never as done.** A review summarised in prose cannot be told apart from no review at all. If the findings do not come back before the pull request, say so rather than letting the step disappear.
 
 **The findings are advisory, and replace neither agent below.** They are generic — correctness, reuse, simplification, efficiency — and know nothing of this repository's own disciplines. Fix what is wrong in the change at hand, route the rest to the [Roadmap](../../../docs/roadmap.md) rather than a commit message, and treat one as blocking only where it contradicts something the [release checklist](../../../docs/release-checklist.md) demands.
 
