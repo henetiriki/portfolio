@@ -107,7 +107,7 @@ Everything else — the `yarn install` each worktree needs, the gitignored files
 - Alphabetical ordering is **lint-enforced**: object keys, destructured keys, JSX props, interface members and imports. Source reads alphabetically rather than by logical grouping.
 - Keep hand-maintained lists alphabetical too, even where no linter checks them — `.claude/settings.json`'s `permissions.allow` and the `package.json` scripts are both sorted. Append-at-the-bottom makes them unreviewable.
 - `package.json` uses full semantic ranges (`^major.minor.patch`).
-- Cross-folder imports use the `@alias/*` paths; `../` is banned by `no-restricted-imports`.
+- Cross-folder imports use the `@alias/*` paths; `../` is banned by `no-restricted-imports`, except under `scripts/`, which node runs directly with nothing to resolve an alias.
 
 ## Deploys
 
