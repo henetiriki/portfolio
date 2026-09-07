@@ -62,7 +62,7 @@ jobs:
           verdict="$(node scripts/classify-change.mjs --base HEAD^ --explain)"
           echo "$verdict" >> "$GITHUB_OUTPUT"
           if [ "$verdict" = 'docs_only=true' ]; then
-            echo 'Documentation-only change: `docs:check-links`, `agent:check-config`, `prettier:check` and the Jest run ran, plus the branch-name check on a pull request. The generated-asset checks, lint, both type-checks and the build job were skipped.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Documentation-only change: `docs:check-links`, `agent:check-config`, `prettier:check` and the Jest run with its Codecov upload ran, plus the branch-name check on a pull request. The classification skipped the generated-asset checks, lint, both type-checks and the build job.' >> "$GITHUB_STEP_SUMMARY"
           fi
 
   # Everything that runs against source. Keeps per-step gates rather than one
