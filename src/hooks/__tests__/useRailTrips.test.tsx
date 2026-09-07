@@ -58,6 +58,19 @@ describe('useRailTrips', () => {
     ]);
   });
 
+  it('settles with no rail layers when the payload omits both trip lists', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue({}),
+      ok: true,
+    });
+
+    const { result } = renderHook(() => useRailTrips(), { wrapper });
+
+    await waitFor(() => expect(result.current.settled).toBe(true));
+
+    expect(result.current.railTripPolylines).toEqual([]);
+  });
+
   it('does not fetch again once rail trips are cached', async () => {
     global.fetch = jest.fn().mockResolvedValue({
       json: jest.fn().mockResolvedValue({

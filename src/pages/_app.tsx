@@ -14,6 +14,7 @@ import { useLoading } from '@hooks';
 import { PortfolioStateProvider } from '@state/context';
 import { theme } from '@styles';
 import { bodyFont, headingFont } from '@styles/fonts';
+import type { NextPage } from 'next';
 import '@styles/global.css';
 import type { AppProps } from 'next/app';
 import type { JSX } from 'react';
@@ -25,7 +26,10 @@ const DynamicFixedBackground = dynamic(
   }
 );
 
-const Portfolio = ({ Component, pageProps }: AppProps): JSX.Element => {
+const Portfolio: NextPage<AppProps> = ({
+  Component,
+  pageProps,
+}: AppProps): JSX.Element => {
   const isLoading = useLoading();
 
   return (
