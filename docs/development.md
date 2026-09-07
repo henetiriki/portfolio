@@ -159,7 +159,7 @@ CI caches the browser download rather than re-fetching it, on a key and a still-
 ```json
 {
   "**/*.{cjs,js,jsx,mjs,ts,tsx}": ["eslint --fix --max-warnings 0"],
-  "**/*.{cjs,html,js,jsx,json,md,mjs,scss,ts,tsx}": ["prettier --ignore-path .prettierignore --write"]
+  "**/*.{cjs,css,html,js,jsx,json,md,mjs,scss,ts,tsx,yaml,yml}": ["prettier --ignore-path .prettierignore --write"]
 }
 ```
 
