@@ -30,7 +30,7 @@ Quick reference for shipping a change to production.
 
 **Four commits, not one:** implementation, documentation, the review's findings, then the agents'. Merges are squashed, so they land on `main` as a single commit — but `squash_merge_commit_message` is `COMMIT_MESSAGES`, so the four messages survive in its body. Skip a findings commit where there was nothing to fix. Why four, why documentation is separated from implementation, and why the review's findings are committed before the agents are dispatched: D-260905b.
 
-**Two things the sequence rests on.** `git add -A` at every commit, because a committed range shows no untracked file and a new file is the likeliest place a key arrives. And commits made before step 6 are not guaranteed to pass `yarn validate` — `lint-staged` covers lint and formatting on what it stages, but a type error or a failing test survives into steps 2 and 4. Squash merging means within-branch bisectability buys nothing, so that is a trade rather than a regression.
+**Two things the sequence rests on.** `git add -A` at every commit, because a committed range shows no untracked file and a new file is the likeliest place a key arrives — and at the findings commits especially, since step 10's re-dispatch condition is defined over what that commit touched, and an untracked file touches nothing. And commits made before step 6 are not guaranteed to pass `yarn validate` — `lint-staged` covers lint and formatting on what it stages, but a type error or a failing test survives into steps 2 and 4. Squash merging means within-branch bisectability buys nothing, so that is a trade rather than a regression.
 
 **This is the shape a pull request ends in, not a prohibition on iterating.** Amend, or add a commit, and let the branch arrive at it.
 
@@ -45,7 +45,7 @@ Quick reference for shipping a change to production.
 
 ### Code review
 
-**Asked for before `yarn validate`**, so its findings arrive before a build has been paid for. `yarn validate` does not wait for it and should not be made to, but the two finishing independently is not the same as this section being done: the pull request waits for the review to report even when the checks are already green.
+**Asked for before `yarn validate`**, so its findings arrive before a build has been paid for. Nothing overlaps the two any more, so do not budget the review as free time: the wait is a human round trip, with steps 8 to 10 behind it. `yarn validate` does not wait for it and should not be made to, but the two finishing independently is not the same as this section being done: the pull request waits for the review to report even when the checks are already green.
 
 > Claude Code asks for its bundled `code-review` skill to be run rather than invoking it from [`release-ready-check`](../.claude/skills/release-ready-check/SKILL.md), and reports the step as outstanding until the findings come back — see [the dispatch decision](decisions/2026-09-06-cap-automatic-subagent-dispatch.md). **Unlike the two sections below, there is deliberately no brief here to fall back on**: a review's criteria belong to the reviewing tool, so a tool without that skill has no equivalent step here and should say so rather than improvise one.
 

@@ -3,7 +3,7 @@
 ## Context
 
 - [D-260905b](archive/2026-09-pre-migration.md#d-260905b--number-the-release-ready-sequence-and-commit-before-the-review-runs) very nearly retired `yarn prettier:write` on the premise that `lint-staged` formats at commit time. The sweep caught it: the glob listed `scss` but not `css`, and no `yml`, while `prettier .` covers both and this repository tracks `*.module.css` and workflow YAML. The step moved ahead of the first commit instead, as cover for that gap.
-- The gap is now closed at source. The glob is `**/*.{cjs,css,html,js,jsx,json,md,mjs,scss,ts,tsx,yaml,yml}`, which reaches every type this repository tracks that `prettier` formats.
+- The gap is now closed at source: the glob covers every type this repository tracks that `prettier` formats. It is in `package.json`, and is quoted in `docs/development.md` — those two move together, and no third live copy is worth having.
 
 ## Decision
 
