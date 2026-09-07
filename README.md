@@ -34,6 +34,7 @@ The app needs maintainer-supplied development configuration to run. Do not commi
 | `yarn agent:check-config`                   | Validate `.claude/` and exercise the shell-hygiene hook                          |
 | `yarn build`                                | Production build (webpack), then `next-sitemap` (sitemap + robots.txt)           |
 | `yarn clean`                                | Wipe the build cache (`.next`)                                                   |
+| `yarn comments:check`                       | Fail on an explanatory comment past four lines that the allowlist does not cover |
 | `yarn css-vars:check` / `css-vars:generate` | Verify / regenerate the WebStorm CSS-variable stub from `colors.ts`              |
 | `yarn dev`                                  | Dev server (Turbopack) with the Node inspector attached                          |
 | `yarn docs:check-links`                     | Verify every relative Markdown link and heading anchor resolves                  |

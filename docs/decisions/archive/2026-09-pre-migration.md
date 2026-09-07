@@ -43,7 +43,7 @@ The public behaviour each one produced is in the topical documentation, linked b
 
 ## D-260905c — Comment the call site, and keep the log for what has none
 
-- **Status:** Accepted; reverses the ban on explanatory comments in CSS, CSS Modules and JSX, and narrows [D-260821j](#d-260821j--check-internal-documentation-links-in-ci-rather-than-relying-on-the-release-sweep)'s "an entry stays as published once merged"
+- **Status:** Accepted; reverses the ban on explanatory comments in CSS, CSS Modules and JSX, and narrows [D-260821j](#d-260821j--check-internal-documentation-links-in-ci-rather-than-relying-on-the-release-sweep)'s "an entry stays as published once merged". The closing **Not enforced by a script** paragraph is superseded: the four-line limit is now counted by [`check-comment-length.mjs`](../../../scripts/check-comment-length.mjs), in `yarn validate` and in CI (#286)
 - **Decided:** 2026-09-05
 
 Three rules replace one. A comment goes where the code reads as wrong or arbitrary and says what was discarded; a topical doc holds only what neither code nor comment can; this log keeps what has no call site at all. The tests are in [`AGENTS.md`](../../../AGENTS.md#documentation-discipline).

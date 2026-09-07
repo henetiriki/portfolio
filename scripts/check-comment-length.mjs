@@ -196,8 +196,7 @@ const main = () => {
   const blocks = overLimit();
   const found = new Map([...blocks].map(([file, over]) => [file, over.length]));
 
-  // Where each one is, for whoever drains the backlog: the allowlist counts
-  // per file, and a line number in it would go stale on the first edit above.
+  // Where each one is, for whoever drains the backlog.
   if (process.argv.includes('--list')) {
     for (const [filePath, over] of [...blocks].sort()) {
       for (const block of over) {
