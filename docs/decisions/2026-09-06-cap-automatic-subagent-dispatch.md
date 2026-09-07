@@ -14,7 +14,7 @@
 
 ## Status
 
-Accepted, 2026-09-06.
+Accepted, 2026-09-06. Superseded by [2026-09-06-dispatch-the-agents-on-the-work-not-the-pull-request.md](2026-09-06-dispatch-the-agents-on-the-work-not-the-pull-request.md) on the cadence clause; everything else here stands.
 
 ## Consequences
 

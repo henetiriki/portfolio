@@ -24,7 +24,7 @@ Quick reference for shipping a change to production.
 6. **Ask for the [code review](#code-review)**, and carry on — it runs in a session of its own and does not block step 7. Steps 9 onwards do wait for it.
 7. **Run `yarn validate`.** A failure here is not a review finding and does not wait for step 8 — fix it, fold the fix into whichever commit caused it, and re-run until it passes.
 8. **Read the [code review](#code-review)'s findings** when they come back — asked for at step 6, and not `yarn validate`'s output — then fix or route each, and **commit** them.
-9. **Dispatch the [sensitive-information pass](#sensitive-information) and the [documentation sweep](#documentation-sweep)**, together.
+9. **Dispatch the [sensitive-information pass](#sensitive-information) and the [documentation sweep](#documentation-sweep)**, together. Both are owed once the branch's work is done rather than once a pull request exists — a branch handed back without one still owes them, and neither is triggered by anyone asking.
 10. **Read both reports**, fix or route every finding, and **commit** them, together with anything agreed in conversation rather than found in the tree.
 11. **Re-run `yarn validate`.** Re-dispatch an agent only where the previous step touched a path it had not read.
 12. **Push, and [open the pull request](../AGENTS.md#opening-a-pull-request).**

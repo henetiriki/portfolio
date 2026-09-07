@@ -1,6 +1,6 @@
 ---
 name: release-ready-check
-description: The checks to run before opening a pull request in this repository, and what a "ready for release check", "prepare for release" or "raise a PR" request means — the numbered sequence, where the commits fall in it, how the code review is handed to a person, and when the two read-only agents are dispatched. Use when validating a change, before opening a PR, after a rebase, or when asked to check whether something is ready to ship.
+description: The checks to run before opening a pull request in this repository, and what a "ready for release check", "prepare for release" or "raise a PR" request means — the numbered sequence, where the commits fall in it, how the code review is handed to a person, and when the two read-only agents are dispatched. Use when validating a change, before opening a PR, before handing finished work back without one, after a rebase, or when asked to check whether something is ready to ship.
 ---
 
 # Validating a change
@@ -9,7 +9,7 @@ description: The checks to run before opening a pull request in this repository,
 
 **"Release ready check" and "prepare for release" both mean the whole sequence**, reporting what passes, what fails, and anything that needs a human decision. The production build is inside it rather than an extra beyond it: `yarn validate` runs `build` and `test:e2e` itself on any change that is not documentation-only.
 
-**Re-run it after a rebase**, not only before opening the pull request. The ruleset on `main` requires branches to be up to date before merging, so a second branch has to rebase and re-run anyway — the case it exists for is two branches that each pass alone and break together. `yarn validate` re-runs unconditionally; the two agents do not, on the condition below.
+**Re-run it after a rebase**, not only before opening the pull request. The ruleset on `main` requires branches to be up to date before merging, so a second branch has to rebase and re-run anyway — the case it exists for is two branches that each pass alone and break together. `yarn validate` re-runs unconditionally; the two agents do not _re_-run so, on the condition below. Their first dispatch is unconditional; it is a later one that a rebase has to earn.
 
 ## The code review
 
@@ -35,7 +35,9 @@ description: The checks to run before opening a pull request in this repository,
 
 `yarn validate` cannot perform the [documentation sweep](../../../docs/release-checklist.md#documentation-sweep) or the [sensitive-information pass](../../../docs/release-checklist.md#sensitive-information): both are judgement over prose and a diff. Both are subagents in [`.claude/agents/`](../../agents/), `documentation-sweep` and `sensitive-information-pass`, each holding `Glob, Grep, Read` and nothing else, so neither **can** fix what it finds — see D-260904d.
 
-**Dispatch them once per branch, before the pull request** — together, since they read different things and neither waits on the other. That first dispatch is the only one you start on your own.
+**Dispatch them every time, not only when someone asks for a "release ready check".** Nothing about the change earns an exemption either: not that the diff is small, not that it is documentation-only, not that it looks obviously safe. That last judgement is the one the [sensitive-information pass](../../../docs/release-checklist.md#sensitive-information) forecloses in as many words, on the page that is the one copy of it. A session has already skipped both agents on exactly that reasoning, "since you hadn't asked for them" plus a diff it judged small and safe.
+
+**Once per branch, when the branch's work is done** — together, since they read different things and neither waits on the other. Done is the trigger rather than the pull request, because a session that commits and hands back without opening one still has to have run them: a cadence hung on the pull request reads as deferred to a moment that may never arrive, and a check deferred forever is a check skipped. That first dispatch is the only one you start on your own.
 
 **Every later run is suggested, never started.** After a rebase, or after a findings commit brings in surface they have not read, say so and wait — name what going without would leave unverified, and let the person decide whether to spend two fresh contexts on it. This is about who authorises the spend rather than whether the re-read is warranted: a condition you can check tells you the run is worth proposing, not that you may take it. "Every time, including every rebase" was the original rule and mostly bought a re-read of unchanged content; a conditional automatic re-dispatch replaced it and was still being taken without asking, which is the part that changed. See the [dispatch decision](../../../docs/decisions/2026-09-06-cap-automatic-subagent-dispatch.md).
 
@@ -53,7 +55,7 @@ Give both agents the diff path, and give the sweep the changed paths, which `nod
 
 **Relay what comes back, and act on it yourself.** A subagent's report is not shown to the user, so summarise it. Neither agent can resolve its own findings, which makes resolving them your job — and for a committed secret the fix is rotation by a person, never quietly deleting the line.
 
-**If an agent cannot be dispatched, do the check yourself.** A newly written or renamed agent is not necessarily dispatchable straight away — the session that added these two could not dispatch them at first and could later, without a restart, so treat availability as something to observe rather than predict. Fall back to performing the brief inline from the [release checklist](../../../docs/release-checklist.md), and say that is what you did. A delegated check that silently did not run is worse than an expensive one.
+**If an agent cannot be dispatched, do the check yourself.** That covers one case only: you tried to dispatch it and the dispatch failed. None of the exemptions refused above is this case — under every one of them the check still runs, and an agent still runs it. A newly written or renamed agent is not necessarily dispatchable straight away — the session that added these two could not dispatch them at first and could later, without a restart, so treat availability as something to observe rather than predict. Fall back to performing the brief inline from the [release checklist](../../../docs/release-checklist.md), and say that is what you did. A delegated check that silently did not run is worse than an expensive one.
 
 **Three bullets in the sweep stay yours.** Recording changes made outside git, adding newly discovered follow-ups, and writing down work agreed in discussion but not started all take this session as their input. The agent cannot see any of it, so it is scoped out rather than left to report a confident nothing. They land in the agents' findings commit along with what the agents themselves raise.
 

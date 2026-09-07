@@ -1,6 +1,6 @@
 ---
 name: sensitive-information-pass
-description: Reads a change's diff with fresh eyes for credentials, keys, tokens, private URLs, personal data and newly public values. Read-only and report-only — it names findings so a person can rotate, never edits. Use before opening a pull request, on every change rather than only on ones that look security-related.
+description: Reads a change's diff with fresh eyes for credentials, keys, tokens, private URLs, personal data and newly public values. Read-only and report-only — it names findings so a person can rotate, never edits. Use once per branch whenever its work is done — before opening a pull request, or before handing finished work back without one — and on every change rather than only on ones that look security-related.
 tools: Glob, Grep, Read
 ---
 
