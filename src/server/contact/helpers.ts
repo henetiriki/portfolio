@@ -8,9 +8,11 @@ const CUSTOM_APP_DOMAIN = process.env.CUSTOM_APP_DOMAIN;
 const GMAIL_SENDER_EMAIL = process.env.GMAIL_SENDER_EMAIL;
 
 const DISALLOWED_CHARS = /[<>^|%()&+]/;
-const URL_REGEX =
-  // eslint-disable-next-line security/detect-unsafe-regex
-  /\(?(https?|ftp):\/\/(?:([\w.:-]+)@)?((?:www.)?[\w.-]+\.\w{2,4}|localhost(?=\/)|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})(?::(\d*))?(\/?[^\s?]*\/)*(?:\/?([^\s\n?[\]{}#]*(?=\.)|[^\s\n?[\]{}.#]*)?(\.[^\s?#]*)?)?(?:\?([^\s\n#[\]]*))?(#[^\s\n]*)?\)?/;
+// Quantifier-free on purpose: `hasUrl` only ever reads a boolean, so a scheme
+// plus the first character of a host is the whole question. Parsing the rest
+// bought nine unread capture groups and a star-height-2 pattern on public
+// input — docs/decisions/2026-09-07-replace-the-url-parser-with-a-url-detector.md.
+const URL_REGEX = /(?:https?|ftp):\/\/[^\s/]/i;
 const EMAIL_REGEX = /^[a-z0-9_.-]+@[\da-z.-]+\.[a-z.]{2,6}$/i;
 
 const SUBJECT = `Message from {0} | ${CUSTOM_APP_DOMAIN}`;
@@ -37,9 +39,9 @@ const CONTENT_COPY: Buffer = readFileSync(
 );
 
 const formatValue = (value: string, args: string[]) =>
-  value.replace(/{(\d+)}/g, (match, number) =>
-    // eslint-disable-next-line security/detect-object-injection
-    typeof args[number] !== 'undefined' ? args[number] : match
+  value.replace(
+    /{(\d+)}/g,
+    (match, number) => args.at(Number(number)) ?? match
   );
 
 const escapeHtml = (value: string) =>
