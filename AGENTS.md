@@ -32,16 +32,19 @@ A chained command is judged as one string, so whatever reviews it — a permissi
 
 ## Branch names
 
-`<prefix>/<hyphenated-description>`, lowercase, always prefixed. Four prefixes:
+`<prefix>/<hyphenated-description>`, lowercase, always prefixed. The prefixes, all but the last written here:
 
-| Prefix     | For                                                      |
-| ---------- | -------------------------------------------------------- |
-| `feature/` | New or changed behaviour a visitor could see             |
-| `fix/`     | Repairing behaviour that is wrong                        |
-| `docs/`    | Only `docs/`, `*.md`, `.claude/` or `.worktreeinclude`   |
-| `chore/`   | Tooling, CI, dependencies, tests — work on the machinery |
+| Prefix        | For                                                          |
+| ------------- | ------------------------------------------------------------ |
+| `feature/`    | New or changed behaviour a visitor could see                 |
+| `fix/`        | Repairing behaviour that is wrong                            |
+| `docs/`       | Only `docs/`, `*.md`, `.claude/` or `.worktreeinclude`       |
+| `chore/`      | Tooling, CI, dependencies, tests — work on the machinery     |
+| `dependabot/` | Dependabot's own dependency branches — never written by hand |
 
-This is [Conventional Branch](https://conventionalbranch.org/) minus the prefixes this repository has no use for: `hotfix/` and `release/` both assume a release process this repository does not have — every merge deploys straight to production, so an urgent fix is just a `fix/`, and there is nothing to prepare a release on.
+The first four are [Conventional Branch](https://conventionalbranch.org/) minus the prefixes this repository has no use for: `hotfix/` and `release/` both assume a release process this repository does not have — every merge deploys straight to production, so an urgent fix is just a `fix/`, and there is nothing to prepare a release on. `dependabot/` is not from Conventional Branch at all.
+
+**You never write a `dependabot/` branch, and nothing above it applies to one.** Dependabot names its own, the check recognises the prefix and accepts whatever follows — lowercase and the hyphenated description included — and nothing here can rename them. A dependency bump you raise yourself is still a `chore/`.
 
 **This is checked rather than trusted, and CI is where it binds.** `yarn branch:check` runs [`scripts/check-branch-name.mjs`](scripts/check-branch-name.mjs) against the current branch, and `yarn validate` runs it first. CI runs it again inside `Validate` against the pull request's head ref, which is the enforcement point that holds whoever created the branch — including from an IDE, where no local check ever runs. Renaming a branch after the pull request exists means reopening it, so check before you push. `main` and a detached `HEAD` are exempt. See D-260904c.
 
