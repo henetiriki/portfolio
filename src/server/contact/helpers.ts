@@ -9,8 +9,10 @@ const GMAIL_SENDER_EMAIL = process.env.GMAIL_SENDER_EMAIL;
 
 const DISALLOWED_CHARS = /[<>^|%()&+]/;
 // A detector rather than a parser: `hasUrl` only ever reads a boolean, so a
-// scheme plus the first character of a host is the whole question.
-const URL_REGEX = /(?:https?|ftp):\/\/[^\s/]/i;
+// scheme plus the first character of a host is the whole question. The slash
+// run is any length and either lean, because WHATWG normalises `https:/x` and
+// `https:\\x` to the same live URL a mail client will autolink.
+const URL_REGEX = /(?:https?|ftp):[/\\]*[^\s/\\]/i;
 const EMAIL_REGEX = /^[a-z0-9_.-]+@[\da-z.-]+\.[a-z.]{2,6}$/i;
 
 const SUBJECT = `Message from {0} | ${CUSTOM_APP_DOMAIN}`;
