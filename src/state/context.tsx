@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from 'react';
+import { createContext, useContext, useMemo, useReducer } from 'react';
 import { initialState, reducer } from '@state/reducer';
 import type { ContextValue } from '@state/types';
 import type { FC, JSX, PropsWithChildren } from 'react';
@@ -23,10 +23,10 @@ export const PortfolioStateProvider: FC<PropsWithChildren> = ({
   children,
 }): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const value = useMemo(() => ({ dispatch, state }), [dispatch, state]);
 
   return (
-    // eslint-disable-next-line react/jsx-no-constructed-context-values
-    <PortfolioStateContext.Provider value={{ dispatch, state }}>
+    <PortfolioStateContext.Provider value={value}>
       {children}
     </PortfolioStateContext.Provider>
   );

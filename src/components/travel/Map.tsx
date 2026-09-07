@@ -165,8 +165,8 @@ export const Map: FC<MapProps> = ({ children, layersRendered, onReady }) => {
       {Children.map(children, child => {
         if (map && infoWindow && mapRendered && isValidElement(child)) {
           // set the map prop on the child component
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
+          // @ts-expect-error -- `children` is ReactNode, so the child's props
+          // are unknown here; every child rendered inside Map accepts both.
           return cloneElement(child, { infoWindow, map });
         }
       })}

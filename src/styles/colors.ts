@@ -25,7 +25,7 @@ export type ExtendedCustomColorOverrides = Record<
 >;
 
 export const colorOverrides: ExtendedCustomColorOverrides = {
-  /* eslint-disable sort-keys/sort-keys-fix */
+  /* eslint-disable sort-keys/sort-keys-fix -- key order is the palette's own reading order, light-to-dark neutrals then hues; alphabetising it loses that */
   whisper: [
     '#FFFFFF',
     '#FBFBFB',

@@ -33,17 +33,10 @@ export const useRailTrips = (): RailTripResult => {
     const { trips, upcomingTrips } =
       await fetcher<RailTrips>('/api/rail-trips');
 
-    const railTrips: string[][] = [];
-    const upcomingRailTrips: string[][] = [];
-
-    trips?.forEach(({ path }: RailTripItem, idx: number) => {
-      // eslint-disable-next-line security/detect-object-injection
-      railTrips[idx] = [path];
-    });
-    upcomingTrips?.forEach(({ path }: RailTripItem, idx: number) => {
-      // eslint-disable-next-line security/detect-object-injection
-      upcomingRailTrips[idx] = [path];
-    });
+    const railTrips: string[][] =
+      trips?.map(({ path }: RailTripItem) => [path]) ?? [];
+    const upcomingRailTrips: string[][] =
+      upcomingTrips?.map(({ path }: RailTripItem) => [path]) ?? [];
 
     return [
       {

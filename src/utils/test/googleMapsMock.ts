@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any -- this file mirrors the Google Maps callback signatures, which are variadic and untyped at the boundary */
 type Handler = (...args: any[]) => void;
 
 const listenerRegistry = new WeakMap<object, Map<string, Set<Handler>>>();
@@ -209,12 +209,12 @@ export class MockPolyline {
   static instances: MockPolyline[] = [];
 
   get = jest.fn(
-    // eslint-disable-next-line security/detect-object-injection
+    // eslint-disable-next-line security/detect-object-injection -- test double for Polyline.get; the key is a Maps option name supplied by the test
     (key: string) => this.optionsValue[key]
   );
 
   set = jest.fn((key: string, value: unknown) => {
-    // eslint-disable-next-line security/detect-object-injection
+    // eslint-disable-next-line security/detect-object-injection -- test double for Polyline.set; the key is a Maps option name supplied by the test
     this.optionsValue[key] = value;
   });
 

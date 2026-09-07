@@ -102,6 +102,46 @@ describe('validate', () => {
     ).toEqual(['e_contains_url']);
   });
 
+  it.each([
+    ['http', 'see http://example.com'],
+    ['ftp', 'see ftp://files.example.com/x'],
+    ['an uppercase scheme', 'see HTTPS://Example.com'],
+    ['a scheme mid-word', 'x=https://example.com'],
+    ['a bare host after the scheme', 'see https://localhost'],
+    // WHATWG normalises each of these to a live URL for a special scheme, so
+    // a mail client autolinks them however many slashes were typed.
+    ['one slash', 'buy now https:/spam.example'],
+    ['three slashes', 'buy now https:///spam.example'],
+    ['four slashes', 'buy now http:////spam.example'],
+    ['backslashes', 'buy now https:\\\\spam.example'],
+    ['no slash at all', 'buy now https:spam.example'],
+  ])('flags a message containing %s URL', (_label, message) => {
+    expect(validate({ ...validSubmission, message })).toEqual([
+      'e_contains_url',
+    ]);
+  });
+
+  it.each([
+    ['a scheme with no host', 'read https:// then stop'],
+    ['a scheme with nothing after it', 'I prefer https: for everything'],
+    ['a host with no scheme', 'find me at example.com or www.example.com'],
+    ['a colon that is not a scheme', 'note: this is a message'],
+  ])('does not flag a message containing %s', (_label, message) => {
+    expect(validate({ ...validSubmission, message })).toEqual([]);
+  });
+
+  // The matcher this replaced was star-height 2. A run of slash-separated
+  // segments is the input that exercised that nesting; catastrophic
+  // backtracking fails here as a suite timeout, not as a slow assertion.
+  it('flags an adversarial slash run', () => {
+    expect(
+      validate({
+        ...validSubmission,
+        message: `https://a.co/${'/a'.repeat(2000)}`,
+      })
+    ).toEqual(['e_contains_url']);
+  });
+
   it('combines multiple errors in field order', () => {
     expect(validate({ email: '', message: '', name: '' })).toEqual([
       'e_name_required',
