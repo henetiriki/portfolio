@@ -9,8 +9,7 @@ const GMAIL_SENDER_EMAIL = process.env.GMAIL_SENDER_EMAIL;
 
 const DISALLOWED_CHARS = /[<>^|%()&+]/;
 // A detector rather than a parser: `hasUrl` only ever reads a boolean, so a
-// scheme plus the first character of a host is the whole question. Why the
-// parser went — docs/decisions/2026-09-07-replace-the-url-parser-with-a-url-detector.md.
+// scheme plus the first character of a host is the whole question.
 const URL_REGEX = /(?:https?|ftp):\/\/[^\s/]/i;
 const EMAIL_REGEX = /^[a-z0-9_.-]+@[\da-z.-]+\.[a-z.]{2,6}$/i;
 
