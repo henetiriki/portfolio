@@ -18,6 +18,7 @@ const CHECKS = [
     sourceOnly: true,
   },
   { args: ['icons:check'], name: 'Generated icons', sourceOnly: true },
+  { args: ['comments:check'], name: 'Comment length', sourceOnly: true },
   { args: ['eslint:check'], name: 'Lint', sourceOnly: true },
   { args: ['type-check'], name: 'Types', sourceOnly: true },
   {

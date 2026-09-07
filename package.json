@@ -12,6 +12,7 @@
     "branch:check": "node scripts/check-branch-name.mjs",
     "build": "next build --webpack && next-sitemap",
     "clean": "rm -rf .next",
+    "comments:check": "node scripts/check-comment-length.mjs",
     "css-vars:check": "node scripts/generate-mantine-css-variables.mjs --check",
     "css-vars:generate": "node scripts/generate-mantine-css-variables.mjs",
     "dev": "NODE_OPTIONS='--inspect --trace-warnings' next dev",

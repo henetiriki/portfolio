@@ -62,7 +62,7 @@ jobs:
           verdict="$(node scripts/classify-change.mjs --base HEAD^ --explain)"
           echo "$verdict" >> "$GITHUB_OUTPUT"
           if [ "$verdict" = 'docs_only=true' ]; then
-            echo 'Documentation-only change: `docs:check-links`, `agent:check-config`, `prettier:check` and the Jest run with its Codecov upload ran, plus the branch-name check on a pull request. The classification skipped the generated-asset checks, lint, both type-checks and the build job.' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Documentation-only change: `docs:check-links`, `agent:check-config`, `prettier:check` and the Jest run with its Codecov upload ran, plus the branch-name check on a pull request. The classification skipped the generated-asset checks, lint, both type-checks, the comment-length check and the build job.' >> "$GITHUB_STEP_SUMMARY"
           fi
 
   # Everything that runs against source. Keeps per-step gates rather than one
@@ -125,6 +125,10 @@ jobs:
       - name: Type-check service worker
         if: needs.classify.outputs.docs_only != 'true'
         run: yarn tsc --pretty --noEmit --project service-worker/tsconfig.json
+
+      - name: Check comment length
+        if: needs.classify.outputs.docs_only != 'true'
+        run: yarn comments:check
 
       # Never gated, for the same reason prettier isn't: it exists specifically
       # to check docs, so a documentation-only change is exactly the case it
