@@ -2739,10 +2739,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/google.maps@npm:^3.66.0":
-  version: 3.66.0
-  resolution: "@types/google.maps@npm:3.66.0"
-  checksum: 10/f14094ed36a1dce06b65a511aa4e2fa9babd19a9c2d4a29eca116ea5d3cdb5b7322171f1db8914796523206a8457dc741c3d3a5b65c60145f84fc2f0fb5bbe65
+"@types/google.maps@npm:^3.66.2":
+  version: 3.66.2
+  resolution: "@types/google.maps@npm:3.66.2"
+  checksum: 10/a1becb855868eab1b02134fb101ed8f7fb53be350f08a3dccf2e372fece8aaa21a8469272a3b61a36635f6870918da4bb4755392353e459703bd96677e271121
   languageName: node
   linkType: hard
 
@@ -2833,12 +2833,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^19.2.5":
-  version: 19.2.5
-  resolution: "@types/react-dom@npm:19.2.5"
+"@types/react-dom@npm:^19.2.7":
+  version: 19.2.7
+  resolution: "@types/react-dom@npm:19.2.7"
   peerDependencies:
     "@types/react": ^19.2.0
-  checksum: 10/e6b752ad923b70638a44bb537d2866bed98f08bba973bc2199365875c003abe1e5f0e5a6d73ba8778e97f13eca36fdb2ab47f530793238eff92e4df04df18f70
+  checksum: 10/84079ed3b5470b7fafe4478c9180c2b0f19f8c5aebe666091e1ee5bc15464acb248909553769bd338de5f508afe96fec353997aed0457bb0d3a1e6246bcafcb8
   languageName: node
   linkType: hard
 
@@ -7239,7 +7239,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.3.16, nanoid@npm:^3.3.17":
+"nanoid@npm:^3.3.16, nanoid@npm:^3.3.18":
   version: 3.3.18
   resolution: "nanoid@npm:3.3.18"
   bin:
@@ -7793,12 +7793,12 @@ __metadata:
     "@testing-library/jest-dom": "npm:^7.0.1"
     "@testing-library/react": "npm:^16.3.3"
     "@testing-library/user-event": "npm:^14.6.7"
-    "@types/google.maps": "npm:^3.66.0"
+    "@types/google.maps": "npm:^3.66.2"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^24.13.3"
     "@types/nodemailer": "npm:^8.0.1"
     "@types/react": "npm:^19.2.18"
-    "@types/react-dom": "npm:^19.2.5"
+    "@types/react-dom": "npm:^19.2.7"
     "@typescript-eslint/eslint-plugin": "npm:^8.69.0"
     "@typescript-eslint/parser": "npm:^8.69.0"
     "@vercel/analytics": "npm:^2.0.1"
@@ -7824,7 +7824,7 @@ __metadata:
     next-sitemap: "npm:^4.2.3"
     nodemailer: "npm:^9.1.1"
     playwright-core: "npm:^1.62.1"
-    postcss: "npm:^8.5.26"
+    postcss: "npm:^8.5.28"
     postcss-flexbugs-fixes: "npm:^5.0.2"
     postcss-preset-env: "npm:^11.5.1"
     postcss-preset-mantine: "npm:^1.18.0"
@@ -8323,14 +8323,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.5.26":
-  version: 8.5.26
-  resolution: "postcss@npm:8.5.26"
+"postcss@npm:^8.5.28":
+  version: 8.5.28
+  resolution: "postcss@npm:8.5.28"
   dependencies:
-    nanoid: "npm:^3.3.17"
+    nanoid: "npm:^3.3.18"
     picocolors: "npm:^1.1.1"
     source-map-js: "npm:^1.2.1"
-  checksum: 10/842a624f822f77cb37264cc24f0cf97c0a69dd8d6f7b4a6d76b5a8dc95355899dd044f33a2d4e890da858293de570fce18dff453f3b629ff14cac67a3591895a
+  checksum: 10/c34814c1da499f370cd3b02a085a2d866989a966629b7bd4025f4a2a10d538a2ec83dc3181e1008550edb4cf44e49a0c40ec82332b08d9600877e6841240ad05
   languageName: node
   linkType: hard
 
@@ -9865,8 +9865,8 @@ __metadata:
   linkType: hard
 
 "webpack@npm:^5":
-  version: 5.110.1
-  resolution: "webpack@npm:5.110.1"
+  version: 5.110.3
+  resolution: "webpack@npm:5.110.3"
   dependencies:
     "@types/estree": "npm:^1.0.8"
     "@types/json-schema": "npm:^7.0.15"
@@ -9892,7 +9892,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 10/6ea525c275f57efa7d0b560788715df91289d6d2f70ff270f11cf84e0a3d0afd9153226113f1624f9ea5a70c5e541894c755e7e9ecd4b241a2562ae6aa12bf75
+  checksum: 10/be12a8b532febb0ab47d1b98f1f243708926be1b9fc39bceecdf8876af907a93defc9b36c9cece3adfccfc76c6960909b187f488e8c3497e8ae989c0701f0e37
   languageName: node
   linkType: hard
 
