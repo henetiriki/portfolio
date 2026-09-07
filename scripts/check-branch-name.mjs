@@ -1,21 +1,32 @@
 import { execFileSync } from 'node:child_process';
 
-// The four prefixes in AGENTS.md, then a lowercase hyphenated description. This
-// is Conventional Branch minus `hotfix/` and `release/`, both of which assume a
-// release process this repository does not have.
-export const PREFIXES = ['chore', 'docs', 'feature', 'fix'];
+// The prefixes in AGENTS.md, then a lowercase hyphenated description. This is
+// Conventional Branch minus `hotfix/` and `release/`, both of which assume a
+// release process this repository does not have, plus `dependabot/`, which is
+// not written here at all.
+export const PREFIXES = ['chore', 'dependabot', 'docs', 'feature', 'fix'];
 
-// eslint-disable-next-line security/detect-non-literal-regexp -- the only interpolation is `PREFIXES`, a module-level literal array of four lowercase words; no branch name or other input reaches this
+// Dependabot names its own branches — `dependabot/npm_and_yarn/next-16.0.1` —
+// with a second slash, underscores and dots the description grammar rejects.
+// Holding it to that grammar would fail every dependency pull request, so the
+// prefix is recognised and what follows it is left to Dependabot.
+const AUTHORED = PREFIXES.filter(prefix => prefix !== 'dependabot');
+
+// eslint-disable-next-line security/detect-non-literal-regexp -- the only interpolation is `AUTHORED`, derived from a module-level literal array of lowercase words; no branch name or other input reaches this
 const CONVENTIONAL = new RegExp(
-  `^(?:${PREFIXES.join('|')})/[a-z0-9]+(?:-[a-z0-9]+)*$`
+  `^(?:${AUTHORED.join('|')})/[a-z0-9]+(?:-[a-z0-9]+)*$`
 );
+
+const DEPENDABOT = /^dependabot\/[\w./-]+$/;
 
 /**
  * Whether a branch name follows the convention. Rejects a bare description, an
  * unknown prefix, uppercase, underscores, and a leading, trailing or doubled
- * hyphen in the description.
+ * hyphen in the description — none of which applies to a `dependabot/` branch,
+ * which only has to carry something after the prefix.
  */
-export const isConventional = name => CONVENTIONAL.test(name);
+export const isConventional = name =>
+  CONVENTIONAL.test(name) || DEPENDABOT.test(name);
 
 /**
  * Names the convention does not apply to: the default branch, a detached HEAD,
