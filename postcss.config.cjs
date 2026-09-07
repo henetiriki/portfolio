@@ -7,7 +7,7 @@
 // alongside postcss-preset-mantine, rather than only listing the Mantine
 // plugins.
 module.exports = {
-  /* eslint-disable sort-keys/sort-keys-fix -- key order is PostCSS execution order: postcss-preset-mantine must resolve its @mixin/nesting syntax before Autoprefixer and stage-3 compilation see it */
+  /* eslint-disable sort-keys/sort-keys-fix -- key order is execution order rather than style; what depends on what is in docs/styling-theming.md */
   plugins: {
     'postcss-preset-mantine': {},
     'postcss-simple-vars': {
