@@ -107,7 +107,7 @@ Docs here describe **what exists today**, so they are part of the change, not an
 >
 > **The classification is a script rather than an inline diff, and it fails open.** `Classify the change` runs `node scripts/classify-change.mjs --base HEAD^ --explain`, and the exclusion list lives in that script rather than in the workflow, so `yarn validate` answers the same question the same way locally — see D-260904b. It is no longer the shape of `vercel.json`'s command, which is the difference that decision exists to keep: the deploy gate is still a `git diff --quiet` over a pathspec, while this one collects `git diff --name-only` and classifies each path in turn. `HEAD^` is the base tip on a pull request, because the checked-out ref is the merge commit, and the previous tip on a push to `main`; the checkout is `fetch-depth: 2` so that parent exists. An error resolving the diff is caught rather than thrown — the script reports `docs_only=false` and exits `0`, so the change classifies as not documentation-only and everything runs.
 >
-> **What a cheap run looks like:** `Build & browser suite` is marked skipped, `Validate` is green with its gated steps skipped, and the run summary reads _"Documentation-only change: `prettier:check` and the Jest run ran, everything else was skipped."_ As with a Vercel skip, do not read the green tick as evidence the suite passed.
+> **What a cheap run looks like:** `Build & browser suite` is marked skipped, `Validate` is green with its gated steps skipped, and the run summary names the ungated steps that ran and the gated ones that did not. As with a Vercel skip, do not read the green tick as evidence the suite passed.
 
 ## Merge & Deploy
 
