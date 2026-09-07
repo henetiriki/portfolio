@@ -38,18 +38,23 @@ const SYNTAXES = new Map([
 
 const stripLine = (text, marker) => text.slice(marker.length).trim();
 
-const stripBlock = text =>
-  text
-    .replace(/^\/\*+/, '')
-    .replace(/\*\/$/, '')
-    .replace(/^\*+/, '')
-    .trim();
+// What one line of an open block contributes, and whether it closes there.
+// Anything after `*/` is code again, so a four-line block closed as
+// `*/ const x = 1;` is not charged a fifth line for the code.
+const blockContent = text => {
+  const end = text.indexOf('*/');
+
+  return {
+    closed: end !== -1,
+    text: (end === -1 ? text : text.slice(0, end)).replace(/^\*+/, '').trim(),
+  };
+};
 
 /**
  * Every comment block in a file, as `{ line, size }`. `size` counts only the
  * lines carrying prose, and consecutive single-line comments are one block
- * rather than one each. A comment must start its own line to be read: a
- * trailing one cannot reach the limit, and a mid-line marker is usually a URL.
+ * rather than one each. A trailing `//` is ignored, being one line; a block
+ * opener ending a line of code is read, so a long block cannot hide behind it.
  */
 export const commentBlocks = (lines, syntax) => {
   const blocks = [];
@@ -73,17 +78,25 @@ export const commentBlocks = (lines, syntax) => {
         content.push(stripLine(next, syntax.line));
         index += 1;
       }
-    } else if (syntax.block && trimmed.startsWith('/*')) {
-      let closed = trimmed.slice(2).includes('*/');
+    } else if (
+      syntax.block &&
+      (trimmed.startsWith('/*') || trimmed.endsWith('/*'))
+    ) {
+      // Only those two positions. An opener elsewhere on the line is not looked
+      // for, because `'src/**/*.ts'` and `https://*.googleapis.com` both contain
+      // one and reading either as a comment would swallow the rest of the file.
+      const opener = trimmed.startsWith('/*') ? 0 : trimmed.length - 2;
+      const first = blockContent(trimmed.slice(opener + 2));
+      let closed = first.closed;
 
-      content.push(stripBlock(trimmed));
+      content.push(first.text);
       index += 1;
 
       while (!closed && index < lines.length) {
-        const next = lines.at(index).trim();
+        const next = blockContent(lines.at(index).trim());
 
-        closed = next.includes('*/');
-        content.push(stripBlock(next));
+        closed = next.closed;
+        content.push(next.text);
         index += 1;
       }
     } else {
@@ -162,8 +175,15 @@ const overLimit = () => {
 
   for (const filePath of sourceFiles()) {
     const syntax = SYNTAXES.get(path.extname(filePath));
+    const absolute = path.join(projectRoot, filePath);
+
+    // `--cached` still lists a file deleted but not yet staged, and a run that
+    // died on it would report a stack trace instead of a verdict.
     // eslint-disable-next-line security/detect-non-literal-fs-filename -- `filePath` is one line of `git ls-files` over this repository's own tree
-    const source = fs.readFileSync(path.join(projectRoot, filePath), 'utf8');
+    if (!fs.existsSync(absolute)) continue;
+
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- as above
+    const source = fs.readFileSync(absolute, 'utf8');
     const over = countOverLimit(source, syntax);
 
     if (over.length > 0) found.set(filePath, over);

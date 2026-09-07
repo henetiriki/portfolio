@@ -46,6 +46,26 @@ describe('commentBlocks', () => {
     expect(sizes("const url = 'https://ouwl.house';\n", SLASH)).toEqual([]);
   });
 
+  it('reads a block opened at the end of a line of code', () => {
+    const source = ['const a = 1; /*', ' * one', ' * two', ' */'].join('\n');
+
+    expect(sizes(source, SLASH)).toEqual([2]);
+  });
+
+  it('does not read a glob or a URL as a block opener', () => {
+    const source = ["const files = ['src/**/*.ts'];", 'const b = 2;'].join(
+      '\n'
+    );
+
+    expect(sizes(source, SLASH)).toEqual([]);
+  });
+
+  it('stops counting at the terminator, not the end of the line', () => {
+    const source = ['/* one', ' * two */ const a = 1;'].join('\n');
+
+    expect(sizes(source, SLASH)).toEqual([2]);
+  });
+
   it('ignores a shebang, and reads the hash comment under it', () => {
     expect(sizes('#!/bin/sh\n# one\n# two\n', HASH)).toEqual([2]);
   });
