@@ -108,7 +108,7 @@
     "**/*.{cjs,js,jsx,mjs,ts,tsx}": [
       "eslint --fix --max-warnings 0"
     ],
-    "**/*.{cjs,html,js,jsx,json,md,mjs,scss,ts,tsx}": [
+    "**/*.{cjs,css,html,js,jsx,json,md,mjs,scss,ts,tsx,yaml,yml}": [
       "prettier --ignore-path .prettierignore --write"
     ]
   },
