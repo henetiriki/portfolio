@@ -1,13 +1,25 @@
 #!/usr/bin/env bash
 
+# Excluding scripts/ excludes this gate itself, so a change to it no longer
+# triggers the deploy that would exercise it. Accepted rather than overlooked:
+# D-260904b kept this gate out of the shared classifier because it cannot be
+# exercised before a real deploy either way.
 readonly DEPLOYMENT_EXCLUSIONS=(
   .
-  ':(exclude)docs'
   ':(exclude)*.md'
   ':(exclude).claude'
+  ':(exclude).env.test'
+  ':(exclude).github'
+  ':(exclude).husky'
+  ':(exclude).prettier*'
   ':(exclude).worktreeinclude'
+  ':(exclude)codecov.yml'
+  ':(exclude)docs'
   ':(exclude)e2e'
-  ':(exclude)playwright.config.ts'
+  ':(exclude)eslint.config.mjs'
+  ':(exclude)jest.*'
+  ':(exclude)playwright*.config.ts'
+  ':(exclude)scripts'
 )
 
 compare_deployment_changes() {

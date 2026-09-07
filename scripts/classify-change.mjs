@@ -1,10 +1,7 @@
 import { execFileSync } from 'node:child_process';
 
-// CI's exclusion list, and only CI's. Vercel's deploy gate keeps its own in
-// `should-skip-vercel-build.sh` — it excludes `e2e/` and `playwright.config.ts`
-// as well, because it asks whether a visitor could see the change while this
-// asks whether lint, types, tests or the build could be affected. The two
-// deliberately differ; see docs/release-checklist.md.
+// CI's exclusion list, and only CI's. The deploy gate keeps a deliberately
+// different one; see docs/release-checklist.md#merge--deploy.
 //
 // These reproduce the git pathspec exclusions this replaced, so the semantics
 // have to match exactly: `:(exclude)*.md` matched at any depth, because git's
