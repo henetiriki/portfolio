@@ -10,6 +10,16 @@ const outputPath = path.join(
   projectRoot,
   'src/styles/mantine-custom-properties.css'
 );
+const isCheckMode = process.argv.includes('--check');
+
+// A Vercel build has no IDE to serve the stub to, so `postinstall` generating it
+// there can only cost time or fail the deploy. Deliberately not a blanket early
+// return: `--check` must still run, or it would pass without checking anything.
+// See docs/decisions/2026-09-07-skip-the-webstorm-css-stub-on-vercel.md.
+if (process.env.VERCEL && !isCheckMode) {
+  console.log('VERCEL is set: skipping the WebStorm CSS-variable stub.');
+  process.exit(0);
+}
 
 const sourceText = fs.readFileSync(sourcePath, 'utf8');
 const sourceFile = ts.createSourceFile(
@@ -74,7 +84,7 @@ const declarations = colorDeclaration.initializer.properties.flatMap(
 
 const output = [':root {', ...declarations, '}', ''].join('\n');
 
-if (process.argv.includes('--check')) {
+if (isCheckMode) {
   const currentOutput = fs.existsSync(outputPath)
     ? fs.readFileSync(outputPath, 'utf8')
     : '';
