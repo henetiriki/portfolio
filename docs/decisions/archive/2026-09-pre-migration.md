@@ -68,7 +68,7 @@ Three rules replace one. A comment goes where the code reads as wrong or arbitra
 
 ## D-260905b — Number the release-ready sequence, and commit before the review runs
 
-- **Status:** Accepted; supersedes the premise under [D-260904e](#d-260904e--start-the-code-review-from-the-release-ready-check-and-keep-it-claude-code-only)'s formatting step — which is relocated rather than undone — and the two-part diff capture described in [D-260904d](#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit). Both entries' central decisions stand: the review still starts before `yarn validate` and is still Claude Code's alone, and the agents still cannot edit.
+- **Status:** Accepted; supersedes the premise under [D-260904e](#d-260904e--start-the-code-review-from-the-release-ready-check-and-keep-it-claude-code-only)'s formatting step — which is relocated rather than undone — and the two-part diff capture described in [D-260904d](#d-260904d--delegate-the-sweep-and-the-secrets-pass-to-agents-that-cannot-edit). Both entries' central decisions stand: the review still starts before `yarn validate` and is still Claude Code's alone, and the agents still cannot edit. The formatting step below is superseded by [2026-09-07-drop-the-formatting-step-and-let-lint-staged-cover-it.md](../2026-09-07-drop-the-formatting-step-and-let-lint-staged-cover-it.md); the rest of this entry stands.
 - **Decided:** 2026-09-05
 
 The pre-merge flow is now a numbered sequence in the [release checklist](../../release-checklist.md#before-opening-the-pr), with four commits inside it: the implementation, the documentation, the code review's findings, then the two agents'. `release-ready-check` follows that list and holds only what is specific to Claude Code.
