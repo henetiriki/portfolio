@@ -14,36 +14,25 @@ Quick reference for shipping a change to production.
 
 ## Before Opening The PR
 
-**The order is fixed, and the commits are part of it.** Work down the list. Steps 9 to 11 loop where a fix pulls in a path an agent has not read; everything before them happens once.
+**The order is fixed, and the commits are part of it.** Work down the list. Steps 8 to 10 loop where a fix pulls in a path an agent has not read; everything before them happens once.
 
 1. **Implement.**
-2. **Run `yarn prettier:write`.** Cheap, and it covers the file types `lint-staged` does not — see below.
-3. **Commit** the implementation. Stage with `git add -A` — here and at every commit below — so a new file is committed rather than left untracked and invisible to the diff the agents read.
-4. **Document** — the topical doc, the [Roadmap](roadmap.md), and a decision entry if the change earns one (D-260905a).
-5. **Commit** the documentation. A documentation-only change has nothing to separate, so this collapses into step 3.
-6. **Ask for the [code review](#code-review)**, and carry on — it runs in a session of its own and does not block step 7. Steps 9 onwards do wait for it.
-7. **Run `yarn validate`.** A failure here is not a review finding and does not wait for step 8 — fix it, fold the fix into whichever commit caused it, and re-run until it passes.
-8. **Read the [code review](#code-review)'s findings** when they come back — asked for at step 6, and not `yarn validate`'s output — then fix or route each, and **commit** them.
-9. **Dispatch the [sensitive-information pass](#sensitive-information) and the [documentation sweep](#documentation-sweep)**, together. Both are owed once the branch's work is done rather than once a pull request exists — a branch handed back without one still owes them, and neither is triggered by anyone asking.
-10. **Read both reports**, fix or route every finding, and **commit** them, together with anything agreed in conversation rather than found in the tree.
-11. **Re-run `yarn validate`.** Re-dispatch an agent only where the previous step touched a path it had not read.
-12. **Push, and [open the pull request](../AGENTS.md#opening-a-pull-request).**
+2. **Commit** the implementation. Stage with `git add -A` — here and at every commit below — so a new file is committed rather than left untracked and invisible to the diff the agents read.
+3. **Document** — the topical doc, the [Roadmap](roadmap.md), and a decision entry if the change earns one (D-260905a).
+4. **Commit** the documentation. A documentation-only change has nothing to separate, so this collapses into step 2.
+5. **Ask for the [code review](#code-review)**, and carry on — it runs in a session of its own and does not block step 6. Steps 8 onwards do wait for it.
+6. **Run `yarn validate`.** A failure here is not a review finding and does not wait for step 7 — fix it, fold the fix into whichever commit caused it, and re-run until it passes.
+7. **Read the [code review](#code-review)'s findings** when they come back — asked for at step 5, and not `yarn validate`'s output — then fix or route each, and **commit** them.
+8. **Dispatch the [sensitive-information pass](#sensitive-information) and the [documentation sweep](#documentation-sweep)**, together. Both are owed once the branch's work is done rather than once a pull request exists — a branch handed back without one still owes them, and neither is triggered by anyone asking.
+9. **Read both reports**, fix or route every finding, and **commit** them, together with anything agreed in conversation rather than found in the tree.
+10. **Re-run `yarn validate`.** Re-dispatch an agent only where the previous step touched a path it had not read.
+11. **Push, and [open the pull request](../AGENTS.md#opening-a-pull-request).**
 
-**Four commits rather than one, because they are where the separation is legible.** Merges are squashed, so the four diffs land on `main` as one — but `squash_merge_commit_message` is `COMMIT_MESSAGES`, so the four _messages_ are concatenated into the squash body and do survive. The pull request is where the split is easiest to read, and `main` keeps the record of what each stage was for. That is what earns the separation: it distinguishes what you wrote from what each kind of review caught. Skip a findings commit where there was nothing to fix, rather than committing nothing to record it; a branch reaching step 12 with neither is one that neither reviewer found anything on, which is as much a result as a long one.
+**Four commits, not one:** implementation, documentation, the review's findings, then the agents'. Merges are squashed, so they land on `main` as a single commit — but `squash_merge_commit_message` is `COMMIT_MESSAGES`, so the four messages survive in its body. Skip a findings commit where there was nothing to fix. Why four, why documentation is separated from implementation, and why the review's findings are committed before the agents are dispatched: D-260905b.
 
-**The review's findings are committed before the agents are dispatched, which is the point of splitting steps 8 and 9.** The agents then read a complete, review-corrected diff, rather than one that changes underneath them while they work — a stale read costs a re-dispatch, and a re-dispatch is minutes. It also keeps the two signals apart: a review reports on what is inside the diff, the agents on how the diff sits against the rest of the tree, and blended into one commit that distinction is lost. The cost grew when the review became something a person runs in a session of their own: the wait is no longer a background task finishing while `yarn validate` runs, but a human round trip, and steps 9 to 11 sit behind it. That is the price of the stable diff, and it is worth saying rather than implying the review blocks nothing.
+**Two things the sequence rests on.** `git add -A` at every commit, because a committed range shows no untracked file and a new file is the likeliest place a key arrives. And commits made before step 6 are not guaranteed to pass `yarn validate` — `lint-staged` covers lint and formatting on what it stages, but a type error or a failing test survives into steps 2 and 4. Squash merging means within-branch bisectability buys nothing, so that is a trade rather than a regression.
 
-**Splitting implementation from documentation makes the ratio visible inside a change.** The [proportionality audit](roadmap.md#documentation-weight) that opened this programme could only measure prose against source across whole commits; steps 3 and 5 measure it per change, which is the question that audit actually asks.
-
-**Committing before step 6 is what makes the diff simple.** The review and both agents read one `git diff origin/main...HEAD` instead of a committed range plus a working-tree diff appended to it, with the caveat that a path changed in both appears twice in different states. That complication existed only because nothing was committed yet. Staging every commit with `git add -A` is what keeps it true: a committed range shows no untracked file, so a brand-new one would otherwise reach the agents unseen — and a new file is the likeliest place a key arrives. That applies to the documentation and both findings commits as much as the first; step 11's re-dispatch condition is defined over what the step-10 commit touched, and an untracked file touches nothing.
-
-**Step 2 no longer covers a gap in `lint-staged`, and what it does cover is narrower.** Its glob is `**/*.{cjs,css,html,js,jsx,json,md,mjs,scss,ts,tsx,yaml,yml}`, which reaches every type this repository tracks that `prettier .` formats — `css` and workflow YAML included, the two whose absence used to let a styling or workflow change reach the review unformatted and fail `prettier:check` at step 7 after the commits were made. What remains to step 2 is a commit that skips the pre-commit hook, and a file the commit does not stage. Whether that still earns a step is [open work](roadmap.md#ci--security-hardening).
-
-**Accepted cost: commits made before step 7 are not guaranteed to pass `yarn validate`.** `lint-staged` covers lint on what it stages and step 2 covers formatting, but a type error or a failing test can survive into steps 3 and 5. Within-branch bisectability buys nothing under squash merge, so this is a trade rather than a regression.
-
-**Step 5 does not make documentation an afterthought**, despite arriving after the implementation commit. The opposite: a mandated commit is harder to under-do than prose folded into an implementation diff, where thin documentation is invisible. Docs remain part of the change — the sweep at step 9 fails a change whose docs are missing exactly as it always did.
-
-**This is the shape the pull request ends in, not a prohibition on iterating.** Real work loops — implement, start documenting, find the implementation wrong. Amend, or add a commit, and let the branch arrive at this shape; a procedure that forbids the way work actually happens is one that gets quietly abandoned.
+**This is the shape a pull request ends in, not a prohibition on iterating.** Amend, or add a commit, and let the branch arrive at it.
 
 - [ ] **`yarn validate` passes.** It classifies the change and runs what that change can affect, cheapest first — lint, both type-checks, the generated-asset checks, the build and the browser suite are skipped on a documentation-only change and run on everything else. It prints the verdict and what it skipped. The individual scripts still exist and can be run on their own; the list is in [Development Workflow](development.md#scripts-packagejson). Coverage stays above the 95% global threshold in `jest.config.js`
 - [ ] The pull request's `codecov/patch` check passes at 100%; inspect any GitHub Checks annotations rather than treating the aggregate Jest percentage as coverage of the changed lines. If the status never appears at all, the upload was dropped rather than failed — check Codecov's own state before the workflow, as [Testing](development.md#testing) describes
@@ -56,11 +45,11 @@ Quick reference for shipping a change to production.
 
 ### Code review
 
-**Asked for before `yarn validate` rather than after it**, so a person can start it while the production build and the browser suite run, and so its findings arrive before a build has been paid for. Nothing schedules that overlap any more, though, so do not budget the review as free time. `yarn validate` does not wait for it and should not be made to, but the two finishing independently is not the same as this section being done: the pull request waits for the review to report even when the checks are already green.
+**Asked for before `yarn validate`**, so its findings arrive before a build has been paid for. `yarn validate` does not wait for it and should not be made to, but the two finishing independently is not the same as this section being done: the pull request waits for the review to report even when the checks are already green.
 
-> Claude Code asks for its bundled `code-review` skill to be run rather than invoking it from [`release-ready-check`](../.claude/skills/release-ready-check/SKILL.md), hands over a written instruction that dispatches it to a subagent with an empty context, and reports the step as outstanding until the findings come back — see [the dispatch decision](decisions/2026-09-06-cap-automatic-subagent-dispatch.md). **Unlike the two sections below, there is deliberately no brief here to fall back on.** A review's criteria belong to the reviewing tool, so writing one out would invent a method this repository does not have and would drift from what the skill actually does. A tool without that skill has no equivalent step here and should say so rather than improvise one — the only step on this page that does not survive being read by another tool.
+> Claude Code asks for its bundled `code-review` skill to be run rather than invoking it from [`release-ready-check`](../.claude/skills/release-ready-check/SKILL.md), and reports the step as outstanding until the findings come back — see [the dispatch decision](decisions/2026-09-06-cap-automatic-subagent-dispatch.md). **Unlike the two sections below, there is deliberately no brief here to fall back on**: a review's criteria belong to the reviewing tool, so a tool without that skill has no equivalent step here and should say so rather than improvise one.
 
-- [ ] **The tree is already formatted by the time this runs.** Both halves of its hygiene precede it: [`eslint-on-edit.mjs`](../scripts/eslint-on-edit.mjs) lints each code file as it is written, and formatting is done at step 2 and again by `lint-staged` on what it stages. An unformatted diff makes the review report what `prettier:check` catches for free a minute later, which is why the formatting step moved ahead of the commits rather than being dropped.
+- [ ] **The tree is already formatted by the time this runs**, because the review reads committed work: [`eslint-on-edit.mjs`](../scripts/eslint-on-edit.mjs) lints each code file as it is written, and `lint-staged` formats what each commit stages.
 - [ ] **A review has run against the diff and its findings have been read.** They are generic — correctness, reuse, simplification, efficiency — and know nothing of this repository's own disciplines, so this replaces neither the pass nor the sweep below.
 - [ ] **Each finding is fixed or routed.** Fix what is wrong in the change at hand; anything else goes to the [Roadmap](roadmap.md) rather than a commit message, as the sweep already requires. Treat a finding as blocking only where it contradicts something this checklist demands.
 
@@ -166,12 +155,6 @@ Worth knowing before relying on the automation:
 
 - **The CSS-variable stub has no committed baseline.** It is intentionally gitignored and regenerated during `postinstall`; CI's subsequent `css-vars:check` proves the current generated output matches `colors.ts`, not that a checked-in artefact is current. This is the intended model because the file exists only for local WebStorm analysis.
 - **Dev and production use different bundlers.** `next dev` runs Turbopack; `next build` is pinned to webpack with `--webpack` because `@serwist/next` injects a webpack config that Next 16 refuses to build through Turbopack. Nothing automated exercises Turbopack — CI runs the one webpack production build — so a bundler-specific difference in either direction surfaces only in local dev or manual QA. See [development.md](development.md#bundlers-turbopack-in-dev-webpack-in-builds).
-
-**Resolved** (kept because each bit this project before):
-
-- ~~**The no-PWA build remains manual.**~~ Obsolete as of 2026-08-14: the `WITH_PWA` flag was removed, so there is no second configuration to build. CI runs the single production build and asserts it emits `public/sw.js`.
-
-- ~~**Production-mode QA collides with `next dev`.**~~ `next dev` now writes to `.next/dev` and `next build` to `.next`, so they no longer share prerendered output — verified by running a full production build with a dev server live and confirming it kept serving. Next 16 also takes a lockfile preventing two `next dev` (or two `next build`) instances on the same project. The old failure mode was `Cannot find module './chunks/vendor-chunks/next.js'` plus 500s on uncompiled routes, fixed with `yarn clean && yarn dev`.
 
 ## Rollback
 
