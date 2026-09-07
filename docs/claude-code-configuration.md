@@ -47,7 +47,7 @@ Both are dispatched together, once per branch, when the branch's work is done �
 
 - **Neither can resolve a finding instead of reporting it.** An agent that can fix something can hide that it found it, and for a committed secret the fix is rotation by a person rather than a deletion in a later commit.
 - **Neither can run `git`.** That is why the caller writes the diff to a file outside the repository and hands over the path.
-- **Neither can dispatch a further agent**, which is half of why the one-hop cap holds by construction rather than by rule — the other half being that `settings.json` has no `Stop` or `SubagentStop` hook to fire a follow-on command.
+- **Neither can dispatch a further agent**, which is half of what makes the one-hop cap true of the tree as it stands — the other half being that `settings.json` has no `Stop` or `SubagentStop` hook to fire a follow-on command. The cap is nonetheless a rule rather than a mechanism: nothing fails if it is broken, and it exists to stop that machinery being added without a decision.
 
 **`tools` narrows; a skill's `allowed-tools` widens, and the two must not be read as the same field.** `tools` replaces everything the session has with a named list. `allowed-tools` is a grant — calls a skill may make without prompting. No skill here declares one, so each runs against the session's own permission surface. The distinction matters because a doc that blurs it makes `allowed-tools: Edit` on an agent look like an ordinary frontmatter edit, when it is the one edit that would undo what these agents exist for. Nothing in `agent:check-config` reads `allowed-tools`; its tool check runs over `agents/` alone.
 
@@ -57,15 +57,15 @@ It is Claude Code's own bundled `code-review` skill, and nothing here dispatches
 
 ## Hooks
 
-Two, both configured in `settings.json` and both Node scripts under `scripts/`: a `PreToolUse` hook on `Bash` refusing chained commands and `git -C`, and a `PostToolUse` hook on `Edit|Write` linting each code file as it is written. Neither is a git hook. They are documented in [Git hooks](development.md#git-hooks), beside the `lint-staged` configuration one of them reads its file types from — moving them here would separate that paragraph from the glob it depends on and put a fourth copy of that glob in the tree.
+Both hooks are configured in `settings.json` and documented in [Git hooks](development.md#git-hooks), under a heading that disclaims itself in its own first line. They stay there rather than moving here because the `PostToolUse` hook reads its file extensions from the `lint-staged` block directly above them, and that glob is already quoted verbatim in three places that go stale together — moving the paragraph away from it would make four.
 
 ## What `agent:check-config` proves
 
-`yarn agent:check-config` runs [`scripts/check-agent-config.mjs`](../scripts/check-agent-config.mjs). It is ungated in CI's `Validate` job — `.claude/` is itself on the [documentation-only exclusion list](release-checklist.md#pull-request), so a change to this directory is precisely the case it must not skip, and on such a change it is the only step in CI that reads the agents' tool restriction at all.
+`yarn agent:check-config` runs [`scripts/check-agent-config.mjs`](../scripts/check-agent-config.mjs), and is one of the steps CI [never gates](release-checklist.md#pull-request). The consequence for this directory: on a change that touches only `.claude/`, it is the only step in CI that reads the agents' tool restriction at all.
 
 It establishes three different kinds of thing, and they are worth telling apart:
 
-- **Behaviour, by execution.** It runs the `PreToolUse` hook itself against a table of commands and asserts each verdict. That is a test of the hook, not of the settings file naming it — and it matters because the hook fails open, so a broken escape is otherwise silent.
+- **Behaviour, by execution.** It runs the command string `settings.json` declares, against a table of commands, and asserts each verdict. Running it is the only way to test the hook rather than a re-implementation of it, and it matters because the hook fails open — a broken escape is otherwise silent.
 - **Shape, by reading.** `settings.json` parses and carries no key beyond `hooks` and `permissions`; no `autoMode` key in either settings file; permission lists sorted and `allow` empty; hook entries well-formed and every `${CLAUDE_PROJECT_DIR}` path resolving; each skill directory holding a `SKILL.md` whose `name` matches it and whose `description` is non-empty; every agent — at any depth under `agents/`, since a file the walk misses is unchecked rather than reported — carrying a matching `name`, a description, and a sorted `tools` list drawn only from `Glob, Grep, Read`; and no launch configuration binding the browser suite's port.
 - **Prose, by substring, once.** The `release-ready-check` body, frontmatter stripped, still contains `code-review`. It is the only prose check in the script, and it exists because "ask for a review" is one imperative sentence with no script or hook behind it — the instruction whose loss nothing else would notice.
 
