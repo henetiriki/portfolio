@@ -10,6 +10,16 @@ const outputPath = path.join(
   projectRoot,
   'src/styles/mantine-custom-properties.css'
 );
+const isCheckMode = process.argv.includes('--check');
+
+// `!isCheckMode` because a blanket return would make `--check` pass without
+// checking; `writeSync` because `process.exit` drops a buffered `console.log`.
+// Why it is skipped on Vercel at all:
+// docs/decisions/2026-09-07-skip-the-webstorm-css-stub-on-vercel.md
+if (process.env.VERCEL && !isCheckMode) {
+  fs.writeSync(1, 'VERCEL is set: skipping the WebStorm CSS-variable stub.\n');
+  process.exit(0);
+}
 
 const sourceText = fs.readFileSync(sourcePath, 'utf8');
 const sourceFile = ts.createSourceFile(
@@ -74,7 +84,7 @@ const declarations = colorDeclaration.initializer.properties.flatMap(
 
 const output = [':root {', ...declarations, '}', ''].join('\n');
 
-if (process.argv.includes('--check')) {
+if (isCheckMode) {
   const currentOutput = fs.existsSync(outputPath)
     ? fs.readFileSync(outputPath, 'utf8')
     : '';

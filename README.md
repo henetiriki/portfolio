@@ -29,26 +29,26 @@ The app needs maintainer-supplied development configuration to run. Do not commi
 
 ## Scripts
 
-| Script                                      | Purpose                                                                |
-| ------------------------------------------- | ---------------------------------------------------------------------- |
-| `yarn agent:check-config`                   | Validate `.claude/` and exercise the shell-hygiene hook                |
-| `yarn build`                                | Production build (webpack), then `next-sitemap` (sitemap + robots.txt) |
-| `yarn clean`                                | Wipe the build cache (`.next`)                                         |
-| `yarn css-vars:check` / `css-vars:generate` | Verify / regenerate the WebStorm CSS-variable stub from `colors.ts`    |
-| `yarn dev`                                  | Dev server (Turbopack) with the Node inspector attached                |
-| `yarn docs:check-links`                     | Verify every relative Markdown link and heading anchor resolves        |
-| `yarn eslint:check` / `eslint:write`        | Lint / lint and autofix                                                |
-| `yarn icons:check` / `icons:generate`       | Verify / regenerate manifest icons and splash images from `ouwl.svg`   |
-| `postinstall`                               | Regenerates the WebStorm CSS-variable stub after every install         |
-| `yarn prettier:check` / `prettier:write`    | Format check / write                                                   |
-| `yarn start`                                | Serve a production build locally                                       |
-| `yarn test`                                 | Jest + React Testing Library                                           |
-| `yarn test:coverage`                        | Tests with coverage (95% global threshold)                             |
-| `yarn test:e2e`                             | Playwright browser regression suite (needs a build; serves on :3002)   |
-| `yarn test:e2e:install`                     | Fetch the Playwright browser binary (install scripts are disabled)     |
-| `yarn test:e2e:ui`                          | Browser suite in Playwright's interactive runner                       |
-| `yarn test:watch`                           | Tests in watch mode                                                    |
-| `yarn type-check`                           | `tsc --noEmit`                                                         |
+| Script                                      | Purpose                                                                          |
+| ------------------------------------------- | -------------------------------------------------------------------------------- |
+| `yarn agent:check-config`                   | Validate `.claude/` and exercise the shell-hygiene hook                          |
+| `yarn build`                                | Production build (webpack), then `next-sitemap` (sitemap + robots.txt)           |
+| `yarn clean`                                | Wipe the build cache (`.next`)                                                   |
+| `yarn css-vars:check` / `css-vars:generate` | Verify / regenerate the WebStorm CSS-variable stub from `colors.ts`              |
+| `yarn dev`                                  | Dev server (Turbopack) with the Node inspector attached                          |
+| `yarn docs:check-links`                     | Verify every relative Markdown link and heading anchor resolves                  |
+| `yarn eslint:check` / `eslint:write`        | Lint / lint and autofix                                                          |
+| `yarn icons:check` / `icons:generate`       | Verify / regenerate manifest icons and splash images from `ouwl.svg`             |
+| `postinstall`                               | Regenerates the WebStorm CSS-variable stub after every install, except on Vercel |
+| `yarn prettier:check` / `prettier:write`    | Format check / write                                                             |
+| `yarn start`                                | Serve a production build locally                                                 |
+| `yarn test`                                 | Jest + React Testing Library                                                     |
+| `yarn test:coverage`                        | Tests with coverage (95% global threshold)                                       |
+| `yarn test:e2e`                             | Playwright browser regression suite (needs a build; serves on :3002)             |
+| `yarn test:e2e:install`                     | Fetch the Playwright browser binary (install scripts are disabled)               |
+| `yarn test:e2e:ui`                          | Browser suite in Playwright's interactive runner                                 |
+| `yarn test:watch`                           | Tests in watch mode                                                              |
+| `yarn type-check`                           | `tsc --noEmit`                                                                   |
 
 Every production build generates the Serwist service worker; `yarn dev` never does. There is no flag to set.
 
