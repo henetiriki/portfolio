@@ -12,12 +12,12 @@ const outputPath = path.join(
 );
 const isCheckMode = process.argv.includes('--check');
 
-// A Vercel build has no IDE to serve the stub to, so `postinstall` generating it
-// there can only cost time or fail the deploy. Deliberately not a blanket early
-// return: `--check` must still run, or it would pass without checking anything.
-// See docs/decisions/2026-09-07-skip-the-webstorm-css-stub-on-vercel.md.
+// `!isCheckMode` because a blanket return would make `--check` pass without
+// checking; `writeSync` because `process.exit` drops a buffered `console.log`.
+// Why it is skipped on Vercel at all:
+// docs/decisions/2026-09-07-skip-the-webstorm-css-stub-on-vercel.md
 if (process.env.VERCEL && !isCheckMode) {
-  console.log('VERCEL is set: skipping the WebStorm CSS-variable stub.');
+  fs.writeSync(1, 'VERCEL is set: skipping the WebStorm CSS-variable stub.\n');
   process.exit(0);
 }
 
