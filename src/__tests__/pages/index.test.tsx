@@ -40,8 +40,8 @@ describe('Home page', () => {
   it('heads the about section with the role rather than repeating the name', () => {
     render(<Home />);
 
-    // see D-260816e — the name is the h1, so a second heading carrying it left
-    // the outline naming the same person twice and the section not at all
+    // The name is the h1, so a second heading carrying it left the outline
+    // naming the same person twice and the section not at all
     expect(
       screen.getAllByRole('heading', { name: /louw swart/i })
     ).toHaveLength(1);

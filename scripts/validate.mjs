@@ -36,6 +36,7 @@ const CHECKS = [
   { args: ['test:e2e'], name: 'Browser suite', sourceOnly: true },
 ];
 
+/* istanbul ignore next -- shells out to classify-change.mjs; exercised by running the script, not by importing it under test */
 const classify = () => {
   const output = execFileSync(
     'node',
@@ -56,6 +57,7 @@ export const selectChecks = (documentationOnly, checks = CHECKS) => ({
   skipped: checks.filter(check => documentationOnly && check.sourceOnly),
 });
 
+/* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
 const main = () => {
   const documentationOnly = classify();
   const { running, skipped } = selectChecks(documentationOnly);
@@ -88,4 +90,5 @@ const main = () => {
 };
 
 // Only run as a CLI. Importing it for tests must not start a validation run.
+/* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
 if (process.argv.at(1)?.endsWith('validate.mjs')) main();

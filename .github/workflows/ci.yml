@@ -54,8 +54,8 @@ jobs:
           fetch-depth: 2
 
       # The exclusion list lives in the script, not here, so `yarn validate`
-      # answers this the same way locally — see D-260904b. No install runs
-      # before this, so the script has no dependencies and needs none.
+      # answers this the same way locally. No install runs before this, so
+      # the script has no dependencies and needs none.
       - name: Classify the change
         id: change
         run: |
@@ -67,7 +67,7 @@ jobs:
 
   # Everything that runs against source. Keeps per-step gates rather than one
   # gate on the job, because `prettier:check`, the Jest run and the Codecov
-  # upload all still run on a documentation-only change. See D-260815c.
+  # upload all still run on a documentation-only change.
   validate:
     name: Validate
     needs: classify
@@ -149,7 +149,7 @@ jobs:
       # Also never gated, though nothing under docs/ can affect it. Codecov must
       # post a status on every pull request for `codecov/patch` to be required —
       # a skipped upload leaves that check pending forever. Jest is the fast part
-      # of the cheap path, so paying for it removes the edge case. See D-260815c.
+      # of the cheap path, so paying for it removes the edge case.
       - name: Test with coverage
         run: yarn test:coverage
 
@@ -174,7 +174,7 @@ jobs:
   # above: nothing here consumes anything it produces. This job is exactly what
   # the cheap path skips, so it is one gate on the job rather than a gate per
   # step. A job skipped by an `if:` reports success and satisfies a required
-  # check, which a `paths-ignore` filter would not — see D-260815c.
+  # check, which a `paths-ignore` filter would not.
   build:
     name: Build & browser suite
     needs: classify
@@ -198,7 +198,7 @@ jobs:
       # restore-keys fallback: a prefix match would restore .next/cache from a
       # build with different public assets, and Next's image-optimisation
       # cache inside it trusts a restored entry without checking the source
-      # file's content — see D-260822f. An exact key or a clean build are the
+      # file's content. An exact key or a clean build are the
       # only two outcomes that cannot serve a stale optimised image.
       - name: Cache Next.js build cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
@@ -211,7 +211,7 @@ jobs:
 
       # One build, because there is only one production configuration: the
       # service worker is generated whenever NODE_ENV is production, with no
-      # flag to set. See D-260807a.
+      # flag to set.
       - name: Build
         run: yarn build
 
@@ -221,7 +221,7 @@ jobs:
       # Keyed on the installed Playwright version, because that is what the
       # ~270 MB browser download actually tracks. A lockfile-wide key would
       # discard it on every weekly Dependabot bump. Install scripts are
-      # disabled repository-wide (D-260811a), so the browser is fetched explicitly
+      # disabled repository-wide, so the browser is fetched explicitly
       # here rather than by a postinstall hook.
       - name: Resolve Playwright version
         id: playwright-version
