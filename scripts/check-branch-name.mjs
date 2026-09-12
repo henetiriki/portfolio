@@ -1,5 +1,3 @@
-import { execFileSync } from 'node:child_process';
-
 // The prefixes in AGENTS.md. Conventional Branch minus `hotfix/` and
 // `release/`, both of which assume a release process this repository does not
 // have, plus `dependabot/`, which is not from Conventional Branch at all.
@@ -40,17 +38,6 @@ export const isConventional = name =>
  */
 export const isExempt = name => ['', 'HEAD', 'main'].includes(name);
 
-const currentBranch = () => {
-  try {
-    return execFileSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], {
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim();
-  } catch {
-    return null;
-  }
-};
-
 const argument = name => {
   const index = process.argv.indexOf(`--${name}`);
 
@@ -60,7 +47,7 @@ const argument = name => {
 const main = () => {
   // CI passes the pull request's head ref explicitly, because the checked-out
   // ref there is the merge commit and carries no branch name at all.
-  const name = argument('ref') ?? currentBranch();
+  const name = argument('ref');
 
   if (name === null) {
     console.log(
