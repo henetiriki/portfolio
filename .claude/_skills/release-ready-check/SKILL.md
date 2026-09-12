@@ -1,6 +1,6 @@
 ---
 name: release-ready-check
-description: The checks to run before opening a pull request in this repository, and what a "ready for release check", "prepare for release" or "raise a PR" request means — the numbered sequence, where the commits fall in it, how the code review is handed to a person, and when the two read-only agents are dispatched. Use when validating a change, before opening a PR, before handing finished work back without one, after a rebase, or when asked to check whether something is ready to ship.
+description: The checks to run before opening a pull request in this repository, and what a "ready for release check", "prepare for release" or "raise a PR" request means — the numbered sequence, where the commits fall in it, how the code review is handed to a person, and when the two read-only _agents are dispatched. Use when validating a change, before opening a PR, before handing finished work back without one, after a rebase, or when asked to check whether something is ready to ship.
 ---
 
 # Validating a change
@@ -33,7 +33,7 @@ description: The checks to run before opening a pull request in this repository,
 
 ## The two agents
 
-`yarn validate` cannot perform the [documentation sweep](../../../docs/release-checklist.md#documentation-sweep) or the [sensitive-information pass](../../../docs/release-checklist.md#sensitive-information): both are judgement over prose and a diff. Both are subagents in [`.claude/agents/`](../../agents/), `documentation-sweep` and `sensitive-information-pass`, each holding `Glob, Grep, Read` and nothing else, so neither **can** fix what it finds — see D-260904d.
+`yarn validate` cannot perform the [documentation sweep](../../../docs/release-checklist.md#documentation-sweep) or the [sensitive-information pass](../../../docs/release-checklist.md#sensitive-information): both are judgement over prose and a diff. Both are subagents in [`../../_agents`](../../_agents/), `documentation-sweep` and `sensitive-information-pass`, each holding `Glob, Grep, Read` and nothing else, so neither **can** fix what it finds — see D-260904d.
 
 **Dispatch them every time, not only when someone asks for a "release ready check".** Nothing about the change earns an exemption either: not that the diff is small, not that it is documentation-only, not that it looks obviously safe. That last judgement is the one the [sensitive-information pass](../../../docs/release-checklist.md#sensitive-information) forecloses in as many words, on the page that is the one copy of it. A session has already skipped both agents on exactly that reasoning, "since you hadn't asked for them" plus a diff it judged small and safe.
 

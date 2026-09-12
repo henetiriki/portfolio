@@ -14,13 +14,7 @@ Working conventions for AI coding agents in this repository.
 
 A chained command is judged as one string, so whatever reviews it — a permission rule, or Auto mode's classifier — returns a single verdict covering every action in it. `git add . && vercel --prod` gets one decision, and the opening is what makes it look routine. Unchaining is what gives each action its own evaluation.
 
-**That file is not the whole permission surface, and most of the rest is not in this repository.** Three things are in play: `.claude/settings.json`, which now holds one `ask` rule and no `allow` rule; a gitignored `.claude/settings.local.json`, also deliberately empty; and Auto mode's own classifier rules, read only from user or managed settings and **never** from either project file, so a checked-in file cannot inject its own. The configuration governing what an agent may do here therefore cannot live here. Both allow lists were emptied on purpose and should stay that way — see D-260903b before adding an entry back.
-
-**A second hook lints what you write.** A `PostToolUse` hook runs `eslint --fix` on each code file as it is edited and reports anything unfixable straight back, so a file being rewritten right after an edit is expected. Fix what it reports rather than leaving it for the commit — see D-260903d. Both hooks are Node scripts under `scripts/`, referenced through `${CLAUDE_PROJECT_DIR}`, and `yarn agent:check-config` fails if either path stops resolving.
-
-**Permission rules combine rather than override, which is the part that misleads.** The settings precedence order — local above shared above user — decides conflicting _keys_; the rule arrays are not such a key. Every scope's rules are pooled and then evaluated by _type_: `deny` before `ask` before `allow`, wherever each came from. So emptying the local file did not reveal the tracked entries beneath it; both lists were always in force together. Two consequences while working: `.claude/settings.json` also carries an `ask` rule on `gh pr merge`, which prompts even in Auto mode because merging is this project's production deploy; and a change to the out-of-repo half still gets [recorded](#documentation-discipline) in the branch, exactly as a ruleset or Vercel change does.
-
-- **Do not chain independent commands** with `&&`, `;` or `||`. Issue them as separate calls — batch independent ones in the same response so they run in parallel at no extra round trip. A `PreToolUse` hook running [`scripts/shell-hygiene.mjs`](scripts/shell-hygiene.mjs) refuses any `Bash` command that chains, so this is enforced rather than trusted — see D-260814b for why the rule exists and D-260904c for what it now rests on.
+- **Do not chain independent commands** with `&&`, `;` or `||`. Issue them as separate calls — batch independent ones in the same response so they run in parallel at no extra round trip.
 - **An operator inside quotes or a heredoc body is an argument, not a separator, and is allowed.** The hook blanks quoted spans and heredoc bodies before looking, so a semicolon in a commit message or a pull request body no longer refuses the command, and neither does `find … -exec … \;`. It is still not a shell parse: `$(a; b)` outside quotes is refused, and an unterminated quote makes the rest of the command invisible to the check.
 - **A compound command is one logical command, like a pipeline.** `for … ; do … ; done`, `while`, `until`, `if … ; then … ; fi` and `case` all need semicolons the shell reads as grammar, and the hook no longer counts those. The carve-out is for the grammar rather than for everything inside it: a body that chains two independent commands, `do echo one; echo two; done`, is still refused, because that is two actions under one verdict.
 - **Do not pass `-C <path>` to `git`.** The working directory is already the repository root, so it buys nothing, and it defeats the harness's built-in auto-allow for read-only git, which reads the token after `git` and finds `-C` rather than `status`. Run `git status`, not `git -C … status`. The same hook refuses it.
@@ -54,33 +48,15 @@ The first four are [Conventional Branch](https://conventionalbranch.org/) minus 
 
 The description is what the branch is _for_, not what it touches: `chore/free-port-3000-and-prefix-branch-names`, not `chore/playwright-config`.
 
-## Opening a pull request
-
-Every pull request body opens with a two-question human checklist, and the body is written to a file rather than passed inline. The procedure is [`.claude/skills/open-pull-request/SKILL.md`](.claude/skills/open-pull-request/SKILL.md) — read it before opening one.
-
 ## Validating a change
-
-**The sequence is the [release checklist](docs/release-checklist.md#before-opening-the-pr), which is the one copy.** [`.claude/skills/release-ready-check/SKILL.md`](.claude/skills/release-ready-check/SKILL.md) follows it, adds only what is specific to Claude Code, and is what **"release ready check"** and **"prepare for release"** resolve to.
-
-**Two of its checks are judgement rather than commands**, and Claude Code delegates them to read-only agents in [`.claude/agents/`](.claude/agents/) so a finding reaches a person instead of being quietly fixed. A tool without subagents performs both itself, from the checklist's own brief — see D-260904d.
-
-**The code review is the one step that does not travel.** It is Claude Code's own bundled skill, asked for rather than invoked, and a review's criteria belong to the reviewing tool — so another tool has no equivalent step here and should say so rather than improvise one. See [the dispatch decision](docs/decisions/2026-09-06-cap-automatic-subagent-dispatch.md).
 
 **Port 3000 belongs to `next dev`** — leave whatever is running there alone, it is usually a human watching the change land. 3001 is the agent's own preview and 3002 the browser suite; `yarn agent:check-config` fails if those ever collide again.
 
 ## Documentation discipline
 
-- **Read the topical doc for the area you are about to change, before changing it.** [`docs/README.md`](docs/README.md) is the index and names what each doc covers. The [release checklist](docs/release-checklist.md#documentation-sweep) already requires updating that doc afterwards, so reading it first is strictly cheaper than discovering late what you contradicted.
-  - **Read the one that matters, not all of them.** `docs/` runs to several hundred kilobytes, and the archived log under `decisions/` and `development.md` are far larger than the rest. Bulk-loading them crowds out the work.
+- **Read the topical doc for the area you are about to change, before changing it.** [`docs/README.md`](docs/README.md) is the index and names what each doc covers.
+  - **Read the one that matters, not all of them.** `docs/` runs to several hundred kilobytes, and `development.md` is far larger than the rest. Bulk-loading them crowds out the work.
 - [`docs/roadmap.md`](docs/roadmap.md) holds **open work only**. When work completes, **remove** it — the merged pull request is the record of what changed and when, durable rationale goes to [`docs/decisions/`](docs/decisions/README.md), and current behaviour goes to the topical doc. A finished item left in the roadmap, or ticked in place, is a defect.
-- **Work agreed in conversation but not started still gets written into the roadmap**, in the branch you are already on, even when unrelated to it. "Add it next time" reliably means never.
-- **Reasoning has four destinations, and the fourth is the one most often missed.**
-  - **A decision entry** — more than one reasonable option existed, you can name the alternative it discarded, and it has no call site: an absence, an external setting, a format that cannot hold comments, or a constraint spanning several files. Revising an earlier decision qualifies; a wrong turn does when the discarded thing was never committed.
-  - **A comment at the call site** — the code looks like a mistake and is not (`body { background-color: transparent }` is load-bearing), or looks arbitrary and is not. It says what was discarded and why that fails, never what the code does, and is unintelligible with the code deleted. **Four lines.** Past that it is an essay however well it passes the other tests, and essays are what got comments banned here once already; the argument goes in the doc and the comment becomes the one line plus a pointer.
-  - **A topical doc** — only what neither the code nor its comment can hold: cross-file facts, provenance, constraints spanning several files. Bullets, one fact each, stated first. **If a sentence restates something that exists elsewhere, delete it rather than compressing it** — a summary is a copy, and the copy is what drifts. "In brief", "in short" and "essentially" announce the duplication.
-  - **Nowhere, which is the default** — what the code already says, what the merged pull request already records, any summary of the three above, and any reason that cannot name a discarded alternative. Typo fixes, dependency bumps, behaviour-preserving refactors and anything that follows an existing pattern get nothing. Most reasoning is not written down at all; if you are unsure whether something qualifies, it does not.
-- **Keep the wrong turn when review had to redirect the work.** What goes is the transcript, not the fact that the first fix was wrong. Where the discarded version is the one that looks obviously right from the presenting symptom, record what it was, why it appealed, and what redirected it — the middle one is what makes it recognisable next time, and D-260816e is the worked example, and it first read as though the better structure had been arrived at rather than called in review. Where the note is instead a caveat about what a check cannot see, it belongs in the topical doc beside that check, as the axe/`color-contrast` limitation does in [`development.md`](docs/development.md#browser-regression-suite).
-- **A change made outside git is still a change, and it is the one that goes unrecorded.** Repository settings, the `main` ruleset, Codecov, Vercel — none of it produces a commit, so nothing drags the documentation sweep along behind it the way editing a file does. Record it in the branch you are already on, or in a docs-only commit if there is no branch. This is not hypothetical: `codecov/patch` was added to the ruleset while the roadmap still carried adding it as open work, and the next session started from a roadmap that was a step behind the repository. See D-260816c.
 - **Before picking up a roadmap item that names a repository setting, verify the live state rather than trusting the item.** `gh api repos/henetiriki/portfolio/rulesets` for branch protection, and `curl -s https://api.codecov.io/api/v2/github/henetiriki/repos/portfolio/` for Codecov activation. Two commands, and they catch the case above before it turns into a pull request that re-does finished work. `gh api repos/henetiriki/portfolio/rulesets/<id>/history` retains every past version with its actor, and is the only record anywhere of a settings change.
 - **Write documentation prose in UK English.** Keep locale-specific behaviour such as `en-ZA`, external status text, and technical identifiers/API fields (for example `color`) unchanged; translate the surrounding human-language prose instead.
 - **Keep drifting numbers out of the prose.** Test totals, file sizes, directory counts and the like are wrong within a few commits and nobody goes back to correct them, so they end up misinforming the reader the doc was written for. Write the property that survives — "the unit suite runs in seconds" rather than a count. Where a figure genuinely carries the argument, date it, as the coverage baseline in [`development.md`](docs/development.md#testing) does.
@@ -95,15 +71,11 @@ Every pull request body opens with a two-question human checklist, and the body 
 
 **Rebase onto `origin/main`. Never merge `main` into a branch, and never merge one branch into another.** Merges are squashed, so a branch lands as one commit and its graph does not survive.
 
-The rest — the conflict surface, merge order, and why a clean rebase is not evidence — is in [`.claude/skills/work-across-branches/SKILL.md`](.claude/skills/work-across-branches/SKILL.md).
-
 ## Worktrees
 
-Isolation for work running alongside something already in progress. Claude Code creates its own under **`.claude/worktrees/`**; **`.worktrees/`** at the repository root is the shared convention for any made by hand or by another agent — see D-260829a.
+Isolation for work running alongside something already in progress. Claude Code creates its own under **`.claude/worktrees/`**; **`.worktrees/`** at the repository root is the shared convention for any made by hand or by another agent.
 
 **Never `git stash`.** The stash stack is shared across worktrees, so a concurrent session can pop your entry. Set work aside with a WIP commit.
-
-Everything else — the `yarn install` each worktree needs, the gitignored files that must be copied in, and removal — is in [`.claude/skills/worktree/SKILL.md`](.claude/skills/worktree/SKILL.md).
 
 ## Code conventions
 
@@ -125,7 +97,7 @@ Changes a visitor cannot see skip production builds and subsequent preview build
 
 This is the source of truth for working conventions — edit it here. [`CLAUDE.md`](CLAUDE.md) at the repository root exists only to import this file and [`docs/README.md`](docs/README.md), because Claude Code loads `CLAUDE.md` automatically and would otherwise start with neither. Keep it to those two imports and the note explaining why; conventions that drift into it stop being visible to every other tool that reads `AGENTS.md`.
 
-**What belongs here, and what belongs in a skill.** This file is read in full at the start of every session, so it holds what is true whatever you are doing: the environment, the conventions, the rules about what gets written down. A procedure that applies at one moment — opening a pull request, validating a change, rebasing, working in a worktree — lives in [`.claude/skills/`](.claude/skills/) instead, where Claude Code loads its text only when the task comes up. Each such section keeps its heading here with a line and a link, so an inbound anchor still resolves and any other tool reads the skill as an ordinary Markdown file at the linked path. See D-260904a.
+**What belongs here, and what belongs in a skill.** This file is read in full at the start of every session, so it holds what is true whatever you are doing: the environment and the conventions. A procedure that applies at one moment — opening a pull request, validating a change, rebasing, working in a worktree — belongs in a skill. Each such section keeps its heading here with a line and a link, so an inbound anchor still resolves and any other tool reads the skill as an ordinary Markdown file at the linked path.
 
 Next.js 16's `next dev` may append a managed block delimited by `BEGIN:nextjs-agent-rules`. Leave it in place and commit it alongside your work; removing it only re-creates an uncommitted change on the next dev run. It is committed below, from the first `next dev` run inside a worktree.
 
