@@ -18,7 +18,6 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - [Claude Code Configuration](claude-code-configuration.md) — what `.claude/` holds and binds only Claude Code: the skills, the two read-only review agents, and what the check over them proves
 - [Release Checklist](release-checklist.md) — how a change gets from a feature branch to production
 - [Roadmap](roadmap.md) — open work, known issues, and planned upgrades
-- [Engineering Decisions](decisions/README.md) — durable technical choices and their rationale
 
 ## At a glance
 
