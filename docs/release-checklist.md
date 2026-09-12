@@ -14,23 +14,23 @@ Quick reference for shipping a change to production.
 
 ## Before Opening The PR
 
-**The order is fixed, and the commits are part of it.** Work down the list. Steps 8 to 10 loop where a fix pulls in a path an agent has not read; everything before them happens once.
+**The order is fixed, and the commits are part of it.** Work down the list. Steps 8 to 10 loop where a fix pulls in a path the previous pass had not covered; everything before them happens once.
 
 1. **Implement.**
-2. **Commit** the implementation. Stage with `git add -A` — here and at every commit below — so a new file is committed rather than left untracked and invisible to the diff the agents read.
-3. **Document** — the topical doc, the [Roadmap](roadmap.md), and a decision entry if the change earns one.
+2. **Commit** the implementation. Stage with `git add -A` — here and at every commit below — so a new file is committed rather than left untracked and invisible to the diff these checks work from.
+3. **Document** — the topical doc and the [Roadmap](roadmap.md).
 4. **Commit** the documentation. A documentation-only change has nothing to separate, so this collapses into step 2.
 5. **Ask for the [code review](#code-review)**, and carry on — it runs in a session of its own and does not block step 6. Steps 8 onwards do wait for it.
 6. **Run `yarn validate`.** A failure here is not a review finding and does not wait for step 7 — fix it, fold the fix into whichever commit caused it, and re-run until it passes.
 7. **Read the [code review](#code-review)'s findings** when they come back — asked for at step 5, and not `yarn validate`'s output — then fix or route each, and **commit** them.
-8. **Dispatch the [sensitive-information pass](#sensitive-information) and the [documentation sweep](#documentation-sweep)**, together. Both are owed once the branch's work is done rather than once a pull request exists — a branch handed back without one still owes them, and neither is triggered by anyone asking.
-9. **Read both reports**, fix or route every finding, and **commit** them, together with anything agreed in conversation rather than found in the tree.
-10. **Re-run `yarn validate`.** Re-dispatch an agent only where the previous step touched a path it had not read.
+8. **Work through the [sensitive-information pass](#sensitive-information) and the [documentation sweep](#documentation-sweep)**, together. Both are owed once the branch's work is done rather than once a pull request exists — a branch handed back without one still owes them, and neither is triggered by anyone asking.
+9. **Fix or route every finding**, and **commit** them, together with anything agreed in conversation rather than found in the tree.
+10. **Re-run `yarn validate`.** Redo either pass only where the previous step touched a path it had not covered.
 11. **Push, and open the pull request.**
 
-**Four commits, not one:** implementation, documentation, the review's findings, then the agents'. Merges are squashed, so they land on `main` as a single commit — but `squash_merge_commit_message` is `COMMIT_MESSAGES`, so the four messages survive in its body. Skip a findings commit where there was nothing to fix.
+**Four commits, not one:** implementation, documentation, the code review's findings, then the second pass's. Merges are squashed, so they land on `main` as a single commit — but `squash_merge_commit_message` is `COMMIT_MESSAGES`, so the four messages survive in its body. Skip a findings commit where there was nothing to fix.
 
-**Two things the sequence rests on.** `git add -A` at every commit, because a committed range shows no untracked file and a new file is the likeliest place a key arrives — and at the findings commits especially, since step 10's re-dispatch condition is defined over what that commit touched, and an untracked file touches nothing. And commits made before step 6 are not guaranteed to pass `yarn validate` — `lint-staged` covers lint and formatting on what it stages, but a type error or a failing test survives into steps 2 and 4. Squash merging means within-branch bisectability buys nothing, so that is a trade rather than a regression.
+**Two things the sequence rests on.** `git add -A` at every commit, because a committed range shows no untracked file and a new file is the likeliest place a key arrives — and at the findings commits especially, since step 10's redo condition is defined over what that commit touched, and an untracked file touches nothing. And commits made before step 6 are not guaranteed to pass `yarn validate` — `lint-staged` covers lint and formatting on what it stages, but a type error or a failing test survives into steps 2 and 4. Squash merging means within-branch bisectability buys nothing, so that is a trade rather than a regression.
 
 **This is the shape a pull request ends in, not a prohibition on iterating.** Amend, or add a commit, and let the branch arrive at it.
 
@@ -79,14 +79,12 @@ Docs here describe **what exists today**, so they are part of the change, not an
 - [ ] Version numbers, file paths, script names and config keys quoted in docs match `package.json`, `next.config.js`, `ci.yml` and the actual tree
 - [ ] Cross-links between docs still resolve, and new docs are listed in [docs/README.md](README.md)
 - [ ] **No comment runs past four lines**, at any call site rather than only under `src/`. Past that it is an essay however well it passes the other tests; the argument goes to the topical doc and the comment becomes one line plus a pointer
-- [ ] **A revised decision supersedes rather than edits.** The new file's `Status:` names what it supersedes and the superseded file's `Status:` names it back; a merged decision whose body has been changed is a defect, not a tidy-up
-- [ ] **Where prose moved between code, doc and log, every fact and every discarded alternative survives somewhere.** The deletion and the addition sit in different files and read as a fair trade, so loss here is silent and reviewing the diff alone will not surface it
+- [ ] **Where prose moved between code and doc, every fact and every discarded alternative survives somewhere.** The deletion and the addition sit in different files and read as a fair trade, so loss here is silent and reviewing the diff alone will not surface it
 - [ ] Root [README.md](../README.md) still accurate if the stack, scripts, or layout changed
 - [ ] **Completed work has been _removed_ from the [Roadmap](roadmap.md)** — the merged pull request is the record that it happened, so nothing is copied anywhere first. The roadmap holds open work only and nothing records completion separately, so a finished item left behind (or ticked in place as `[x]`) is a defect in the sweep. Partially completed work stays, narrowed to what actually remains.
 - [ ] **Anything changed outside git is written down here.** Repository settings, the `main` ruleset, Codecov, Vercel — a settings change produces no commit, so nothing pulls this sweep along behind it the way editing a file does, and it is the class of change that reliably goes unrecorded. If a [Roadmap](roadmap.md) item asked for the setting, retire it in the same pass
 - [ ] Any newly discovered follow-up is added to the [Roadmap](roadmap.md) rather than left in a commit message
 - [ ] **Work agreed but not started is in the [Roadmap](roadmap.md) too.** Not just follow-ups found in the code — anything decided in discussion while this change was open. A decision that lives only in a conversation is lost the moment the branch closes, and "add it next time" reliably means never. Write it down in the branch you are already on, even when it is unrelated to the change.
-- [ ] **Engineering decisions updated only where the change makes a choice that would otherwise be re-litigated** — an entry that cannot name the alternative it discarded has not earned its place.
 
 ## Pull Request
 
@@ -101,7 +99,7 @@ Docs here describe **what exists today**, so they are part of the change, not an
 >
 > **The branch name is checked before anything is installed.** `Validate`'s first step after checkout runs `scripts/check-branch-name.mjs` against `github.head_ref`, so a misnamed branch fails in seconds rather than after the install. It runs on a pull request only — the checked-out ref there is the merge commit and carries no branch name, and a push to `main` has no branch to check. It is inside `Validate` rather than a job of its own precisely so it needs no ruleset change: `Validate` is already a required check.
 >
-> **Four steps in `Validate` are never gated, for three reasons.** `prettier:check` because `prettier .` covers the whole tree, so on a documentation-only change it is the only source-shaped check that applies to what changed — `eslint` and both type-checks cover no Markdown. `docs:check-links` and `agent:check-config` because each exists to check something that is itself on the documentation-only exclusion list: prose links, and the `.claude/` configuration holding both hooks and the review agents' tool restriction. A change there is precisely the case they must not skip, and neither needs build inputs — a link resolves or it does not, and the hooks are Node scripts in this repository. `test:coverage` and its upload because `codecov/patch` is a required check, and a skipped upload posts no status at all, which would leave it pending forever. Prose cannot affect Jest; the run is paid for so the requirement holds on every pull request.
+> **Four steps in `Validate` are never gated, for three reasons.** `prettier:check` because `prettier .` covers the whole tree, so on a documentation-only change it is the only source-shaped check that applies to what changed — `eslint` and both type-checks cover no Markdown. `docs:check-links` and `agent:check-config` because each exists to check something that is itself on the documentation-only exclusion list: prose links, and the `.claude/` configuration holding the hook. A change there is precisely the case they must not skip, and neither needs build inputs — a link resolves or it does not, and the hook is a plain shell command that needs nothing built. `test:coverage` and its upload because `codecov/patch` is a required check, and a skipped upload posts no status at all, which would leave it pending forever. Prose cannot affect Jest; the run is paid for so the requirement holds on every pull request.
 >
 > **The exclusions are CI's, not Vercel's, and the two lists deliberately differ.** Vercel asks whether a change can reach a visitor; CI asks whether it can affect lint, types, tests or the build. `e2e/` and `playwright*.config.ts` are excluded from the deploy and **not** from CI — they are precisely the paths whose change must run the browser suite. `.gitignore` is in neither list, for the same reason on both sides.
 >

@@ -1,3 +1,8 @@
+/* eslint-disable security/detect-non-literal-fs-filename -- every path here is built from this file's own `fs.mkdtempSync` result, never external input */
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
 import {
   extractHeadingSlugs,
   findBrokenLinks,
@@ -131,10 +136,36 @@ describe('findBrokenLinks', () => {
     expect(errors).toEqual([]);
   });
 
-  it('treats an existing target outside the scanned files as having no headings', () => {
+  // A target outside the files a caller already scanned — a doc under
+  // `.github/`, say, once skills or agents come back — has no entry in the
+  // pre-built heading map, so this has to fall back to reading it, the same
+  // way the pre-refactor version of this script did.
+  it('lazily reads headings for a target outside the scanned files', () => {
+    const errors = findBrokenLinks(
+      [
+        {
+          lines: ['[jump](../README.md#getting-started)'],
+          path: '/repo/docs/a.md',
+        },
+      ],
+      {
+        exists: () => true,
+        readLines: filePath =>
+          filePath === '/repo/README.md' ? ['# Getting Started'] : [],
+      }
+    );
+
+    expect(errors).toEqual([]);
+  });
+
+  it('flags a fragment missing from a lazily read target file', () => {
     const errors = findBrokenLinks(
       [{ lines: ['[jump](../README.md#missing)'], path: '/repo/docs/a.md' }],
-      { exists: () => true }
+      {
+        exists: () => true,
+        readLines: filePath =>
+          filePath === '/repo/README.md' ? ['# Getting Started'] : [],
+      }
     );
 
     expect(errors).toEqual([
@@ -142,6 +173,44 @@ describe('findBrokenLinks', () => {
         'broken anchor "../README.md#missing" — no matching heading in /repo/README.md'
       ),
     ]);
+  });
+
+  it('reads a lazily loaded target only once, caching its headings', () => {
+    const readLines = jest.fn(() => ['# Getting Started']);
+    const errors = findBrokenLinks(
+      [
+        {
+          lines: [
+            '[first](../README.md#getting-started)',
+            '[second](../README.md#getting-started)',
+          ],
+          path: '/repo/docs/a.md',
+        },
+      ],
+      { exists: () => true, readLines }
+    );
+
+    expect(errors).toEqual([]);
+    expect(readLines).toHaveBeenCalledTimes(1);
+  });
+
+  it('reads a real file to resolve a fragment when readLines is not provided', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'check-doc-links-'));
+
+    try {
+      fs.writeFileSync(path.join(dir, 'target.md'), '# Real Heading\n');
+
+      const errors = findBrokenLinks([
+        {
+          lines: ['[jump](target.md#real-heading)'],
+          path: path.join(dir, 'a.md'),
+        },
+      ]);
+
+      expect(errors).toEqual([]);
+    } finally {
+      fs.rmSync(dir, { force: true, recursive: true });
+    }
   });
 
   it('does not check anchors for a non-Markdown link target', () => {

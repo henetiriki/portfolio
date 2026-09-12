@@ -15,7 +15,7 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - [Security](security.md) — public security posture and private reporting route
 - [Runtime Configuration](environment-variables.md) — safe handling and local setup guidance
 - [Development Workflow](development.md) — scripts, linting, formatting, git hooks
-- [Claude Code Configuration](claude-code-configuration.md) — what `.claude/` holds and binds only Claude Code: the skills, the two read-only review agents, and what the check over them proves
+- [Claude Code Configuration](claude-code-configuration.md) — what `.claude/` holds and binds only Claude Code: the hook, permissions, launch and worktree configuration, and what the check over them proves
 - [Release Checklist](release-checklist.md) — how a change gets from a feature branch to production
 - [Roadmap](roadmap.md) — open work, known issues, and planned upgrades
 

@@ -12,9 +12,8 @@ const agentsDir = path.join(projectRoot, '.claude', 'agents');
 // Mirrors GitHub's heading slugger closely enough for this project's ASCII
 // prose: lowercase, drop anything that isn't a word character/hyphen/space,
 // then turn every remaining space into a hyphen one-for-one (not collapsed —
-// an em dash flanked by two spaces has to survive as a double hyphen, which
-// is how every "D-YYMMDDx — Title" heading in the archived decision log is
-// shaped).
+// an em dash flanked by two spaces has to survive as a double hyphen, e.g.
+// "One Thing — Another" slugifying to "one-thing--another").
 export const slugify = text =>
   text
     .toLowerCase()
@@ -54,17 +53,33 @@ export const extractHeadingSlugs = lines => {
 
 // `files` is `{ path, lines }[]`, keyed internally by `path` exactly as given
 // — so two files linking to each other must use the same spelling of a
-// shared target. `exists` and `label` default to the real filesystem and to
-// printing the path unchanged; both are overridable so this stays testable
-// with short fixture paths and no real disk access.
+// shared target. `exists`, `label` and `readLines` default to the real
+// filesystem and to printing the path unchanged; all three are overridable so
+// this stays testable with short fixture paths and no real disk access.
 export const findBrokenLinks = (
   files,
-  { exists = fs.existsSync, label = filePath => filePath } = {}
+  {
+    exists = fs.existsSync,
+    label = filePath => filePath,
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- `filePath` is a link target this same function has just confirmed exists via `exists`, not external input
+    readLines = filePath => fs.readFileSync(filePath, 'utf8').split('\n'),
+  } = {}
 ) => {
   const headingsByFile = new Map(
     files.map(file => [file.path, extractHeadingSlugs(file.lines)])
   );
-  const headingsFor = filePath => headingsByFile.get(filePath) ?? new Set();
+
+  // Lazy and cached: a link target outside the files a caller already
+  // scanned (a doc under `.github/`, say) still needs its headings read once
+  // to check a fragment against, now that `exists` has confirmed it is
+  // really there.
+  const headingsFor = filePath => {
+    if (!headingsByFile.has(filePath)) {
+      headingsByFile.set(filePath, extractHeadingSlugs(readLines(filePath)));
+    }
+
+    return headingsByFile.get(filePath);
+  };
   const errors = [];
 
   for (const { lines, path: filePath } of files) {
