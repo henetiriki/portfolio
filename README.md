@@ -43,7 +43,7 @@ The app needs maintainer-supplied development configuration to run. Do not commi
 | `yarn prettier:check` / `prettier:write`    | Format check / write                                                             |
 | `yarn start`                                | Serve a production build locally                                                 |
 | `yarn test`                                 | Jest + React Testing Library                                                     |
-| `yarn test:coverage`                        | Tests with coverage (95% global threshold)                                       |
+| `yarn test:coverage`                        | Tests with coverage (100% global threshold)                                      |
 | `yarn test:e2e`                             | Playwright browser regression suite (needs a build; serves on :3002)             |
 | `yarn test:e2e:install`                     | Fetch the Playwright browser binary (install scripts are disabled)               |
 | `yarn test:e2e:ui`                          | Browser suite in Playwright's interactive runner                                 |

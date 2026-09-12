@@ -1,8 +1,19 @@
 import {
+  SPLASH_FILENAME,
   buildIconTargets,
   readSplashDevicesFromSource,
   splashTargetsFor,
 } from '../generate-pwa-icons.mjs';
+
+describe('SPLASH_FILENAME', () => {
+  it('matches a generated splash filename', () => {
+    expect(SPLASH_FILENAME.test('apple-splash-750-1334.png')).toBe(true);
+  });
+
+  it('does not match a static icon filename', () => {
+    expect(SPLASH_FILENAME.test('manifest-icon-192.png')).toBe(false);
+  });
+});
 
 describe('readSplashDevicesFromSource', () => {
   it('reads dpr/height/width off each SPLASH_DEVICES entry', () => {

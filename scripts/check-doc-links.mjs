@@ -148,6 +148,7 @@ const skillFiles = () => {
   );
 };
 
+/* istanbul ignore next -- only used to label main()'s own output; exercised by running the script, not by importing it under test */
 const relative = filePath => path.relative(projectRoot, filePath);
 /* istanbul ignore next -- thin fs wrapper; exercised by running the script, not by importing it under test */
 const readLines = filePath =>
