@@ -1,23 +1,10 @@
 {
   "hooks": {
-    "PreToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "node \"${CLAUDE_PROJECT_DIR}/scripts/shell-hygiene.mjs\"",
-            "statusMessage": "Checking shell hygiene",
-            "timeout": 10,
-            "type": "command"
-          }
-        ],
-        "matcher": "Bash"
-      }
-    ],
     "PostToolUse": [
       {
         "hooks": [
           {
-            "command": "node \"${CLAUDE_PROJECT_DIR}/scripts/eslint-on-edit.mjs\"",
+            "command": "git add $CLAUDE_FILE_PATHS && yarn lint-staged",
             "statusMessage": "Linting the edited file",
             "timeout": 60,
             "type": "command"
