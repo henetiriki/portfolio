@@ -49,7 +49,7 @@ Quick reference for shipping a change to production.
 
 > Claude Code asks for its bundled `code-review` skill to be run rather than invoking it from `release-ready-check`, and reports the step as outstanding until the findings come back. **Unlike the two sections below, there is deliberately no brief here to fall back on**: a review's criteria belong to the reviewing tool, so a tool without that skill has no equivalent step here and should say so rather than improvise one.
 
-- [ ] **The tree is already formatted by the time this runs**, because the review reads committed work: [`eslint-on-edit.mjs`](../scripts/eslint-on-edit.mjs) lints each code file as it is written, and `lint-staged` formats what each commit stages.
+- [ ] **The tree is already formatted by the time this runs**, because the review reads committed work: a `PostToolUse` hook lints and formats each file as Claude Code writes it, and `lint-staged` does the same for what each commit stages — see [Git hooks](development.md#git-hooks).
 - [ ] **A review has run against the diff and its findings have been read.** They are generic — correctness, reuse, simplification, efficiency — and know nothing of this repository's own disciplines, so this replaces neither the pass nor the sweep below.
 - [ ] **Each finding is fixed or routed.** Fix what is wrong in the change at hand; anything else goes to the [Roadmap](roadmap.md) rather than a commit message, as the sweep already requires. Treat a finding as blocking only where it contradicts something this checklist demands.
 

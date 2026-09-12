@@ -4,8 +4,12 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import ts from 'typescript';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const projectRoot = path.resolve(__dirname, '..');
+// Named to avoid the module wrapper's own `__dirname` parameter: Jest's
+// CommonJS transform of this ESM file puts this declaration inside a function
+// scope that already binds `__dirname`, so reusing that name is a duplicate
+// declaration there even though it's fine under real ESM execution.
+const moduleDir = path.dirname(fileURLToPath(import.meta.url));
+const projectRoot = path.resolve(moduleDir, '..');
 
 const splashDevicesPath = path.join(
   projectRoot,
@@ -29,15 +33,18 @@ const SPLASH_SCALE = 0.35;
 const ORIENTATIONS = ['portrait', 'landscape'];
 
 /**
- * Reads `SPLASH_DEVICES` out of `AppleSplashLinks.tsx` via the TypeScript
+ * Reads `SPLASH_DEVICES` out of the given source text via the TypeScript
  * compiler API, the same approach `generate-mantine-css-variables.mjs` uses
  * for `colorOverrides` — one source of truth for the device table rather than
- * a copy that can silently drift from what the app actually links.
+ * a copy that can silently drift from what the app actually links. Pure, so
+ * it can be tested against a literal snippet instead of the real file.
  */
-const readSplashDevices = () => {
-  const sourceText = fs.readFileSync(splashDevicesPath, 'utf8');
+export const readSplashDevicesFromSource = (
+  sourceText,
+  label = 'AppleSplashLinks.tsx'
+) => {
   const sourceFile = ts.createSourceFile(
-    splashDevicesPath,
+    label,
     sourceText,
     ts.ScriptTarget.Latest,
     true,
@@ -53,7 +60,7 @@ const readSplashDevices = () => {
     !declaration?.initializer ||
     !ts.isArrayLiteralExpression(declaration.initializer)
   ) {
-    throw new Error(`Could not find SPLASH_DEVICES in ${splashDevicesPath}`);
+    throw new Error(`Could not find SPLASH_DEVICES in ${label}`);
   }
 
   return declaration.initializer.elements.map(element => {
@@ -87,10 +94,10 @@ const readSplashDevices = () => {
  * `AppleSplashLinks` links to — mirrors that component's own derivation
  * exactly (`docs/pwa-seo.md`), so the two cannot drift apart.
  */
-const splashTargets = () => {
+export const splashTargetsFor = devices => {
   const targets = new Map();
 
-  for (const { dpr, height, width } of readSplashDevices()) {
+  for (const { dpr, height, width } of devices) {
     for (const orientation of ORIENTATIONS) {
       const long = height * dpr;
       const short = width * dpr;
@@ -105,47 +112,7 @@ const splashTargets = () => {
   return targets;
 };
 
-/**
- * Rasterises the master SVG at `size × size`, transparent, uncomposited.
- *
- * `monochrome` recolours the eye fill to match the owl outline before
- * rendering, collapsing the two-colour mark into the flat single-colour
- * silhouette Android's themed-icon alpha mask needs — see D-260815e.
- */
-const renderOwl = (size, { monochrome = false } = {}) => {
-  const svgText = fs.readFileSync(svgPath, 'utf8');
-  const source = monochrome
-    ? svgText.replaceAll('fill="#27e278"', 'fill="#ffffff"')
-    : svgText;
-
-  return sharp(Buffer.from(source))
-    .resize(size, size)
-    .png({ compressionLevel: 9 })
-    .toBuffer();
-};
-
-/**
- * Centres the rendered owl on a `width × height` canvas of `background`.
- * `scale` is the owl's rendered box as a fraction of the canvas's short edge,
- * matching how `AppleSplashLinks` and the manifest icons already read.
- */
-const renderIcon = async ({
-  background,
-  height,
-  monochrome = false,
-  scale,
-  width,
-}) => {
-  const owlSize = Math.round(Math.min(width, height) * scale);
-  const owl = await renderOwl(owlSize, { monochrome });
-
-  return sharp({ create: { background, channels: 4, height, width } })
-    .composite([{ gravity: 'center', input: owl }])
-    .png({ compressionLevel: 9 })
-    .toBuffer();
-};
-
-const iconTargets = new Map([
+const STATIC_ICON_TARGETS = new Map([
   [
     'manifest-icon-192.png',
     { background: NAVY, height: 192, scale: ANY_SCALE, width: 192 },
@@ -188,15 +155,69 @@ const iconTargets = new Map([
   ],
 ]);
 
-for (const [file, target] of splashTargets()) {
-  iconTargets.set(file, { ...target, background: NAVY, scale: SPLASH_SCALE });
-}
-
 // Only the splash files are table-driven — the static icon list above never
 // changes size — so an "orphan" (a generated file with no target) can only
 // arise here, when a device is removed from SPLASH_DEVICES.
-const SPLASH_FILENAME = /^apple-splash-\d+-\d+\.png$/;
+export const SPLASH_FILENAME = /^apple-splash-\d+-\d+\.png$/;
 
+/**
+ * The static icon table plus one entry per splash target, all sharing the
+ * splash scale/background — pure composition, so it is tested independently
+ * of both the TypeScript parsing above and the rendering below.
+ */
+export const buildIconTargets = splashTargets => {
+  const targets = new Map(STATIC_ICON_TARGETS);
+
+  for (const [file, target] of splashTargets) {
+    targets.set(file, { ...target, background: NAVY, scale: SPLASH_SCALE });
+  }
+
+  return targets;
+};
+
+/**
+ * Rasterises the master SVG at `size × size`, transparent, uncomposited.
+ *
+ * `monochrome` recolours the eye fill to match the owl outline before
+ * rendering, collapsing the two-colour mark into the flat single-colour
+ * silhouette Android's themed-icon alpha mask needs — see D-260815e.
+ */
+/* istanbul ignore next -- real sharp rendering; exercised by running the script, not by importing it under test */
+const renderOwl = (size, { monochrome = false } = {}) => {
+  const svgText = fs.readFileSync(svgPath, 'utf8');
+  const source = monochrome
+    ? svgText.replaceAll('fill="#27e278"', 'fill="#ffffff"')
+    : svgText;
+
+  return sharp(Buffer.from(source))
+    .resize(size, size)
+    .png({ compressionLevel: 9 })
+    .toBuffer();
+};
+
+/**
+ * Centres the rendered owl on a `width × height` canvas of `background`.
+ * `scale` is the owl's rendered box as a fraction of the canvas's short edge,
+ * matching how `AppleSplashLinks` and the manifest icons already read.
+ */
+/* istanbul ignore next -- real sharp rendering; exercised by running the script, not by importing it under test */
+const renderIcon = async ({
+  background,
+  height,
+  monochrome = false,
+  scale,
+  width,
+}) => {
+  const owlSize = Math.round(Math.min(width, height) * scale);
+  const owl = await renderOwl(owlSize, { monochrome });
+
+  return sharp({ create: { background, channels: 4, height, width } })
+    .composite([{ gravity: 'center', input: owl }])
+    .png({ compressionLevel: 9 })
+    .toBuffer();
+};
+
+/* istanbul ignore next -- real file writes; exercised by running the script, not by importing it under test */
 const writeAll = async targets => {
   fs.mkdirSync(outputDir, { recursive: true });
 
@@ -218,6 +239,7 @@ const writeAll = async targets => {
  * against and is deliberately left to manual review. See
  * D-260821i.
  */
+/* istanbul ignore next -- real file reads and rendering; exercised by running the script, not by importing it under test */
 const checkAll = async targets => {
   const problems = [];
 
@@ -260,8 +282,27 @@ const checkAll = async targets => {
   }
 };
 
-if (process.argv.includes('--check')) {
-  await checkAll(iconTargets);
-} else {
-  await writeAll(iconTargets);
+/* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
+const main = async () => {
+  const sourceText = fs.readFileSync(splashDevicesPath, 'utf8');
+  const devices = readSplashDevicesFromSource(sourceText, splashDevicesPath);
+  const targets = buildIconTargets(splashTargetsFor(devices));
+
+  if (process.argv.includes('--check')) {
+    await checkAll(targets);
+  } else {
+    await writeAll(targets);
+  }
+};
+
+// Not `await`-ed: Jest's transform of this ESM file cannot parse a top-level
+// `await` inside a conditional, only a bare one — and a real run still waits
+// for this regardless, since the pending file writes and sharp calls keep the
+// event loop alive until it settles.
+/* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
+if (process.argv.at(1)?.endsWith('generate-pwa-icons.mjs')) {
+  main().catch(error => {
+    console.error(error);
+    process.exitCode = 1;
+  });
 }

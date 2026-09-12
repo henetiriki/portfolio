@@ -16,6 +16,8 @@ const customJestConfig = {
     '!src/pages/_document.tsx',
     '!src/pages/_offline.tsx',
     '!src/utils/test/**',
+    'scripts/**/*.mjs',
+    '!scripts/**/__tests__/**',
   ],
   coveragePathIgnorePatterns: ['<rootDir>/node_modules/'],
   coverageReporters: ['text', 'lcov'],
@@ -32,7 +34,9 @@ const customJestConfig = {
   // `scripts/` is included because nothing else covers it: it is outside
   // tsconfig's `include` (`**/*.ts(x)`), and unlike the other untyped files
   // here a wrong answer breaks no build — CI just runs the wrong checks.
-  // `collectCoverageFrom` stays scoped to `src/`, so the floor is unaffected.
+  // `scripts/` shares the same coverage floor as `src/` above — each script's
+  // CLI-entry `main()` is marked `/* istanbul ignore next */`, since it is
+  // exercised by running the script rather than by importing it under test.
   testMatch: ['<rootDir>/{src,scripts}/**/__tests__/**/*.test.{ts,tsx}'],
 };
 

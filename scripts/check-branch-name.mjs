@@ -38,12 +38,14 @@ export const isConventional = name =>
  */
 export const isExempt = name => ['', 'HEAD', 'main'].includes(name);
 
+/* istanbul ignore next -- CLI argv parsing; exercised by running the script, not by importing it under test */
 const argument = name => {
   const index = process.argv.indexOf(`--${name}`);
 
   return index === -1 ? null : process.argv.at(index + 1);
 };
 
+/* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
 const main = () => {
   // CI passes the pull request's head ref explicitly, because the checked-out
   // ref there is the merge commit and carries no branch name at all.
@@ -79,4 +81,5 @@ const main = () => {
 };
 
 // Only run as a CLI. Importing it for tests must not read argv or call git.
+/* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
 if (process.argv.at(1)?.endsWith('check-branch-name.mjs')) main();

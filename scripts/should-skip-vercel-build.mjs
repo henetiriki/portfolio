@@ -22,11 +22,27 @@ const DEPLOYMENT_EXCLUSIONS = [
   ':(exclude)scripts',
 ];
 
+/**
+ * Which two refs to diff, or `null` when neither Vercel environment variable
+ * this depends on is set — in which case the caller should build rather than
+ * guess. Pure, so the three branches are testable without touching `git`.
+ */
+export const selectRefs = ({ previousSha, vercelEnv }) => {
+  if (vercelEnv === 'production') return ['HEAD^', 'HEAD'];
+  if (previousSha) return [previousSha, 'HEAD'];
+
+  return null;
+};
+
 // Vercel's convention is inverted from `git diff --quiet`'s: exit 0 skips the
 // build, exit 1 builds. `--quiet` already returns 0 for no difference and 1
 // for a difference, so only a `git` failure (a `status` above 1, or `null`
 // when it was killed by a signal) needs remapping — and it remaps to 1,
 // because missing deployment state should build rather than silently skip.
+export const exitCodeFor = status =>
+  status === null || status > 1 ? 1 : status;
+
+/* istanbul ignore next -- shells out to git; exercised by running the script, not by importing it under test */
 const compareDeploymentChanges = (...refs) => {
   const { status } = spawnSync(
     'git',
@@ -34,13 +50,22 @@ const compareDeploymentChanges = (...refs) => {
     { stdio: 'inherit' }
   );
 
-  process.exit(status === null || status > 1 ? 1 : status);
+  process.exit(exitCodeFor(status));
 };
 
-if (process.env.VERCEL_ENV === 'production') {
-  compareDeploymentChanges('HEAD^', 'HEAD');
-} else if (process.env.VERCEL_GIT_PREVIOUS_SHA) {
-  compareDeploymentChanges(process.env.VERCEL_GIT_PREVIOUS_SHA, 'HEAD');
-} else {
-  process.exit(1);
-}
+/* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
+const main = () => {
+  const refs = selectRefs({
+    previousSha: process.env.VERCEL_GIT_PREVIOUS_SHA,
+    vercelEnv: process.env.VERCEL_ENV,
+  });
+
+  if (refs === null) {
+    process.exit(1);
+  } else {
+    compareDeploymentChanges(...refs);
+  }
+};
+
+/* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
+if (process.argv.at(1)?.endsWith('should-skip-vercel-build.mjs')) main();
