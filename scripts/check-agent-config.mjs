@@ -1,15 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import { markdownFilesUnder } from './lib/markdown-files.mjs';
+import { projectRootFrom } from './lib/project-root.mjs';
 
-// Named to avoid the module wrapper's own `__dirname` parameter: Jest's
-// CommonJS transform of this ESM file puts this declaration inside a function
-// scope that already binds `__dirname`, so reusing that name is a duplicate
-// declaration there even though it's fine under real ESM execution.
-const moduleDir = path.dirname(fileURLToPath(import.meta.url));
-const projectRoot = path.resolve(moduleDir, '..');
+const projectRoot = projectRootFrom(import.meta.url);
 const claudeDir = path.join(projectRoot, '.claude');
 
 const SETTINGS = path.join(claudeDir, 'settings.json');
@@ -24,7 +19,7 @@ const PERMISSION_KEYS = ['allow', 'ask', 'deny'];
 
 // The whole guarantee a subagent offers here is that it cannot act on what it
 // finds, so the tool list is the load-bearing part of the file rather than
-// configuration around it — see D-260904d.
+// configuration around it.
 const READ_ONLY_TOOLS = ['Glob', 'Grep', 'Read'];
 
 const relative = filePath => path.relative(projectRoot, filePath);
@@ -79,7 +74,7 @@ export const checkPermissions = (filePath, permissions) => {
 
   if (permissions.allow?.length > 0) {
     errors.push(
-      `${label}: permissions.allow has ${permissions.allow.length} entr${permissions.allow.length === 1 ? 'y' : 'ies'} and must stay empty. Allow rules are resolved before the Auto mode classifier, so each one is a bypass — see D-260903b before adding any back, and update this check deliberately if the decision changes.`
+      `${label}: permissions.allow has ${permissions.allow.length} entr${permissions.allow.length === 1 ? 'y' : 'ies'} and must stay empty. Allow rules are resolved before the Auto mode classifier, so each one is a bypass — update this check deliberately before adding any back.`
     );
   }
 
@@ -93,14 +88,13 @@ export const checkNoAutoMode = (filePath, settings) => {
   if (settings.autoMode === undefined) return [];
 
   return [
-    `${relative(filePath)}: has an "autoMode" key, which Claude Code never reads from a project settings file. It belongs in ~/.claude/settings.json — see D-260903b.`,
+    `${relative(filePath)}: has an "autoMode" key, which Claude Code never reads from a project settings file. It belongs in ~/.claude/settings.json.`,
   ];
 };
 
-// Shape only: no hook is executed here. The one that used to exercise the
-// shell-hygiene `PreToolUse` hook was removed with that hook — see
-// D-260904c's rewiring of `.claude/settings.json` — and comes back if a
-// `Bash`-matcher hook is reintroduced.
+// Shape only: nothing here executes the configured hook against a table of
+// commands. That check applies only when a `Bash`-matcher `PreToolUse` hook
+// exists to exercise.
 export const checkHooks = settings => {
   if (settings.hooks === undefined) return [];
 
@@ -283,7 +277,7 @@ export const checkAgents = agentsDir => {
 
     if (tools.length === 0) {
       errors.push(
-        `${label}: declares no tools, and an agent without a "tools" line inherits every tool the session has — Edit included. See D-260904d.`
+        `${label}: declares no tools, and an agent without a "tools" line inherits every tool the session has — Edit included.`
       );
       continue;
     }
@@ -294,7 +288,7 @@ export const checkAgents = agentsDir => {
 
     if (disallowed.length > 0) {
       errors.push(
-        `${label}: declares ${disallowed.join(', ')}, outside the read-only set (${READ_ONLY_TOOLS.join(', ')}). These agents report findings for a person to act on, and one holding a writing tool could resolve what it found instead of reporting it — which is the guarantee, not a detail. See D-260904d, and widen this check deliberately rather than the file.`
+        `${label}: declares ${disallowed.join(', ')}, outside the read-only set (${READ_ONLY_TOOLS.join(', ')}). These agents report findings for a person to act on, and one holding a writing tool could resolve what it found instead of reporting it — which is the guarantee, not a detail. Widen this check deliberately rather than the file.`
       );
     }
   }
@@ -329,7 +323,7 @@ export const checkPorts = (launch, playwrightConfigSource) => {
 
     if (ports.includes(port)) {
       errors.push(
-        `.claude/launch.json: "${configuration.name}" binds ${port}, the browser suite's port. Playwright never reuses an existing server, so an agent preview left running makes \`yarn test:e2e\` fail on a port conflict — see D-260816g.`
+        `.claude/launch.json: "${configuration.name}" binds ${port}, the browser suite's port. Playwright never reuses an existing server, so an agent preview left running makes \`yarn test:e2e\` fail on a port conflict.`
       );
     }
   }
@@ -383,6 +377,7 @@ const main = () => {
   if (launchResult.error) {
     errors.push(launchResult.error);
   } else if (launchResult.value) {
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- `PLAYWRIGHT_CONFIG` is a module-level constant built from `projectRootFrom(import.meta.url)`, not external input
     const playwrightConfigSource = fs.readFileSync(PLAYWRIGHT_CONFIG, 'utf8');
 
     errors.push(...checkPorts(launchResult.value, playwrightConfigSource));

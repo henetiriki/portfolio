@@ -1,14 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 
-// Named to avoid the module wrapper's own `__dirname` parameter: Jest's
-// CommonJS transform of this ESM file puts this declaration inside a function
-// scope that already binds `__dirname`, so reusing that name is a duplicate
-// declaration there even though it's fine under real ESM execution.
-const moduleDir = path.dirname(fileURLToPath(import.meta.url));
-const projectRoot = path.resolve(moduleDir, '..');
+import { projectRootFrom } from './lib/project-root.mjs';
+import { findTopLevelConst } from './lib/typescript-source.mjs';
+
+const projectRoot = projectRootFrom(import.meta.url);
 const sourcePath = path.join(projectRoot, 'src/styles/colors.ts');
 const outputPath = path.join(
   projectRoot,
@@ -38,20 +35,12 @@ const getPropertyName = (propertyName, sourceFile) => {
 // declaration per array entry, so it can be tested against a literal snippet
 // instead of the real file.
 export const extractColorDeclarations = (sourceText, label = 'colors.ts') => {
-  const sourceFile = ts.createSourceFile(
-    label,
+  const { declaration: colorDeclaration, sourceFile } = findTopLevelConst(
     sourceText,
-    ts.ScriptTarget.Latest,
-    true,
+    label,
+    'colorOverrides',
     ts.ScriptKind.TS
   );
-
-  const colorDeclaration = sourceFile.statements
-    .filter(ts.isVariableStatement)
-    .flatMap(statement => statement.declarationList.declarations)
-    .find(
-      declaration => declaration.name.getText(sourceFile) === 'colorOverrides'
-    );
 
   if (
     !colorDeclaration ||
@@ -100,12 +89,15 @@ const main = () => {
     process.exit(0);
   }
 
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `sourcePath` is a module-level constant built from `projectRootFrom(import.meta.url)`, not external input
   const sourceText = fs.readFileSync(sourcePath, 'utf8');
   const output = renderCss(extractColorDeclarations(sourceText, sourcePath));
 
   if (isCheckMode) {
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- `outputPath` is a module-level constant built from `projectRootFrom(import.meta.url)`, not external input
     const currentOutput = fs.existsSync(outputPath)
-      ? fs.readFileSync(outputPath, 'utf8')
+      ? // eslint-disable-next-line security/detect-non-literal-fs-filename -- `outputPath` is a module-level constant built from `projectRootFrom(import.meta.url)`, not external input
+        fs.readFileSync(outputPath, 'utf8')
       : '';
 
     if (currentOutput !== output) {
@@ -115,6 +107,7 @@ const main = () => {
       process.exitCode = 1;
     }
   } else {
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- `outputPath` is a module-level constant built from `projectRootFrom(import.meta.url)`, not external input
     fs.writeFileSync(outputPath, output);
     console.log(`Generated ${path.relative(projectRoot, outputPath)}`);
   }

@@ -12,13 +12,12 @@ import type { APIRequestContext } from '@playwright/test';
  * that step is dropped from the response with no build warning, and escaping
  * the colons to avoid it instead ships literal backslashes that no browser can
  * parse. Either way the page looks perfectly healthy. See
- * docs/security.md#response-headers; D-260814c's reasoning is maintained
- * privately.
+ * docs/security.md#response-headers; the reasoning is maintained privately.
  *
  * Enforcing raises the stakes of exactly that failure: a dropped header used to
  * mean losing observation, and now means losing the policy itself while every
- * page still renders. See docs/security.md#content-security-policy;
- * D-260815h's reasoning is maintained privately.
+ * page still renders. See docs/security.md#content-security-policy; the
+ * reasoning is maintained privately.
  */
 test.describe('content security policy', () => {
   const headersFor = async (request: APIRequestContext, path = '/') =>

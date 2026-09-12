@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process';
 
 // Excluding scripts/ excludes this gate itself, so a change to it no longer
 // triggers the deploy that would exercise it. Accepted rather than overlooked:
-// D-260904b kept this gate out of the shared classifier because it cannot be
+// this gate stays out of the shared classifier because it cannot be
 // exercised before a real deploy either way.
 const DEPLOYMENT_EXCLUSIONS = [
   '.',

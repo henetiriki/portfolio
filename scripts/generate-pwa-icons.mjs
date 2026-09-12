@@ -1,15 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import ts from 'typescript';
 
-// Named to avoid the module wrapper's own `__dirname` parameter: Jest's
-// CommonJS transform of this ESM file puts this declaration inside a function
-// scope that already binds `__dirname`, so reusing that name is a duplicate
-// declaration there even though it's fine under real ESM execution.
-const moduleDir = path.dirname(fileURLToPath(import.meta.url));
-const projectRoot = path.resolve(moduleDir, '..');
+import { projectRootFrom } from './lib/project-root.mjs';
+import { findTopLevelConst } from './lib/typescript-source.mjs';
+
+const projectRoot = projectRootFrom(import.meta.url);
 
 const splashDevicesPath = path.join(
   projectRoot,
@@ -18,13 +15,12 @@ const splashDevicesPath = path.join(
 const svgPath = path.join(projectRoot, 'public/images/ouwl.svg');
 const outputDir = path.join(projectRoot, 'public/images/manifest-icons');
 
-// Matches --mantine-color-black-russian-4 / `theme_color` / `background_color`
-// — see D-260815d.
+// Matches --mantine-color-black-russian-4 / `theme_color` / `background_color`.
 const NAVY = { alpha: 1, b: 32, g: 10, r: 8 };
 const TRANSPARENT = { alpha: 0, b: 0, g: 0, r: 0 };
 
 // The `any` and maskable purposes need deliberately different scale, not just
-// different padding — see D-260815e. Monochrome shares the maskable scale
+// different padding. Monochrome shares the maskable scale
 // because Android applies the same safe-zone masking to it.
 const ANY_SCALE = 0.62;
 const MASKABLE_SCALE = 0.55;
@@ -43,18 +39,12 @@ export const readSplashDevicesFromSource = (
   sourceText,
   label = 'AppleSplashLinks.tsx'
 ) => {
-  const sourceFile = ts.createSourceFile(
-    label,
+  const { declaration } = findTopLevelConst(
     sourceText,
-    ts.ScriptTarget.Latest,
-    true,
+    label,
+    'SPLASH_DEVICES',
     ts.ScriptKind.TSX
   );
-
-  const declaration = sourceFile.statements
-    .filter(ts.isVariableStatement)
-    .flatMap(statement => statement.declarationList.declarations)
-    .find(candidate => candidate.name.getText(sourceFile) === 'SPLASH_DEVICES');
 
   if (
     !declaration?.initializer ||
@@ -180,10 +170,11 @@ export const buildIconTargets = splashTargets => {
  *
  * `monochrome` recolours the eye fill to match the owl outline before
  * rendering, collapsing the two-colour mark into the flat single-colour
- * silhouette Android's themed-icon alpha mask needs — see D-260815e.
+ * silhouette Android's themed-icon alpha mask needs.
  */
 /* istanbul ignore next -- real sharp rendering; exercised by running the script, not by importing it under test */
 const renderOwl = (size, { monochrome = false } = {}) => {
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `svgPath` is a module-level constant built from `projectRootFrom(import.meta.url)`, not external input
   const svgText = fs.readFileSync(svgPath, 'utf8');
   const source = monochrome
     ? svgText.replaceAll('fill="#27e278"', 'fill="#ffffff"')
@@ -219,6 +210,7 @@ const renderIcon = async ({
 
 /* istanbul ignore next -- real file writes; exercised by running the script, not by importing it under test */
 const writeAll = async targets => {
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `outputDir` is a module-level constant built from `projectRootFrom(import.meta.url)`, not external input
   fs.mkdirSync(outputDir, { recursive: true });
 
   for (const [file, target] of targets) {
@@ -236,8 +228,7 @@ const writeAll = async targets => {
 /**
  * Verifies internal consistency between `SPLASH_DEVICES`/`ouwl.svg` and the
  * committed assets — not device *coverage*, which has no source to check
- * against and is deliberately left to manual review. See
- * D-260821i.
+ * against and is deliberately left to manual review.
  */
 /* istanbul ignore next -- real file reads and rendering; exercised by running the script, not by importing it under test */
 const checkAll = async targets => {
@@ -259,7 +250,9 @@ const checkAll = async targets => {
     }
   }
 
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `outputDir` is a module-level constant built from `projectRootFrom(import.meta.url)`, not external input
   if (fs.existsSync(outputDir)) {
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- as above
     for (const name of fs.readdirSync(outputDir)) {
       if (SPLASH_FILENAME.test(name) && !targets.has(name)) {
         problems.push(`orphaned: ${name} (no matching SPLASH_DEVICES entry)`);
@@ -284,6 +277,7 @@ const checkAll = async targets => {
 
 /* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
 const main = async () => {
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `splashDevicesPath` is a module-level constant built from `projectRootFrom(import.meta.url)`, not external input
   const sourceText = fs.readFileSync(splashDevicesPath, 'utf8');
   const devices = readSplashDevicesFromSource(sourceText, splashDevicesPath);
   const targets = buildIconTargets(splashTargetsFor(devices));

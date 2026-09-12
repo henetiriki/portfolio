@@ -8,9 +8,10 @@ describe('slugify', () => {
   it.each([
     ['Release Checklist', 'release-checklist'],
     ['What `agent:check-config` proves', 'what-agentcheck-config-proves'],
-    // An em dash flanked by two spaces survives as a double hyphen — this is
-    // how every archived "D-YYMMDDx — Title" heading is shaped.
-    ['D-260904c — Narrow the hook', 'd-260904c--narrow-the-hook'],
+    // An em dash flanked by two spaces survives as a double hyphen, since the
+    // dash itself is stripped rather than replaced and each surrounding space
+    // becomes its own hyphen.
+    ['Two Words — More Words', 'two-words--more-words'],
   ])('slugifies %s to %s', (text, expected) => {
     expect(slugify(text)).toBe(expected);
   });

@@ -1,15 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import { markdownFilesUnder } from './lib/markdown-files.mjs';
+import { projectRootFrom } from './lib/project-root.mjs';
 
-// Named to avoid the module wrapper's own `__dirname` parameter: Jest's
-// CommonJS transform of this ESM file puts this declaration inside a function
-// scope that already binds `__dirname`, so reusing that name is a duplicate
-// declaration there even though it's fine under real ESM execution.
-const moduleDir = path.dirname(fileURLToPath(import.meta.url));
-const projectRoot = path.resolve(moduleDir, '..');
+const projectRoot = projectRootFrom(import.meta.url);
 const docsDir = path.join(projectRoot, 'docs');
 const skillsDir = path.join(projectRoot, '.claude', 'skills');
 const agentsDir = path.join(projectRoot, '.claude', 'agents');
@@ -136,9 +131,11 @@ export const findBrokenLinks = (
 // prose Claude reads, with nothing to compile and nothing else to check it.
 /* istanbul ignore next -- real directory discovery; exercised by running the script, not by importing it under test */
 const skillFiles = () => {
+  // eslint-disable-next-line security/detect-non-literal-fs-filename -- `skillsDir` is a module-level constant built from `projectRootFrom(import.meta.url)`, not external input
   if (!fs.existsSync(skillsDir)) return [];
 
   return (
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- as above
     fs
       .readdirSync(skillsDir, { withFileTypes: true })
       .filter(entry => entry.isDirectory())
@@ -158,6 +155,7 @@ const readLines = filePath =>
 /* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
 const main = () => {
   const markdownFilePaths = [
+    // eslint-disable-next-line security/detect-non-literal-fs-filename -- `projectRoot` is a module-level constant built from `projectRootFrom(import.meta.url)`, not external input
     ...fs
       .readdirSync(projectRoot)
       .filter(name => name.endsWith('.md'))
