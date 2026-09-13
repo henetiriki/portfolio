@@ -4,7 +4,7 @@ Thanks for looking. This repository is a personal portfolio and CV site, publish
 
 ## Pull requests are not accepted
 
-Issues are disabled for the same reason. This is not a judgement on any particular change: the repository is one person's CV, and the conventions, release checklist and deployment around it all assume a single author.
+Issues are disabled for the same reason. This is not a judgement on any particular change: the repository is one person's CV, and the conventions, checks and deployment around it all assume a single author.
 
 A pull request opened from a fork will also sit unmergeable for a mechanical reason, so please do not read silence as rudeness — CI cannot post the coverage status that `main` requires when the run comes from a fork.
 

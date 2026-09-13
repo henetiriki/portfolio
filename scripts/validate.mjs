@@ -2,8 +2,7 @@ import { execFileSync } from 'node:child_process';
 
 // Ordered cheapest first, so a formatting slip fails in seconds rather than
 // after a production build. `sourceOnly` mirrors CI's per-step gates, plus the
-// build and the browser suite, which CI runs in its second job and the release
-// checklist requires before a pull request.
+// build and the browser suite, which CI runs in its second job.
 const CHECKS = [
   // Not `sourceOnly`: a `docs/` branch has to be prefixed too. First because it
   // costs one `git rev-parse`, and because a rename is cheapest before there is

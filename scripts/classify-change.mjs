@@ -45,9 +45,8 @@ const git = args =>
  *   make the flag useless for asking what a past commit contained.
  * - **No argument**, which is the local case, compares the whole branch against
  *   `origin/main` **and adds uncommitted work**, so it answers correctly whether
- *   or not the change is committed yet. The release sequence commits before
- *   validating, but nothing here depends on that and running mid-edit still
- *   classifies correctly — which is precisely what `HEAD^` cannot do.
+ *   or not the change is committed yet, and running mid-edit still classifies
+ *   correctly — which is precisely what `HEAD^` cannot do.
  */
 /* istanbul ignore next -- shells out to git; exercised by running the script, not by importing it under test */
 const changedPaths = (base, head) => {

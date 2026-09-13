@@ -39,8 +39,8 @@ jobs:
   # A documentation-only change takes a cheap path. Its own job because
   # `steps.*` does not cross job boundaries and both jobs below consume the
   # answer. Checkout only, no install, so it costs seconds. The exclusions are
-  # CI's, not Vercel's, and the two lists deliberately differ — see the release
-  # checklist.
+  # CI's, not Vercel's, and the two lists deliberately differ — see
+  # docs/ci-and-deploys.md.
   classify:
     name: Classify the change
     runs-on: ubuntu-latest
@@ -136,8 +136,8 @@ jobs:
       # Never gated either, and for the same reason: `.claude/` is on the
       # documentation-only exclusion list, so a change to the settings file
       # holding the hooks is precisely the case this must not skip. It needs no
-      # build inputs — it runs the hooks themselves, which are Node scripts in
-      # this repository.
+      # build inputs because it checks shape by reading the configuration rather
+      # than by executing anything — see docs/development.md's script table.
       - name: Check agent configuration
         run: yarn agent:check-config
 

@@ -48,6 +48,15 @@ The first four are [Conventional Branch](https://conventionalbranch.org/) minus 
 
 The description is what the branch is _for_, not what it touches: `chore/free-port-3000-and-prefix-branch-names`, not `chore/playwright-config`.
 
+## Working constraints
+
+Standing rules rather than a sequence: each holds whenever its situation arises, which is why they are here and the procedures around them are not.
+
+- **Port 3000 belongs to `next dev`** — leave whatever is running there alone, it is usually a human watching the change land. 3001 is the agent's own preview and 3002 the browser suite; `yarn agent:check-config` fails if those ever collide again.
+- **Never `git stash`.** The stash stack is shared across worktrees, so a concurrent session can pop your entry. Set work aside with a WIP commit instead.
+- **Rebase onto `origin/main`. Never merge `main` into a branch, and never merge one branch into another.** Merges are squashed, so a branch lands as one commit and its graph does not survive.
+- **No comment runs past four lines**, at any call site rather than only under `src/`. Past that it is an essay however well it passes the other tests; the argument goes to the topical doc and the comment becomes one line plus a pointer.
+
 ## Documentation discipline
 
 - **Read the topical doc for the area you are about to change, before changing it.** [`docs/README.md`](docs/README.md) is the index and names what each doc covers.
@@ -83,7 +92,9 @@ Changes a visitor cannot see skip production builds and subsequent preview build
 
 This is the source of truth for working conventions — edit it here. [`CLAUDE.md`](CLAUDE.md) at the repository root exists only to import this file and [`docs/README.md`](docs/README.md), because Claude Code loads `CLAUDE.md` automatically and would otherwise start with neither. Keep it to those two imports and the note explaining why; conventions that drift into it stop being visible to every other tool that reads `AGENTS.md`.
 
-**What belongs here, and what belongs in a skill.** This file is read in full at the start of every session, so it holds what is true whatever you are doing: the environment and the conventions. A procedure that applies at one moment — validating a change, rebasing, working in a worktree — belongs in a skill once one exists for it; until then it stays here in full under its own heading, so an inbound anchor still resolves wherever the content actually lives.
+**What belongs here, and what belongs in a skill.** This file is read in full at the start of every session, so it holds only what is true whatever you are doing: the environment, the conventions, and the [constraints](#working-constraints) that hold whenever their situation arises. A procedure that applies at one moment — how to validate a change, how a worktree is set up — does not belong here at all, because asserting it at the start of every session is not the same as having it to hand at the moment it applies. Those were removed rather than left in place to await a replacement; they come back as skills or hooks, which fire when they are relevant.
+
+The distinction is worth applying carefully, because the two are easy to confuse by proximity: a rule can sit inside a procedure and still be a constraint. Judge it by whether it is true only at one step or true throughout.
 
 Next.js 16's `next dev` may append a managed block delimited by `BEGIN:nextjs-agent-rules`. Leave it in place and commit it alongside your work; removing it only re-creates an uncommitted change on the next dev run. It is committed below, from the first `next dev` run inside a worktree.
 
