@@ -263,7 +263,7 @@ const getPublicPrecacheEntries = () =>
 // `withSerwistInit` attaches a `webpack` key unconditionally (its own
 // `disable` option is only checked inside that callback), and `next dev` runs
 // Turbopack, which @serwist/next does not support. Returning early keeps a
-// webpack config out of dev entirely. See D-260807a.
+// webpack config out of dev entirely.
 module.exports = async () => {
   if (process.env.NODE_ENV !== 'production') {
     return withBundleAnalyzer(baseConfig);

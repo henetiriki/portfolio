@@ -1,16 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-// Shared by check-agent-config.mjs and check-doc-links.mjs. Both need every
-// Markdown file under `.claude/agents/`, and check-doc-links.mjs needs the
-// same of `docs/`, whose decision log is a directory of one file per decision.
-// (`.claude/skills/*/SKILL.md` it locates itself, being one directory
-// shallower and one-per-directory rather than free-form.) Recursive, and
-// so: a file this walk misses is not reported as a problem, it is silently
-// unchecked — an agent tucked in a subdirectory would carry whatever tools it
-// liked past a green run, or have its links checked by nothing at all. The
-// extension test is case-insensitive for the same reason: checking a file
-// that turns out not to be Markdown is loud, and skipping one is not.
+// Shared by check-agent-config.mjs and check-doc-links.mjs, for every Markdown
+// file under `docs/` or `.claude/agents/`. Recursive, because a file this walk
+// misses is not reported as a problem, it is silently unchecked — a doc in a
+// subdirectory would have its links checked by nothing at all. The extension
+// test is case-insensitive for the same reason: checking a file that turns out
+// not to be Markdown is loud, and skipping one is not.
 const walk = directory =>
   // eslint-disable-next-line security/detect-non-literal-fs-filename -- `directory` is always `.claude/agents` or `docs/`, or a subdirectory of one of them, reached only by this walk
   fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {

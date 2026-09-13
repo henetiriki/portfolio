@@ -238,11 +238,10 @@ export const checkSkills = skillsDir => {
 };
 
 // An agent's `tools` line is the only thing standing between a reviewer that
-// reports what it found and one that quietly resolves it, and nothing else in
-// this repository would notice the list widening. The two review agents also
-// have to be findable: as with a skill, Claude sees only `name` and
-// `description` until it dispatches one. The recursive walk itself is shared
-// with check-doc-links.mjs — see scripts/lib/markdown-files.mjs.
+// reports what it found and one that quietly resolves it, and nothing else
+// here would notice the list widening. No agent is defined at the moment, so
+// this returns empty — it is the guard for when one is added again. The walk
+// is shared with check-doc-links.mjs — see scripts/lib/markdown-files.mjs.
 export const checkAgents = agentsDir => {
   const errors = [];
 
