@@ -28,13 +28,13 @@ export const theme = createTheme({
 
 Applied once in `_app.tsx` via `<MantineProvider forceColorScheme='dark' theme={theme}>`, alongside `import '@mantine/core/styles.css'` and `import '@mantine/notifications/styles.css'`. `_document.tsx` sets `data-mantine-color-scheme='dark'` directly on `<Html>` rather than rendering Mantine's `<ColorSchemeScript>` — that component emits an inline `<script>`, which removing `'unsafe-inline'` from `script-src` would block; the reasoning is maintained privately, and the public posture is in [Content Security Policy](security.md#content-security-policy). The site is dark-mode only with no light theme or toggle, so the value is a static attribute rather than a script computing it at request time: `forceColorScheme` on the provider keeps the runtime scheme fixed, and the hardcoded attribute keeps the server-rendered document dark before React hydrates, without needing a script to choose between light and dark.
 
-v6's `colorScheme` and `globalStyles` theme keys don't exist in v7. `colorScheme` moved to `MantineProvider`'s `forceColorScheme`/`defaultColorScheme` props (above); the old `globalStyles` callback (letter-spacing on headings, base `html` font-size, `body` defaults) moved to a plain stylesheet, `src/styles/global.css`, imported once in `_app.tsx`. That file also carries rules that exist purely to restore v6 behaviour — see [Post-v7 visual-parity fixes](#post-v7-visual-parity-fixes).
+`colorScheme` lives on `MantineProvider`'s `forceColorScheme`/`defaultColorScheme` props (above). Global styles beyond the theme — letter-spacing on headings, base `html` font-size, `body` defaults — live in a plain stylesheet, `src/styles/global.css`, imported once in `_app.tsx`. That file also carries rules that exist purely to restore v6 behaviour — see [Post-v7 visual-parity fixes](#post-v7-visual-parity-fixes).
 
-**`defaultRadius: 'sm'` is set deliberately, not incidentally.** Mantine v9 changed its own default from `sm` (4px) to `md` (8px) — confirmed by diffing the shipped `default-theme.mjs` across the v8→v9 boundary (8.3.18 vs 9.x). Every component that doesn't pass an explicit `radius` inherits it, so leaving it unset would have silently rounded the `Tooltip`, notification toasts and `Drawer` more than before. Pinning `sm` preserves the pre-v9 appearance. The buttons and inputs that pass `radius='lg'` (`ContactForm`, `portfolio.tsx`, `ErrorContent`) were never affected either way. **This is a design choice, not a technical constraint** — deleting the line adopts Mantine's newer, rounder default.
+**`defaultRadius: 'sm'` is set deliberately, not incidentally.** Mantine v9's own default is `md` (8px), not `sm` (4px). Every component that doesn't pass an explicit `radius` inherits it, so leaving it unset would silently round the `Tooltip`, notification toasts and `Drawer` more than before. Pinning `sm` preserves the pre-v9 appearance; the buttons and inputs that pass `radius='lg'` (`ContactForm`, `portfolio.tsx`, `ErrorContent`) are unaffected either way. **This is a design choice, not a technical constraint** — deleting the line adopts Mantine's newer, rounder default.
 
 ### Type scale
 
-`fontSizes` holds Mantine's own defaults — `xs` 12, `sm` 14, `md` 16, `lg` 18, `xl` 20 — and `body` in [`global.css`](../src/styles/global.css) sets a **unitless** `line-height: 1.5`, so leading tracks size instead of being pinned to one value. Both were corrected together on 2026-08-16; the scale had sat one step low since the v7 migration, which put body copy at 14px.
+`fontSizes` holds Mantine's own defaults — `xs` 12, `sm` 14, `md` 16, `lg` 18, `xl` 20 — and `body` in [`global.css`](../src/styles/global.css) sets a **unitless** `line-height: 1.5`, so leading tracks size instead of being pinned to one value.
 
 - **`Text` and `Input` do not default to the same token.** `Text` defaults to `md`, `Input` and its wrappers to `sm`. That asymmetry is why the contact form passes an explicit `size='lg'`: dropping the prop would render its fields at `sm`, and anything under 16px makes iOS Safari zoom the viewport on focus.
 - **A Mantine component's box does not scale with `fontSizes`.** `--input-height` and `--button-height` are Mantine's own per-size constants (`lg` is `3.125rem` for both), while `--input-fz` and `--button-fz` read from the theme. Changing a token therefore moves the text inside a control without moving the control.
@@ -66,7 +66,7 @@ Visitor-facing copy uses two dashes, chosen by role rather than by feel, so a sp
 
 To take a newer release, request `https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap` (and the Roboto equivalent) **with a current browser user agent** — the API serves formats by user agent, and a bare `curl` gets `ttf` — then replace the file the `/* latin */` block points at. Both families are OFL 1.1; `OFL.txt` sits beside each file and must travel with it.
 
-**The size-adjusted fallback faces are generated from the files themselves.** `adjustFontFallback: 'Arial'` is set explicitly so this cannot be lost silently — it produces the `bodyFont Fallback` / `headingFont Fallback` `@font-face` rules that limit layout shift while the real font loads. The override values differ slightly from the Google loader's, because `next/font/local` measures the file rather than reading Google's metrics table: Roboto moved from `size-adjust: 99.78%` to `100.37%`, Montserrat from `112.83%` to `110.19%`, with comparable shifts in the ascent and descent overrides. `e2e/fonts.spec.ts` asserts the fallback faces exist and are actually adjusted.
+**The size-adjusted fallback faces are generated from the files themselves.** `adjustFontFallback: 'Arial'` is set explicitly so this cannot be lost silently — it produces the `bodyFont Fallback` / `headingFont Fallback` `@font-face` rules that limit layout shift while the real font loads. The override values differ slightly from the Google loader's, because `next/font/local` measures the file rather than reading Google's metrics table. `e2e/fonts.spec.ts` asserts the fallback faces exist and are actually adjusted.
 
 ### How theme values become CSS variables
 
@@ -146,7 +146,7 @@ Plugin order matters here beyond alphabetical: `postcss-preset-mantine` needs to
 
 ## Post-v7 visual-parity fixes
 
-Every rule in this section is a real v6→v7 behavioural difference, found during page-by-page browser QA after the migration shipped and confirmed against production's computed styles — not a guess. That provenance is what this section records; why each rule is written as it is sits in the comment beside it.
+Each rule below fixes a specific Mantine v7 behavioural difference from v6 that changed this site's rendered output; the reason each exists is stated with it.
 
 ### `global.css`
 

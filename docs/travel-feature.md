@@ -47,7 +47,7 @@ The `/travel` page renders an interactive Google Map plotting places the site ow
 - **`staticMapUrl`** (`mapConfig.ts`) is the fixed path `/api/static-map`, not a direct Google URL. `MapPlaceholder` never talks to Google itself; `pages/api/static-map.ts` proxies one fixed 640×400 request (`scale=2` for a sharper decode) at the same centre as `mapOptions()` and zoom 1, server-side, so the Maps API key stays out of client-visible markup entirely rather than sitting in a copy-pasteable `<img>` `src`. It rejects query parameters, so only this canonical request can reach Google, and caches the fixed response at the browser and Vercel CDN for a year (`max-age`/`s-maxage`), preventing the public proxy from becoming a request-amplification path.
 - **Zoom 1, not the live map's own zoom 2.** The live map is drawn at real viewport width, so zoom 2 (world width `256 × 2^zoom` = 1024px) shows most of the globe there; the static request is capped at 640px wide, where zoom 2 would only cover ~62% of the world before `object-fit: cover` crops the rest. Zoom 1 (world width 512px) fits inside 640px and matches the live map's near-whole-world framing.
 - **The image is genuinely `filter: blur(12px)`'d, not Next's shimmer-gradient `blurDataURL()` placeholder** used by `FixedBackground`. `transform: scale(1.1)` keeps the blur's edge sampling inside the element; `.mapContainer`'s `overflow: hidden` clips the scaled, blurred image to the container instead of letting it bleed past the page edge and force a horizontal scrollbar on narrow viewports (fixed 2026-08-26).
-- **A second, raster-scoped Map ID** (`GOOGLE_MAPS_STATIC_MAP_ID`, read server-side only by the proxy route) supplies the same published cloud style to the static request — the Static Maps API only accepts raster map IDs, and the live map's own Map ID is deliberately vector (see [Modernisation phases](#modernisation-phases) below).
+- **A second, raster-scoped Map ID** (`GOOGLE_MAPS_STATIC_MAP_ID`, read server-side only by the proxy route) supplies the same published cloud style to the static request — the Static Maps API only accepts raster map IDs, and the live map's own Map ID is deliberately vector.
 
 ## Rail trips API round-trip
 
@@ -59,15 +59,4 @@ The travel map uses browser-visible map configuration supplied at build time. It
 
 ## Production smoke check
 
-The regular browser suite blocks Maps deliberately, so a separate scheduled smoke check visits the deployed `/travel` page. It waits for the real Google Maps script, scrolls the map into view, and verifies Google has rendered its map surface without the page falling back to `MapError`. The check runs daily and may also be started manually; it is diagnostic only and does not gate pull requests or deployment.
-
-## Modernisation phases
-
-The migration is intentionally split into parity-preserving releases:
-
-1. **Loader (complete):** replace the archived React wrapper with Google's maintained v2 loader while leaving map options, markers, polylines and sequencing unchanged.
-2. **Map ID and cloud style (complete):** the published cloud style is associated with a raster JavaScript Map ID, that ID is supplied at map construction, and the incompatible local `styles` option has been removed. Raster preserves the previous renderer while this styling boundary is verified.
-3. **Advanced Markers (complete):** replace classic markers and their symbol icons with accessible DOM-backed Advanced Marker elements, then restore drop/bounce, information-window, zoom-scaling, cleanup and reduced-motion parity using the new API.
-4. **Cleanup (complete):** restore Google's native accessible information-window close control while retaining auto-close, share the exact SVG path/colour/scale definitions with `MarkerLegend`, remove the unused type-guards/transpilation compatibility path, and audit documentation and focused tests against the final implementation.
-
-After those parity phases were verified, the Map ID was switched separately from raster to vector. The reveal now uses vector fractional zoom and `moveCamera()` for a smooth, duration-based transition to the current city.
+The regular browser suite blocks Maps deliberately, so a separate scheduled smoke check visits the deployed `/travel` page: it waits for the real Google Maps script and a rendered map, then verifies the page has not fallen back to `MapError`. See [Development Workflow](development.md#browser-regression-suite) for the check's schedule and failure handling.

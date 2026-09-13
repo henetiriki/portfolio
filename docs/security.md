@@ -12,11 +12,11 @@ The policy is enforced. Any change to a third-party integration, service worker,
 
 ### Response headers
 
-Header configuration is reviewed and regression-tested as a group. Exact values are maintained privately so the public documentation does not act as a configuration guide for attackers.
+Header configuration is reviewed and regression-tested as a group.
 
 ### Content Security Policy
 
-The policy authorises the resources the application needs and is reviewed whenever an integration changes. Its directives, sources, and operating evidence are maintained privately.
+The policy authorises the resources the application needs and is reviewed whenever an integration changes.
 
 ### Browser coverage
 
@@ -32,7 +32,7 @@ Automated dependency updates and code scanning support normal code review. They 
 
 ### Code scanning (CodeQL)
 
-Code scanning is enabled as a supporting control. Its exact setup, review status, and operational history are maintained privately.
+Code scanning is enabled as a supporting control.
 
 ## Configuration and secrets
 
@@ -42,11 +42,11 @@ Before publishing, review the staged diff for secrets and sensitive personal dat
 
 ### Secrets and credentials
 
-Secrets are kept outside version control. Maintainers use the approved private configuration channel for exact names, ownership, and rotation procedures.
+Exact names, ownership and rotation procedures are available through the maintainer's approved private configuration channel.
 
 ### Accepted exposure
 
-Browser-visible identifiers and public delivery URLs are assessed for provider-side restrictions and abuse risk. The resulting controls and rationale are maintained privately.
+Browser-visible identifiers and public delivery URLs are assessed for provider-side restrictions and abuse risk.
 
 ## Reporting a vulnerability
 

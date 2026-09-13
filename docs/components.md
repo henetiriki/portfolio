@@ -24,7 +24,7 @@ All components are function components (except `ErrorBoundary`) written in TypeS
 
 ### `experience/VideoContainer`
 
-Renders the optional YouTube embed for a timeline entry, inside a fixed-ratio box. **`loading='lazy'` is load-bearing, not cosmetic**: the embed sits far down the page, past where almost nobody scrolls, and a `youtube.com/embed` frame costs real main-thread JavaScript to load. Loading it eagerly measurably hurt `/experience` in PageSpeed relative to every other route, including `/travel`, whose far heavier Google Map is also deferred until it is in view. The explicit `width`/`height` reserve the box, so deferring costs no layout shift. Guarded by a unit test and by browser specs asserting the player is not requested on load but is once scrolled into view.
+Renders the optional YouTube embed for a timeline entry, inside a fixed-ratio box. **`loading='lazy'` is load-bearing, not cosmetic**: the embed sits below the fold, and a `youtube.com/embed` frame costs real main-thread JavaScript to load. The explicit `width`/`height` reserve the box, so deferring costs no layout shift. Guarded by a unit test and by browser specs asserting the player is not requested on load but is once scrolled into view.
 
 ## `footer/`
 
@@ -54,7 +54,7 @@ Renders the optional YouTube embed for a timeline entry, inside a fixed-ratio bo
 
 A set of small, single-purpose components composed together in `pages/experience.tsx` to lay out each job/school entry: `Timeline`, `TimelineBox`, `TimelineContent`, `TimelineFromTo` (renders the `year.from`–`year.to` range), `TimelineHeading` (section heading with an icon, e.g. `IconBriefcase`/`IconSchool`), `TimelineInstitution` (name + optional link), `TimelineLocation`, `TimelineTitle`, and `VideoContainer` (renders an embedded YouTube iframe when a job entry defines `video`).
 
-Their horizontal spacing is viewport-dependent below the `xs` breakpoint: `TimelineBox`'s rail-to-card padding and `TimelineContent`'s own padding both narrow, as does the arrow `TimelineContent` draws outside its left edge, and `Timeline`'s margin moves the rail 7px nearer the screen edge (12px in the initial cut). `TimelineHeading`'s icon also shrinks, 2.5rem to 2rem, below `xs`. Two relationships constrain any further change and are asserted by `experience-gutter.mobile.spec.ts` — `Timeline`'s margin is where `TimelineHeading`'s icon centre falls (the icon's own negative margin and the row's vertical alignment both carry the offset), and the arrow shares the rail-to-card gap with the dot.
+Their horizontal spacing is viewport-dependent below the `xs` breakpoint: `TimelineBox`'s rail-to-card padding and `TimelineContent`'s own padding both narrow, as does the arrow `TimelineContent` draws outside its left edge, and `Timeline`'s margin moves the rail 7px nearer the screen edge. `TimelineHeading`'s icon also shrinks, 2.5rem to 2rem, below `xs`. Two relationships constrain any further change and are asserted by `experience-gutter.mobile.spec.ts` — `Timeline`'s margin is where `TimelineHeading`'s icon centre falls (the icon's own negative margin and the row's vertical alignment both carry the offset), and the arrow shares the rail-to-card gap with the dot.
 
 ## `travel/` — Google Maps feature
 
