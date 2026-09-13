@@ -83,7 +83,7 @@ Standing rules rather than a sequence: each holds whenever its situation arises,
 
 Merging to `main` deploys to production via Vercel. There are no tags or version numbers.
 
-Changes a visitor cannot see skip production and preview builds via `ignoreCommand` in `vercel.json`. Two things are easy to get wrong while working: a skipped build still reports `success`, not a failure — see [CI & deploys](docs/ci-and-deploys.md#merge--deploy) for what that status actually reads; and CI's own exclusion list is shorter and deliberately different, covered on the [same page](docs/ci-and-deploys.md#pull-request).
+Changes a visitor cannot see skip production builds and subsequent preview builds via `ignoreCommand` in `vercel.json` — a preview branch's first build always happens, so its pull request still gets a QA URL. Two things are easy to get wrong while working: a skipped build still reports `success`, not a failure — see [CI & deploys](docs/ci-and-deploys.md#merge--deploy) for what that status actually reads; and CI's own exclusion list is shorter and deliberately different, covered on the [same page](docs/ci-and-deploys.md#pull-request).
 
 ## About this file
 

@@ -24,7 +24,7 @@ All components are function components (except `ErrorBoundary`) written in TypeS
 
 ### `experience/VideoContainer`
 
-Renders the optional YouTube embed for a timeline entry, inside a fixed-ratio box. The iframe is **`loading='lazy'` and that is load-bearing, not cosmetic**: the embed sits roughly 35,000px down a 39,000px page, and a bare `youtube.com/embed` frame costs about a megabyte of player JavaScript. Loading it eagerly put that execution on the main thread during initial page load — for content almost nobody scrolls to — and measurably hurt `/experience` in PageSpeed relative to every other route, including `/travel`, whose far heavier Google Map is deferred until it is in view. The explicit `width`/`height` reserve the box, so deferring costs no layout shift. Guarded by a unit test and by browser specs asserting the player is not requested on load but is once scrolled into view.
+Renders the optional YouTube embed for a timeline entry, inside a fixed-ratio box. **`loading='lazy'` is load-bearing, not cosmetic**: the embed sits far down the page, past where almost nobody scrolls, and a `youtube.com/embed` frame costs real main-thread JavaScript to load — eagerly, that measurably hurt `/experience` in PageSpeed relative to every other route, including `/travel`, whose far heavier Google Map is also deferred until in view. The explicit `width`/`height` reserve the box, so deferring costs no layout shift. Guarded by a unit test and by browser specs asserting the player is not requested on load but is once scrolled into view.
 
 ## `footer/`
 
