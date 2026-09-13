@@ -22,7 +22,13 @@ The authoritative sources are [`ci.yml`](../.github/workflows/ci.yml), [`vercel.
 
 ## Coverage
 
-`Validate` uploads Jest's LCOV report after the local threshold passes, including on documentation-only changes because patch coverage is required. [`codecov.yml`](../codecov.yml) defines the required patch report and informational whole-project report; the former can block a merge, while the latter only reports the repository-wide change.
+`Validate` uploads Jest's LCOV report to Codecov after the local threshold passes, on every change including documentation-only ones, because `codecov/patch` is a required check and a skipped upload posts no status at all. The action authenticates with a short-lived GitHub OIDC token rather than a long-lived secret; an upload or authentication error fails the CI job rather than silently omitting the check.
+
+**A pull request from a fork cannot be merged, and it won't look like a rule blocking it.** GitHub issues no OIDC token for fork pull requests, so the upload is skipped there, `codecov/patch` never posts, and the check sits pending rather than red — the ruleset carries no bypass actors, so the only way through is editing the ruleset itself. For a portfolio expecting no contributors this is a reasonable end state.
+
+**The required check depends on state held outside this repository, and its failure mode is silent.** Codecov must have the repository marked _active_, and it deactivates a repository when its visibility changes — a dropped upload looks exactly like a successful one. Diagnose it against Codecov rather than the workflow: `curl -s https://api.codecov.io/api/v2/github/<owner>/repos/<repo>/` reports `active`, and appending `commits/<full-sha>/` says whether a given commit was actually recorded.
+
+A missing report on `main` does not block the check — patch coverage is computed from the pull request's own report. [`codecov.yml`](../codecov.yml) requires 100% coverage of coverable lines changed by each pull request; `codecov/patch` is a required check on `main` alongside `CI / Validate` and `CI / Build & browser suite`. Whole-project status is enabled but `informational: true`, so it reports the repository-wide delta without ever blocking a merge.
 
 ## Merge & Deploy
 
