@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import {
   consonantSoundOverrides,
   vowelSoundOverrides,
-} from './useArticleAgreementExceptions';
+} from '@fixtures/articleAgreementExceptions';
 import type { RefCallback } from 'react';
 
 const vowelSoundPattern = /^[aeiou]/i;
