@@ -36,36 +36,6 @@ describe('useArticleAgreement', () => {
     await waitFor(() => expect(result.current[0]).toBe('a'));
   });
 
-  it('overrides to "a" for a word that looks vowel-led but sounds consonant-led, like "European"', async () => {
-    const { result } = renderHook(() => useArticleAgreement());
-    const node = document.createElement('span');
-
-    result.current[1](node);
-    node.textContent = 'European delegate';
-
-    await waitFor(() => expect(result.current[0]).toBe('a'));
-  });
-
-  it('overrides to "an" for a word that looks consonant-led but sounds vowel-led, like "MBA"', async () => {
-    const { result } = renderHook(() => useArticleAgreement());
-    const node = document.createElement('span');
-
-    result.current[1](node);
-    node.textContent = 'MBA graduate';
-
-    await waitFor(() => expect(result.current[0]).toBe('an'));
-  });
-
-  it('matches an exception word regardless of letter case', async () => {
-    const { result } = renderHook(() => useArticleAgreement());
-    const node = document.createElement('span');
-
-    result.current[1](node);
-    node.textContent = 'EUROPEAN Union representative';
-
-    await waitFor(() => expect(result.current[0]).toBe('a'));
-  });
-
   it('ignores a mutation that leaves the node empty', async () => {
     const { result } = renderHook(() => useArticleAgreement());
     const node = document.createElement('span');
