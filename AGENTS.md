@@ -36,15 +36,15 @@ A chained command is judged as one string, so whatever reviews it — a permissi
 | `chore/`      | Tooling, CI, dependencies, tests — work on the machinery     |
 | `dependabot/` | Dependabot's own dependency branches — never written by hand |
 
-The first four are [Conventional Branch](https://conventionalbranch.org/) minus the prefixes this repository has no use for: `hotfix/` and `release/` both assume a release process this repository does not have — every merge deploys straight to production, so an urgent fix is just a `fix/`, and there is nothing to prepare a release on. `dependabot/` is not from Conventional Branch at all.
+The first four are [Conventional Branch](https://conventionalbranch.org/) minus `hotfix/` and `release/`, which assume a release process this repository does not have — every merge deploys straight to production. `dependabot/` is not from Conventional Branch at all.
 
-**You never write a `dependabot/` branch, and nothing above it applies to one.** Dependabot names its own, the check recognises the prefix and accepts whatever follows — lowercase and the hyphenated description included — and nothing here can rename them. A dependency bump you raise yourself is still a `chore/`.
+**You never write a `dependabot/` branch, and nothing above it applies to one.** Dependabot names its own; a dependency bump you raise yourself is still a `chore/`.
 
-**This is checked rather than trusted, and CI is where it binds.** `yarn branch:check` runs [`scripts/check-branch-name.mjs`](scripts/check-branch-name.mjs) against the current branch, and `yarn validate` runs it first. CI runs it again inside `Validate` against the pull request's head ref, which is the enforcement point that holds whoever created the branch — including from an IDE, where no local check ever runs. Renaming a branch after the pull request exists means reopening it, so check before you push. `main` and a detached `HEAD` are exempt.
+**`yarn branch:check` enforces this, locally and in CI** — see [Development Workflow](docs/development.md#scripts-packagejson) for how the script behaves and [CI & deploys](docs/ci-and-deploys.md#pull-request) for where it binds in the pipeline. Renaming a branch after the pull request exists means reopening it, so check before you push.
 
-**`docs/` is the one prefix that makes a claim the build can check.** Its scope is exactly CI's [cheap path](docs/ci-and-deploys.md#pull-request), so a `docs/` branch should always take that run. Vercel excludes the same paths after a preview branch has built, but its first preview deliberately builds so the pull request has a manual-QA URL. One that triggers `Build & browser suite` is misnamed, or has grown beyond what you meant.
+**`docs/` is the one prefix that makes a claim the build can check**: its scope is exactly CI's [cheap path](docs/ci-and-deploys.md#pull-request), so a `docs/` branch should always take that run — one that triggers `Build & browser suite` instead is misnamed, or has grown beyond what you meant.
 
-**The other three are categories, not predictions — `chore/` especially.** Vercel's exclusion list is a list of _paths_, not a notion of what is boring: a dependency bump deploys like anything else, while a `chore/` touching `e2e/`, `.github/` or `scripts/` does not. Do not read the prefix as a forecast of what CI and Vercel will do; read the [exclusion lists](docs/ci-and-deploys.md#merge--deploy), which differ from each other on purpose.
+**The other three are categories, not predictions — `chore/` especially.** Read the [exclusion lists](docs/ci-and-deploys.md#merge--deploy) rather than the prefix as a forecast of what CI and Vercel will do: a dependency bump deploys like anything else, while a `chore/` touching `e2e/`, `.github/` or `scripts/` does not.
 
 The description is what the branch is _for_, not what it touches: `chore/free-port-3000-and-prefix-branch-names`, not `chore/playwright-config`.
 
@@ -61,10 +61,10 @@ Standing rules rather than a sequence: each holds whenever its situation arises,
 
 - **Read the topical doc for the area you are about to change, before changing it.** [`docs/README.md`](docs/README.md) is the index and names what each doc covers.
   - **Read the one that matters, not all of them.** `docs/` runs to several hundred kilobytes, and `development.md` is far larger than the rest. Bulk-loading them crowds out the work.
-- [`docs/roadmap.md`](docs/roadmap.md) holds **open work only**. When work completes, **remove** it — the merged pull request is the record of what changed and when, and current behaviour goes to the topical doc. A finished item left in the roadmap, or ticked in place, is a defect.
-- **Before picking up a roadmap item that names a repository setting, verify the live state rather than trusting the item.** `gh api repos/henetiriki/portfolio/rulesets` for branch protection, and `curl -s https://api.codecov.io/api/v2/github/henetiriki/repos/portfolio/` for Codecov activation. Two commands, and they catch the case above before it turns into a pull request that re-does finished work. `gh api repos/henetiriki/portfolio/rulesets/<id>/history` retains every past version with its actor, and is the only record anywhere of a settings change.
+- [`docs/roadmap.md`](docs/roadmap.md) states its own scope — read it before adding or closing an item.
+- **Verify the live state through the approved maintainer process before acting on a roadmap item about repository settings; do not rely on the item alone.**
 - **Write documentation prose in UK English.** Keep locale-specific behaviour such as `en-ZA`, external status text, and technical identifiers/API fields (for example `color`) unchanged; translate the surrounding human-language prose instead.
-- **Keep drifting numbers out of the prose.** Test totals, file sizes, directory counts and the like are wrong within a few commits and nobody goes back to correct them, so they end up misinforming the reader the doc was written for. Write the property that survives — "the unit suite runs in seconds" rather than a count. Where a figure genuinely carries the argument, date it, as the coverage baseline in [`development.md`](docs/development.md#testing) does.
+- **Keep drifting numbers out of the prose.** Test totals, file sizes, directory counts and the like go stale; write the property that survives — "the unit suite runs in seconds" rather than a count. Date any figure that genuinely carries the argument.
 
 ## Private operational documentation
 
@@ -83,18 +83,13 @@ Standing rules rather than a sequence: each holds whenever its situation arises,
 
 Merging to `main` deploys to production via Vercel. There are no tags or version numbers.
 
-Changes a visitor cannot see skip production builds and subsequent preview builds, via `ignoreCommand` in `vercel.json`; every preview branch's first build is deliberate so its pull request has a QA URL. The excluded paths and reasoning are on the [CI & deploys](docs/ci-and-deploys.md#merge--deploy) page. Two consequences matter while working:
-
-- **A skip is a `success` status reading _"Canceled by Ignored Build Step"_, not a failure.** It is easy to misread that green tick as a completed build.
-- **CI has its own, shorter list, and the two are not interchangeable.** `e2e/` and `playwright*.config.ts` are excluded from the deploy and deliberately not from CI, because the browser suite is exactly what must run when they change. What each list holds, and what a cheap CI run actually leaves running, is on the [CI & deploys](docs/ci-and-deploys.md#pull-request) page.
+Changes a visitor cannot see skip production builds and subsequent preview builds via `ignoreCommand` in `vercel.json` — a preview branch's first build always happens, so its pull request still gets a QA URL. Two things are easy to get wrong while working: a skipped build still reports `success`, not a failure — see [CI & deploys](docs/ci-and-deploys.md#merge--deploy) for what that status actually reads; and CI's own exclusion list is shorter and deliberately different, covered on the [same page](docs/ci-and-deploys.md#pull-request).
 
 ## About this file
 
-This is the source of truth for working conventions — edit it here. [`CLAUDE.md`](CLAUDE.md) at the repository root exists only to import this file and [`docs/README.md`](docs/README.md), because Claude Code loads `CLAUDE.md` automatically and would otherwise start with neither. Keep it to those two imports and the note explaining why; conventions that drift into it stop being visible to every other tool that reads `AGENTS.md`.
+This is the source of truth for working conventions — edit it here. [`CLAUDE.md`](CLAUDE.md) exists only to import this file and [`docs/README.md`](docs/README.md), because Claude Code loads `CLAUDE.md` automatically and would otherwise start with neither; keep it to those two imports, or a convention added here stops being visible to every other tool that reads `AGENTS.md`.
 
-**What belongs here, and what belongs in a skill.** This file is read in full at the start of every session, so it holds only what is true whatever you are doing: the environment, the conventions, and the [constraints](#working-constraints) that hold whenever their situation arises. A procedure that applies at one moment — how to validate a change, how a worktree is set up — does not belong here at all, because asserting it at the start of every session is not the same as having it to hand at the moment it applies. Those were removed rather than left in place to await a replacement; they come back as skills or hooks, which fire when they are relevant.
-
-The distinction is worth applying carefully, because the two are easy to confuse by proximity: a rule can sit inside a procedure and still be a constraint. Judge it by whether it is true only at one step or true throughout.
+**What belongs here, and what belongs in a skill.** This file loads in full every session, so it holds only what is true whatever you are doing: environment, conventions, and [constraints](#working-constraints) that hold whenever their situation arises. A procedure that applies at one moment — how to validate a change, how a worktree is set up — belongs in a skill or hook instead, which fires when relevant. Judge a rule by whether it's true only at one step or true throughout; a constraint can sit inside a procedure without being one.
 
 Next.js 16's `next dev` may append a managed block delimited by `BEGIN:nextjs-agent-rules`. Leave it in place and commit it alongside your work; removing it only re-creates an uncommitted change on the next dev run. It is committed below, from the first `next dev` run inside a worktree.
 

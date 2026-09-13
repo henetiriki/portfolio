@@ -20,6 +20,16 @@ The authoritative sources are [`ci.yml`](../.github/workflows/ci.yml), [`vercel.
 
 **What a cheap run looks like:** `Build & browser suite` is marked skipped, `Validate` is green with its gated steps skipped, and the run summary names the ungated steps that ran and the gated ones that did not. As with a Vercel skip, do not read the green tick as evidence the suite passed.
 
+## Coverage
+
+`Validate` uploads Jest's LCOV report to Codecov after the local threshold passes, on every change including documentation-only ones, because `codecov/patch` is a required check and a skipped upload posts no status at all. The action authenticates with a short-lived GitHub OIDC token rather than a long-lived secret; an upload or authentication error fails the CI job rather than silently omitting the check.
+
+**A pull request from a fork cannot be merged, and it won't look like a rule blocking it.** GitHub issues no OIDC token for fork pull requests, so the upload is skipped there, `codecov/patch` never posts, and the check sits pending rather than red — the ruleset carries no bypass actors, so the only way through is editing the ruleset itself. For a portfolio expecting no contributors this is a reasonable end state.
+
+**The required check depends on state held outside this repository, and its failure mode is silent.** Codecov must have the repository marked _active_, and it deactivates a repository when its visibility changes — a dropped upload looks exactly like a successful one. Diagnose it against Codecov rather than the workflow: `curl -s https://api.codecov.io/api/v2/github/<owner>/repos/<repo>/` reports `active`, and appending `commits/<full-sha>/` says whether a given commit was actually recorded.
+
+A missing report on `main` does not block the check — patch coverage is computed from the pull request's own report. [`codecov.yml`](../codecov.yml) requires 100% coverage of coverable lines changed by each pull request; `codecov/patch` is a required check on `main` alongside `CI / Validate` and `CI / Build & browser suite`. Whole-project status is enabled but `informational: true`, so it reports the repository-wide delta without ever blocking a merge.
+
 ## Merge & Deploy
 
 - **A pull request is squash merged** into `main`, which keeps the `Title (#NNN)` history style.
@@ -50,7 +60,7 @@ To force an otherwise skipped deploy, trigger it from the Vercel dashboard.
 
 Worth knowing before relying on the automation:
 
-- **The CSS-variable stub has no committed baseline.** It is intentionally gitignored and regenerated during `postinstall`; CI's subsequent `css-vars:check` proves the current generated output matches `colors.ts`, not that a checked-in artefact is current. This is the intended model because the file exists only for local WebStorm analysis.
+- **The CSS-variable stub has no committed baseline to compare against.** `css-vars:check` in CI proves the current generated output matches `colors.ts`, not that a checked-in artefact is current — see [Styling & Theming](styling-theming.md#webstorm-css-variable-resolution-mantine-custom-propertiescss) for what the stub is and why it's gitignored.
 - **Dev and production use different bundlers.** `next dev` runs Turbopack; `next build` is pinned to webpack with `--webpack` because `@serwist/next` injects a webpack config that Next 16 refuses to build through Turbopack. Nothing automated exercises Turbopack — CI runs the one webpack production build — so a bundler-specific difference in either direction surfaces only in local dev or manual QA. See [development.md](development.md#bundlers-turbopack-in-dev-webpack-in-builds).
 
 ## Rollback
