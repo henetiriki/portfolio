@@ -36,8 +36,6 @@ Last reviewed: 2026-09-07.
 
 - [ ] **Define when a repository setting may be named publicly — blocked on maintainer guidance.** The proposed boundary is whether its value is externally observable and has no security function; exact protections, exemptions and monitoring remain private. `squash_merge_commit_message` is the motivating case — it's named in two public files with no rule to point at. Confirm that no broader private rule applies, then align those mentions.
 
-- [ ] **Add the missing scripts to both command tables.** The root [`README.md`](../README.md) omits `validate`, `branch:check` and `test:e2e:maps-smoke`; [`development.md`](development.md#scripts-packagejson) omits `test:e2e:maps-smoke`.
-
 ## Code quality follow-ups
 
 - [ ] **Consider phonetic exceptions for `useArticleAgreement`.** It matches the leading letter rather than sound, so future words such as "European" or "MBA" would choose the wrong article. The current author-controlled word list has no exception.
