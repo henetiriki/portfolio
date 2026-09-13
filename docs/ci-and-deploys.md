@@ -22,15 +22,7 @@ The authoritative sources are [`ci.yml`](../.github/workflows/ci.yml), [`vercel.
 
 ## Coverage
 
-`Validate` uploads Jest's `coverage/lcov.info` to Codecov after the local coverage threshold passes, on every change including a documentation-only one — `codecov/patch` is a required check, and a skipped upload posts no status at all. The action authenticates with a short-lived GitHub OIDC token (`id-token: write` plus `use_oidc: true`), so there's no long-lived `CODECOV_TOKEN` secret; an upload or authentication error fails the CI job rather than silently omitting the coverage check.
-
-**A pull request from a fork cannot be merged, and it won't look like a rule blocking it.** GitHub issues no OIDC token for fork pull requests, so the upload is skipped there rather than failing the job — which keeps the job green, but `codecov/patch` never posts and sits pending rather than red, indefinitely. The ruleset carries no bypass actors, so the only way through is editing the ruleset itself. For a portfolio expecting no contributors this is a reasonable end state, written down so it's recognised on sight rather than debugged as a broken workflow.
-
-**The required check depends on state held outside this repository, and its failure mode is silent.** Codecov must have the repository marked _active_ — invisible from the workflow, GitHub, or the job log, because a dropped upload looks exactly like a successful one, and Codecov deactivates a repository when its visibility changes. Diagnose it against Codecov rather than the workflow: `curl -s https://api.codecov.io/api/v2/github/<owner>/repos/<repo>/` reports `active`, and appending `commits/<full-sha>/` says whether a given commit was actually recorded (an abbreviated SHA returns no match either way). The Codecov GitHub App must also be installed for this repository through the owner's Codecov account.
-
-A missing report on `main` does not block the check — patch coverage is computed from the pull request's own report, so `codecov/patch` posts even when the base has nothing to compare against; what a missing base costs is the comparison, not the status.
-
-[`codecov.yml`](../codecov.yml) requires 100% coverage of coverable lines changed by each pull request, posts a comment on a condensed layout, and annotates uncovered lines through GitHub Checks. `codecov/patch` is a required check on `main` alongside `CI / Validate` and `CI / Build & browser suite`, so a patch below 100% blocks the merge rather than merely reporting. Whole-project status is enabled but `informational: true`, so it reports and never blocks: it compares against the base commit at `target: auto` with a `0%` threshold and always posts as `success`, carrying the real coverage delta in its status description and the pull-request comment.
+`Validate` uploads Jest's LCOV report after the local threshold passes, including on documentation-only changes because patch coverage is required. [`codecov.yml`](../codecov.yml) defines the required patch report and informational whole-project report; the former can block a merge, while the latter only reports the repository-wide change.
 
 ## Merge & Deploy
 

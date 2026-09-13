@@ -36,17 +36,9 @@ Code scanning is enabled as a supporting control.
 
 ## Configuration and secrets
 
-Deployment credentials and server-only configuration are kept outside the repository. Values intentionally exposed to browser code are treated as public identifiers and should be restricted at their respective providers where possible.
+See [Runtime Configuration](environment-variables.md) for credential storage and browser-visible identifiers.
 
 Before publishing, review the staged diff for secrets and sensitive personal data. Removing an accidentally committed credential in a later commit does not remove it from history; rotate or revoke it promptly instead.
-
-### Secrets and credentials
-
-Exact names, ownership and rotation procedures are available through the maintainer's approved private configuration channel.
-
-### Accepted exposure
-
-Browser-visible identifiers and public delivery URLs are assessed for provider-side restrictions and abuse risk.
 
 ## Reporting a vulnerability
 

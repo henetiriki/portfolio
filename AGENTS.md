@@ -62,9 +62,9 @@ Standing rules rather than a sequence: each holds whenever its situation arises,
 - **Read the topical doc for the area you are about to change, before changing it.** [`docs/README.md`](docs/README.md) is the index and names what each doc covers.
   - **Read the one that matters, not all of them.** `docs/` runs to several hundred kilobytes, and `development.md` is far larger than the rest. Bulk-loading them crowds out the work.
 - [`docs/roadmap.md`](docs/roadmap.md) states its own scope — read it before adding or closing an item.
-- **Before picking up a roadmap item that names a repository setting, verify the live state rather than trusting the item.** `gh api repos/henetiriki/portfolio/rulesets` for branch protection, and `curl -s https://api.codecov.io/api/v2/github/henetiriki/repos/portfolio/` for Codecov activation. Two commands, and they catch the case above before it turns into a pull request that re-does finished work. `gh api repos/henetiriki/portfolio/rulesets/<id>/history` retains every past version with its actor, and is the only record anywhere of a settings change.
+- **Verify the live state through the approved maintainer process before acting on a roadmap item about repository settings; do not rely on the item alone.**
 - **Write documentation prose in UK English.** Keep locale-specific behaviour such as `en-ZA`, external status text, and technical identifiers/API fields (for example `color`) unchanged; translate the surrounding human-language prose instead.
-- **Keep drifting numbers out of the prose.** Test totals, file sizes, directory counts and the like are wrong within a few commits and nobody goes back to correct them, so they end up misinforming the reader the doc was written for. Write the property that survives — "the unit suite runs in seconds" rather than a count. Where a figure genuinely carries the argument, date it, as the coverage baseline in [`development.md`](docs/development.md#testing) does.
+- **Keep drifting numbers out of the prose.** Test totals, file sizes, directory counts and the like go stale; write the property that survives — "the unit suite runs in seconds" rather than a count. Date any figure that genuinely carries the argument.
 
 ## Private operational documentation
 

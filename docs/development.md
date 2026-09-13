@@ -77,9 +77,7 @@ Thrown at `handleStaticIndicator` inside Next's HMR websocket handler while proc
 
 ## Browser regression suite
 
-Playwright, in `e2e/`, run with `yarn test:e2e` (`--ui` for the interactive runner). It is deliberately narrower than the Jest suite: it exists to catch what jsdom structurally cannot — real layout, focus order, hydration and colour contrast. The Jest suite remains the place for logic and component behaviour.
-
-Full Jest coverage does not guarantee visual correctness — a regression can pass every unit test and still render wrong, which is the gap this suite closes.
+Playwright, in `e2e/`, runs with `yarn test:e2e` (`--ui` for the interactive runner). It covers what Jest and jsdom cannot: real layout, focus order, hydration and colour contrast.
 
 Constraints worth knowing before adding specs:
 
@@ -219,13 +217,13 @@ Clear it by waiting out the remaining hours and re-running `yarn install` unchan
 
 ## Testing
 
-Two suites with deliberately different jobs: **Jest + React Testing Library** for logic and component behaviour (below), and a **[Playwright browser suite](#browser-regression-suite)** for what jsdom structurally cannot observe. Neither substitutes for the other — the browser suite exists because full Jest coverage did not prevent a documented run of visual regressions.
+Jest and React Testing Library cover logic and component behaviour; the [Playwright suite](#browser-regression-suite) covers browser rendering and interaction.
 
-The Jest + React Testing Library floor is **100% branches, functions and lines** — the three metrics LCOV carries, and therefore the three Codecov sees. No `istanbul ignore` comment is used anywhere under `src/`, and nothing inside a measured file there is skipped — `scripts/` is the one part of the measured tree that does use the comment, and only on the real I/O a script's CLI entry point performs, never on a decision; see the `scripts/` bullet below. What `collectCoverageFrom` leaves out of `src/`'s measurement is listed in `jest.config.js`: `index.ts` re-exports, `*.d.ts`, `__tests__`, `utils/test`, and the three Next entry points `_app.tsx`, `_document.tsx` and `_offline.tsx`. Those last three do carry real composition, so read the figure as covering the application's own modules rather than literally everything under `src/`. A global `coverageThreshold` in `jest.config.js` (100% branches/functions/lines/statements) fails `test:coverage` on any regression from that floor. It is a regression guard rather than a target still to reach — the suite already covers every function and branch, and a genuinely untestable path is routed around the measurement with `istanbul ignore` rather than answered for by slack in the floor, which is why the floor can sit at 100% instead of leaving room below it.
+Jest enforces 100% branch, function, line and statement coverage. `collectCoverageFrom` excludes re-export barrels, declarations, tests, test utilities and Next's `_app`, `_document` and `_offline` entry points, so the figure covers measured application modules rather than every file under `src/`. Nothing measured under `src/` uses `istanbul ignore`; the limited `scripts/` exceptions are described below.
 
-CI uploads coverage to Codecov as a required check on every pull request — see [CI & deploys](ci-and-deploys.md#coverage) for the upload mechanics, the fork-PR limitation, and how `codecov/patch` and `codecov/project` are configured.
+CI reports coverage on every pull request; [CI & Deploys](ci-and-deploys.md#coverage) owns that behaviour.
 
-**Jest and Codecov disagree on statement coverage, and neither is wrong.** Jest can report a statement figure fractionally below its branch, function and line figures while Codecov reports the set as complete. LCOV records lines, branches and functions and has no statement counter at all, so Codecov never receives the one metric that differs. Worth knowing before the gap is investigated as a dropped upload, which is what it resembles.
+Codecov cannot report statement coverage because LCOV carries only lines, branches and functions.
 
 Console output is muted globally during test runs: `jest.setup.ts` spies on `console.log`/`console.error`/`console.warn` in a `beforeEach` (`mockImplementation(() => {})`) and restores them in `afterEach` via `jest.restoreAllMocks()`. This keeps expected error-boundary output and jsdom's harmless "Not implemented: navigation" noise from cluttering test runs while still recording calls for assertions. Contact tests use those spies to prove delivery and rejection logs are fixed redacted messages without transport detail. A test can assert directly against the existing global spy — adding another local `jest.spyOn` is unnecessary — and `restoreAllMocks` cleans up after every test.
 
@@ -236,7 +234,7 @@ Console output is muted globally during test runs: `jest.setup.ts` spies on `con
 - **`.env.test`** supplies the committed dummy values without which `next/jest` cannot load `next.config.js` at all. It is not a source of real credentials — see [Environment Variables](environment-variables.md).
 - **`src/utils/test/render.tsx`** is a custom RTL `render` (the standard Testing Library "custom render" recipe) that wraps the tree in `MantineProvider` with the app's real `theme`, and re-exports everything else from `@testing-library/react`. Tests should import `render`/`screen`/etc. from `@utils/test/render` rather than `@testing-library/react` directly, so components using theme context (for example, `useMantineTheme()`) resolve the app's custom colours and other values instead of Mantine's fallback defaults.
 - Test files live in a `__tests__` folder alongside the code they cover (e.g. [`components/content/__tests__/Header.test.tsx`](../src/components/content/__tests__/Header.test.tsx)), not colocated as `Component.test.tsx`. `jest.config.js`'s `testMatch` is scoped to `{src,scripts}/**/__tests__/**/*.test.{ts,tsx}` specifically so this is enforced — a stray `.test.tsx` file sitting next to its source won't silently run.
-  - **`scripts/` is the second root, and shares the coverage floor above with `src/`.** Each script's CLI-entry `main()` — and any other function whose job is real I/O rather than a decision, such as one that shells out to `git` or renders an image — is marked `/* istanbul ignore next */`, since it is exercised by running the script rather than by importing it under test; everything else is held to the same 100% floor. Ignoring a function does not ignore what it calls: a helper reachable only from an ignored `main()` needs its own comment, or it counts as its own uncovered function regardless of its caller. Worth knowing beyond that: a wrong verdict from `classify-change.mjs` skips checks silently rather than failing, which is what makes it the one most worth covering.
+  - **`scripts/` shares the coverage floor.** CLI entry points and other real-I/O functions may use `/* istanbul ignore next */`; decisions may not. A helper called only by an ignored function needs its own exclusion or coverage. `classify-change.mjs` is especially important because a wrong verdict can skip checks silently.
   - **Exception: everything under `src/pages/`.** Next's Pages Router treats _every_ file directly under `pages/` as a route (confirmed when a types-only `pages/api/types.ts` file broke the build), so a colocated `pages/__tests__/` or `pages/api/__tests__/` folder risks Next trying to build its contents as routes too. Page and API-route tests instead live in a single top-level mirror, `src/__tests__/pages/...` (e.g. `src/__tests__/pages/api/img-id.test.ts` covers `src/pages/api/img-id.ts`) — still matched by the same `src/**/__tests__/**` glob, just rooted differently.
 - ESLint has a `files: ['**/*.test.{ts,tsx}', 'jest.setup.ts']` override enabling the `jest` env, so `describe`/`it`/`expect`/`jest` globals don't trip `no-undef`-style errors.
 - **`next/router`'s `useRouter()`** still needs an explicit per-test mock (`jest.mock('next/router', () => ({ useRouter: jest.fn() }))` — the automatic/no-factory form of `jest.mock('next/router')` fails, since Next's real router module throws "No router instance found" when Jest's auto-mocker introspects it). See `hooks/__tests__/useLoading.test.ts` or `useIgImgId.test.tsx` for the pattern, including a small hand-rolled `on`/`off`/`emit` event-listener stub for `router.events`.
@@ -274,7 +272,7 @@ The service worker remains a separate TypeScript project because its `webworker`
 
 1. Ensure Node 24 and Corepack-enabled Yarn 4 are active (`corepack enable` if Yarn isn't already resolving to 4.18.0).
 2. `yarn install` (also runs `husky install` via `prepare`, and `css-vars:generate` via `postinstall` — the same two run in a fresh worktree).
-3. Obtain the required `.env.local` (gitignored) configuration through the approved private maintainer channel. Contact delivery, the travel map, and image hosting will not function without their development settings; the rest of the site renders without them.
+3. Follow [Runtime Configuration](environment-variables.md#local-setup) for `.env.local`; without it, contact delivery, maps and image hosting are unavailable.
 4. `yarn dev` and open `http://localhost:3000`.
 
 ## Bundle analysis
