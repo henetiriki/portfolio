@@ -36,10 +36,6 @@ Last reviewed: 2026-09-07.
 
 - [ ] **Define when a repository setting may be named publicly — blocked on maintainer guidance.** The proposed boundary is whether its value is externally observable and has no security function; exact protections, exemptions and monitoring remain private. `squash_merge_commit_message` is the motivating case — it's named in two public files with no rule to point at. Confirm that no broader private rule applies, then align those mentions.
 
-## Code quality follow-ups
-
-- [ ] **Consider phonetic exceptions for `useArticleAgreement`.** It matches the leading letter rather than sound, so future words such as "European" or "MBA" would choose the wrong article. The current author-controlled word list has no exception.
-
 ## Content & copy
 
 - [ ] **Decide whether experience entries remain factual or become conversational.** Apply the choice across the whole history to avoid a visible seam. A middle path is factual past tense by default with one voice sentence only where an entry has a genuine story.
