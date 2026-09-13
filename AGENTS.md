@@ -42,7 +42,7 @@ The first four are [Conventional Branch](https://conventionalbranch.org/) minus 
 
 **`yarn branch:check` enforces this, locally and in CI** — see [Development Workflow](docs/development.md#scripts-packagejson) for how the script behaves and [CI & deploys](docs/ci-and-deploys.md#pull-request) for where it binds in the pipeline. Renaming a branch after the pull request exists means reopening it, so check before you push.
 
-**`docs/` is the one prefix that makes a claim the build can check**: its scope is exactly CI's [cheap path](docs/ci-and-deploys.md#pull-request), so a `docs/` branch should always take that run.
+**`docs/` is the one prefix that makes a claim the build can check**: its scope is exactly CI's [cheap path](docs/ci-and-deploys.md#pull-request), so a `docs/` branch should always take that run — one that triggers `Build & browser suite` instead is misnamed, or has grown beyond what you meant.
 
 **The other three are categories, not predictions — `chore/` especially.** Read the [exclusion lists](docs/ci-and-deploys.md#merge--deploy) rather than the prefix as a forecast of what CI and Vercel will do: a dependency bump deploys like anything else, while a `chore/` touching `e2e/`, `.github/` or `scripts/` does not.
 
@@ -89,7 +89,7 @@ Changes a visitor cannot see skip production builds and subsequent preview build
 
 This is the source of truth for working conventions — edit it here. [`CLAUDE.md`](CLAUDE.md) exists only to import this file and [`docs/README.md`](docs/README.md), because Claude Code loads `CLAUDE.md` automatically and would otherwise start with neither; keep it to those two imports, or a convention added here stops being visible to every other tool that reads `AGENTS.md`.
 
-**What belongs here, and what belongs in a skill.** This file loads in full every session, so it holds only what is true whatever you are doing — environment, conventions, and [constraints](#working-constraints) that hold whenever their situation arises — not a procedure that applies at one moment (how to validate a change, how a worktree is set up); those come back as skills or hooks, which fire when relevant. Judge a rule by whether it's true only at one step or true throughout, since a constraint can sit inside a procedure without being one.
+**What belongs here, and what belongs in a skill.** This file loads in full every session, so it holds only what is true whatever you are doing: environment, conventions, and [constraints](#working-constraints) that hold whenever their situation arises. A procedure that applies at one moment — how to validate a change, how a worktree is set up — belongs in a skill or hook instead, which fires when relevant. Judge a rule by whether it's true only at one step or true throughout; a constraint can sit inside a procedure without being one.
 
 Next.js 16's `next dev` may append a managed block delimited by `BEGIN:nextjs-agent-rules`. Leave it in place and commit it alongside your work; removing it only re-creates an uncommitted change on the next dev run. It is committed below, from the first `next dev` run inside a worktree.
 
