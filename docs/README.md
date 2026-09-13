@@ -1,6 +1,6 @@
 # Documentation
 
-Specs describing the current implementation of Louw Swart's personal portfolio site. These documents describe **what exists today**, not a design proposal — treat the source as the authority if anything drifts out of sync, and correct the drift rather than working around it. Keeping them accurate is part of shipping a change: the [release checklist](release-checklist.md#documentation-sweep) makes the sweep a required step in both directions.
+Specs describing the current implementation of Louw Swart's personal portfolio site. These documents describe **what exists today**, not a design proposal — treat the source as the authority if anything drifts out of sync, and correct the drift rather than working around it. Keeping them accurate is part of shipping a change, in both directions: no doc still describing behaviour that changed, and no claim in a doc that the implementation no longer supports.
 
 ## Contents
 
@@ -15,10 +15,8 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - [Security](security.md) — public security posture and private reporting route
 - [Runtime Configuration](environment-variables.md) — safe handling and local setup guidance
 - [Development Workflow](development.md) — scripts, linting, formatting, git hooks
-- [Claude Code Configuration](claude-code-configuration.md) — what `.claude/` holds and binds only Claude Code: the skills, the two read-only review agents, and what the check over them proves
-- [Release Checklist](release-checklist.md) — how a change gets from a feature branch to production
+- [CI & Deploys](ci-and-deploys.md) — the CI jobs and their cheap path, the Vercel ignore step, known gaps, and how to roll back
 - [Roadmap](roadmap.md) — open work, known issues, and planned upgrades
-- [Engineering Decisions](decisions/README.md) — durable technical choices and their rationale
 
 ## At a glance
 
@@ -27,5 +25,5 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - **Purpose**: a single-person portfolio/CV site with four content pages (Home, Experience, Portfolio, Travel) and a Contact page that emails the owner
 - **Notable integrations**: Google Maps JS API (travel map), automated-abuse protection and server-side contact delivery, Serwist (PWA/service worker, generated in every production build), `next-sitemap`
 - **State**: one `useReducer`-backed React Context (`PortfolioState`) shared app-wide — no Redux/Zustand/query library
-- **Testing**: Jest + React Testing Library for units (full coverage, 95% enforced floor), Playwright + axe for browser behaviour jsdom cannot see — see [Development Workflow](development.md#testing)
+- **Testing**: Jest + React Testing Library for units (100% enforced floor), Playwright + axe for browser behaviour jsdom cannot see — see [Development Workflow](development.md#testing)
 - **Package manager**: Yarn 4 (Berry), Node `24.x`

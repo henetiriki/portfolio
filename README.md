@@ -31,7 +31,7 @@ The app needs maintainer-supplied development configuration to run. Do not commi
 
 | Script                                      | Purpose                                                                          |
 | ------------------------------------------- | -------------------------------------------------------------------------------- |
-| `yarn agent:check-config`                   | Validate `.claude/` and exercise the shell-hygiene hook                          |
+| `yarn agent:check-config`                   | Validate `.claude/`'s configuration                                              |
 | `yarn build`                                | Production build (webpack), then `next-sitemap` (sitemap + robots.txt)           |
 | `yarn clean`                                | Wipe the build cache (`.next`)                                                   |
 | `yarn css-vars:check` / `css-vars:generate` | Verify / regenerate the WebStorm CSS-variable stub from `colors.ts`              |
@@ -43,7 +43,7 @@ The app needs maintainer-supplied development configuration to run. Do not commi
 | `yarn prettier:check` / `prettier:write`    | Format check / write                                                             |
 | `yarn start`                                | Serve a production build locally                                                 |
 | `yarn test`                                 | Jest + React Testing Library                                                     |
-| `yarn test:coverage`                        | Tests with coverage (95% global threshold)                                       |
+| `yarn test:coverage`                        | Tests with coverage (100% global threshold)                                      |
 | `yarn test:e2e`                             | Playwright browser regression suite (needs a build; serves on :3002)             |
 | `yarn test:e2e:install`                     | Fetch the Playwright browser binary (install scripts are disabled)               |
 | `yarn test:e2e:ui`                          | Browser suite in Playwright's interactive runner                                 |
@@ -79,9 +79,8 @@ Full documentation lives in **[docs/](docs/README.md)** — architecture, routin
 Useful starting points:
 
 - **[Development Workflow](docs/development.md)** — scripts, linting, testing conventions, git hooks
-- **[Release Checklist](docs/release-checklist.md)** — how a change gets to production
+- **[CI & Deploys](docs/ci-and-deploys.md)** — what CI runs, what skips a deploy, and how to roll back
 - **[AGENTS.md](AGENTS.md)** — working conventions for AI coding agents (environment, shell hygiene, docs discipline)
-- **[Engineering Decisions](docs/decisions/README.md)** — durable technical choices and why they were made
 - **[Roadmap](docs/roadmap.md)** — open work and known follow-ups
 
 ## Contributing and reuse
@@ -92,4 +91,4 @@ The source is published to be read, not copied: no licence is granted and all ri
 
 ## Deploying
 
-There are no versions, tags, or release artefacts. A change ships by squash-merging a PR into `main`, which Vercel deploys automatically, so the [merged pull requests](https://github.com/henetiriki/portfolio/pulls?q=is%3Apr+is%3Amerged) are the release record and the [Roadmap](docs/roadmap.md) contains open work only. Follow the [release checklist](docs/release-checklist.md) — CI runs the production build and asserts it emits a service worker.
+There are no versions, tags, or release artefacts. A change ships by squash-merging a PR into `main`, which Vercel deploys automatically, so the [merged pull requests](https://github.com/henetiriki/portfolio/pulls?q=is%3Apr+is%3Amerged) are the release record and the [Roadmap](docs/roadmap.md) contains open work only. CI runs the production build and asserts it emits a service worker; what else runs, and what skips a deploy entirely, is on [CI & Deploys](docs/ci-and-deploys.md).

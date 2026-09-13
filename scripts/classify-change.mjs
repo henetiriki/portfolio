@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 
 // CI's exclusion list, and only CI's. The deploy gate keeps a deliberately
-// different one; see docs/release-checklist.md#merge--deploy.
+// different one; see docs/ci-and-deploys.md#merge--deploy.
 //
 // These reproduce the git pathspec exclusions this replaced, so the semantics
 // have to match exactly: `:(exclude)*.md` matched at any depth, because git's
@@ -30,6 +30,7 @@ export const isDocumentationOnly = paths =>
 // Lines are not trimmed: `git status --porcelain` puts the status in the first
 // two columns, so ` M package.json` loses its leading space to a trim and then
 // its first letter to the slice below.
+/* istanbul ignore next -- shells out to git; exercised by running the script, not by importing it under test */
 const git = args =>
   execFileSync('git', args, { encoding: 'utf8' }).split('\n').filter(Boolean);
 
@@ -44,10 +45,10 @@ const git = args =>
  *   make the flag useless for asking what a past commit contained.
  * - **No argument**, which is the local case, compares the whole branch against
  *   `origin/main` **and adds uncommitted work**, so it answers correctly whether
- *   or not the change is committed yet. The release sequence commits before
- *   validating, but nothing here depends on that and running mid-edit still
- *   classifies correctly — which is precisely what `HEAD^` cannot do.
+ *   or not the change is committed yet, and running mid-edit still classifies
+ *   correctly — which is precisely what `HEAD^` cannot do.
  */
+/* istanbul ignore next -- shells out to git; exercised by running the script, not by importing it under test */
 const changedPaths = (base, head) => {
   if (base) return git(['diff', '--name-only', base, head]);
 
@@ -63,12 +64,14 @@ const changedPaths = (base, head) => {
   return [...new Set([...committed, ...working])];
 };
 
+/* istanbul ignore next -- CLI argv parsing; exercised by running the script, not by importing it under test */
 const argument = name => {
   const index = process.argv.indexOf(`--${name}`);
 
   return index === -1 ? null : process.argv.at(index + 1);
 };
 
+/* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
 const main = () => {
   const base = argument('base');
   // `--head` exists so a past commit can be reproduced: `--base <sha>^ --head
@@ -110,4 +113,5 @@ const main = () => {
 };
 
 // Only run as a CLI. Importing it for tests must not execute anything.
+/* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
 if (process.argv.at(1)?.endsWith('classify-change.mjs')) main();

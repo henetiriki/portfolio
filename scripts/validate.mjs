@@ -2,8 +2,7 @@ import { execFileSync } from 'node:child_process';
 
 // Ordered cheapest first, so a formatting slip fails in seconds rather than
 // after a production build. `sourceOnly` mirrors CI's per-step gates, plus the
-// build and the browser suite, which CI runs in its second job and the release
-// checklist requires before a pull request.
+// build and the browser suite, which CI runs in its second job.
 const CHECKS = [
   // Not `sourceOnly`: a `docs/` branch has to be prefixed too. First because it
   // costs one `git rev-parse`, and because a rename is cheapest before there is
@@ -36,6 +35,7 @@ const CHECKS = [
   { args: ['test:e2e'], name: 'Browser suite', sourceOnly: true },
 ];
 
+/* istanbul ignore next -- shells out to classify-change.mjs; exercised by running the script, not by importing it under test */
 const classify = () => {
   const output = execFileSync(
     'node',
@@ -56,6 +56,7 @@ export const selectChecks = (documentationOnly, checks = CHECKS) => ({
   skipped: checks.filter(check => documentationOnly && check.sourceOnly),
 });
 
+/* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
 const main = () => {
   const documentationOnly = classify();
   const { running, skipped } = selectChecks(documentationOnly);
@@ -88,4 +89,5 @@ const main = () => {
 };
 
 // Only run as a CLI. Importing it for tests must not start a validation run.
+/* istanbul ignore next -- CLI entry point; exercised by running the script, not by importing it under test */
 if (process.argv.at(1)?.endsWith('validate.mjs')) main();

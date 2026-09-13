@@ -114,7 +114,7 @@ export const collectConsoleErrors = (page: Page) => {
  *
  * Exists because `axe-core`'s `color-contrast` rule only evaluates text
  * nodes — an SVG icon painted with `stroke="currentColor"` is invisible to
- * it regardless of how badly it fails. See D-260821a.
+ * it regardless of how badly it fails.
  */
 export const contrastRatio = (a: string, b: string): number => {
   const relativeLuminance = (colour: string): number => {

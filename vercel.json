@@ -1,4 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "ignoreCommand": "bash scripts/should-skip-vercel-build.sh"
+  "ignoreCommand": "node scripts/should-skip-vercel-build.mjs"
 }

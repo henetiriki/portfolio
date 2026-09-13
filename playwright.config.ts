@@ -57,8 +57,8 @@ export default defineConfig({
     {
       // The one project that lets a service worker register, and separate
       // rather than a relaxed setting on the others because the block below is
-      // load-bearing for them. See docs/security.md#browser-coverage —
-      // D-260815a, maintained privately.
+      // load-bearing for them. See docs/security.md#browser-coverage; the
+      // reasoning is maintained privately.
       name: 'service-worker-chromium',
       testMatch: SERVICE_WORKER_SPEC,
       use: { ...devices['Desktop Chrome'], serviceWorkers: 'allow' },

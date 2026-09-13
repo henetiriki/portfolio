@@ -23,5 +23,5 @@ export const mapOptions = (): google.maps.MapOptions => ({
 });
 
 // Proxied through /api/static-map so the Maps API key stays server-side —
-// see docs/travel-feature.md#loading-placeholder and D-260825c
+// see docs/travel-feature.md#loading-placeholder
 export const staticMapUrl = '/api/static-map';
