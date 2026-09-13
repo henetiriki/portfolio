@@ -1,6 +1,6 @@
 # Documentation
 
-Specs describing the current implementation of Louw Swart's personal portfolio site. These documents describe **what exists today**, not a design proposal — treat the source as the authority if anything drifts out of sync, and correct the drift rather than working around it. Keeping them accurate is part of shipping a change: the [release checklist](release-checklist.md#documentation-sweep) makes the sweep a required step in both directions.
+Specs describing the current implementation of Louw Swart's personal portfolio site. These documents describe **what exists today**, not a design proposal — treat the source as the authority if anything drifts out of sync, and correct the drift rather than working around it. Keeping them accurate is part of shipping a change, in both directions: no doc still describing behaviour that changed, and no claim in a doc that the implementation no longer supports.
 
 ## Contents
 
@@ -15,8 +15,7 @@ Specs describing the current implementation of Louw Swart's personal portfolio s
 - [Security](security.md) — public security posture and private reporting route
 - [Runtime Configuration](environment-variables.md) — safe handling and local setup guidance
 - [Development Workflow](development.md) — scripts, linting, formatting, git hooks
-- [Claude Code Configuration](claude-code-configuration.md) — what `.claude/` holds and binds only Claude Code: the hook, permissions, launch and worktree configuration, and what the check over them proves
-- [Release Checklist](release-checklist.md) — how a change gets from a feature branch to production
+- [CI & Deploys](ci-and-deploys.md) — the CI jobs and their cheap path, the Vercel ignore step, known gaps, and how to roll back
 - [Roadmap](roadmap.md) — open work, known issues, and planned upgrades
 
 ## At a glance

@@ -42,15 +42,11 @@ The first four are [Conventional Branch](https://conventionalbranch.org/) minus 
 
 **This is checked rather than trusted, and CI is where it binds.** `yarn branch:check` runs [`scripts/check-branch-name.mjs`](scripts/check-branch-name.mjs) against the current branch, and `yarn validate` runs it first. CI runs it again inside `Validate` against the pull request's head ref, which is the enforcement point that holds whoever created the branch — including from an IDE, where no local check ever runs. Renaming a branch after the pull request exists means reopening it, so check before you push. `main` and a detached `HEAD` are exempt.
 
-**`docs/` is the one prefix that makes a claim the build can check.** Its scope is exactly CI's [cheap path](docs/release-checklist.md#pull-request), so a `docs/` branch should always take that run. Vercel excludes the same paths after a preview branch has built, but its first preview deliberately builds so the pull request has a manual-QA URL. One that triggers `Build & browser suite` is misnamed, or has grown beyond what you meant.
+**`docs/` is the one prefix that makes a claim the build can check.** Its scope is exactly CI's [cheap path](docs/ci-and-deploys.md#pull-request), so a `docs/` branch should always take that run. Vercel excludes the same paths after a preview branch has built, but its first preview deliberately builds so the pull request has a manual-QA URL. One that triggers `Build & browser suite` is misnamed, or has grown beyond what you meant.
 
-**The other three are categories, not predictions — `chore/` especially.** Vercel's exclusion list is a list of _paths_, not a notion of what is boring: a dependency bump deploys like anything else, while a `chore/` touching `e2e/`, `.github/` or `scripts/` does not. Do not read the prefix as a forecast of what CI and Vercel will do; read the [exclusion lists](docs/release-checklist.md#merge--deploy), which differ from each other on purpose.
+**The other three are categories, not predictions — `chore/` especially.** Vercel's exclusion list is a list of _paths_, not a notion of what is boring: a dependency bump deploys like anything else, while a `chore/` touching `e2e/`, `.github/` or `scripts/` does not. Do not read the prefix as a forecast of what CI and Vercel will do; read the [exclusion lists](docs/ci-and-deploys.md#merge--deploy), which differ from each other on purpose.
 
 The description is what the branch is _for_, not what it touches: `chore/free-port-3000-and-prefix-branch-names`, not `chore/playwright-config`.
-
-## Validating a change
-
-**Port 3000 belongs to `next dev`** — leave whatever is running there alone, it is usually a human watching the change land. 3001 is the agent's own preview and 3002 the browser suite; `yarn agent:check-config` fails if those ever collide again.
 
 ## Documentation discipline
 
@@ -67,16 +63,6 @@ The description is what the branch is _for_, not what it touches: `chore/free-po
 - The private runbook is deliberately separate from this repository. An agent may use it only when the maintainer explicitly includes it in the task context; otherwise it must ask for the runbook rather than infer access or recreate private detail from public history.
 - Never link to the private runbook, disclose its location, or copy its contents into public files, issues, pull requests, chat summaries, or external tools. Do not put credential values in either repository.
 
-## Working across branches
-
-**Rebase onto `origin/main`. Never merge `main` into a branch, and never merge one branch into another.** Merges are squashed, so a branch lands as one commit and its graph does not survive.
-
-## Worktrees
-
-Isolation for work running alongside something already in progress. Claude Code creates its own under **`.claude/worktrees/`**; **`.worktrees/`** at the repository root is the shared convention for any made by hand or by another agent.
-
-**Never `git stash`.** The stash stack is shared across worktrees, so a concurrent session can pop your entry. Set work aside with a WIP commit.
-
 ## Code conventions
 
 - Alphabetical ordering is **lint-enforced**: object keys, destructured keys, JSX props, interface members and imports. Source reads alphabetically rather than by logical grouping.
@@ -88,10 +74,10 @@ Isolation for work running alongside something already in progress. Claude Code 
 
 Merging to `main` deploys to production via Vercel. There are no tags or version numbers.
 
-Changes a visitor cannot see skip production builds and subsequent preview builds, via `ignoreCommand` in `vercel.json`; every preview branch's first build is deliberate so its pull request has a QA URL. The excluded paths and reasoning are on the [release checklist](docs/release-checklist.md#merge--deploy). Two consequences matter while working:
+Changes a visitor cannot see skip production builds and subsequent preview builds, via `ignoreCommand` in `vercel.json`; every preview branch's first build is deliberate so its pull request has a QA URL. The excluded paths and reasoning are on the [CI & deploys](docs/ci-and-deploys.md#merge--deploy) page. Two consequences matter while working:
 
 - **A skip is a `success` status reading _"Canceled by Ignored Build Step"_, not a failure.** It is easy to misread that green tick as a completed build.
-- **CI has its own, shorter list, and the two are not interchangeable.** `e2e/` and `playwright*.config.ts` are excluded from the deploy and deliberately not from CI, because the browser suite is exactly what must run when they change. What each list holds, and what a cheap CI run actually leaves running, is on the [release checklist](docs/release-checklist.md#pull-request).
+- **CI has its own, shorter list, and the two are not interchangeable.** `e2e/` and `playwright*.config.ts` are excluded from the deploy and deliberately not from CI, because the browser suite is exactly what must run when they change. What each list holds, and what a cheap CI run actually leaves running, is on the [CI & deploys](docs/ci-and-deploys.md#pull-request) page.
 
 ## About this file
 

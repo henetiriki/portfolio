@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 
 // CI's exclusion list, and only CI's. The deploy gate keeps a deliberately
-// different one; see docs/release-checklist.md#merge--deploy.
+// different one; see docs/ci-and-deploys.md#merge--deploy.
 //
 // These reproduce the git pathspec exclusions this replaced, so the semantics
 // have to match exactly: `:(exclude)*.md` matched at any depth, because git's

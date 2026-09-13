@@ -11,8 +11,8 @@
 Two questions rather than two ticks, because an unticked box is indistinguishable
 from a question nobody read. Answer both.
 
-Everything else lives in docs/release-checklist.md and is worked through before
-this pull request exists. These two are here because only a person can answer them.
+These two are here because only a person can answer them — nothing automated can
+see a settings change made outside git, or tell whether anyone opened the preview.
 
 Describe the change below: what it does, and why.
 -->
