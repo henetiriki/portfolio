@@ -1,14 +1,10 @@
 import { Box } from '@mantine/core';
+import { useIntersection } from '@mantine/hooks';
 import { useCallback, useMemo, useState } from 'react';
 import { ErrorBoundary } from '@components/shared';
 import { Map, MapError, MapLoader, Marker, Polyline } from '@components/travel';
 import { cities, markerLocations, tripPolylines } from '@fixtures/travel';
-import {
-  useGoogleMaps,
-  useIntersectedOnce,
-  useLayerCompletion,
-  useRailTrips,
-} from '@hooks';
+import { useGoogleMaps, useLayerCompletion, useRailTrips } from '@hooks';
 import type {
   City,
   Location,
@@ -39,8 +35,21 @@ export const MapWrapper: FC = () => {
   const mapStatus = useGoogleMaps();
   const { railTripPolylines, settled: railTripsSettled } = useRailTrips();
   const [mapReady, setMapReady] = useState(false);
-  const { hasIntersected: layersVisible, ref: intersectionRef } =
-    useIntersectedOnce(INTERSECTION_THRESHOLD);
+  const [layersVisible, setLayersVisible] = useState(false);
+  const { entry, ref: intersectionRef } = useIntersection<HTMLDivElement>({
+    threshold: INTERSECTION_THRESHOLD,
+  });
+
+  // Latched during render rather than in an effect, which React discourages.
+  // The observer's first callback reports whatever ratio is current, and
+  // `isIntersecting` is true at any ratio above 0 — checking the ratio is
+  // what actually enforces the threshold.
+  if (
+    !layersVisible &&
+    (entry?.intersectionRatio ?? 0) >= INTERSECTION_THRESHOLD
+  ) {
+    setLayersVisible(true);
+  }
 
   const railLayerIds = useMemo(
     () =>
@@ -73,7 +82,9 @@ export const MapWrapper: FC = () => {
       {mapStatus === 'failure' && <MapError />}
       {mapStatus === 'success' && (
         <ErrorBoundary fallback={<MapError />}>
-          <Box ref={intersectionRef}>
+          {/* Dropping the ref once latched makes React call Mantine's ref
+              callback with null, which disconnects the observer. */}
+          <Box ref={layersVisible ? undefined : intersectionRef}>
             <Map layersRendered={layersRendered} onReady={handleMapReady}>
               {layersStarted &&
                 cities.map(

@@ -67,6 +67,7 @@ jest.mock('../index', () => ({
   ),
 }));
 
+let disconnect: jest.Mock;
 let intersectionCallback: IntersectionObserverCallback | undefined;
 
 const triggerIntersection = (intersectionRatio: number) => {
@@ -99,13 +100,14 @@ const getLayers = () => [
 
 describe('MapWrapper', () => {
   beforeEach(() => {
+    disconnect = jest.fn();
     intersectionCallback = undefined;
     mockMapShouldThrow = false;
     global.IntersectionObserver = jest.fn(callback => {
       intersectionCallback = callback;
 
       return {
-        disconnect: jest.fn(),
+        disconnect,
         observe: jest.fn(),
       };
     }) as unknown as typeof IntersectionObserver;
@@ -176,6 +178,25 @@ describe('MapWrapper', () => {
       cities.length
     );
     expect(screen.getAllByTestId('polyline').length).toBeGreaterThan(0);
+  });
+
+  it('does not start layers while the map is intersecting below the threshold (regression test: the observer reports whatever ratio is current, not only the configured one)', () => {
+    render(<MapWrapper />);
+
+    triggerIntersection(0.1);
+    reportMapReady();
+
+    expect(screen.queryAllByTestId('marker')).toHaveLength(0);
+    expect(screen.queryAllByTestId('polyline')).toHaveLength(0);
+    expect(disconnect).not.toHaveBeenCalled();
+  });
+
+  it('disconnects the observer once the threshold has been reached', () => {
+    render(<MapWrapper />);
+
+    triggerIntersection(0.8);
+
+    expect(disconnect).toHaveBeenCalled();
   });
 
   it('keeps the map layers mounted after the first intersection', () => {

@@ -42,8 +42,6 @@ Raised by the proportionality audit of 2026-09-04, which compared the repository
 
 ## Code quality follow-ups
 
-- [ ] **Replace `useIntersectedOnce` with `@mantine/hooks`' `useIntersection`.** The hand-rolled hook duplicates an IntersectionObserver wrapper the project already depends on. Not a drop-in swap: Mantine's hook exposes the raw `entry` on every change rather than latching once and disconnecting, so `MapWrapper` (its only consumer) would need to own that one-shot logic itself. Deferred deliberately rather than done alongside the threshold fix that raised it, to keep that fix minimal.
-
 - [ ] **Consider phonetic exceptions for `useArticleAgreement`'s vowel-sound check.** `vowelSoundPattern` matches the leading letter, not the leading sound, so a future tagline word like "European" or "MBA" would get the wrong article ("an European"). The current home-page word list doesn't trigger it, and the word list is fully author-controlled with every change subject to this repo's own preview-URL manual QA, so a wrong article would be caught immediately if it ever happened — deliberately left unfixed rather than building exceptions for words that don't exist in the sequence yet.
 
 ## Content & copy
