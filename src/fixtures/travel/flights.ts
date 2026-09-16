@@ -194,4 +194,6 @@ export const flights: google.maps.LatLngLiteral[][] = [
   [AKL.position, PER.position],
 ];
 
-export const upcomingFlights: google.maps.LatLngLiteral[][] = [];
+export const upcomingFlights: google.maps.LatLngLiteral[][] = [
+  [GRJ.position, CPT.position],
+];
