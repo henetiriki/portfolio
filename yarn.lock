@@ -1329,12 +1329,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@googlemaps/js-api-loader@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "@googlemaps/js-api-loader@npm:2.1.1"
+"@googlemaps/js-api-loader@npm:^2.1.3":
+  version: 2.1.3
+  resolution: "@googlemaps/js-api-loader@npm:2.1.3"
   dependencies:
-    "@types/google.maps": "npm:^3.53.1"
-  checksum: 10/beb8dac6eed7be668ba6d5efe9e2f6085898fe7597c667eba0f9ab204d1620885d737881cb7a76d1adc6ea5aeaab9b6bfbadf2f6442ac435783c783c6401407e
+    "@types/google.maps": "npm:^3.65.3"
+  checksum: 10/42ceb87e4117140bbe088223924700713b1949ba875e7560cd7b2284e6af9c483328d9521a8a6b0a356238f9cee07380ef96e2dd5739073686b0f06e677fe9eb
   languageName: node
   linkType: hard
 
@@ -2022,9 +2022,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mantine/core@npm:^9.6.1":
-  version: 9.6.1
-  resolution: "@mantine/core@npm:9.6.1"
+"@mantine/core@npm:^9.6.2":
+  version: 9.6.2
+  resolution: "@mantine/core@npm:9.6.2"
   dependencies:
     "@floating-ui/react": "npm:^0.27.20"
     clsx: "npm:^2.1.1"
@@ -2032,56 +2032,56 @@ __metadata:
     react-remove-scroll: "npm:^2.7.2"
     type-fest: "npm:^5.8.0"
   peerDependencies:
-    "@mantine/hooks": 9.6.1
+    "@mantine/hooks": 9.6.2
     react: ^19.2.0
     react-dom: ^19.2.0
-  checksum: 10/ea4b3c48aad557d9f171301dc592d706f9a4fc71b0102d18640fc079955bb0f62107bb5aa0791e2f2be553c70bfd944f5843da60726eb37fd142616fe0c7cb8b
+  checksum: 10/27d23227f53ce0e253922c0caf37a73d21b724a3a0684d674cdbffd0a07a150df5fdf9b299166e25d811a80385d146c5b4fb952a6abf0bad979b94f8740e960f
   languageName: node
   linkType: hard
 
-"@mantine/form@npm:^9.6.1":
-  version: 9.6.1
-  resolution: "@mantine/form@npm:9.6.1"
+"@mantine/form@npm:^9.6.2":
+  version: 9.6.2
+  resolution: "@mantine/form@npm:9.6.2"
   dependencies:
     "@standard-schema/spec": "npm:^1.1.0"
     fast-deep-equal: "npm:^3.1.3"
     klona: "npm:^2.0.6"
   peerDependencies:
     react: ^19.2.0
-  checksum: 10/b6c59342e5b323cba2118a72a2ea0aa005d94c4071dcf109879df0c62c60779ceae4db75d49e1e002557af4ea9e8030d3310c9c6f80d048a8a7155be55845721
+  checksum: 10/442af5483e8030045a598722c279a06a07f2fcdd40d21b2709f3c629bdcd4f9550a7f32a5ab878613cba8dfd0b6ff93d1dba7b2e4f7d29bb9278cc2790a3371a
   languageName: node
   linkType: hard
 
-"@mantine/hooks@npm:^9.6.1":
-  version: 9.6.1
-  resolution: "@mantine/hooks@npm:9.6.1"
+"@mantine/hooks@npm:^9.6.2":
+  version: 9.6.2
+  resolution: "@mantine/hooks@npm:9.6.2"
   peerDependencies:
     react: ^19.2.0
-  checksum: 10/499440d9f5c633859bf2913e74a84d795a9e7443942fb2df2f111082398e086ae8aa79c7e8d2c1db0276c28aad656fcb7d20364f9fe21e61f45e6e13c624ea96
+  checksum: 10/568347cfa3e0a6831c26f2200b5dc1c0607a72704fc3f4a635fa0e2c273cfdadcc10f3dfa6545d539bc9a3844f58ce940a3a4b9dbae75a6cc9e16d78f177e051
   languageName: node
   linkType: hard
 
-"@mantine/notifications@npm:^9.6.1":
-  version: 9.6.1
-  resolution: "@mantine/notifications@npm:9.6.1"
+"@mantine/notifications@npm:^9.6.2":
+  version: 9.6.2
+  resolution: "@mantine/notifications@npm:9.6.2"
   dependencies:
-    "@mantine/store": "npm:9.6.1"
+    "@mantine/store": "npm:9.6.2"
     react-transition-group: "npm:4.4.5"
   peerDependencies:
-    "@mantine/core": 9.6.1
-    "@mantine/hooks": 9.6.1
+    "@mantine/core": 9.6.2
+    "@mantine/hooks": 9.6.2
     react: ^19.2.0
     react-dom: ^19.2.0
-  checksum: 10/144926514b832ee766c4cf40d1f7e9197885817f3022a0a962109298adacf547fc24dc21228cf2a5b960666a11d8cdbb09bec6be2959064f381d66450466abdc
+  checksum: 10/09e3291640fae905347510924c5d00df3347e189edb3929d0a3f309f207909ee023b8a9ba6a4454af7314be6648def2f83d2a0a7af62017f9a57f90f5cc08fb4
   languageName: node
   linkType: hard
 
-"@mantine/store@npm:9.6.1":
-  version: 9.6.1
-  resolution: "@mantine/store@npm:9.6.1"
+"@mantine/store@npm:9.6.2":
+  version: 9.6.2
+  resolution: "@mantine/store@npm:9.6.2"
   peerDependencies:
     react: ^19.2.0
-  checksum: 10/fa2195c2b5e1f6ebd4a91108004b0b9ec55d67f8a4434d8eed21ce8e439ecb4652fdfaa2cf0efc88a2b60f6a42e0acdd8aaa93923277570ff107253b59de6bba
+  checksum: 10/bc5d9876d5279c194d9702901c06d190ec4aa80536330e9fc3ae2e2bcf23b596499e240b3d069c70c61d12c7503f5a4451dca46f6bcc86ed1f7dc3d33a5a38fb
   languageName: node
   linkType: hard
 
@@ -2106,10 +2106,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/env@npm:16.3.5, @next/env@npm:^16.3.5":
-  version: 16.3.5
-  resolution: "@next/env@npm:16.3.5"
-  checksum: 10/3b991f43d61e287a5e9303832bba52a354b83a8495299b474a0e7646addbcee33cf4e6079f0a747b9ab41b58db0e5ca11f53fc1b483b1f708f5c1255a0ef8711
+"@next/env@npm:16.3.6":
+  version: 16.3.6
+  resolution: "@next/env@npm:16.3.6"
+  checksum: 10/f68185f0627b4499e75ece1136761c69109fab461c35172f776dd8f8da3f9923bdaaad20d56cd9ee28a47662c17ed208c8f706987cc9a58a87fcb5d02f3d50eb
   languageName: node
   linkType: hard
 
@@ -2117,6 +2117,13 @@ __metadata:
   version: 13.5.11
   resolution: "@next/env@npm:13.5.11"
   checksum: 10/2d34ec742e28b4da54b7bfe62eb27c1c90f927f0dfe387a0af8c1a535faf75d80475e58a33472bdf722bab02349be074935e2bdf512b5fd0a46dab364700dd3d
+  languageName: node
+  linkType: hard
+
+"@next/env@npm:^16.3.5":
+  version: 16.3.5
+  resolution: "@next/env@npm:16.3.5"
+  checksum: 10/3b991f43d61e287a5e9303832bba52a354b83a8495299b474a0e7646addbcee33cf4e6079f0a747b9ab41b58db0e5ca11f53fc1b483b1f708f5c1255a0ef8711
   languageName: node
   linkType: hard
 
@@ -2130,58 +2137,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-arm64@npm:16.3.5":
-  version: 16.3.5
-  resolution: "@next/swc-darwin-arm64@npm:16.3.5"
+"@next/swc-darwin-arm64@npm:16.3.6":
+  version: 16.3.6
+  resolution: "@next/swc-darwin-arm64@npm:16.3.6"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-x64@npm:16.3.5":
-  version: 16.3.5
-  resolution: "@next/swc-darwin-x64@npm:16.3.5"
+"@next/swc-darwin-x64@npm:16.3.6":
+  version: 16.3.6
+  resolution: "@next/swc-darwin-x64@npm:16.3.6"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-gnu@npm:16.3.5":
-  version: 16.3.5
-  resolution: "@next/swc-linux-arm64-gnu@npm:16.3.5"
+"@next/swc-linux-arm64-gnu@npm:16.3.6":
+  version: 16.3.6
+  resolution: "@next/swc-linux-arm64-gnu@npm:16.3.6"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-musl@npm:16.3.5":
-  version: 16.3.5
-  resolution: "@next/swc-linux-arm64-musl@npm:16.3.5"
+"@next/swc-linux-arm64-musl@npm:16.3.6":
+  version: 16.3.6
+  resolution: "@next/swc-linux-arm64-musl@npm:16.3.6"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-gnu@npm:16.3.5":
-  version: 16.3.5
-  resolution: "@next/swc-linux-x64-gnu@npm:16.3.5"
+"@next/swc-linux-x64-gnu@npm:16.3.6":
+  version: 16.3.6
+  resolution: "@next/swc-linux-x64-gnu@npm:16.3.6"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-musl@npm:16.3.5":
-  version: 16.3.5
-  resolution: "@next/swc-linux-x64-musl@npm:16.3.5"
+"@next/swc-linux-x64-musl@npm:16.3.6":
+  version: 16.3.6
+  resolution: "@next/swc-linux-x64-musl@npm:16.3.6"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-win32-arm64-msvc@npm:16.3.5":
-  version: 16.3.5
-  resolution: "@next/swc-win32-arm64-msvc@npm:16.3.5"
+"@next/swc-win32-arm64-msvc@npm:16.3.6":
+  version: 16.3.6
+  resolution: "@next/swc-win32-arm64-msvc@npm:16.3.6"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-win32-x64-msvc@npm:16.3.5":
-  version: 16.3.5
-  resolution: "@next/swc-win32-x64-msvc@npm:16.3.5"
+"@next/swc-win32-x64-msvc@npm:16.3.6":
+  version: 16.3.6
+  resolution: "@next/swc-win32-x64-msvc@npm:16.3.6"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -2529,21 +2536,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tabler/icons-react@npm:^3.46.0":
-  version: 3.46.0
-  resolution: "@tabler/icons-react@npm:3.46.0"
+"@tabler/icons-react@npm:^3.48.0":
+  version: 3.48.0
+  resolution: "@tabler/icons-react@npm:3.48.0"
   dependencies:
-    "@tabler/icons": "npm:3.46.0"
+    "@tabler/icons": "npm:3.48.0"
   peerDependencies:
     react: ">= 16"
-  checksum: 10/5912b226e6423b8ae2182ee3cefe425512cc259e91606512a0f925e706bdcccd802a80cbbebe0a01a8bc6d43461df3e977fb94e3b99d7397325a04b94e8a91a4
+  checksum: 10/d563e916cd8dfcee84b0b0ec92f836a96d70f2cd7524f5ccd90e1de22cc3557af3c20211b10a6fb88ebb494965ebd07ab863d410953d36af4697d8a1b35a0b50
   languageName: node
   linkType: hard
 
-"@tabler/icons@npm:3.46.0":
-  version: 3.46.0
-  resolution: "@tabler/icons@npm:3.46.0"
-  checksum: 10/207c7134a4346b95a6c5d18170bf2e9232c8712b548aafbb994ae2815cd5ed492362f86880d0333bd5ceb47d02135f5c42602df4c86e586b7265bd59dea2af49
+"@tabler/icons@npm:3.48.0":
+  version: 3.48.0
+  resolution: "@tabler/icons@npm:3.48.0"
+  checksum: 10/fac8a271bf96b97524d2cab4be87aa0de4993628c04b7e2260c790c6572abdf68a1a56b79960bc18fb132d89b0fa711df154e66762b5799a13757655fd6de08e
   languageName: node
   linkType: hard
 
@@ -2676,10 +2683,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/google.maps@npm:^3.53.1":
-  version: 3.66.2
-  resolution: "@types/google.maps@npm:3.66.2"
-  checksum: 10/a1becb855868eab1b02134fb101ed8f7fb53be350f08a3dccf2e372fece8aaa21a8469272a3b61a36635f6870918da4bb4755392353e459703bd96677e271121
+"@types/google.maps@npm:^3.65.3":
+  version: 3.66.4
+  resolution: "@types/google.maps@npm:3.66.4"
+  checksum: 10/726ddd2657d6add2255c813939b7c1e60402f4e4ae9de423ef2b3bdf83ec180bf7dc37ec174dd2f0ebba5d06441ec972f54be45afd7230d01948518aa8618e74
   languageName: node
   linkType: hard
 
@@ -6974,19 +6981,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:^16.3.5":
-  version: 16.3.5
-  resolution: "next@npm:16.3.5"
+"next@npm:^16.3.6":
+  version: 16.3.6
+  resolution: "next@npm:16.3.6"
   dependencies:
-    "@next/env": "npm:16.3.5"
-    "@next/swc-darwin-arm64": "npm:16.3.5"
-    "@next/swc-darwin-x64": "npm:16.3.5"
-    "@next/swc-linux-arm64-gnu": "npm:16.3.5"
-    "@next/swc-linux-arm64-musl": "npm:16.3.5"
-    "@next/swc-linux-x64-gnu": "npm:16.3.5"
-    "@next/swc-linux-x64-musl": "npm:16.3.5"
-    "@next/swc-win32-arm64-msvc": "npm:16.3.5"
-    "@next/swc-win32-x64-msvc": "npm:16.3.5"
+    "@next/env": "npm:16.3.6"
+    "@next/swc-darwin-arm64": "npm:16.3.6"
+    "@next/swc-darwin-x64": "npm:16.3.6"
+    "@next/swc-linux-arm64-gnu": "npm:16.3.6"
+    "@next/swc-linux-arm64-musl": "npm:16.3.6"
+    "@next/swc-linux-x64-gnu": "npm:16.3.6"
+    "@next/swc-linux-x64-musl": "npm:16.3.6"
+    "@next/swc-win32-arm64-msvc": "npm:16.3.6"
+    "@next/swc-win32-x64-msvc": "npm:16.3.6"
     "@swc/helpers": "npm:0.5.23"
     baseline-browser-mapping: "npm:^2.9.19"
     caniuse-lite: "npm:^1.0.30001579"
@@ -7030,7 +7037,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: 10/f0a9d378e308875ded611672004c6ee473bf368567bfd2506e8ac636e73a502aa0261314cf2761df9e51dc9f139eff0093cfdf29f5376689a3d68b88e627cc75
+  checksum: 10/2f6a6bc4ffbdee5051b30e42b2b760d9a8d3e4d279d9e96ada1dd01638d234af4d7a3a2161507bb010d1f8f01e34a40f04885268d51ded0880055d32a4943cca
   languageName: node
   linkType: hard
 
@@ -7440,16 +7447,16 @@ __metadata:
   dependencies:
     "@axe-core/playwright": "npm:^4.13.0"
     "@babel/core": "npm:^7"
-    "@googlemaps/js-api-loader": "npm:^2.1.1"
-    "@mantine/core": "npm:^9.6.1"
-    "@mantine/form": "npm:^9.6.1"
-    "@mantine/hooks": "npm:^9.6.1"
-    "@mantine/notifications": "npm:^9.6.1"
+    "@googlemaps/js-api-loader": "npm:^2.1.3"
+    "@mantine/core": "npm:^9.6.2"
+    "@mantine/form": "npm:^9.6.2"
+    "@mantine/hooks": "npm:^9.6.2"
+    "@mantine/notifications": "npm:^9.6.2"
     "@next/bundle-analyzer": "npm:^16.3.5"
     "@next/env": "npm:^16.3.5"
     "@playwright/test": "npm:^1.63.0"
     "@serwist/next": "npm:^9.5.12"
-    "@tabler/icons-react": "npm:^3.46.0"
+    "@tabler/icons-react": "npm:^3.48.0"
     "@testing-library/dom": "npm:^10.4.2"
     "@testing-library/jest-dom": "npm:^7.0.1"
     "@testing-library/react": "npm:^16.3.3"
@@ -7481,7 +7488,7 @@ __metadata:
     jest: "npm:^30.5.1"
     jest-environment-jsdom: "npm:^30.5.1"
     lint-staged: "npm:^17.5.1"
-    next: "npm:^16.3.5"
+    next: "npm:^16.3.6"
     next-sitemap: "npm:^4.2.3"
     nodemailer: "npm:^10.0.10"
     playwright-core: "npm:^1.63.0"
