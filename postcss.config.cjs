@@ -1,11 +1,5 @@
-// Next.js completely disables its built-in PostCSS pipeline (autoprefixer,
-// flexbox bug fixes, stage-3 feature compilation) as soon as a project
-// defines its own postcss.config.cjs — see
-// https://nextjs.org/docs/pages/guides/post-css#customizing-plugins. So this
-// config has to explicitly re-include Next's defaults (postcss-flexbugs-fixes
-// + postcss-preset-env, verbatim from Next's own default postcss.config.json)
-// alongside postcss-preset-mantine, rather than only listing the Mantine
-// plugins.
+// Re-includes Next's own default PostCSS plugins alongside Mantine's — see
+// docs/styling-theming.md#postcss-setup-postcssconfigcjs.
 module.exports = {
   /* eslint-disable sort-keys/sort-keys-fix -- key order is execution order rather than style; what depends on what is in docs/styling-theming.md */
   plugins: {

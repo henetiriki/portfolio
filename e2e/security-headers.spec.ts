@@ -3,21 +3,8 @@ import { CONTENT_ROUTES } from './support/helpers';
 import type { APIRequestContext } from '@playwright/test';
 
 /**
- * The policy enforces, and its whole value depends on the header actually
- * arriving intact — a mode this suite exists to pin down because both of its
- * failure modes are silent.
- *
- * `headers.source` in next.config.js carries a route parameter, which puts
- * every value through Next's path-to-regexp compilation. A value that trips
- * that step is dropped from the response with no build warning, and escaping
- * the colons to avoid it instead ships literal backslashes that no browser can
- * parse. Either way the page looks perfectly healthy. See
- * docs/security.md#response-headers; the reasoning is maintained privately.
- *
- * Enforcing raises the stakes of exactly that failure: a dropped header used to
- * mean losing observation, and now means losing the policy itself while every
- * page still renders. See docs/security.md#content-security-policy; the
- * reasoning is maintained privately.
+ * Both of this header's failure modes are silent — see
+ * docs/security.md#response-headers and docs/security.md#content-security-policy.
  */
 test.describe('content security policy', () => {
   const headersFor = async (request: APIRequestContext, path = '/') =>

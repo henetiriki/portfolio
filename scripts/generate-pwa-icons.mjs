@@ -29,11 +29,8 @@ const SPLASH_SCALE = 0.35;
 const ORIENTATIONS = ['portrait', 'landscape'];
 
 /**
- * Reads `SPLASH_DEVICES` out of the given source text via the TypeScript
- * compiler API, the same approach `generate-mantine-css-variables.mjs` uses
- * for `colorOverrides` — one source of truth for the device table rather than
- * a copy that can silently drift from what the app actually links. Pure, so
- * it can be tested against a literal snippet instead of the real file.
+ * Reads `SPLASH_DEVICES` out of source text so the device table has one
+ * source of truth rather than a copy that can silently drift.
  */
 export const readSplashDevicesFromSource = (
   sourceText,
@@ -81,8 +78,7 @@ export const readSplashDevicesFromSource = (
 
 /**
  * One target per device class per orientation, keyed by the filename
- * `AppleSplashLinks` links to — mirrors that component's own derivation
- * exactly (`docs/pwa-seo.md`), so the two cannot drift apart.
+ * `AppleSplashLinks` links to, mirroring its own derivation exactly.
  */
 export const splashTargetsFor = devices => {
   const targets = new Map();
@@ -152,8 +148,7 @@ export const SPLASH_FILENAME = /^apple-splash-\d+-\d+\.png$/;
 
 /**
  * The static icon table plus one entry per splash target, all sharing the
- * splash scale/background — pure composition, so it is tested independently
- * of both the TypeScript parsing above and the rendering below.
+ * splash scale/background.
  */
 export const buildIconTargets = splashTargets => {
   const targets = new Map(STATIC_ICON_TARGETS);
@@ -166,11 +161,8 @@ export const buildIconTargets = splashTargets => {
 };
 
 /**
- * Rasterises the master SVG at `size × size`, transparent, uncomposited.
- *
- * `monochrome` recolours the eye fill to match the owl outline before
- * rendering, collapsing the two-colour mark into the flat single-colour
- * silhouette Android's themed-icon alpha mask needs.
+ * Rasterises the master SVG at `size × size`, transparent. `monochrome` flattens
+ * it into the single-colour silhouette Android's themed icons need.
  */
 /* istanbul ignore next -- real sharp rendering; exercised by running the script, not by importing it under test */
 const renderOwl = (size, { monochrome = false } = {}) => {
@@ -188,8 +180,7 @@ const renderOwl = (size, { monochrome = false } = {}) => {
 
 /**
  * Centres the rendered owl on a `width × height` canvas of `background`.
- * `scale` is the owl's rendered box as a fraction of the canvas's short edge,
- * matching how `AppleSplashLinks` and the manifest icons already read.
+ * `scale` is its rendered box as a fraction of the canvas's short edge.
  */
 /* istanbul ignore next -- real sharp rendering; exercised by running the script, not by importing it under test */
 const renderIcon = async ({
@@ -225,11 +216,7 @@ const writeAll = async targets => {
   );
 };
 
-/**
- * Verifies internal consistency between `SPLASH_DEVICES`/`ouwl.svg` and the
- * committed assets — not device *coverage*, which has no source to check
- * against and is deliberately left to manual review.
- */
+/** Verifies internal consistency, not device coverage — see docs/pwa-seo.md. */
 /* istanbul ignore next -- real file reads and rendering; exercised by running the script, not by importing it under test */
 const checkAll = async targets => {
   const problems = [];

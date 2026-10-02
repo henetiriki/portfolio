@@ -9,11 +9,9 @@ const docsDir = path.join(projectRoot, 'docs');
 const skillsDir = path.join(projectRoot, '.claude', 'skills');
 const agentsDir = path.join(projectRoot, '.claude', 'agents');
 
-// Mirrors GitHub's heading slugger closely enough for this project's ASCII
-// prose: lowercase, drop anything that isn't a word character/hyphen/space,
-// then turn every remaining space into a hyphen one-for-one (not collapsed —
-// an em dash flanked by two spaces has to survive as a double hyphen, e.g.
-// "One Thing — Another" slugifying to "one-thing--another").
+// Mirrors GitHub's heading slugger for this project's ASCII prose. Spaces
+// turn into hyphens one-for-one, not collapsed, so an em dash flanked by two
+// spaces survives as a double hyphen ("One Thing — Another" -> "one-thing--another").
 export const slugify = text =>
   text
     .toLowerCase()
@@ -51,11 +49,9 @@ export const extractHeadingSlugs = lines => {
   return slugs;
 };
 
-// `files` is `{ path, lines }[]`, keyed internally by `path` exactly as given
-// — so two files linking to each other must use the same spelling of a
-// shared target. `exists`, `label` and `readLines` default to the real
-// filesystem and to printing the path unchanged; all three are overridable so
-// this stays testable with short fixture paths and no real disk access.
+// `files` is `{ path, lines }[]`, keyed internally by `path` exactly as given.
+// `exists`, `label` and `readLines` default to the real filesystem but are
+// overridable, so this stays testable with fixture paths and no real disk access.
 export const findBrokenLinks = (
   files,
   {

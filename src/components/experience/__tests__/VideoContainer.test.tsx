@@ -32,11 +32,8 @@ describe('VideoContainer', () => {
     );
   });
 
-  // Guards a real performance regression rather than an implementation
-  // detail. This embed sits ~35,000px down the page and a bare
-  // `youtube.com/embed` frame costs roughly a megabyte of player JavaScript,
-  // so loading it eagerly measurably hurt /experience in PageSpeed. Dropping
-  // the attribute would silently reintroduce that.
+  // Guards a real performance regression, not an implementation detail — see
+  // docs/components.md's `VideoContainer` entry.
   it('defers loading the third-party player', () => {
     render(<VideoContainer video={video} />);
 

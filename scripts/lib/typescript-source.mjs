@@ -1,14 +1,8 @@
 import ts from 'typescript';
 
 /**
- * The top-level `const <name> = …` declaration in `sourceText`, alongside the
- * parsed `sourceFile` a caller's own error messages may need to render
- * another node's text against. `declaration` is `undefined` when there is no
- * such top-level const — callers decide what that means for them.
- *
- * Shared by `generate-mantine-css-variables.mjs` (`colorOverrides`, plain
- * `.ts`) and `generate-pwa-icons.mjs` (`SPLASH_DEVICES`, `.tsx`), which
- * differ only in `scriptKind`.
+ * The top-level `const <name> = …` declaration in `sourceText`, plus the
+ * parsed `sourceFile`. `declaration` is `undefined` when there is none.
  */
 export const findTopLevelConst = (sourceText, label, name, scriptKind) => {
   const sourceFile = ts.createSourceFile(

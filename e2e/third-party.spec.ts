@@ -3,18 +3,8 @@ import { blockGoogleMaps, waitForHydration } from './support/helpers';
 import type { Page } from '@playwright/test';
 
 /**
- * The YouTube embed on /experience sits roughly 35,000px down a 39,000px
- * page, and a bare `youtube.com/embed` frame costs about a megabyte of player
- * JavaScript. Loading it eagerly put that work on the main thread during
- * initial load — for content almost nobody scrolls to — and measurably hurt
- * that route's PageSpeed score relative to every other page, including
- * /travel, whose far heavier Google Map is deferred until it is in view.
- *
- * These specs assert the *behaviour* rather than the `loading` attribute: the
- * unit test already covers the attribute, and an attribute alone would not
- * catch a future change that reintroduces an eager third-party by some other
- * route. Requests are stubbed rather than allowed through, so the suite gains
- * no dependency on YouTube being reachable.
+ * Asserts the YouTube embed's lazy-load *behaviour*, not just the `loading`
+ * attribute the unit test covers — see docs/components.md's `VideoContainer`.
  */
 test.describe('third-party embeds', () => {
   const countYouTubeRequests = async (page: Page) => {

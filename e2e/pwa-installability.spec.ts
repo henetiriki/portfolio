@@ -2,14 +2,8 @@ import { expect, test } from '@playwright/test';
 import type { APIRequestContext } from '@playwright/test';
 
 /**
- * Installability, not the offline experience.
- *
- * The service worker is deliberately out of scope: this suite blocks it (see
- * `playwright.config.ts`) and CI already asserts that a production build emits
- * one. What nothing guarded until now is the manifest and the assets it and
- * the document reference — a renamed or moved icon breaks installability
- * silently, because the build still succeeds and no test fails.
- * See docs/development.md#browser-regression-suite.
+ * Installability, not the offline experience — the service worker is
+ * deliberately out of scope here. See docs/development.md#browser-regression-suite.
  */
 
 // Every icon and splash-screen link in `_document.tsx`: three PNG favicons,
@@ -33,14 +27,8 @@ interface Manifest {
 }
 
 /**
- * Fetch every path and return only those not served as an image.
- *
- * Reports all failures rather than throwing on the first, because the usual
- * cause — a renamed or moved directory — breaks many assets at once, and the
- * useful failure message is the whole list.
- *
- * The content type is checked as well as the status because a rewrite can
- * answer a missing file with the application shell, which is a 200.
+ * Fetch every path, reporting every non-image response rather than throwing on
+ * the first — a rewrite can mask a missing file as the app shell's own 200.
  */
 const findBrokenImages = async (
   request: APIRequestContext,

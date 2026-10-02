@@ -26,10 +26,6 @@ Last reviewed: 2026-09-07.
 
 - [ ] **Verify push protection covers recognised provider keys and non-provider secret patterns.** Check live state through the approved private process before acting.
 
-## Documentation weight
-
-- [ ] **Bring the over-length comment blocks under the four-line limit.** The backlog spans `e2e/`, `scripts/`, `src/`, the root config files and `.github/` — measure accordingly rather than trusting an old count, since the counting tool must handle CSS block-comment continuation lines correctly and apply the four-line threshold consistently. Each block needs a destination decided individually, not a blanket pass: most should simply shrink to fit, but some — like the ones in [`helpers.ts`](../e2e/support/helpers.ts) and [`accessibility.spec.ts`](../e2e/accessibility.spec.ts) — explain what a check cannot see and belong in the topical doc beside that check instead of being trimmed away.
-
 ## Documentation gaps
 
 - [ ] **Define when a repository setting may be named publicly — blocked on maintainer guidance.** The proposed boundary is whether its value is externally observable and has no security function; exact protections, exemptions and monitoring remain private. `squash_merge_commit_message` is the motivating case — it's named in two public files with no rule to point at. Confirm that no broader private rule applies, then align those mentions.

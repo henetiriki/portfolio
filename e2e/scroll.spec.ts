@@ -7,15 +7,8 @@ import {
 import type { Page } from '@playwright/test';
 
 /**
- * The scroll-driven navigation background and the scroll-to-top control are
- * pure browser behaviour: a passive `scroll` listener flips state past a 10px
- * threshold, and the header's background colour follows. jsdom has no layout
- * and no scrolling, so the unit tests can only simulate the event — they
- * cannot observe that the header actually changes appearance, or that the
- * control returns the page to the top.
- *
- * Runs on both viewports: the header is shared, and the threshold logic sits
- * outside the breakpoint that splits the two navigation modes.
+ * Pure browser behaviour jsdom cannot observe — see
+ * docs/development.md#browser-regression-suite.
  */
 test.describe('scroll behaviour', () => {
   test.beforeEach(async ({ page }) => {
@@ -62,16 +55,8 @@ test.describe('scroll behaviour', () => {
 });
 
 /**
- * `Footer` calls the same `useScrollTo` hook as the header button above, but
- * from each nav link's `onClick` rather than a dedicated control — a separate
- * call site sharing `pageTopRef`, which the describe block above cannot
- * exercise. This gets its own describe, without the shared `beforeEach`,
- * because `captureScrollIntoView` has to run before the page ever navigates.
- *
- * Asserted via the call itself rather than the resulting `scrollY`: the
- * link's own navigation, even back to the same route, resets scroll position
- * on its own, so a `scrollY`-based assertion would pass whether or not
- * `onClick` ever ran.
+ * A separate `useScrollTo` call site the describe block above cannot exercise
+ * — see docs/development.md#browser-regression-suite.
  */
 test.describe('footer scroll-to-top', () => {
   test("clicking a footer nav link triggers the page's own scroll-to-top", async ({

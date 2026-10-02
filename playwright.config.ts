@@ -104,12 +104,8 @@ export default defineConfig({
     timeout: 120_000,
     url: BASE_URL,
   },
-  // Capped deliberately rather than left at one worker per core. Every spec
-  // loads the fixed background photo, so each page triggers a `/_next/image`
-  // optimisation on the single `next start` process — sharp work on one event
-  // loop. Saturating that produced scattered, irreproducible failures across
-  // unrelated specs; the same run passes serially. A suite that needs a re-run
-  // to be believed is worse than no suite, so determinism wins over the few
-  // seconds a higher count would save on a 78-spec run.
+  // Capped, not one per core: every spec triggers a `/_next/image`
+  // optimisation on the single `next start` process, and saturating that sharp
+  // work produced scattered failures across unrelated specs. Determinism wins.
   workers: isCI ? 1 : 4,
 });

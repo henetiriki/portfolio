@@ -3,12 +3,9 @@
 // have, plus `dependabot/`, which is not from Conventional Branch at all.
 export const PREFIXES = ['chore', 'dependabot', 'docs', 'feature', 'fix'];
 
-// The four written here, which are the four the description grammar and the
-// failure message below both address. Dependabot names its own branches —
-// `dependabot/npm_and_yarn/next-16.0.1` — and holding those to that grammar
-// would fail every dependency pull request, so its prefix is recognised and
-// what follows it is left alone: an owner segment may be mixed case
-// (`dependabot/github_actions/JamesIves/…`), which is why this is not `[a-z]`.
+// Dependabot names its own branches, mixed case included
+// (`dependabot/github_actions/JamesIves/…`), so its prefix is excluded here
+// rather than held to the authored-branch grammar below.
 const AUTHORED = PREFIXES.filter(prefix => prefix !== 'dependabot');
 
 // eslint-disable-next-line security/detect-non-literal-regexp -- the only interpolation is `AUTHORED`, derived from a module-level literal array of lowercase words; no branch name or other input reaches this
@@ -17,17 +14,13 @@ const CONVENTIONAL = new RegExp(
 );
 
 // An ecosystem segment, then at least one more: `npm_and_yarn/next-16.0.1`.
-// Requiring the second slash is what keeps this from accepting `dependabot/`
-// plus anything, which would leave the convention advisory for whoever typed
-// the prefix by hand. It cannot tell a bot's ref from a hand-made one — no
-// branch name can — so this is as narrow as the check gets.
+// Requiring the second slash keeps this from accepting `dependabot/` plus
+// anything hand-typed; it cannot tell a bot's ref from a hand-made one.
 const DEPENDABOT = /^dependabot\/[\w.-]+\/[\w./-]+$/;
 
 /**
- * Whether a branch name follows the convention. Rejects a bare description, an
- * unknown prefix, uppercase, underscores, and a leading, trailing or doubled
- * hyphen in the description. A `dependabot/` branch only has to carry something
- * after the prefix.
+ * Rejects a bare description, an unknown prefix, uppercase, underscores, and a
+ * leading, trailing or doubled hyphen — see AGENTS.md#branch-names.
  */
 export const isConventional = name =>
   CONVENTIONAL.test(name) || DEPENDABOT.test(name);

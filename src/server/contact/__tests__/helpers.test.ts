@@ -236,11 +236,8 @@ describe('buildMessageCopy', () => {
     expect(mail.html).not.toContain('Hi, Jane <Admin>');
   });
 
-  // formatValue (the internal {n}-placeholder substituter used to build
-  // this html) isn't exported, and the real checked-in templates always
-  // have exactly as many placeholders as args — so its "no matching arg"
-  // fallback can only be exercised indirectly, through the public API,
-  // with a fake template that has an extra placeholder.
+  // The unexported placeholder substituter's "no matching arg" fallback can
+  // only be exercised indirectly, via a fake template with an extra placeholder.
   it('leaves an extra template placeholder untouched when no matching arg is supplied for it', async () => {
     jest.resetModules();
     jest.doMock('fs', () => ({

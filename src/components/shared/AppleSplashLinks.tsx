@@ -10,9 +10,8 @@ interface SplashDevice {
 }
 
 /**
- * Every Apple device class with a launch screen, portrait points and pixel
- * ratio. A class absent from this table gets no splash at all, silently — see
- * `docs/pwa-seo.md`. Ordered by pixel ratio, then width.
+ * Every Apple device class with a launch screen — see docs/pwa-seo.md.
+ * Ordered by pixel ratio, then width.
  */
 const SPLASH_DEVICES: SplashDevice[] = [
   { dpr: 2, height: 568, width: 320 },

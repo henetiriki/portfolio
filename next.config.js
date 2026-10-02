@@ -121,11 +121,8 @@ const securityHeaders = [
     key: 'Referrer-Policy',
     value: 'strict-origin-when-cross-origin',
   },
-  // Every capability below is disabled entirely (empty allowlist), including
-  // for this origin itself. Nothing under src/ or the Maps SDK it loads calls
-  // any of these — the map is a fixed set of fixture markers/polylines, not a
-  // live position, so geolocation is unneeded rather than merely unused. See
-  // docs/security.md.
+  // Every capability below is disabled entirely, including for this origin
+  // itself — nothing under src/ or the Maps SDK calls any of them. See docs/security.md.
   {
     key: 'Permissions-Policy',
     value: 'camera=(), geolocation=(), microphone=(), payment=(), usb=()',
@@ -133,11 +130,9 @@ const securityHeaders = [
 ];
 
 const baseConfig = withBotId({
-  // Replaces the old publicRuntimeConfig: next/config's runtime config is
-  // deprecated and removed entirely in Next.js 16. These are re-exposed under
-  // NEXT_PUBLIC_* names so client code can read them as plain
-  // `process.env.NEXT_PUBLIC_*`. Some source names are also used server-side
-  // or retained in deployment config. See docs/environment-variables.md.
+  // Replaces next/config's runtime config, removed in Next.js 16 — these
+  // source vars are re-exposed as NEXT_PUBLIC_* for client code. See
+  // docs/environment-variables.md.
   env: {
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.GOOGLE_MAPS_API_KEY,
     NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID: process.env.GOOGLE_MAPS_MAP_ID,
@@ -157,11 +152,9 @@ const baseConfig = withBotId({
   images: {
     minimumCacheTTL: 31536000,
     // The only optimised image is FixedBackground's full-viewport photo, which
-    // carries `preload` and is the deliberate LCP element — so its encoded size
-    // is on the critical path. Measured on a real photograph, WebP at 85 is
-    // ~66% smaller than at 100 (35 KB vs 103 KB) with no visible difference on
-    // a backdrop image. Next's own default is 75; 85 stays conservative.
-    // Keep this list minimal: every allowed value is a separate cache entry.
+    // carries `preload` and is the deliberate LCP element, so its encoded size
+    // is on the critical path. WebP at 85 (Next's default is 75) measured
+    // ~66% smaller than at 100 with no visible difference on a backdrop photo.
     qualities: [85],
     remotePatterns: [
       {
@@ -209,19 +202,11 @@ const baseConfig = withBotId({
   },
 });
 
-// The 42 Apple splash images: iOS fetches at most one of them directly at
-// launch, outside any fetch the service worker could intercept, so they have
-// no business filling the offline precache — see docs/pwa-seo.md and the
-// splash-matrix item in docs/roadmap.md.
+// Apple splash images are excluded from the offline precache — see docs/pwa-seo.md.
 const SPLASH_IMAGE = /^apple-splash-\d+-\d+\.png$/;
 
-// @serwist/next's own public-directory scan (`globPublicPatterns`, default
-// `['**/*']`) takes only positive include patterns — there is no exclude
-// option for it, and the underlying `glob` package dropped `!`-prefixed
-// pattern negation in v6. Supplying `additionalPrecacheEntries` ourselves is
-// the only way to narrow what it precaches from `public/`; doing so skips
-// its scan entirely, so this has to reproduce it in full, minus the splash
-// images, rather than layer on top of it.
+// Reproduces @serwist/next's own public-directory scan in full, minus the
+// splash images — see docs/pwa-seo.md for why this is the only way to exclude them.
 const publicDir = path.join(__dirname, 'public');
 
 const getPublicPrecacheEntries = () =>
@@ -254,16 +239,9 @@ const getPublicPrecacheEntries = () =>
       return { revision, url: `/${relativePath}` };
     });
 
-// @serwist/next is ESM-only (no CJS build), so it can't be `require()`d from
-// this CommonJS config file — a dynamic `import()` inside an async config
-// function is Next.js's own documented escape hatch for this.
-//
-// Gated on NODE_ENV rather than a flag: every production build gets the
-// service worker, and development never does. This is not just a preference —
-// `withSerwistInit` attaches a `webpack` key unconditionally (its own
-// `disable` option is only checked inside that callback), and `next dev` runs
-// Turbopack, which @serwist/next does not support. Returning early keeps a
-// webpack config out of dev entirely.
+// Gated on NODE_ENV, not a flag, and ESM-dynamically imported since
+// @serwist/next has no CJS build — see docs/pwa-seo.md. Returning early also
+// keeps `withSerwistInit`'s unconditional `webpack` key out of Turbopack dev.
 module.exports = async () => {
   if (process.env.NODE_ENV !== 'production') {
     return withBundleAnalyzer(baseConfig);
