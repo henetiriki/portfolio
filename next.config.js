@@ -147,6 +147,11 @@ const baseConfig = withBotId({
         // Apply these headers to all routes in your application.
         source: '/:path*',
       },
+      {
+        has: [{ type: 'host', value: 'meet.ouwl.house' }],
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+        source: '/:path*',
+      },
     ];
   },
   images: {
@@ -194,7 +199,7 @@ const baseConfig = withBotId({
             value: 'meet.ouwl.house',
           },
         ],
-        permanent: true,
+        permanent: false,
         source: '/',
       },
     ];
