@@ -22,8 +22,6 @@ Last reviewed: 2026-09-07.
 
 ## Agent configuration
 
-- [ ] **Decide whether the public `meet.ouwl.house` redirect should expose a permanent Google Meet room.** The code in [`next.config.js`](../next.config.js) is not a credential, but an anonymous visitor can use it to enter a meeting; assess that capability through the approved private process.
-
 - [ ] **Verify push protection covers recognised provider keys and non-provider secret patterns.** Check live state through the approved private process before acting.
 
 ## Documentation gaps

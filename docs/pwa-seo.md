@@ -43,6 +43,7 @@ If confirmed additions are requested, update the table, run `yarn icons:generate
 - `next-sitemap.config.js` runs as part of `yarn build` (`"build": "next build --webpack && next-sitemap"`), generating `public/sitemap.xml` and `public/robots.txt` from `siteUrl: process.env.HOST`.
 - `generateIndexSitemap: false` — a single flat `sitemap.xml`, no sitemap index, appropriate for a handful of routes.
 - `robotsTxtOptions.policies`: blocks every Baidu spider variant (`Baiduspider`, `baiduspider`, `Baiduspider+`, `-video`, `-image`) site-wide, disallows `/static` for all other user agents, and otherwise allows everything.
+- The `meet.ouwl.house` host (see [Pages & Routing](pages-and-routing.md#redirects-nextconfigjs)) is kept out of search results: it is absent from the sitemap, which lists only the site's own pages, and `next.config.js` adds `X-Robots-Tag: noindex, nofollow` to responses on that host.
 - The generated `public/robots.txt` is checked into git (not gitignored, unlike `sitemap.xml`/`sw.js`) — it's committed output rather than a purely ephemeral build artefact, so a change to a route disallow or a spider block arrives as a reviewable file diff rather than only as a config edit.
 
 ## AI-agent discovery (`llms.txt`)
