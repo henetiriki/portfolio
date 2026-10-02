@@ -29,11 +29,8 @@ const getPropertyName = (propertyName, sourceFile) => {
   );
 };
 
-// Pure: parses `colorOverrides` out of `colors.ts`'s own text via the
-// TypeScript compiler API — the same approach `generate-pwa-icons.mjs` uses
-// for `SPLASH_DEVICES` — and returns one `--mantine-color-<name>-<shade>`
-// declaration per array entry, so it can be tested against a literal snippet
-// instead of the real file.
+// Parses `colorOverrides` out of `colors.ts`'s own text, returning one
+// `--mantine-color-<name>-<shade>` declaration per array entry.
 export const extractColorDeclarations = (sourceText, label = 'colors.ts') => {
   const { declaration: colorDeclaration, sourceFile } = findTopLevelConst(
     sourceText,
@@ -76,11 +73,9 @@ export const renderCss = declarations =>
 const main = () => {
   const isCheckMode = process.argv.includes('--check');
 
-  // Skipped on Vercel because this file exists only for local WebStorm CSS
-  // analysis and is never imported at runtime — a deployed build has no use
-  // for it. `!isCheckMode` because a blanket return would make `--check` pass
-  // without checking; `writeSync` because `process.exit` drops a buffered
-  // `console.log`.
+  // Skipped on Vercel: this file is for local WebStorm CSS analysis only and
+  // is never imported at runtime. `!isCheckMode` so `--check` still runs;
+  // `writeSync` because `process.exit` drops a buffered `console.log`.
   if (process.env.VERCEL && !isCheckMode) {
     fs.writeSync(
       1,

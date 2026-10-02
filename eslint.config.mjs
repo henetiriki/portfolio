@@ -18,13 +18,8 @@ import { configs } from 'typescript-eslint';
 const WEB_FILES = ['**/*.{js,jsx,mjs,ts,tsx,mts,cts}'];
 const TS_FILES = ['**/*.ts', '**/*.tsx'];
 
-// `eslint-config-next` already registers `react`, `react-hooks`, `import`,
-// `jsx-a11y`, `@next/next` and `@typescript-eslint`. Flat config treats
-// registering the same plugin name twice as a hard error ("Cannot redefine
-// plugin"), so the shared recommended presets below are pulled in for their
-// rules and settings only, with the duplicate `plugins` key dropped — and
-// scoped to the same files the plugin was registered against, since applying
-// a rule to a file whose config never registered its plugin is also an error.
+// Strips the duplicate `plugins` key a shared preset would otherwise
+// re-register — see docs/development.md#linting--formatting.
 const preset = (sharedConfig, files) => {
   const { plugins: _plugins, ...rest } = sharedConfig;
 

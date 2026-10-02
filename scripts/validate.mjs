@@ -47,9 +47,8 @@ const classify = () => {
 };
 
 /**
- * Which checks a verdict selects, and which it sets aside. Exported as a pure
- * function so the split is unit-tested rather than only observed on a run that
- * happens to be documentation-only.
+ * Exported as a pure function so the split is unit-tested rather than only
+ * observed on a run that happens to be documentation-only.
  */
 export const selectChecks = (documentationOnly, checks = CHECKS) => ({
   running: checks.filter(check => !documentationOnly || !check.sourceOnly),

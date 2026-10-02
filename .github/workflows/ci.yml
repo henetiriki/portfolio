@@ -13,11 +13,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# Hoisted to workflow level so the two jobs below share one copy. The build
-# needs all of it; Playwright's `webServer` starts `yarn start`, so the browser
-# suite needs it too. Next production builds do not load .env.test — these
-# non-secret dummy values keep next.config.js valid without exposing
-# deployment credentials.
+# Hoisted to workflow level so both jobs share one copy — the build needs it,
+# and so does Playwright's `webServer` (`yarn start`). Non-secret dummies only.
 env:
   CUSTOM_APP_DOMAIN: 'example.test'
   GMAIL_APP_EMAIL: 'owner@example.test'
@@ -36,11 +33,8 @@ env:
   PROTOCOL: 'https'
 
 jobs:
-  # A documentation-only change takes a cheap path. Its own job because
-  # `steps.*` does not cross job boundaries and both jobs below consume the
-  # answer. Checkout only, no install, so it costs seconds. The exclusions are
-  # CI's, not Vercel's, and the two lists deliberately differ — see
-  # docs/ci-and-deploys.md.
+  # Its own job because `steps.*` does not cross job boundaries and both jobs
+  # below consume the answer — see docs/ci-and-deploys.md#pull-request.
   classify:
     name: Classify the change
     runs-on: ubuntu-latest
@@ -80,13 +74,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
-      # Before the install, so a misnamed branch fails in seconds rather than
-      # after a minute of setup. Pure Node with no dependencies, the same as the
-      # classify job above. Only a pull request has a head ref — the checked-out
-      # ref there is the merge commit and carries no branch name, and a push to
-      # `main` has no branch to check at all. The ref goes through `env` rather
-      # than `${{ }}` inside the script: a branch name is attacker-controlled on
-      # a fork pull request, and interpolation into a `run:` body is injection.
+      # See docs/ci-and-deploys.md#pull-request. The ref goes through `env`,
+      # not `${{ }}` interpolation into the `run:` body — a branch name is
+      # attacker-controlled on a fork pull request, and that would be injection.
       - name: Check the branch name
         if: github.event_name == 'pull_request'
         env:
@@ -133,11 +123,8 @@ jobs:
       - name: Check documentation links
         run: yarn docs:check-links
 
-      # Never gated either, and for the same reason: `.claude/` is on the
-      # documentation-only exclusion list, so a change to the settings file
-      # holding the hooks is precisely the case this must not skip. It needs no
-      # build inputs because it checks shape by reading the configuration rather
-      # than by executing anything — see docs/development.md's script table.
+      # Never gated, for the same reason as prettier above — see
+      # docs/ci-and-deploys.md#pull-request.
       - name: Check agent configuration
         run: yarn agent:check-config
 
@@ -153,12 +140,9 @@ jobs:
       - name: Test with coverage
         run: yarn test:coverage
 
-      # Skipped for fork pull requests, which GitHub issues no OIDC token to
-      # whatever `id-token: write` says — `use_oidc` would have nothing to
-      # authenticate with and `fail_ci_if_error` would make that a failed job.
-      # The event-name half of the guard is load-bearing: the pull_request
-      # context is null on a push to main, so the repository comparison alone
-      # would stop uploading from the branch the coverage is about.
+      # Skipped for fork pull requests (no OIDC token) — see
+      # docs/ci-and-deploys.md#coverage. The event-name half of the guard is
+      # load-bearing: `pull_request` context is null on a push to main.
       - name: Upload coverage to Codecov
         if: >-
           github.event_name != 'pull_request' ||
@@ -170,11 +154,7 @@ jobs:
           files: ./coverage/lcov.info
           use_oidc: true
 
-  # Everything that needs a production build, running concurrently with the job
-  # above: nothing here consumes anything it produces. This job is exactly what
-  # the cheap path skips, so it is one gate on the job rather than a gate per
-  # step. A job skipped by an `if:` reports success and satisfies a required
-  # check, which a `paths-ignore` filter would not.
+  # Runs concurrently with Validate — see docs/ci-and-deploys.md#pull-request.
   build:
     name: Build & browser suite
     needs: classify
@@ -194,12 +174,9 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      # Belongs solely to this job, so the two do not contend for it. No
-      # restore-keys fallback: a prefix match would restore .next/cache from a
-      # build with different public assets, and Next's image-optimisation
-      # cache inside it trusts a restored entry without checking the source
-      # file's content. An exact key or a clean build are the
-      # only two outcomes that cannot serve a stale optimised image.
+      # No restore-keys fallback: a prefix match could restore .next/cache from
+      # a build with different public assets, and the image-optimisation cache
+      # inside it trusts a restored entry without checking the source file.
       - name: Cache Next.js build cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
@@ -218,11 +195,10 @@ jobs:
       - name: Verify service worker output
         run: test -s public/sw.js
 
-      # Keyed on the installed Playwright version, because that is what the
-      # ~270 MB browser download actually tracks. A lockfile-wide key would
-      # discard it on every weekly Dependabot bump. Install scripts are
-      # disabled repository-wide, so the browser is fetched explicitly
-      # here rather than by a postinstall hook.
+      # Keyed on the Playwright version, not the lockfile, since that's what
+      # the ~270 MB browser download tracks — a lockfile key would discard it
+      # on every weekly Dependabot bump. Fetched explicitly: install scripts
+      # are disabled repository-wide, so no postinstall hook would do it.
       - name: Resolve Playwright version
         id: playwright-version
         run: |

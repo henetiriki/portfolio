@@ -8,12 +8,7 @@ import {
 } from './support/helpers';
 
 /**
- * One axe pass per page template. Deliberately not per component — the unit
- * suite covers component structure, whereas this catches whole-page problems
- * that only exist once real CSS is applied: contrast against the fixed
- * background photo, landmark structure, and duplicated ids after hydration.
- *
- * The tag list includes `best-practice` as well as WCAG — see
+ * One axe pass per page template, not per component — see
  * docs/development.md#browser-regression-suite.
  */
 test.describe('accessibility', () => {
@@ -41,28 +36,14 @@ test.describe('accessibility', () => {
 });
 
 /**
- * Contrast for icons axe cannot see: its `color-contrast` rule only
- * evaluates text nodes, so an SVG painted with `stroke="currentColor"` passes
- * regardless of how badly it fails — exactly that let a 1.72:1 icon through
- * for weeks.
- *
- * Scoped to icons rendered on a background colour distinct from the page's
- * own — a Mantine `filled`/coloured-circle treatment with no adjacent text
- * sharing that exact pairing. An icon that only ever sits next to text of its
- * own colour (the outline buttons on `/portfolio` and the 404/500 pages, the
- * footer's social links) is already provable from that text's own axe
- * result, so it is not repeated here. Icons rendered onto the live Google
- * Map are excluded for the opposite reason: the map tiles are real imagery
- * with no fixed colour to assert against.
- *
- * WCAG 1.4.11 sets 3:1, not 4.5:1, for non-text UI components.
+ * Contrast for icons axe cannot see (WCAG 1.4.11's 3:1 floor) — see
+ * docs/development.md#browser-regression-suite.
  */
 const NON_TEXT_CONTRAST_MINIMUM = 3;
 
 /**
- * Runs inside the page, so it cannot reference anything from module scope.
- * Walks up from the icon for the first non-transparent background, since the
- * element that paints it is not always the icon's immediate parent.
+ * Runs inside the page, so it cannot reference module scope. Walks up for the
+ * first painted background, since the icon's immediate parent isn't always it.
  */
 const readIconContrastColours = (icon: Element) => {
   const foreground = getComputedStyle(icon).color;

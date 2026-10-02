@@ -17,15 +17,8 @@ export const CONTENT_ROUTES = [
 ] as const;
 
 /**
- * Google Maps is never contacted from the browser suite.
- *
- * The API key is restricted by origin and CI supplies a dummy key, so a real
- * load would behave differently between a developer's machine and CI — exactly
- * the flakiness a regression suite must not have. The Maps layer already has
- * its own SDK mock and full unit coverage; what this suite checks is that the
- * page around it degrades correctly.
- *
- * This block is why the suite needs no particular port.
+ * Google Maps is never contacted from the browser suite — see
+ * docs/development.md#browser-regression-suite.
  */
 export const blockGoogleMaps = (page: Page) =>
   page.route('**://*.googleapis.com/**', (route: Route) => route.abort());
@@ -33,12 +26,8 @@ export const blockGoogleMaps = (page: Page) =>
 const VISUAL_BACKGROUND_IMAGE_ID = 'BZ4QGdOn6SP';
 
 /**
- * Keep screenshot assertions independent of the production image rotation.
- *
- * FixedBackground asks this endpoint for one configured image after hydration.
- * Intercepting the request before navigation preserves the production code
- * path, while letting visual specs compare the same rendered background on
- * every run without narrowing the image pool used by the rest of CI.
+ * Keep screenshot assertions independent of the production image rotation —
+ * see docs/development.md#visual-baseline-updates.
  */
 export const pinVisualBackground = (page: Page) =>
   page.route('**/api/img-id', route =>
@@ -46,18 +35,8 @@ export const pinVisualBackground = (page: Page) =>
   );
 
 /**
- * Record every behaviour passed to `Element.prototype.scrollIntoView`.
- *
- * `useScrollTo` (see src/hooks/useScrollTo.ts) is the only caller of
- * `scrollIntoView` in the app, from two separate call sites — the header's
- * scroll-to-top button and the footer's nav links. Patching the prototype
- * catches both, and is the only way to observe the behaviour argument at
- * all: the resulting scroll position cannot tell `'smooth'` from `'auto'`
- * apart, and a footer link's own navigation can move `scrollY` to 0 by
- * itself, independent of whether `scrollToTop` ran.
- *
- * Must be called, and awaited, before `page.goto` — both `exposeFunction` and
- * `addInitScript` only take effect on navigations that start after them.
+ * Records `scrollIntoView` behaviour — see docs/development.md#browser-regression-suite.
+ * Call and await before `page.goto`: init scripts only affect later navigations.
  */
 export const captureScrollIntoView = async (page: Page) => {
   const behaviours: string[] = [];
@@ -88,11 +67,8 @@ export const captureScrollIntoView = async (page: Page) => {
 };
 
 /**
- * Fail a test on unexpected console errors.
- *
- * Returns a getter rather than asserting directly so each spec decides when to
- * check, and can filter the noise it legitimately expects (an aborted Maps
- * request, for instance, surfaces as a network error).
+ * Returns a getter, rather than asserting directly, so each spec decides when
+ * to check and can filter noise it legitimately expects via `isExpectedConsoleNoise`.
  */
 export const collectConsoleErrors = (page: Page) => {
   const errors: string[] = [];
@@ -109,12 +85,8 @@ export const collectConsoleErrors = (page: Page) => {
 };
 
 /**
- * WCAG relative luminance and contrast ratio, from computed `rgb()`/`rgba()`
- * colour strings. https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
- *
- * Exists because `axe-core`'s `color-contrast` rule only evaluates text
- * nodes — an SVG icon painted with `stroke="currentColor"` is invisible to
- * it regardless of how badly it fails.
+ * WCAG relative luminance and contrast ratio — see
+ * https://www.w3.org/TR/WCAG21/#dfn-relative-luminance.
  */
 export const contrastRatio = (a: string, b: string): number => {
   const relativeLuminance = (colour: string): number => {
@@ -136,20 +108,8 @@ export const contrastRatio = (a: string, b: string): number => {
 };
 
 /**
- * Console output the suite expects, for reasons outside the app's control.
- *
- * - Maps requests are deliberately aborted (see `blockGoogleMaps`).
- * - `/_vercel/insights` and `/_vercel/speed-insights` are injected by Vercel's
- *   analytics scripts but only served by Vercel's edge. Under a local
- *   `next start` they fall through to the 404 handler and come back as
- *   `text/plain`, which this app's `nosniff` header then correctly refuses.
- *   That is a local-environment artefact, not a defect.
- * - `reading 'waiting'` comes from `@serwist/window`, which reads
- *   `registration.waiting` after registering the service worker. These projects
- *   set `serviceWorkers: 'block'`, so registration never resolves and that
- *   property read throws. It is the suite's own configuration rather than a
- *   defect, and `service-worker.spec.ts` asserts as much: in the one project
- *   that lets registration succeed, the error does not appear at all.
+ * Console output the suite expects, for reasons outside the app's control —
+ * see docs/development.md#browser-regression-suite.
  */
 export const isExpectedConsoleNoise = (message: string) =>
   /googleapis|maps|ERR_FAILED|Failed to load resource/i.test(message) ||
@@ -157,14 +117,8 @@ export const isExpectedConsoleNoise = (message: string) =>
   /reading 'waiting'/.test(message);
 
 /**
- * Wait until React has actually hydrated.
- *
- * Checked by looking for a React fibre on a real DOM node rather than by
- * waiting for a visible element, because the prerendered HTML is fully
- * populated before hydration — so any "is it on screen?" assertion passes
- * against static markup and proves nothing about interactivity. This is also
- * viewport-independent, unlike keying off nav links that are CSS-hidden on
- * mobile.
+ * Wait until React has actually hydrated — see
+ * docs/development.md#browser-regression-suite.
  */
 export const waitForHydration = (page: Page) =>
   page.waitForFunction(() => {

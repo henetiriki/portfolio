@@ -2,15 +2,8 @@ import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 
 /**
- * The two self-hosted font files, and the fallback metrics that go with them.
- *
- * `next/font/local` resolves the files at build time from paths in
- * `src/styles/fonts.ts`, so a moved or renamed `woff2` fails the build rather
- * than shipping. What the build cannot catch is the rest of the chain: the
- * preload tags disappearing, the generated families not being what the page
- * actually renders in, or the size-adjusted fallback faces being dropped —
- * which costs layout stability silently, because the text still renders.
- * See docs/styling-theming.md#fonts.
+ * The self-hosted fonts and their fallback metrics — see
+ * docs/development.md#browser-regression-suite and docs/styling-theming.md#fonts.
  */
 
 // One preloaded latin file per family, and nothing else. Asserted exactly so

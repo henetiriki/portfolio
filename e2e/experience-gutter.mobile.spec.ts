@@ -2,21 +2,8 @@ import { expect, test } from '@playwright/test';
 import { blockGoogleMaps, waitForHydration } from './support/helpers';
 
 /**
- * Mobile-only: the gutter this guards is only a problem where the screen is
- * narrow, and above the `xs` breakpoint the timeline goes back to its roomier
- * desktop spacing, where the ratio asserted below would legitimately fail.
- *
- * The left inset on `/experience` is built from five stacked layers, none of
- * them individually wrong, and it reached half the screen width before anyone
- * measured it. Nothing about any single layer looks excessive in isolation, so
- * this is checked as a property of the composition rather than as a set of
- * values — the same reason the assertions here are ratios and relationships,
- * not the pixel counts they happened to produce.
- *
- * The two alignment invariants are the reason a naive fix is dangerous: the
- * rail is drawn where the heading icon's centre falls, and the card's arrow
- * points into the gap the dot sits in. Either can be broken silently by an
- * edit that looks purely like spacing.
+ * Mobile-only — see docs/development.md#browser-regression-suite for why
+ * this is checked as a composition.
  */
 const sections = ['Work History', 'Education'];
 
@@ -61,15 +48,8 @@ test.describe('experience timeline at mobile widths', () => {
 });
 
 /**
- * Walks the timeline structurally rather than by class name, so hashed CSS
- * Module names cannot silently detach these assertions from what they measure.
- *
- * Every step looks for a `div` rather than taking whatever element is next or
- * first: Mantine renders a responsive style prop as a `<style>` element placed
- * immediately before the element carrying it, so both `firstElementChild` and
- * `nextElementSibling` land on markup that has no geometry. Which steps are
- * affected changes whenever a prop here becomes responsive, so no step assumes
- * it is the exception.
+ * Walks structurally, not by hashed CSS Module class name, filtering for
+ * `div` to skip the geometry-less `<style>` tag Mantine's responsive props insert.
  */
 function measure(heading: string) {
   const title = [...document.querySelectorAll('h2')].find(

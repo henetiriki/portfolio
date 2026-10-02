@@ -1,9 +1,7 @@
 html {
-  /* Opaque here rather than on `body`. The root element's background
-     propagates to the canvas and paints beneath negative-z-index children, so
-     FixedBackground still shows through; an opaque `body` would cover it,
-     because a block element paints its own background after those
-     descendants. */
+  /* Opaque on `html`, not `body`: the root's background paints beneath
+     negative-z-index children (FixedBackground), while `body`, a block
+     element, would paint its own background over them. */
   background-color: var(--mantine-color-black-russian-4);
   font-size: 16px;
 }
@@ -40,28 +38,17 @@ img {
 }
 
 p.mantine-Text-root {
-  /* v7 sets `margin: 0` on every `Text`, and on `Anchor`, which shares the base
-     class; this restores the native `<p>` margin. Scoped to real `<p>`, so
-     `Text` used as a span and `Anchor` are both untouched.
-
-     Deliberately broad, so it also hits label-style `Text` that merely defaults
-     to `<p>` — those opt back out per component (`TimelineInstitution`,
-     `TimelineLocation`). Narrowing the selector would need CSS to tell a prose
-     paragraph from a label rendered as `<p>`, and it cannot; prefer the
-     per-component override for any similar case. */
+  /* v7 sets `margin: 0` on every `Text`/`Anchor`; this restores the native
+     `<p>` margin, scoped to real `<p>` so a `Text`-as-span or `Anchor` is
+     untouched. Deliberately broad: label-style `Text` defaulting to `<p>`
+     opts back out per component (`TimelineInstitution`, `TimelineLocation`). */
   margin: 1em 0;
 }
 
 html:root[data-mantine-color-scheme='dark'] {
-  /* v7's dark-scheme default is `red-8` (#e03131); this site uses the lighter
-     `torch-red-2` for error text, borders and required-field asterisks.
-     Overriding the one variable beats setting the colour on every component
-     that consumes it.
-
-     `html:root[…]` rather than `html[…]`, and the doubling is not a typo.
-     `:root` is a pseudo-class, so Mantine's own `:root[data-mantine-color-scheme]`
-     scores (0,2,0) and a plain `html[…]` scores only (0,1,1) — it compiles, the
-     variable exists, and it silently never applies. This scores (0,2,1) and
-     wins regardless of stylesheet order. */
+  /* Overrides v7's dark-scheme `red-8` error colour with this site's lighter
+     `torch-red-2`. `html:root[…]`, not `html[…]`: `:root` is a pseudo-class, so
+     this scores (0,2,1) against Mantine's own `:root[data-mantine-color-scheme]`
+     (0,2,0) — a plain `html[…]` (0,1,1) compiles but silently never applies. */
   --mantine-color-error: var(--mantine-color-torch-red-2);
 }

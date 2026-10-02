@@ -1,11 +1,7 @@
 import { execFileSync } from 'node:child_process';
 
-// CI's exclusion list, and only CI's. The deploy gate keeps a deliberately
-// different one; see docs/ci-and-deploys.md#merge--deploy.
-//
-// These reproduce the git pathspec exclusions this replaced, so the semantics
-// have to match exactly: `:(exclude)*.md` matched at any depth, because git's
-// wildcards cross `/` without `:(glob)` magic.
+// CI's exclusion list, and only CI's — see docs/ci-and-deploys.md#pull-request.
+// Deliberately different from the deploy gate's; see #merge--deploy.
 const DIRECTORIES = ['docs/', '.claude/'];
 const FILES = ['.worktreeinclude'];
 const EXTENSIONS = ['.md'];
@@ -20,9 +16,8 @@ export const isDocumentation = filePath =>
   EXTENSIONS.some(extension => filePath.endsWith(extension));
 
 /**
- * A change is documentation-only when every path in it is documentation. An
- * empty list is not documentation-only: nothing changed, so there is nothing to
- * claim, and the caller should run everything rather than skip on a technicality.
+ * An empty list is not documentation-only: nothing changed, so the caller
+ * should run everything rather than skip on a technicality.
  */
 export const isDocumentationOnly = paths =>
   paths.length > 0 && paths.every(isDocumentation);
@@ -35,18 +30,8 @@ const git = args =>
   execFileSync('git', args, { encoding: 'utf8' }).split('\n').filter(Boolean);
 
 /**
- * The two callers want different things, and conflating them is how a
- * classifier ends up lying about what it looked at:
- *
- * - **`--base <ref>`**, which CI passes as `HEAD^`, compares that ref with HEAD
- *   and nothing else. It is exactly the `HEAD^ HEAD` this replaced, correct
- *   only because merges are squashed so a pull request lands as one commit. The
- *   working tree is deliberately ignored: CI's is clean, and including it would
- *   make the flag useless for asking what a past commit contained.
- * - **No argument**, which is the local case, compares the whole branch against
- *   `origin/main` **and adds uncommitted work**, so it answers correctly whether
- *   or not the change is committed yet, and running mid-edit still classifies
- *   correctly — which is precisely what `HEAD^` cannot do.
+ * `--base <ref>` (CI's `HEAD^`) compares only that ref with HEAD. No argument
+ * (the local case) also adds uncommitted work — see docs/ci-and-deploys.md#pull-request.
  */
 /* istanbul ignore next -- shells out to git; exercised by running the script, not by importing it under test */
 const changedPaths = (base, head) => {

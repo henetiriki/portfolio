@@ -6,12 +6,8 @@ import {
 } from './support/helpers';
 
 /**
- * `useScrollTo` picks `scrollIntoView`'s behaviour from `useReducedMotion`,
- * which reads `prefers-reduced-motion` — jsdom has no media query support, so
- * the unit tests can only assert the hook returns the right string, never that
- * a real reduced-motion user gets an instant jump instead of a smooth scroll.
- * `reducedMotion: 'reduce'` is set only on this project (see
- * playwright.config.ts), specifically so this spec can observe it.
+ * jsdom has no media query support — see
+ * docs/development.md#browser-regression-suite.
  */
 test.describe('reduced motion', () => {
   test('scroll-to-top jumps instantly instead of scrolling smoothly', async ({

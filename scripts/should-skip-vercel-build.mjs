@@ -23,9 +23,8 @@ const DEPLOYMENT_EXCLUSIONS = [
 ];
 
 /**
- * Which two refs to diff, or `null` when neither Vercel environment variable
- * this depends on is set — in which case the caller should build rather than
- * guess. Pure, so the three branches are testable without touching `git`.
+ * `null` means neither Vercel environment variable this depends on is set, so
+ * the caller should build rather than guess.
  */
 export const selectRefs = ({ previousSha, vercelEnv }) => {
   if (vercelEnv === 'production') return ['HEAD^', 'HEAD'];
@@ -34,11 +33,9 @@ export const selectRefs = ({ previousSha, vercelEnv }) => {
   return null;
 };
 
-// Vercel's convention is inverted from `git diff --quiet`'s: exit 0 skips the
-// build, exit 1 builds. `--quiet` already returns 0 for no difference and 1
-// for a difference, so only a `git` failure (a `status` above 1, or `null`
-// when it was killed by a signal) needs remapping — and it remaps to 1,
-// because missing deployment state should build rather than silently skip.
+// Vercel's convention is inverted from `git diff --quiet`'s: exit 0 skips,
+// exit 1 builds. Only a `git` failure (status above 1, or `null` on a signal)
+// needs remapping, and it remaps to 1 — build rather than silently skip.
 export const exitCodeFor = status =>
   status === null || status > 1 ? 1 : status;
 

@@ -47,13 +47,8 @@ export const triggerMapsEvent = (
   eventName: string,
   ...args: any[]
 ) => {
-  // Snapshot the listeners before iterating: a handler that synchronously
-  // registers a new listener on this same event (e.g. Map.tsx's recursive
-  // zoomMap) would otherwise have that new listener visited by this same
-  // `forEach` too — Set.forEach sees elements added mid-iteration — causing
-  // unbounded synchronous recursion instead of waiting for the next real
-  // trigger. Real event systems (DOM, Node's EventEmitter) snapshot for
-  // exactly this reason.
+  // Snapshots the listener set before dispatching, as DOM and Node's
+  // EventEmitter do — see docs/development.md#testing.
   const handlers = listenerRegistry.get(target)?.get(eventName);
 
   [...(handlers ?? [])].forEach(handler => {

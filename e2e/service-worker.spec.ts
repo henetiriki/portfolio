@@ -5,30 +5,8 @@ import {
 } from './support/helpers';
 
 /**
- * The other half of installability: generation is not registration.
- *
- * CI asserts a production build emits a non-empty `public/sw.js`, but a worker
- * that never registers — a bad scope, a script the server will not serve, a
- * policy that refuses to start it — produces exactly the same green build. This
- * runs in its own Playwright project, the only one where `serviceWorkers` is
- * left unblocked, so its precache cannot reach any other spec.
- * See docs/development.md#browser-regression-suite and
- * docs/security.md#browser-coverage; the reasoning is maintained privately.
- *
- * Offline is covered here, and the two tests below are deliberately not one.
- * The fallback path and the runtime-cache path fail independently, and only the
- * first was ever broken: `/_offline` was absent from the precache manifest, so
- * an offline navigation to an unvisited route produced no response at all,
- * while a visited route kept working from cache and made the whole thing look
- * healthy. A single test on a visited page passes without the fallback ever
- * being consulted, which is exactly how the manual check missed it.
- * See docs/pwa-seo.md#progressive-web-app; the reasoning is maintained
- * privately.
- *
- * A regression here surfaces as a timeout rather than a failed assertion:
- * `navigator.serviceWorker.ready` never settles when registration does not
- * happen, so there is nothing to compare against. Verified by re-running this
- * project with `serviceWorkers: 'block'` — both tests time out.
+ * The other half of installability: generation is not registration — see
+ * docs/development.md#browser-regression-suite and docs/pwa-seo.md#progressive-web-app.
  */
 test.describe('service worker', () => {
   test('registers, activates and takes control of the page', async ({

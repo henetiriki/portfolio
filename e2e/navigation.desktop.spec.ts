@@ -6,17 +6,8 @@ import {
 } from './support/helpers';
 
 /**
- * Desktop-only counterpart to `navigation.mobile.spec.ts`.
- *
- * `Navigation.module.css` swaps the two navigation modes on the `sm`
- * breakpoint: `.desktopLinks` is hidden below it, `.burger` and `.drawer`
- * above it. Testing only the drawer left the desktop half — the mode most
- * visitors see — with no browser coverage at all.
- *
- * This guards the breakpoint itself. Mantine breakpoints compile through
- * `postcss-simple-vars` at build time, and a mis-converted one has shipped
- * here before (a raw pixel value used where an `em` was required, identical at
- * default zoom and wrong for anyone who changes their browser font size).
+ * Desktop counterpart to `navigation.mobile.spec.ts` — see
+ * docs/development.md#browser-regression-suite.
  */
 test.describe('desktop navigation', () => {
   test.beforeEach(async ({ page }) => {

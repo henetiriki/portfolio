@@ -103,11 +103,9 @@ describe('findBrokenLinks', () => {
     expect(errors).toEqual([]);
   });
 
-  // `findBrokenLinks` resolves a link target with `path.resolve`, which
-  // anchors a relative fixture path against the real working directory rather
-  // than the fixture's own tree — so cross-file cases need absolute-looking
-  // fixture paths, matching how `main()` always calls this with real absolute
-  // paths from disk.
+  // `path.resolve` anchors a relative fixture path against the real working
+  // directory, not the fixture's own tree, so cross-file cases need
+  // absolute-looking fixture paths, matching how `main()` calls this for real.
   it('flags a cross-file anchor with no matching heading in the target', () => {
     const errors = findBrokenLinks(
       [

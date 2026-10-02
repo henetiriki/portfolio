@@ -31,12 +31,8 @@ const customJestConfig = {
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   testEnvironment: 'jest-environment-jsdom',
-  // `scripts/` is included because nothing else covers it: it is outside
-  // tsconfig's `include` (`**/*.ts(x)`), and unlike the other untyped files
-  // here a wrong answer breaks no build — CI just runs the wrong checks.
-  // `scripts/` shares the same coverage floor as `src/` above — each script's
-  // CLI-entry `main()` is marked `/* istanbul ignore next */`, since it is
-  // exercised by running the script rather than by importing it under test.
+  // `scripts/` shares the coverage floor above — see
+  // docs/development.md#testing.
   testMatch: ['<rootDir>/{src,scripts}/**/__tests__/**/*.test.{ts,tsx}'],
 };
 

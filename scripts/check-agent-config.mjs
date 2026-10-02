@@ -144,15 +144,10 @@ export const checkHooks = settings => {
   return errors;
 };
 
-// A skill and a subagent are both prose with a YAML header, so nothing compiles
-// either. Returns null when there is no header at all, which is a different
-// failure from a header that parses and is missing a field.
-//
-// A key with no inline value may be followed by a block sequence, which is
-// valid YAML and the shape `tools:` is most likely to be written in by hand.
-// Those items are joined back into the inline form so a caller reads one shape
-// either way — without this, a perfectly restricted agent fails the tools check
-// with a message asserting it declared none.
+// Returns null when there is no header, a different failure from one that
+// parses but is missing a field. A key with no inline value may be followed
+// by a block sequence — the hand-written shape for `tools:` — so those items
+// are joined back into inline form rather than failing the tools check.
 export const frontmatterFields = source => {
   const frontmatter = source.match(/^---\n([\s\S]*?)\n---\n/);
 
@@ -237,11 +232,8 @@ export const checkSkills = skillsDir => {
   return errors;
 };
 
-// An agent's `tools` line is the only thing standing between a reviewer that
-// reports what it found and one that quietly resolves it, and nothing else
-// here would notice the list widening. No agent is defined at the moment, so
-// this returns empty — it is the guard for when one is added again. The walk
-// is shared with check-doc-links.mjs — see scripts/lib/markdown-files.mjs.
+// No agent is defined at the moment, so this returns empty — it is the guard
+// for when one is added again. The walk is shared with check-doc-links.mjs.
 export const checkAgents = agentsDir => {
   const errors = [];
 
