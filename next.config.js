@@ -151,10 +151,9 @@ const baseConfig = withBotId({
   },
   images: {
     minimumCacheTTL: 31536000,
-    // The only optimised image is FixedBackground's full-viewport photo, which
-    // carries `preload` and is the deliberate LCP element, so its encoded size
-    // is on the critical path. WebP at 85 (Next's default is 75) measured
-    // ~66% smaller than at 100 with no visible difference on a backdrop photo.
+    // WebP at 85 (Next's default is 75) measured ~66% smaller than at 100 with
+    // no visible difference on FixedBackground's LCP photo. Keep this list
+    // minimal: every allowed value is a separate cache entry.
     qualities: [85],
     remotePatterns: [
       {

@@ -233,7 +233,7 @@ export const checkSkills = skillsDir => {
 };
 
 // No agent is defined at the moment, so this returns empty — it is the guard
-// for when one is added again and its `tools` line needs checking.
+// for when one is added again. The walk is shared with check-doc-links.mjs.
 export const checkAgents = agentsDir => {
   const errors = [];
 
