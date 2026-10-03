@@ -31,7 +31,3 @@ Last reviewed: 2026-09-07.
 ## Content & copy
 
 - [ ] **Decide whether experience entries remain factual or become conversational.** Apply the choice across the whole history to avoid a visible seam. A middle path is factual past tense by default with one voice sentence only where an entry has a genuine story.
-
-## Performance, SEO & platform polish
-
-- [ ] **Confirm Chrome stable clears the white band behind Android's gesture bar.** Test an installed app after the upstream `theme_color` fix reaches stable. If it remains, check whether the fix is disabled or reverted — it ships behind the `WebAppNavigationBarThemeColor` flag, default-on — before reconsidering `fullscreen` or `viewport-fit=cover`; both workarounds have user-interface costs, and the `viewport-fit=cover` fix for the mobile drawer could not be verified under browser automation, since its close button is absolutely positioned.

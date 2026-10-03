@@ -139,7 +139,7 @@ Plugin order matters here beyond alphabetical: `postcss-preset-mantine` needs to
 
 `global.css` sets `html { background-color: var(--mantine-color-black-russian-4) }` — `#080A20`, the same value as the manifest's `theme_color`/`background_color` and the `theme-color` meta tag. Without it the canvas falls back to the user-agent white, which is invisible on a normal page (the nav, hero and footer paint their own backgrounds) but shows as overscroll bounce at either end of a browser tab.
 
-- **It does not control the strip behind the Android gesture bar in the installed PWA** — see [PWA & SEO](pwa-seo.md#progressive-web-app) for that defect and why this change doesn't reach it.
+- **It does not control the strip behind the Android gesture bar in the installed PWA** — the browser paints that itself; see [PWA & SEO](pwa-seo.md#progressive-web-app) for the history of that band.
 
 - **The colour is a palette token, not a repeated literal.** `colors.ts`, `manifest.json` and the `theme-color` meta tag all resolve to the one entry, where three hand-copied hex values would drift apart.
 - **Why it belongs on `html` rather than `body`** is commented beside those two declarations in [`global.css`](../src/styles/global.css).
