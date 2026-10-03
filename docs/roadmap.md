@@ -20,10 +20,6 @@ Last reviewed: 2026-09-07.
 
 - [ ] **Upgrade ESLint off `9.39.5`.** `yarn npm audit --all` flags it as a deprecated, no-longer-supported version (moderate severity); it's a development-only dependency so there's no production exposure, but it's currently excluded from Dependabot's automated major-version updates (see `.github/dependabot.yml`'s `ignore` list) pending a coordinated config/plugin compatibility pass.
 
-## Agent configuration
-
-- [ ] **Verify push protection covers recognised provider keys and non-provider secret patterns.** Check live state through the approved private process before acting.
-
 ## Documentation gaps
 
 - [ ] **Define when a repository setting may be named publicly — blocked on maintainer guidance.** The proposed boundary is whether its value is externally observable and has no security function; exact protections, exemptions and monitoring remain private. `squash_merge_commit_message` is the motivating case — it's named in two public files with no rule to point at. Confirm that no broader private rule applies, then align those mentions.
