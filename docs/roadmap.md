@@ -12,8 +12,6 @@ Last reviewed: 2026-09-07.
 
 - [ ] **Upgrade Node.js 24 to 26 on or after 2026-10-28.** The project follows Active LTS releases, and Node 26 does not reach that status until then. Confirm Vercel support first, then update `engines.node`, `.nvmrc` and `@types/node` together and validate installation, native dependencies, the full suite and both build modes on the new runtime.
 
-- [ ] **Drop the `@serwist/next/browserslist` resolution once the upstream pin moves.** `package.json` carries a `resolutions` entry forcing `^4.28.7` because `@serwist/next` pins `browserslist` to the vulnerable `4.28.6` exactly, and its latest release still does. Check it at the next `@serwist/next` upgrade: if the published `dependencies` block names anything `4.28.7` or later, remove the entry, run `yarn install` and confirm `yarn npm audit --all --recursive` stays clean. An override left behind after upstream has moved is worse than none — it pins the graph to a range nobody is watching any more.
-
 ## CI & security hardening
 
 - [ ] **Decide whether `update-visual-baselines.yml` accepts `dependabot/` branches, and document the decision beside its guard.** Its allowlist excludes that prefix although the [branch-name check](../AGENTS.md#branch-names) accepts it. Allowing it lets a write-enabled job push to a branch Dependabot may force-push; excluding it requires rebasing a visual bump onto `chore/` before updating baselines.
