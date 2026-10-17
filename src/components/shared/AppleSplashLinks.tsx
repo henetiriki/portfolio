@@ -23,6 +23,7 @@ const SPLASH_DEVICES: SplashDevice[] = [
   { dpr: 2, height: 1180, width: 820 },
   { dpr: 2, height: 1112, width: 834 },
   { dpr: 2, height: 1194, width: 834 },
+  { dpr: 2, height: 1210, width: 834 },
   { dpr: 2, height: 1366, width: 1024 },
   { dpr: 2, height: 1376, width: 1032 },
   { dpr: 3, height: 812, width: 375 },
