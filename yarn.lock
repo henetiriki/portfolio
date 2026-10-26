@@ -2059,9 +2059,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mantine/core@npm:^9.7.2":
-  version: 9.7.2
-  resolution: "@mantine/core@npm:9.7.2"
+"@mantine/core@npm:^9.7.3":
+  version: 9.7.3
+  resolution: "@mantine/core@npm:9.7.3"
   dependencies:
     "@floating-ui/react": "npm:^0.27.20"
     clsx: "npm:^2.1.1"
@@ -2069,56 +2069,56 @@ __metadata:
     react-remove-scroll: "npm:^2.7.2"
     type-fest: "npm:^5.10.0"
   peerDependencies:
-    "@mantine/hooks": 9.7.2
+    "@mantine/hooks": 9.7.3
     react: ^19.2.0
     react-dom: ^19.2.0
-  checksum: 10/2076a0f207cd9b2d85753c8bcbe95cd175404b0804828745988b35782e256fc57c90508d68aebd3fbb4e2fb86e8098fadba996337d13b28c6d11283a10a9ed9e
+  checksum: 10/684299b0c01c71b5016892d46196b54929e4cbdb9fcaae2b455787b1f0bc8c1e0a4bb209afc467502925e8ce32f8fc5644671f1a659f16531e6dae8468700229
   languageName: node
   linkType: hard
 
-"@mantine/form@npm:^9.7.2":
-  version: 9.7.2
-  resolution: "@mantine/form@npm:9.7.2"
+"@mantine/form@npm:^9.7.3":
+  version: 9.7.3
+  resolution: "@mantine/form@npm:9.7.3"
   dependencies:
     "@standard-schema/spec": "npm:^1.1.0"
     fast-deep-equal: "npm:^3.1.3"
     klona: "npm:^2.0.6"
   peerDependencies:
     react: ^19.2.0
-  checksum: 10/5d825a7109159e7f66981d389ac5a890a1f19455fc8b5dd4c40551daf11cdb399627f83df771faba935108970d48e79e3fc7dc9400005edc606421a533b3b066
+  checksum: 10/2e519f9685dcaaf224d97775dc7ebb922c13fb05fd08204da3552399e582bcbffb89b8682f7cbb9183a581bcb60bb50d1e999ab6ba83dd7ec724f5672c6ff457
   languageName: node
   linkType: hard
 
-"@mantine/hooks@npm:^9.7.2":
-  version: 9.7.2
-  resolution: "@mantine/hooks@npm:9.7.2"
+"@mantine/hooks@npm:^9.7.3":
+  version: 9.7.3
+  resolution: "@mantine/hooks@npm:9.7.3"
   peerDependencies:
     react: ^19.2.0
-  checksum: 10/ec189a53edb81a490b5ac78c75402055234b51b992a18a3d83482efe75c0a5ede4476d93c52efe27815f738234107fbfdbff54a6ba7ef367af1a705f9bbd6dab
+  checksum: 10/a7abcfc4b34e847dab0045e21f5fee962d0a6f8f382f3a9ef7a60347a03306435f4e1a1bfca5336bad507780567d476729ff396bbbad48fa3a3e67198f646938
   languageName: node
   linkType: hard
 
-"@mantine/notifications@npm:^9.7.2":
-  version: 9.7.2
-  resolution: "@mantine/notifications@npm:9.7.2"
+"@mantine/notifications@npm:^9.7.3":
+  version: 9.7.3
+  resolution: "@mantine/notifications@npm:9.7.3"
   dependencies:
-    "@mantine/store": "npm:9.7.2"
+    "@mantine/store": "npm:9.7.3"
     react-transition-group: "npm:4.4.5"
   peerDependencies:
-    "@mantine/core": 9.7.2
-    "@mantine/hooks": 9.7.2
+    "@mantine/core": 9.7.3
+    "@mantine/hooks": 9.7.3
     react: ^19.2.0
     react-dom: ^19.2.0
-  checksum: 10/2f66459862b85717991740302eb46731ddedf0abbae81123aaa0dd1fd5d0c135972393ddb8e86687fa0bb58ae805dda18b7ae3a56a114c6b80dd78641818bd65
+  checksum: 10/6e6d48916938f36824322fed2a82e90951bfece007d05e4af85aeb8876f13b9e59e6b6edda5da53474940ec530b777adc8fef970403abfd07972e7b25c1cb2eb
   languageName: node
   linkType: hard
 
-"@mantine/store@npm:9.7.2":
-  version: 9.7.2
-  resolution: "@mantine/store@npm:9.7.2"
+"@mantine/store@npm:9.7.3":
+  version: 9.7.3
+  resolution: "@mantine/store@npm:9.7.3"
   peerDependencies:
     react: ^19.2.0
-  checksum: 10/cf21d998d9c92fd67ed67f33cecd7da7168ac7bf94db8d557fe72ec40d828a5aeb8c4cc2137c5cfc239536064f45cc8da122c230d169f5e4bde7e7386f5341ef
+  checksum: 10/9e23454ab9450ee63e141d2fcca09afa3d570242e634aead3f1a46b7fade305a7feae9245913b59bf3804113ddb2868a87b4f62139f15ead0010c6c0172e437a
   languageName: node
   linkType: hard
 
@@ -7365,10 +7365,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^10.1.1":
-  version: 10.1.1
-  resolution: "nodemailer@npm:10.1.1"
-  checksum: 10/db97f06ca90432b7dbcf9b9696e7a03b7fa882e6dd522abcd87ffc704bcc01bcb797f5d2d4b54047a5c52594060ba28566ec64400b7f9653cf76721307b68ab4
+"nodemailer@npm:^10.2.1":
+  version: 10.2.1
+  resolution: "nodemailer@npm:10.2.1"
+  checksum: 10/1f7c755800fd184e848955aabf66d7f8d78d1476a62e009e10b9c59d763c63442e7f0945ad4f1a790408df98cdde3e4a611c98b180af73be81d0299840ddd4e7
   languageName: node
   linkType: hard
 
@@ -7717,10 +7717,10 @@ __metadata:
     "@axe-core/playwright": "npm:^4.14.0"
     "@babel/core": "npm:^7"
     "@googlemaps/js-api-loader": "npm:^2.1.3"
-    "@mantine/core": "npm:^9.7.2"
-    "@mantine/form": "npm:^9.7.2"
-    "@mantine/hooks": "npm:^9.7.2"
-    "@mantine/notifications": "npm:^9.7.2"
+    "@mantine/core": "npm:^9.7.3"
+    "@mantine/form": "npm:^9.7.3"
+    "@mantine/hooks": "npm:^9.7.3"
+    "@mantine/notifications": "npm:^9.7.3"
     "@next/bundle-analyzer": "npm:^16.4.2"
     "@next/env": "npm:^16.4.2"
     "@playwright/test": "npm:^1.64.1"
@@ -7759,7 +7759,7 @@ __metadata:
     lint-staged: "npm:^17.6.0"
     next: "npm:^16.4.2"
     next-sitemap: "npm:^4.2.3"
-    nodemailer: "npm:^10.1.1"
+    nodemailer: "npm:^10.2.1"
     playwright-core: "npm:^1.64.1"
     postcss: "npm:^8.5.30"
     postcss-flexbugs-fixes: "npm:^5.0.2"
