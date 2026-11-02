@@ -2059,9 +2059,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mantine/core@npm:^9.7.2":
-  version: 9.7.2
-  resolution: "@mantine/core@npm:9.7.2"
+"@mantine/core@npm:^9.7.4":
+  version: 9.7.4
+  resolution: "@mantine/core@npm:9.7.4"
   dependencies:
     "@floating-ui/react": "npm:^0.27.20"
     clsx: "npm:^2.1.1"
@@ -2069,56 +2069,56 @@ __metadata:
     react-remove-scroll: "npm:^2.7.2"
     type-fest: "npm:^5.10.0"
   peerDependencies:
-    "@mantine/hooks": 9.7.2
+    "@mantine/hooks": 9.7.4
     react: ^19.2.0
     react-dom: ^19.2.0
-  checksum: 10/2076a0f207cd9b2d85753c8bcbe95cd175404b0804828745988b35782e256fc57c90508d68aebd3fbb4e2fb86e8098fadba996337d13b28c6d11283a10a9ed9e
+  checksum: 10/e49d942aef484b1096657b25cd94e84a865dac2b101c6c9e8aceb078229b7d23204f6c0eedcc4851080455a24c4abc00ed60e711377b4ad299bac72b4d1e3f5c
   languageName: node
   linkType: hard
 
-"@mantine/form@npm:^9.7.2":
-  version: 9.7.2
-  resolution: "@mantine/form@npm:9.7.2"
+"@mantine/form@npm:^9.7.4":
+  version: 9.7.4
+  resolution: "@mantine/form@npm:9.7.4"
   dependencies:
     "@standard-schema/spec": "npm:^1.1.0"
     fast-deep-equal: "npm:^3.1.3"
     klona: "npm:^2.0.6"
   peerDependencies:
     react: ^19.2.0
-  checksum: 10/5d825a7109159e7f66981d389ac5a890a1f19455fc8b5dd4c40551daf11cdb399627f83df771faba935108970d48e79e3fc7dc9400005edc606421a533b3b066
+  checksum: 10/f160d27b31cf5942745ed38aaea1cb512b311070c60594dedeb6d81ab4773423f31335edec7c382334eb14118c36b8f3d43fa3bba7779c5b350616641b2049b6
   languageName: node
   linkType: hard
 
-"@mantine/hooks@npm:^9.7.2":
-  version: 9.7.2
-  resolution: "@mantine/hooks@npm:9.7.2"
+"@mantine/hooks@npm:^9.7.4":
+  version: 9.7.4
+  resolution: "@mantine/hooks@npm:9.7.4"
   peerDependencies:
     react: ^19.2.0
-  checksum: 10/ec189a53edb81a490b5ac78c75402055234b51b992a18a3d83482efe75c0a5ede4476d93c52efe27815f738234107fbfdbff54a6ba7ef367af1a705f9bbd6dab
+  checksum: 10/3d81d9937e0d64c9160aec82047dff3576011e8142d24f7fae012bc865719daed82760935b23b445d79239b7fa2f3af7e594658794f6d7fec457592023f92cd3
   languageName: node
   linkType: hard
 
-"@mantine/notifications@npm:^9.7.2":
-  version: 9.7.2
-  resolution: "@mantine/notifications@npm:9.7.2"
+"@mantine/notifications@npm:^9.7.4":
+  version: 9.7.4
+  resolution: "@mantine/notifications@npm:9.7.4"
   dependencies:
-    "@mantine/store": "npm:9.7.2"
+    "@mantine/store": "npm:9.7.4"
     react-transition-group: "npm:4.4.5"
   peerDependencies:
-    "@mantine/core": 9.7.2
-    "@mantine/hooks": 9.7.2
+    "@mantine/core": 9.7.4
+    "@mantine/hooks": 9.7.4
     react: ^19.2.0
     react-dom: ^19.2.0
-  checksum: 10/2f66459862b85717991740302eb46731ddedf0abbae81123aaa0dd1fd5d0c135972393ddb8e86687fa0bb58ae805dda18b7ae3a56a114c6b80dd78641818bd65
+  checksum: 10/01747b64be201d670e72a3d1a50726a38d6bd1c934e026d786a34f61fcaedbac8813f57b64ecb9edf214fe6bbbf99a192446d105933a7532a7395c405a83b9f7
   languageName: node
   linkType: hard
 
-"@mantine/store@npm:9.7.2":
-  version: 9.7.2
-  resolution: "@mantine/store@npm:9.7.2"
+"@mantine/store@npm:9.7.4":
+  version: 9.7.4
+  resolution: "@mantine/store@npm:9.7.4"
   peerDependencies:
     react: ^19.2.0
-  checksum: 10/cf21d998d9c92fd67ed67f33cecd7da7168ac7bf94db8d557fe72ec40d828a5aeb8c4cc2137c5cfc239536064f45cc8da122c230d169f5e4bde7e7386f5341ef
+  checksum: 10/3685a30137b20cbd405722a55f97d3609bdfbd01d0fbe950b22fa93c14781f6c5a0b62d7fd15caf895fd0d2ef606b57f74e2be77af22016a6263f8c57144a0d7
   languageName: node
   linkType: hard
 
@@ -2143,10 +2143,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/env@npm:16.4.2, @next/env@npm:^16.4.2":
-  version: 16.4.2
-  resolution: "@next/env@npm:16.4.2"
-  checksum: 10/6ac734ca99aa1fb31d1130fd6cffdec711ef460cb2b87fa880fa00201c06f61de62bc5d5b7835aa2861087e9587aa1a535ba85dbf37a40979075bc50dac3588f
+"@next/env@npm:16.4.3":
+  version: 16.4.3
+  resolution: "@next/env@npm:16.4.3"
+  checksum: 10/61fc8844d0432a0030694486d3a2dc1af58770f81d0f47b7b8b2ce8b8c236f56b83da0d16ba16fef9f2b7d4ce5de6af06e5ca73b722a3d733821b4858b71ddb3
   languageName: node
   linkType: hard
 
@@ -2154,6 +2154,13 @@ __metadata:
   version: 13.5.11
   resolution: "@next/env@npm:13.5.11"
   checksum: 10/2d34ec742e28b4da54b7bfe62eb27c1c90f927f0dfe387a0af8c1a535faf75d80475e58a33472bdf722bab02349be074935e2bdf512b5fd0a46dab364700dd3d
+  languageName: node
+  linkType: hard
+
+"@next/env@npm:^16.4.2":
+  version: 16.4.2
+  resolution: "@next/env@npm:16.4.2"
+  checksum: 10/6ac734ca99aa1fb31d1130fd6cffdec711ef460cb2b87fa880fa00201c06f61de62bc5d5b7835aa2861087e9587aa1a535ba85dbf37a40979075bc50dac3588f
   languageName: node
   linkType: hard
 
@@ -2167,58 +2174,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-arm64@npm:16.4.2":
-  version: 16.4.2
-  resolution: "@next/swc-darwin-arm64@npm:16.4.2"
+"@next/swc-darwin-arm64@npm:16.4.3":
+  version: 16.4.3
+  resolution: "@next/swc-darwin-arm64@npm:16.4.3"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-x64@npm:16.4.2":
-  version: 16.4.2
-  resolution: "@next/swc-darwin-x64@npm:16.4.2"
+"@next/swc-darwin-x64@npm:16.4.3":
+  version: 16.4.3
+  resolution: "@next/swc-darwin-x64@npm:16.4.3"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-gnu@npm:16.4.2":
-  version: 16.4.2
-  resolution: "@next/swc-linux-arm64-gnu@npm:16.4.2"
+"@next/swc-linux-arm64-gnu@npm:16.4.3":
+  version: 16.4.3
+  resolution: "@next/swc-linux-arm64-gnu@npm:16.4.3"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-musl@npm:16.4.2":
-  version: 16.4.2
-  resolution: "@next/swc-linux-arm64-musl@npm:16.4.2"
+"@next/swc-linux-arm64-musl@npm:16.4.3":
+  version: 16.4.3
+  resolution: "@next/swc-linux-arm64-musl@npm:16.4.3"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-gnu@npm:16.4.2":
-  version: 16.4.2
-  resolution: "@next/swc-linux-x64-gnu@npm:16.4.2"
+"@next/swc-linux-x64-gnu@npm:16.4.3":
+  version: 16.4.3
+  resolution: "@next/swc-linux-x64-gnu@npm:16.4.3"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-musl@npm:16.4.2":
-  version: 16.4.2
-  resolution: "@next/swc-linux-x64-musl@npm:16.4.2"
+"@next/swc-linux-x64-musl@npm:16.4.3":
+  version: 16.4.3
+  resolution: "@next/swc-linux-x64-musl@npm:16.4.3"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-win32-arm64-msvc@npm:16.4.2":
-  version: 16.4.2
-  resolution: "@next/swc-win32-arm64-msvc@npm:16.4.2"
+"@next/swc-win32-arm64-msvc@npm:16.4.3":
+  version: 16.4.3
+  resolution: "@next/swc-win32-arm64-msvc@npm:16.4.3"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-win32-x64-msvc@npm:16.4.2":
-  version: 16.4.2
-  resolution: "@next/swc-win32-x64-msvc@npm:16.4.2"
+"@next/swc-win32-x64-msvc@npm:16.4.3":
+  version: 16.4.3
+  resolution: "@next/swc-win32-x64-msvc@npm:16.4.3"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -2566,21 +2573,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tabler/icons-react@npm:^3.49.0":
-  version: 3.49.0
-  resolution: "@tabler/icons-react@npm:3.49.0"
+"@tabler/icons-react@npm:^3.50.0":
+  version: 3.50.0
+  resolution: "@tabler/icons-react@npm:3.50.0"
   dependencies:
-    "@tabler/icons": "npm:3.49.0"
+    "@tabler/icons": "npm:3.50.0"
   peerDependencies:
     react: ">= 16"
-  checksum: 10/f112f3a45a5a76da89e4928e436bb6355d362c410d31a8f0da54f3889aed9cb659e5dbf480eddabf31d4d5b68a560504812733edb3b17b338478b41944813b7d
+  checksum: 10/1855e6e2a4437465952dd4b9825734add7562a025b9ccb06d71c0866a141570347c8956e064a1f3780c5088132c6b410f146c93fb6aaf4d8a3041eaa6b68ed01
   languageName: node
   linkType: hard
 
-"@tabler/icons@npm:3.49.0":
-  version: 3.49.0
-  resolution: "@tabler/icons@npm:3.49.0"
-  checksum: 10/b4b973d497997c98abbc7947569f1705cdf3886ce83f2dbf77b7fcaf1f4b42154264075e96feb2b376d1a1035f1925ad0d9efb0f2dd3743c9eff8f62e42c492b
+"@tabler/icons@npm:3.50.0":
+  version: 3.50.0
+  resolution: "@tabler/icons@npm:3.50.0"
+  checksum: 10/f1379b208d27a8402a9292e7c5fae596720eb88422ce86ab4d3801c4545cab60d275548d89fec952ea593628bebaf64982b08250399d0d9ad8c5970b02cb1e7c
   languageName: node
   linkType: hard
 
@@ -4058,9 +4065,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"botid@npm:^1.5.11":
-  version: 1.5.11
-  resolution: "botid@npm:1.5.11"
+"botid@npm:^1.5.12":
+  version: 1.5.12
+  resolution: "botid@npm:1.5.12"
   peerDependencies:
     next: "*"
     react: ^18.0.0 || ^19.0.0
@@ -4069,7 +4076,7 @@ __metadata:
       optional: true
     react:
       optional: true
-  checksum: 10/9aaff45c2c255f6bc41759cee79c580e3e974b6c96ef872000a9344f414a3a7edf1cda08cf35f852458fb37aa71d2cd2c45a0c3410e72a45bdac8513b3f6d764
+  checksum: 10/82c787eca68f46a16b009cdc65236a054fd2a644e51564a423c9cd21375016e8cbc3ff60f8282dbbcc802f717e037559d74f410a0d037bcb6119d1c793ceba26
   languageName: node
   linkType: hard
 
@@ -7250,19 +7257,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next@npm:^16.4.2":
-  version: 16.4.2
-  resolution: "next@npm:16.4.2"
+"next@npm:^16.4.3":
+  version: 16.4.3
+  resolution: "next@npm:16.4.3"
   dependencies:
-    "@next/env": "npm:16.4.2"
-    "@next/swc-darwin-arm64": "npm:16.4.2"
-    "@next/swc-darwin-x64": "npm:16.4.2"
-    "@next/swc-linux-arm64-gnu": "npm:16.4.2"
-    "@next/swc-linux-arm64-musl": "npm:16.4.2"
-    "@next/swc-linux-x64-gnu": "npm:16.4.2"
-    "@next/swc-linux-x64-musl": "npm:16.4.2"
-    "@next/swc-win32-arm64-msvc": "npm:16.4.2"
-    "@next/swc-win32-x64-msvc": "npm:16.4.2"
+    "@next/env": "npm:16.4.3"
+    "@next/swc-darwin-arm64": "npm:16.4.3"
+    "@next/swc-darwin-x64": "npm:16.4.3"
+    "@next/swc-linux-arm64-gnu": "npm:16.4.3"
+    "@next/swc-linux-arm64-musl": "npm:16.4.3"
+    "@next/swc-linux-x64-gnu": "npm:16.4.3"
+    "@next/swc-linux-x64-musl": "npm:16.4.3"
+    "@next/swc-win32-arm64-msvc": "npm:16.4.3"
+    "@next/swc-win32-x64-msvc": "npm:16.4.3"
     "@swc/helpers": "npm:0.5.23"
     baseline-browser-mapping: "npm:^2.9.19"
     caniuse-lite: "npm:^1.0.30001579"
@@ -7306,7 +7313,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: 10/f72af6bfb2d469d3ee29551c221a8fc48f5b4f4a7b685b6e1897458657607186fac34867f42ec66a67e9d5dc72e7e97abf08db875ba0ce921876b19c63617dc4
+  checksum: 10/4473274bcb1da4921d33b81f8e6c25ac2a9ee959fee49b538bd186550c641111a74b42e85ad406842c1ae471ead49ed98ce1eae699d64f8fa55dc67c14557ee7
   languageName: node
   linkType: hard
 
@@ -7365,10 +7372,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^10.1.1":
-  version: 10.1.1
-  resolution: "nodemailer@npm:10.1.1"
-  checksum: 10/db97f06ca90432b7dbcf9b9696e7a03b7fa882e6dd522abcd87ffc704bcc01bcb797f5d2d4b54047a5c52594060ba28566ec64400b7f9653cf76721307b68ab4
+"nodemailer@npm:^10.3.1":
+  version: 10.3.1
+  resolution: "nodemailer@npm:10.3.1"
+  checksum: 10/5193882b528ec334d239162d73e5fefc42083c85e95604e8688d10a58fca813843ac6f92cc6f62574602a2ac2e894e4186b24da0e00552d624ce887ccc6b7759
   languageName: node
   linkType: hard
 
@@ -7717,15 +7724,15 @@ __metadata:
     "@axe-core/playwright": "npm:^4.14.0"
     "@babel/core": "npm:^7"
     "@googlemaps/js-api-loader": "npm:^2.1.3"
-    "@mantine/core": "npm:^9.7.2"
-    "@mantine/form": "npm:^9.7.2"
-    "@mantine/hooks": "npm:^9.7.2"
-    "@mantine/notifications": "npm:^9.7.2"
+    "@mantine/core": "npm:^9.7.4"
+    "@mantine/form": "npm:^9.7.4"
+    "@mantine/hooks": "npm:^9.7.4"
+    "@mantine/notifications": "npm:^9.7.4"
     "@next/bundle-analyzer": "npm:^16.4.2"
     "@next/env": "npm:^16.4.2"
     "@playwright/test": "npm:^1.64.1"
     "@serwist/next": "npm:^9.5.13"
-    "@tabler/icons-react": "npm:^3.49.0"
+    "@tabler/icons-react": "npm:^3.50.0"
     "@testing-library/dom": "npm:^10.4.2"
     "@testing-library/jest-dom": "npm:^7.0.1"
     "@testing-library/react": "npm:^16.3.3"
@@ -7740,7 +7747,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.71.2"
     "@vercel/analytics": "npm:^2.0.1"
     "@vercel/speed-insights": "npm:^2.0.0"
-    botid: "npm:^1.5.11"
+    botid: "npm:^1.5.12"
     eslint: "npm:^9.39.5"
     eslint-config-next: "npm:^16.4.2"
     eslint-config-prettier: "npm:^10.1.8"
@@ -7757,9 +7764,9 @@ __metadata:
     jest: "npm:^30.5.2"
     jest-environment-jsdom: "npm:^30.5.2"
     lint-staged: "npm:^17.6.0"
-    next: "npm:^16.4.2"
+    next: "npm:^16.4.3"
     next-sitemap: "npm:^4.2.3"
-    nodemailer: "npm:^10.1.1"
+    nodemailer: "npm:^10.3.1"
     playwright-core: "npm:^1.64.1"
     postcss: "npm:^8.5.30"
     postcss-flexbugs-fixes: "npm:^5.0.2"
