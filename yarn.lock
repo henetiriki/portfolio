@@ -7365,10 +7365,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nodemailer@npm:^10.1.1":
-  version: 10.1.1
-  resolution: "nodemailer@npm:10.1.1"
-  checksum: 10/db97f06ca90432b7dbcf9b9696e7a03b7fa882e6dd522abcd87ffc704bcc01bcb797f5d2d4b54047a5c52594060ba28566ec64400b7f9653cf76721307b68ab4
+"nodemailer@npm:^10.1.4":
+  version: 10.1.4
+  resolution: "nodemailer@npm:10.1.4"
+  checksum: 10/512356b0eae46b08a146c4f3f54d4f863928a9403e95d0c32aff4cb3948e24aab0fbf2819cd3c3404ccb817e2e3d8ff4c16e36d8212bc33c0ea86bf55fee97d3
   languageName: node
   linkType: hard
 
@@ -7759,7 +7759,7 @@ __metadata:
     lint-staged: "npm:^17.6.0"
     next: "npm:^16.4.2"
     next-sitemap: "npm:^4.2.3"
-    nodemailer: "npm:^10.1.1"
+    nodemailer: "npm:^10.1.4"
     playwright-core: "npm:^1.64.1"
     postcss: "npm:^8.5.30"
     postcss-flexbugs-fixes: "npm:^5.0.2"
